@@ -92,9 +92,9 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 3.2 | Domain randomisation sampler; seed guard | `03` Domain randomisation, Seed discipline | 2.3 | Guard test passes |
 | ☑ | 3.3 | Logging, checkpoints, resume, validation every 10 generations | `03` Outputs | 3.1 | A run can be stopped and resumed |
 | ☑ | 3.4 | Smoke run | `03` Run plan | 3.3 | Pipeline works end to end; throughput measured; population and episode length sized to the night |
-| ☐ | 3.5 | **Main run, overnight 13→14 Nov** | `03` Run plan | 3.4 | Run completes or is still improving; best-validation checkpoint identified |
-| ☐ | 3.6 | Export policy, "watch it learn" checkpoints and training curve to the app | `03` Outputs | 3.5 | Files in `apps/web/public/policies/` |
-| ☐ | 3.7 | Second run overnight 14→15 Nov, informed by the first (P1) | `03` Run plan | 3.5 | Adopted only if validation is better |
+| ☑ | 3.5 | **Main run, overnight 13→14 Nov** | `03` Run plan | 3.4 | Run completes or is still improving; best-validation checkpoint identified |
+| ☑ | 3.6 | Export policy, "watch it learn" checkpoints and training curve to the app | `03` Outputs | 3.5 | Files in `apps/web/public/policies/` |
+| ☑ | 3.7 | Second run overnight 14→15 Nov, informed by the first (P1) | `03` Run plan | 3.5 | Adopted only if validation is better |
 | ☐ | 3.8 | Ablation runs: vehicle objective, count observation, pure, solo (P1, P2) | `03` Ablations | 3.5 | Each has a checkpoint chosen on validation |
 
 **Gate G2 at 3.5.**
@@ -222,3 +222,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Vehicle `COLOR_0` now also marks trim and glass with values below 0.5, read by the body shader as a material mask. Live view is full-bleed with cumulative readouts; rolling metric cards remain task 5.1. Aerial camera drifts until the visitor interacts. See `HANDOFF.md`.
 - 12 Nov 2026 — Sensor freeze holds approach detector readings. The signal state machine continues to report its own phase and timer.
 - 12 Nov 2026 — Use vehicles generated as the stops-per-vehicle denominator in both live and benchmark metrics, consistent with the simulator definition.
+- 12 Nov 2026 — Run training early with full episode horizons and a smaller population after the smoke test showed unstable exploratory updates. Keep the main run checkpoint after the independent second run underperformed on validation.
