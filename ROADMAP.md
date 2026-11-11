@@ -54,7 +54,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 1.2 | Network types, loader, validation; author `corridor.json` | `02` Network model | 0.1 | Loader rejects malformed networks; corridor loads; routes exist for every origin–destination pair |
 | ☑ | 1.3 | Vehicle storage (typed arrays, free list), per-link sorted lists | `02` Vehicle state | 1.2 | Add, remove, re-sort tested |
 | ☑ | 1.4 | Longitudinal dynamics: IDM against the constraining leader on a single link, with the overlap backstop and counter | `02` Longitudinal | 1.3 | A platoon behind a stopped obstacle queues without overlap; free-flow speed reached |
-| ☐ | 1.5 | Demand generation ahead of time; spawning with backlog | `02` Demand | 1.1, 1.3 | Same seed gives the same arrival list; backlog drains when space appears |
+| ☑ | 1.5 | Demand generation ahead of time; spawning with backlog | `02` Demand | 1.1, 1.3 | Same seed gives the same arrival list; backlog drains when space appears |
 | ☐ | 1.6 | Signal state machine and stop-line obstacles; yellow decision | `02` Signal phasing | 1.4 | State-machine tests pass |
 | ☐ | 1.7 | Junction traversal: connectors, strip mapping, do-not-block-the-box | `02` Junctions | 1.6 | Vehicles complete routes through all five junctions; exclusivity test passes |
 | ☐ | 1.8 | Lateral strip changes with class thresholds and biases; emergent filtering | `02` Lateral | 1.4 | No-overlap test passes over long mixed-traffic runs; filtering check passes |

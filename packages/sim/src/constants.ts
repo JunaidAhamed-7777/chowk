@@ -98,6 +98,8 @@ export const MAX_VEHICLE_LENGTH = Math.max(...VEHICLE_CLASSES.map(({ length }) =
 
 // Class order follows VEHICLE_CLASSES, with ambulances introduced by an event.
 export const DEFAULT_MIX = [0.5, 0.12, 0.28, 0.05, 0.05, 0] as const;
+export const CARS_ONLY_MIX = [0, 0, 1, 0, 0, 0] as const;
+export const LANE_STRIPS = 7;
 
 export const QUEUE_ZONE_METRES = 150;
 export const QUEUE_SPEED_THRESHOLD = 1;

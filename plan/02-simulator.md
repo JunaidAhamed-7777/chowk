@@ -213,6 +213,7 @@ function generateDemand(network, scenario, seed): Arrival[]
 ```
 
 - Arrivals per source follow a Poisson process with a piecewise-linear rate profile from the scenario.
+- Generate arrivals by inverting the integral of each rate segment. A fixed log series samples the exponential hazard between arrivals using only deterministic arithmetic.
 - Class is drawn from the scenario's mix; route from the scenario's origin–destination shares.
 - At spawn, the vehicle is placed at `s = length` of vehicle on its source link with speed equal to the slower of its desired speed and a safe speed for the gap ahead. If its preferred strips are blocked it tries the others in a fixed order; if none fit, it stays in the **backlog** and is retried each tick. Backlogged vehicles accrue delay.
 
