@@ -88,10 +88,10 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 
 | ✓ | Id | Task | Spec | Depends | Done when |
 |---|---|---|---|---|---|
-| ☐ | 3.1 | ES trainer with worker pool, antithetic sampling, rank shaping, Adam, common random numbers | `03` Training | 2.8 | Improves a toy objective |
-| ☐ | 3.2 | Domain randomisation sampler; seed guard | `03` Domain randomisation, Seed discipline | 2.3 | Guard test passes |
-| ☐ | 3.3 | Logging, checkpoints, resume, validation every 10 generations | `03` Outputs | 3.1 | A run can be stopped and resumed |
-| ☐ | 3.4 | Smoke run | `03` Run plan | 3.3 | Pipeline works end to end; throughput measured; population and episode length sized to the night |
+| ☑ | 3.1 | ES trainer with worker pool, antithetic sampling, rank shaping, Adam, common random numbers | `03` Training | 2.8 | Improves a toy objective |
+| ☑ | 3.2 | Domain randomisation sampler; seed guard | `03` Domain randomisation, Seed discipline | 2.3 | Guard test passes |
+| ☑ | 3.3 | Logging, checkpoints, resume, validation every 10 generations | `03` Outputs | 3.1 | A run can be stopped and resumed |
+| ☑ | 3.4 | Smoke run | `03` Run plan | 3.3 | Pipeline works end to end; throughput measured; population and episode length sized to the night |
 | ☐ | 3.5 | **Main run, overnight 13→14 Nov** | `03` Run plan | 3.4 | Run completes or is still improving; best-validation checkpoint identified |
 | ☐ | 3.6 | Export policy, "watch it learn" checkpoints and training curve to the app | `03` Outputs | 3.5 | Files in `apps/web/public/policies/` |
 | ☐ | 3.7 | Second run overnight 14→15 Nov, informed by the first (P1) | `03` Run plan | 3.5 | Adopted only if validation is better |
