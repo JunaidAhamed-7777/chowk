@@ -1,49 +1,49 @@
-# Handoff — frontend and assets pass (13 Nov)
+# CHOWK handoff
 
-For the next agent. Read `AGENTS.md` and `ROADMAP.md` first; this file only covers what changed in this pass and what to do next.
+Start with [AGENTS.md](AGENTS.md) and the acceptance checks in [ROADMAP.md](ROADMAP.md). The production app is a static Vite build. Live, Results, Method and Limits run in the browser. Both Live workers use the same simulator and controller driver as the published benchmark.
 
-## Commit rule from the user
+## Verify a clean checkout
 
-Commit very often and push regularly. **Do not add `Co-Authored-By` or any other attribution trailer** to commit messages.
+Use the Node version in [.node-version](.node-version).
 
-## What changed in this pass
+```sh
+npm ci
+npm run lint
+npm test
+npm run assets:check
+npm run build
+npm exec -- playwright install chromium
+npm run test:browsers
+```
 
-| Area | Change | Files |
-|---|---|---|
-| Light legibility | Additive point halos with a minimum screen size for head-lights, tail-lights and signal lamps, so traffic and signal state read from the aerial camera | `apps/web/src/scene/glow.ts`, `TrafficMeshes.tsx` |
-| Headlight beams | Instanced additive road decals ahead of each vehicle; off on the Low tier | `TrafficMeshes.tsx` |
-| Roads | Ground darkened, asphalt and markings lifted so roads stand out | `corridorGeometry.ts`, `StaticDistrict.tsx` |
-| Layout | Live view is full-bleed; title, status chip, controls and readouts float over the scene | `views/LiveView.tsx`, end of `styles.css` |
-| Live readouts | Delay per person, stops per vehicle, people delivered per hour, CO2 estimate, computed from the simulator's cumulative `Metrics` | `views/LiveView.tsx` |
-| Vehicles | Six models built with Blender's `bmesh`, 160–204 triangles each, passing `npm run assets:check` | `assets/blender/vehicles.py`, `apps/web/public/models/` |
-| Vehicle shading | Per-vehicle paint colour by id, dark trim, glass, emissive lamps and signs, lit bus cabins, flashing ambulance beacon | `TrafficMeshes.tsx`, `vehicleGeometries.ts` |
-| Camera | Aerial view drifts slowly along the arterial until the visitor drags; reduced motion disables it | `NightCorridor.tsx` |
+Run `npm run dev` and open the URL it prints. `/` starts the tour, `/?tour=off` opens the comparison controls and `/debug` provides tick-by-tick simulator playback in development. The Results replay checks the published metrics and final state hashes in browser workers. To exercise all three Playwright engines, install `chromium`, `firefox` and `webkit`, then set `CHOWK_BROWSER_MATRIX=1` and `CHOWK_VERIFY_REPRO=1` before running the browser tests. The GitHub Actions workflow also accepts a `browser_matrix` input.
 
-## Things to know
+## Benchmark and engineering data
 
-- **Vehicle mask convention.** `COLOR_0` is a material mask, not a colour: `(0,0,0)` paint, `(0.3,0.3,0.3)` trim, `(0.3,0.3,0.45)` glass, `(1,0,0)` tail, `(0,1,0)` head, `(0,0,1)` sign or beacon. The loader renames it to a `mask` attribute and the body material reads it in `onBeforeCompile`. Details are in the docstring of `assets/blender/vehicles.py`.
-- **Rebuilding models.** The Blender MCP add-on was not connected in this session, so models are built headless:
-  `"C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" --background --python assets/blender/vehicles.py`, then `npm run assets:build`. `npm run assets:vehicles` does the first step if `blender` is on `PATH`.
-- **Low tier** still uses the box fallback geometry; `_lod1` models (task 7.5) are not built.
-- **Dev server config** for the Claude preview pane is in `.claude/launch.json`; it is harmless to other tools.
+The held-out runs, policy hashes and paired intervals live in [results/benchmark.json](results/benchmark.json). The generated [benchmark report](results/benchmark.md) and README results block come from that file. Use a clean checkout of the benchmark inputs. `npm run bench:smoke` exercises the runner on a validation seed. `npm run bench -- --suite B1` publishes the primary held-out comparison. The seed rules in [AGENTS.md](AGENTS.md) govern training, validation and evaluation.
 
-## Not verified
+```sh
+npm run sim:bench -- --write
+npm run bench -- measure-policy
+npm run capture -- measure
+npm run bench -- --suite B8
+npm run bench:readme
+```
 
-- **Browser tests were not run locally**: Playwright's browsers are not installed on this machine (`npx playwright install` is needed). The redesign kept every selector the tests use, but confirm on CI. CI runs for these commits were still queued when this was written.
-- **Frame rate was not measured.** The scene ran smoothly on an AMD integrated GPU at the Medium tier by eye only.
-- The readouts are cumulative since the start of the run, not the rolling five-minute window the spec asks for (task 5.1 is therefore not ticked).
+The first three commands record simulator throughput, exported-policy inference and desktop rendering measurements. The capture script incorporates the current inference timing into [results/engineering.json](results/engineering.json). B8 copies the measurements into the benchmark and the README generator reads them from there. `CHOWK_CAPTURE_GPU_LUID` accepts a machine-specific Windows DXGI adapter identifier in `high,low` form. It selects the adapter for the High-tier measurement and video capture.
 
-## Known issues
+## Media
 
-1. **Load shows a black scene for roughly 5–15 s** in the dev server while the worker warms up 240 simulated seconds. The static city should render immediately, with traffic fading in when ready, and a poster image before that (task 4.11). Measure on a production build first.
-2. The HUD is hidden behind the controls when the window is under about 600 px tall.
-3. The intro text overlaps bright windows in places; a slightly stronger top gradient or a smaller deck would fix it.
+Install desktop Chrome and put FFmpeg on `PATH`. The capture script builds and serves the production app locally. The stills mode uses `/?capture=hero` and saves the loading poster and README stills. The video mode records the tour, the published browser replay and the checkpoint slider from the real app. It uses the caption track and produces the clip, looping hero and Results still in `assets/demo/`. [Caption track](assets/demo/captions.vtt)
 
-## Suggested next steps, in order
+```sh
+npm run capture -- stills
+npm run capture -- video
+```
 
-1. Check CI on the latest commit and fix anything the layout change broke.
-2. Task 4.11: render the static scene before the simulation is ready; add the poster.
-3. Track A is the critical path and is untouched by this pass: events (1.11), controllers (2.1–2.9), then training (3.x). The split-screen wipe (4.8, 4.9) and most of Phase 5 depend on them.
-4. Task 5.7 autoplay tour: the camera drift is a stand-in; replace it with the JSON timeline from `plan/01-product-spec.md` once events and overlays exist.
-5. Remaining assets: buildings, street props, shop strips (7.3, 7.4). The city is still instanced boxes with a window shader.
-6. Light trails (4.12), which the visual judge rated the strongest signal of flow versus jam.
+## Public release checks
+
+- The static host configuration lives in [vercel.json](vercel.json). Obtain the user's deployment approval, then verify the live URL and direct Results, Method and Limits routes in a private window. Open the public demo from a different network.
+- Local coverage includes desktop Chrome and Edge on Windows, Firefox on WSL, Windows Playwright WebKit, the top-down fallback and a portrait touch-emulated Low-tier run. Native Safari on macOS and iOS and Chrome on a physical Android device still need release checks.
+- Once the public demo and video URLs are confirmed, generate the Unstop draft with `npm run submission:prepare -- --demo <public-demo-url> --video <public-video-url>`. The command takes the headline from the committed benchmark and writes `docs/SUBMISSION.md`.
+- The user submits the form on Unstop. Verify the links from the submitted page and record the final CI-green commit under the `v1.0-submission` tag as specified in [plan/08-submission.md](plan/08-submission.md).

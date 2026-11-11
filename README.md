@@ -2,19 +2,11 @@
 
 ![The CHOWK corridor at night](assets/demo/corridor.webp)
 
-**A learned signal controller for lane-free Indian traffic, running live in a browser.**
+**A learned signal controller for lane-free Indian traffic, running live in the browser.**
 
-[![CI](https://github.com/JunaidAhamed-7777/chowk/actions/workflows/ci.yml/badge.svg)](https://github.com/JunaidAhamed-7777/chowk/actions/workflows/ci.yml) [![MIT licence](https://img.shields.io/badge/licence-MIT-34d399)](LICENSE)
+[![CI](https://github.com/JunaidAhamed-7777/chowk/actions/workflows/ci.yml/badge.svg)](https://github.com/JunaidAhamed-7777/chowk/actions/workflows/ci.yml) [![Tests](https://img.shields.io/badge/tests-Vitest%20%2B%20Playwright-2b5763)](#run-locally) [![MIT licence](https://img.shields.io/badge/licence-MIT-34d399)](LICENSE)
 
-*Chowk* is Hindi for a junction. Most adaptive signal research assumes cars queue in lanes. Indian traffic does not: two-wheelers filter to the front, autos and buses share road width, and a queue is an area of road, not a count of cars.
-
-CHOWK is a learned signal controller for that kind of traffic, a lane-free traffic simulator that runs in the browser, a 3D night city to watch and disrupt it in, and a benchmark any visitor can re-run.
-
-An entry for INNOVEX 2026, problem statement PS04 (Smart Cities & Sustainability).
-
-## The live demo
-
-The tour opens on a fictional five-junction arterial at night. Drag the divider to compare controllers on matched demand, trigger a surge or lane closure, or send an ambulance through both simulations. The pressure overlay shows the road occupancy the controller sees.
+*Chowk* is Hindi for a junction. CHOWK pairs a playable night-time arterial with a benchmark you can reproduce in the browser. It is an INNOVEX 2026 entry for PS04, Smart Cities & Sustainability.
 
 <!-- results:start -->
 
@@ -44,7 +36,15 @@ Measured on AMD Ryzen 9 5900HX with Radeon Graphics         · win32 10.0.26300 
 
 ## Why lane-free traffic matters
 
-Cars, buses and two-wheelers occupy different amounts of road space and carry different numbers of people. CHOWK measures occupied road area and trains against delay to people, including those still waiting to enter the network. TomTom estimates that Bengaluru drivers lost 168 hours to rush-hour traffic in 2025. [TomTom Traffic Index](https://www.tomtom.com/traffic-index/city/bengaluru/)
+Two-wheelers filter through gaps while auto-rickshaws and buses share the same road width. CHOWK observes occupied road area and learns to reduce delay to people, including those still waiting to enter the network. TomTom estimates that Bengaluru drivers lost 168 hours to rush-hour traffic in 2025. [TomTom Traffic Index](https://www.tomtom.com/traffic-index/city/bengaluru/)
+
+## In the live demo
+
+- **Compare controllers.** Drag the divider to see both respond to the same demand. Swap either controller while traffic keeps moving.
+- **Disrupt traffic.** Trigger a demand surge or click a road to place a stalled bus. The event starts at the same tick in both simulations.
+- **Follow an ambulance.** Send it through both simulations and switch to the ambulance camera.
+- **Inspect a signal.** Use Pressure to see occupied road area or Decision to see what each controller scored. Watch it learn swaps in a saved training checkpoint while the run continues.
+- **Re-run the benchmark.** Open Results and choose **Run benchmark** to check the published metrics and final state hashes in your browser.
 
 ## How it works
 
@@ -53,38 +53,43 @@ Cars, buses and two-wheelers occupy different amounts of road space and carry di
 - **Simulator.** The same deterministic TypeScript package powers the live workers, training and benchmark. Lane-free filtering emerges from longitudinal car following and lateral strip changes.
 - **Controller.** CHOWK adds a small learned adjustment to area-based max-pressure. Both the baseline and CHOWK use the same phase mask and starvation guard.
 - **Training.** Evolution strategies optimise occupancy-weighted delay. Validation seeds select checkpoints. A separate set of held-out seeds supplies the published comparisons.
-- **Evaluation.** Results pairs the controllers by seed and reports uncertainty. The browser replay runs a subset of the published benchmark and checks the metrics and state hashes.
+- **Evaluation.** The benchmark pairs controllers by seed and reports confidence intervals for the differences. The browser replays a published subset.
+
+## Prior work and contributions
+
+CHOWK builds on work on signal control for lane-free traffic. Its contribution is a corridor-scale simulator, a learned correction to area-based max-pressure and a live comparison with an exact browser replay. [Nandakumar, Banerjee and Vanajakshi](https://arxiv.org/abs/2509.21745) · [C-DAC’s CoSiCoSt-EnV](https://cdac.in/index.aspx?id=product_details&productId=CoSiCoStEnV%28CompositeSignalControlStrategyEnhancedVersion%29)
 
 ## Run locally
 
-With Node.js 22.12 or later in the 22.x series:
+Use Node.js 22.12 or later in the 22.x series. From a clean checkout, install, test and run the primary held-out benchmark against the committed policy.
 
 ```sh
 npm ci
 npm test
-npm run dev
+npm run bench -- --suite B1
 ```
 
-Run `npm run build` to type-check the workspaces and build the static app in `apps/web/dist`.
+The Results view offers a shorter browser replay with a progress indicator. The full B1 suite runs across the published scenarios and its duration depends on worker count and hardware.
 
-Open `/debug` on the dev server for a top-down view with tick-by-tick playback. Run `npm test` for the simulator tests. To run the desktop smoke tests, install Chromium with `npx playwright install chromium` and run `npm run test:browsers`.
+Run `npm run dev` and open the URL it prints. Use `/debug` for a top-down view with tick-by-tick playback. `npm run build` type-checks the workspaces and builds the static app in `apps/web/dist`.
 
-`npm run bench:smoke` exercises both the benchmark CLI and simulator on a validation seed. `npm run bench -- --suite B1` runs the full held-out comparison against the committed policy from a clean checkout. The Results view runs the shorter nine-episode replay in the browser.
+For the desktop browser tests, run `npm exec -- playwright install chromium`, then `npm run test:browsers`. `npm run bench:smoke` exercises the benchmark CLI on a validation seed.
 
-## Where to look
+## Limits
 
-| | |
-|---|---|
-| [plan/00-vision.md](plan/00-vision.md) | What is being built and why |
-| [ROADMAP.md](ROADMAP.md) | Ordered tasks |
-| [AGENTS.md](AGENTS.md) | Rules for AI agents working here |
-| [plan/](plan/) | Full specifications |
-| [docs/](docs/) | How the idea was chosen |
+All performance comparisons are simulation results. The corridor geometry, driving parameters and detector behaviour use documented assumptions. The model omits pedestrians and parking, and the emissions estimate is illustrative. A field study would need measured demand, calibration and independent safety validation.
 
-## Prior work
+## Repository map
 
-CHOWK builds on existing work on signal control for lane-free traffic. [Nandakumar, Banerjee and Vanajakshi](https://arxiv.org/abs/2509.21745) · [C-DAC’s CoSiCoSt-EnV](https://cdac.in/index.aspx?id=product_details&productId=CoSiCoStEnV%28CompositeSignalControlStrategyEnhancedVersion%29)
+- Browser app, workers and rendering. [apps/web](apps/web/)
+- Simulator, scenarios, controllers, training and benchmark. [packages](packages/)
+- Published runs, validation and engineering measurements. [results](results/)
+- Design specifications, roadmap and release commands. [plan](plan/) · [ROADMAP.md](ROADMAP.md) · [HANDOFF.md](HANDOFF.md)
 
-## Limits and credits
+## Credits and licences
 
-All performance comparisons are simulation results. The road geometry and driving parameters are authored assumptions. The simulator does not model pedestrians or field detectors, and the emissions model is illustrative. See Limits in the app and [asset credits](assets/CREDITS.md).
+Source code is MIT-licensed. The asset credits list the model, font and media licences. [MIT licence](LICENSE) · [Asset credits](assets/CREDITS.md)
+
+## Team
+
+Maintained by [Junaid Ahamed](https://github.com/JunaidAhamed-7777).
