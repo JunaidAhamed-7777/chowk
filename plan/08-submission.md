@@ -86,7 +86,7 @@ Do not write "first", "novel" or "state of the art" about anything we have not s
 
 ## Demo video (90 seconds)
 
-Record the real browser tab at High quality and export 1080p60 with open captions and an accompanying caption track. The recording uses the live tour, places an actual lane closure, reproduces the published benchmark and swaps saved checkpoints. The browser replay is edited for length and labelled in the video.
+Record the real browser tab at High quality and export 1080p60 with open captions and a separate WebVTT file. The recording uses the live tour, places an actual lane closure, reproduces the published benchmark and swaps saved checkpoints. The browser replay is edited for length and labelled in the video.
 
 | Seconds | Shot | Caption |
 |---|---|---|

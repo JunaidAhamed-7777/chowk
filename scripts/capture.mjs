@@ -212,6 +212,7 @@ async function video(browser) {
         track.stop();
         throw new Error("Expected a 1080p60 capture of the CHOWK browser tab");
       }
+      track.contentHint = "motion";
       const recorder = new MediaRecorder(stream, {
         mimeType: "video/webm;codecs=vp9",
         videoBitsPerSecond: 16_000_000,
@@ -306,20 +307,10 @@ function edit() {
   ffmpeg([
     "-i",
     demoSource,
-    "-i",
-    join(media, "captions.vtt"),
     "-filter_complex",
     vf,
     "-map",
     "[out]",
-    "-map",
-    "1:s:0",
-    "-c:s",
-    "mov_text",
-    "-disposition:s:0",
-    "0",
-    "-metadata:s:s:0",
-    "language=eng",
     "-t",
     "90",
     "-c:v",
