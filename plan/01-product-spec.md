@@ -53,7 +53,7 @@ Five cards, each showing A and B values and the difference as a percentage, colo
 | Card | Definition | Unit |
 |---|---|---|
 | Delay per person | Mean extra travel time versus free flow, weighted by occupancy | s |
-| Stops per vehicle | Mean count of full stops per completed trip | count |
+| Stops per vehicle | Full stops divided by vehicles generated in the measurement window | count |
 | Throughput | People delivered to their destination per hour | people/h |
 | CO2 | Estimated emissions from the fuel model in `02-simulator.md` | kg/h |
 | Ambulance time | Travel time of the latest emergency vehicle end to end | s |

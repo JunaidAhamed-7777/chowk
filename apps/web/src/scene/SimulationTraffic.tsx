@@ -1,7 +1,8 @@
 import { useFrame } from "@react-three/fiber";
 import { type RefObject, useRef, useState } from "react";
 import type { SimHost, SnapshotStream } from "../sim/SimHost";
-import type { PlaybackSpeed, Quality } from "./sceneSettings";
+import { PressureZones } from "./PressureZones";
+import type { OverlayMode, PlaybackSpeed, Quality } from "./sceneSettings";
 import { qualityPresets } from "./sceneSettings";
 import { TrafficMeshes } from "./TrafficMeshes";
 import type { WipeClip } from "./wipeClip";
@@ -13,6 +14,7 @@ export function SimulationTraffic({
   quality,
   wipe,
   singleView,
+  overlay,
 }: {
   host: RefObject<SimHost | null>;
   paused: boolean;
@@ -20,6 +22,7 @@ export function SimulationTraffic({
   quality: Quality;
   wipe: number;
   singleView: boolean;
+  overlay: OverlayMode;
 }) {
   const left = useRef<SnapshotStream>(null);
   const right = useRef<SnapshotStream>(null);
@@ -49,6 +52,7 @@ export function SimulationTraffic({
         lowDetail={quality === "low"}
         beamDetail={quality === "high"}
         visible={!singleView && wipe > 0}
+        overlay={overlay}
         clip={clips[0]}
       />
       <TrafficMeshes
@@ -58,6 +62,19 @@ export function SimulationTraffic({
         speed={speed}
         lowDetail={quality === "low"}
         beamDetail={quality === "high"}
+        visible={singleView || wipe < 100}
+        overlay={overlay}
+        clip={clips[1]}
+      />
+      <PressureZones
+        host={left}
+        enabled={overlay === "pressure"}
+        visible={!singleView && wipe > 0}
+        clip={clips[0]}
+      />
+      <PressureZones
+        host={right}
+        enabled={overlay === "pressure"}
         visible={singleView || wipe < 100}
         clip={clips[1]}
       />

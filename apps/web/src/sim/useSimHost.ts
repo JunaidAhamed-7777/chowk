@@ -12,21 +12,24 @@ interface SessionOptions {
   revision: number;
   controllers: ControllerPair;
   pressure: boolean;
+  decision: boolean;
   onReady: (ready: boolean) => void;
-  onMetrics: (metrics: MetricsPair, tick: number) => void;
+  onMetrics: (metrics: MetricsPair, tick: number, warmup?: readonly MetricsPair[]) => void;
+  onRestart: () => void;
   onError: (message: string) => void;
 }
 
 export function useSimHost(options: SessionOptions) {
   const host = useRef<SimHost>(null);
   const settings = useRef(options);
-  const { seed, maxVehicles, scenario, revision, controllers, pressure } = options;
+  const { seed, maxVehicles, scenario, revision, controllers, pressure, decision } = options;
 
   useEffect(() => {
     settings.current = options;
   }, [options]);
 
   useEffect(() => {
+    settings.current.onRestart();
     const source = new SimHost({
       seed,
       maxVehicles,
@@ -35,8 +38,9 @@ export function useSimHost(options: SessionOptions) {
       onReady: () => {
         if (settings.current.revision === revision) settings.current.onReady(true);
       },
-      onMetrics: (metrics, tick) => {
-        if (settings.current.revision === revision) settings.current.onMetrics(metrics, tick);
+      onMetrics: (metrics, tick, warmup) => {
+        if (settings.current.revision === revision)
+          settings.current.onMetrics(metrics, tick, warmup);
       },
       onError: (message) => {
         if (settings.current.revision !== revision) return;
@@ -45,7 +49,7 @@ export function useSimHost(options: SessionOptions) {
       },
     });
     host.current = source;
-    source.setPressure(settings.current.pressure);
+    source.setOverlayData(settings.current.pressure, settings.current.decision);
     let lastTime = performance.now();
     let animation: number;
     const advance = (now: number) => {
@@ -68,8 +72,8 @@ export function useSimHost(options: SessionOptions) {
   }, [controllers]);
 
   useEffect(() => {
-    host.current?.setPressure(pressure);
-  }, [pressure]);
+    host.current?.setOverlayData(pressure, decision);
+  }, [pressure, decision]);
 
   return host;
 }

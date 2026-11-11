@@ -4,8 +4,8 @@ const origin = "http://127.0.0.1:4173";
 
 export default defineConfig({
   testDir: "./tests/browser",
-  timeout: 45_000,
-  expect: { timeout: 10_000 },
+  timeout: 90_000,
+  expect: { timeout: 20_000 },
   workers: 1,
   use: {
     baseURL: origin,

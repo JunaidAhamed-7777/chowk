@@ -1,4 +1,12 @@
-import { DT, type JunctionSense, type Metrics, type Scenario, SNAPSHOT_STRIDE } from "@chowk/sim";
+import type { Explanation } from "@chowk/controllers";
+import {
+  DT,
+  type JunctionSense,
+  type Metrics,
+  type Scenario,
+  type SimEvent,
+  SNAPSHOT_STRIDE,
+} from "@chowk/sim";
 import { liveDuration } from "./liveScenario";
 import type { ControllerChoice, FromSim, FromSimFrame, ToSim } from "./protocol";
 
@@ -14,6 +22,7 @@ export interface Snapshot {
   signals: Uint8Array;
   index: Map<number, number>;
   sense?: JunctionSense[];
+  explanations?: (Explanation | undefined)[];
 }
 
 export interface Departure {
@@ -71,6 +80,7 @@ export class SnapshotStream {
       signals: frame.signals,
       index: map,
       sense: frame.sense,
+      explanations: frame.explanations,
     };
     this.receivedAt = now;
 
@@ -115,7 +125,7 @@ interface SimHostOptions {
   scenario?: Scenario;
   controllers: ControllerPair;
   onReady: () => void;
-  onMetrics: (metrics: MetricsPair, tick: number) => void;
+  onMetrics: (metrics: MetricsPair, tick: number, warmup?: readonly MetricsPair[]) => void;
   onError: (message: string) => void;
 }
 
@@ -127,13 +137,15 @@ export class SimHost {
   private lastMetricsAt = -Infinity;
   private inFlight = true;
   private refreshRequested = false;
-  private pressure = false;
+  private overlay = { pressure: false, decision: false };
+  private readonly controllers: [ControllerChoice, ControllerChoice];
   private disposed = false;
   private tick: number | undefined;
   private target: number | undefined;
 
   constructor(private readonly options: SimHostOptions) {
     this.maxTick = Math.floor((options.scenario?.duration ?? liveDuration) / DT);
+    this.controllers = [...options.controllers];
     const onError = (message: string) => this.fail(message);
     this.streams = [
       new SnapshotStream((frame) => this.receive(0, frame), onError),
@@ -181,21 +193,41 @@ export class SimHost {
     if (first) this.options.onReady();
     if (now - this.lastMetricsAt >= 250 || this.tick === this.maxTick) {
       this.lastMetricsAt = now;
-      this.options.onMetrics([left.metrics, right.metrics], this.tick);
+      const warmup = left.warmup && right.warmup;
+      this.options.onMetrics(
+        [left.metrics, right.metrics],
+        this.tick,
+        warmup && left.warmup?.map((metrics, index) => [metrics, warmup[index]]),
+      );
     }
   }
 
   setController(side: SimulationSide, controller: ControllerChoice) {
-    if (!this.disposed) this.streams[side].send({ type: "setController", controller });
+    const previous = this.controllers[side];
+    if (this.disposed || (previous.id === controller.id && previous.policy === controller.policy))
+      return;
+    this.controllers[side] = controller;
+    this.streams[side].send({ type: "setController", controller });
   }
 
-  setPressure(pressure: boolean) {
-    if (this.disposed || this.pressure === pressure) return;
-    this.pressure = pressure;
-    const message: ToSim = { type: "setOverlayData", pressure };
+  setOverlayData(pressure: boolean, decision: boolean) {
+    if (this.disposed || (this.overlay.pressure === pressure && this.overlay.decision === decision))
+      return;
+    this.overlay = { pressure, decision };
+    const message: ToSim = { type: "setOverlayData", pressure, decision };
     this.streams[0].send(message);
     this.streams[1].send(message);
     this.refreshRequested = true;
+  }
+
+  inject(event: SimEvent) {
+    if (this.disposed || this.tick === undefined) return undefined;
+    const atTick = Math.max(this.tick, this.target ?? this.tick) + 1;
+    if (atTick > this.maxTick) return undefined;
+    const message: ToSim = { type: "event", atTick, event };
+    this.streams[0].send(message);
+    this.streams[1].send(message);
+    return atTick;
   }
 
   private request(tick: number) {

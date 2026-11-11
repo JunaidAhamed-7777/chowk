@@ -14,11 +14,19 @@ import {
 import { type RefObject, useEffect, useRef, useState } from "react";
 import { HalfFloatType, NoToneMapping, PerspectiveCamera, Vector3 } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import type { ActiveEvent } from "../sim/liveEvents";
 import type { SimHost } from "../sim/SimHost";
 import { junctions } from "./corridorGeometry";
+import { EventMarkers, RoadPicker } from "./EventMarkers";
 import { SimulationTraffic } from "./SimulationTraffic";
 import { StaticDistrict } from "./StaticDistrict";
-import type { CameraSelection, PlaybackSpeed, Quality } from "./sceneSettings";
+import type {
+  CameraSelection,
+  OverlayMode,
+  PlaybackSpeed,
+  Quality,
+  VehicleFollow,
+} from "./sceneSettings";
 import { qualityPresets } from "./sceneSettings";
 
 interface SceneProps {
@@ -29,6 +37,12 @@ interface SceneProps {
   host: RefObject<SimHost | null>;
   wipe: number;
   singleView: boolean;
+  overlay: OverlayMode;
+  events: readonly ActiveEvent[];
+  tick: number;
+  vehicle: VehicleFollow | undefined;
+  onRoadPick: (x: number, z: number, screenX: number) => void;
+  onContext: (state: "lost" | "restored") => void;
   ready: boolean;
   paused: boolean;
   quality: Quality;
@@ -44,9 +58,13 @@ const aerialTarget = [925, 0, -6] as const;
 function CorridorCamera({
   selection,
   reducedMotion,
+  host,
+  vehicle,
 }: {
   selection: CameraSelection;
   reducedMotion: boolean;
+  host: RefObject<SimHost | null>;
+  vehicle: VehicleFollow | undefined;
 }) {
   const { camera, gl } = useThree();
   const orbit = useRef<OrbitControls | null>(null);
@@ -55,6 +73,7 @@ function CorridorCamera({
     target: new Vector3(...aerialTarget),
   }));
   const transition = useRef(false);
+  const followed = useRef<number | undefined>(undefined);
   // Until the visitor takes the camera, the aerial view travels slowly along the arterial.
   const drift = useRef({ active: false, time: 0, offset: 0 });
 
@@ -93,13 +112,59 @@ function CorridorCamera({
     }
     drift.current = { active: !junction && !reducedMotion, time: 0, offset: 0 };
     transition.current = true;
-  }, [selection, preset, reducedMotion]);
+    followed.current = vehicle?.id;
+  }, [selection, preset, reducedMotion, vehicle]);
 
   useFrame((_, delta) => {
     const controls = orbit.current;
     if (!controls) return;
+    const following = selection === "ride" || selection === "ambulance";
+    const rate = reducedMotion ? 1 : 1 - Math.exp(-4.9 * delta);
+    const perspective = camera instanceof PerspectiveCamera ? camera : null;
+    const stream = host.current?.streams[selection === "ride" ? (vehicle?.side ?? 1) : 1];
+    const snapshot = stream?.current;
+    if (following && snapshot) {
+      let offset =
+        followed.current === undefined ? undefined : snapshot.index.get(followed.current);
+      if (offset === undefined) {
+        const cls = selection === "ambulance" ? 5 : 0;
+        const positions = snapshot.positions;
+        let distance = Infinity;
+        for (let index = 0; index < snapshot.count * SNAPSHOT_STRIDE; index += SNAPSHOT_STRIDE) {
+          if (positions[index + 5] !== cls) continue;
+          const candidate = Math.abs(positions[index] - aerialTarget[0]);
+          if (candidate < distance) {
+            distance = candidate;
+            offset = index;
+          }
+        }
+        if (offset !== undefined) followed.current = positions[offset + 6];
+      }
+      if (offset !== undefined) {
+        controls.enabled = false;
+        controls.minDistance = 1;
+        const p = snapshot.positions;
+        const dx = p[offset + 2];
+        const dz = p[offset + 3];
+        preset.position.set(p[offset] - 6 * dx, 1.4, p[offset + 1] - 6 * dz);
+        preset.target.set(p[offset] + 24 * dx, 1.1, p[offset + 1] + 24 * dz);
+        camera.position.lerp(preset.position, rate);
+        controls.target.lerp(preset.target, rate);
+        if (perspective && Math.abs(perspective.fov - 70) > 0.05) {
+          perspective.fov += (70 - perspective.fov) * rate;
+          perspective.updateProjectionMatrix();
+        }
+        controls.update();
+        return;
+      }
+    }
+    controls.enabled = true;
+    controls.minDistance = 58;
+    if (perspective && Math.abs(perspective.fov - 35) > 0.05) {
+      perspective.fov += (35 - perspective.fov) * rate;
+      perspective.updateProjectionMatrix();
+    }
     if (transition.current) {
-      const rate = reducedMotion ? 1 : 1 - Math.exp(-4.9 * delta);
       camera.position.lerp(preset.position, rate);
       controls.target.lerp(preset.target, rate);
       if (
@@ -117,6 +182,24 @@ function CorridorCamera({
     }
     controls.update();
   }, -1);
+  return null;
+}
+
+function ContextRecovery({ onContext }: { onContext: SceneProps["onContext"] }) {
+  const canvas = useThree((state) => state.gl.domElement);
+  useEffect(() => {
+    const lost = (event: Event) => {
+      event.preventDefault();
+      onContext("lost");
+    };
+    const restored = () => onContext("restored");
+    canvas.addEventListener("webglcontextlost", lost);
+    canvas.addEventListener("webglcontextrestored", restored);
+    return () => {
+      canvas.removeEventListener("webglcontextlost", lost);
+      canvas.removeEventListener("webglcontextrestored", restored);
+    };
+  }, [canvas, onContext]);
   return null;
 }
 
@@ -211,6 +294,12 @@ export function NightCorridor({
   host,
   wipe,
   singleView,
+  overlay,
+  events,
+  tick,
+  vehicle,
+  onRoadPick,
+  onContext,
   ready,
   paused,
   quality,
@@ -241,7 +330,7 @@ export function NightCorridor({
       <fogExp2 attach="fog" args={["#111b2c", 0.00066]} />
       <hemisphereLight args={["#a7c6f5", "#343149", 2.15]} />
       <directionalLight position={[540, 450, -420]} color="#b1ccff" intensity={1.12} />
-      <StaticDistrict />
+      <StaticDistrict lowDetail={quality === "low"} />
       <SimulationTraffic
         host={host}
         paused={paused}
@@ -249,10 +338,20 @@ export function NightCorridor({
         quality={quality}
         wipe={wipe}
         singleView={singleView}
+        overlay={overlay}
       />
-      <CorridorCamera selection={camera} reducedMotion={reducedMotion} />
+      <EventMarkers events={events} tick={tick} />
+      <RoadPicker onPick={onRoadPick} />
+      <CorridorCamera
+        selection={camera}
+        reducedMotion={reducedMotion}
+        host={host}
+        vehicle={vehicle}
+      />
+      <ContextRecovery onContext={onContext} />
       <QualityProbe automatic={automatic} ready={ready} quality={quality} onQuality={onQuality} />
       <PostProcessing quality={quality} />
     </Canvas>
   );
 }
+import { SNAPSHOT_STRIDE } from "@chowk/sim";

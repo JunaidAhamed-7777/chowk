@@ -1,0 +1,60 @@
+[
+  {
+    "t": 0,
+    "camera": "aerial",
+    "wipe": 0,
+    "overlay": "none",
+    "speed": 1,
+    "caption": "A five-junction corridor, simulated live in your browser."
+  },
+  {
+    "t": 8,
+    "camera": "aerial",
+    "wipe": 50,
+    "overlay": "none",
+    "speed": 4,
+    "caption": "Two controllers face the same traffic demand and seed."
+  },
+  {
+    "t": 20,
+    "camera": 2,
+    "wipe": 50,
+    "overlay": "speed",
+    "speed": 4,
+    "caption": "Two-wheelers move through the gaps beside queues."
+  },
+  {
+    "t": 32,
+    "camera": 2,
+    "wipe": 50,
+    "overlay": "pressure",
+    "speed": 4,
+    "caption": "The pressure overlay shows how much road area traffic occupies."
+  },
+  {
+    "t": 44,
+    "camera": "ambulance",
+    "wipe": 50,
+    "overlay": "none",
+    "speed": 16,
+    "event": "ambulance",
+    "caption": "Follow an ambulance through the corridor."
+  },
+  {
+    "t": 58,
+    "camera": "aerial",
+    "wipe": 50,
+    "overlay": "pressure",
+    "speed": 4,
+    "event": "surge",
+    "caption": "A surge triples demand on one approach for three simulated minutes."
+  },
+  {
+    "t": 68,
+    "camera": "aerial",
+    "wipe": 50,
+    "overlay": "none",
+    "speed": 1,
+    "caption": "Compare person-delay, then reproduce the benchmark in Results."
+  }
+]

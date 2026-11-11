@@ -8,8 +8,12 @@ test("renders the night corridor and responds to playback, camera and navigation
   page.on("console", (message) => {
     if (message.type() === "error") browserErrors.push(message.text());
   });
+  if (process.env.CI) {
+    // Exercise the real WebGL scene on the hosted runner's software renderer.
+    await page.addInitScript(() => localStorage.setItem("chowk-quality", "low"));
+  }
 
-  await page.goto("/");
+  await page.goto("/?tour=off");
   await expect(page.getByRole("heading", { name: "The corridor after dark." })).toBeVisible();
   const pause = page.getByRole("button", { name: "Pause simulation" });
   await expect(pause).toBeEnabled();
@@ -82,7 +86,7 @@ test("opens a usable shell when WebGL 2 is unavailable", async ({ page }) => {
     });
   });
 
-  await page.goto("/");
+  await page.goto("/?tour=off");
   await expect(page.getByRole("heading", { name: "3D view unavailable" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Aerial view" })).toBeDisabled();
   await page.getByRole("link", { name: "Limits" }).click();

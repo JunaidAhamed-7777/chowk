@@ -120,13 +120,13 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 
 | ✓ | Id | Task | Spec | Depends | Done when |
 |---|---|---|---|---|---|
-| ☐ | 5.1 | Metric cards with rolling values, sparklines, differences, headline figure | `01` L2 | 4.8 | Values update at 4 Hz and match worker metrics |
+| ☑ | 5.1 | Metric cards with rolling values, sparklines, differences, headline figure | `01` L2 | 4.8 | Values update at 4 Hz and match worker metrics |
 | ☐ | 5.2 | Controller selectors per side; live swap | `01` L3 | 4.9, 2.8 | Swapping changes behaviour without reset |
-| ☐ | 5.3 | Scenario selector; time controls; seed field | `01` L4, L7 | 4.8, 2.3 | Reset and fast-forward work; same seed reproduces |
-| ☐ | 5.4 | Events: surge, block (with click-to-place), ambulance; toasts, scene markers, sparkline ticks | `01` L5 | 1.11, 5.1 | Each fires in both simulations at the same tick |
-| ☐ | 5.5 | Pressure overlay | `01` L6, `05` Overlays | 4.9 | Zones colour by occupied area, respecting the wipe |
+| ☑ | 5.3 | Scenario selector; time controls; seed field | `01` L4, L7 | 4.8, 2.3 | Reset and fast-forward work; same seed reproduces |
+| ☑ | 5.4 | Events: surge, block (with click-to-place), ambulance; toasts, scene markers, sparkline ticks | `01` L5 | 1.11, 5.1 | Each fires in both simulations at the same tick |
+| ☑ | 5.5 | Pressure overlay | `01` L6, `05` Overlays | 4.9 | Zones colour by occupied area, respecting the wipe |
 | ☑ | 5.6 | Camera presets: aerial, junction fly-to | `01` L8 | 4.2 | Smooth transitions |
-| ☐ | 5.7 | **Autoplay tour**: JSON timeline, player, captions, interruption and restart | `01` L9 | 5.4, 5.5, 5.6 | The full tour plays unattended on first load and loops |
+| ☑ | 5.7 | **Autoplay tour**: JSON timeline, player, captions, interruption and restart | `01` L9 | 5.4, 5.5, 5.6 | The full tour plays unattended on first load and loops |
 | ☐ | 5.8 | Decision, Speed and People overlays (P1) | `01` L6 | 2.9, 5.5 | Each renders and fades |
 | ☐ | 5.9 | Ride-along and ambulance cameras (P1) | `01` L8 | 5.6 | Click a vehicle to follow |
 | ☐ | 5.10 | "Watch it learn" slider (P1) | `01` L10 | 3.6, 5.2 | Sliding swaps checkpoints live |
@@ -221,3 +221,4 @@ Record spec changes here: date, what changed, why.
 - 12 Nov 2026 — Connect the desktop scene and debug view to one fixed-cycle worker with provisional demand. Two-controller lockstep remains task 4.8.
 - 13 Nov 2026 — Vehicle `COLOR_0` now also marks trim and glass with values below 0.5, read by the body shader as a material mask. Live view is full-bleed with cumulative readouts; rolling metric cards remain task 5.1. Aerial camera drifts until the visitor interacts. See `HANDOFF.md`.
 - 12 Nov 2026 — Sensor freeze holds approach detector readings. The signal state machine continues to report its own phase and timer.
+- 12 Nov 2026 — Use vehicles generated as the stops-per-vehicle denominator in both live and benchmark metrics, consistent with the simulator definition.

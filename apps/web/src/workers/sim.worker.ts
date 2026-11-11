@@ -1,93 +1,89 @@
-import { corridor, createSim, DT, SNAPSHOT_STRIDE } from "@chowk/sim";
-import { liveDuration, makeLiveScenario, warmupSeconds } from "../sim/liveScenario";
+import { ControllerDriver, createController } from "@chowk/controllers";
+import { saturationFor } from "@chowk/scenarios";
+import {
+  corridor,
+  createSim,
+  DT,
+  type Metrics,
+  type Scenario,
+  type ScheduledEvent,
+  SNAPSHOT_STRIDE,
+} from "@chowk/sim";
+import { makeLiveScenario, warmupSeconds } from "../sim/liveScenario";
 import type { ControllerChoice, FromSim, FromSimFrame, ToSim, ToSimInit } from "../sim/protocol";
 
-const cycleSlotSeconds = 24;
-const junctionOffsets = [0, 11, 6, 18, 12] as const;
-const phaseRequestInterval = Math.round(1 / DT);
-const pressureRequestInterval = Math.round(5 / DT);
-let sim: ReturnType<typeof createSim> | undefined;
-let currentTick = 0;
+let driver: ControllerDriver | undefined;
+let scenario: Scenario;
+let endTick = 0;
 let buffers: ArrayBuffer[] = [];
-let endTick = Math.floor(liveDuration / DT);
-let controller: ControllerChoice = "fixed";
+let events: ScheduledEvent[] = [];
 let pressure = false;
+let decision = false;
 
-function publish() {
-  if (!sim) return;
+function controllerFor({ id, policy }: ControllerChoice) {
+  return createController(id, {
+    policy,
+    saturation: (link) => saturationFor(corridor, scenario, link),
+  });
+}
+
+function publish(warmup?: Metrics[]) {
+  if (!driver) return;
+  const current = driver;
+  const sim = current.sim;
   const buffer = buffers.pop();
   if (!buffer) throw new Error("Snapshot buffer pool exhausted");
   const vehicles = new Float32Array(buffer);
-  const signals = sim.signals();
   const message: FromSimFrame = {
     type: "frame",
-    tick: currentTick,
+    tick: current.tick,
     count: sim.writeSnapshot(vehicles),
     vehicles: buffer,
-    signals,
+    signals: sim.signals(),
     metrics: sim.metrics(),
-    ...(pressure && {
-      sense: corridor.junctions
-        .map(({ id }) => sim?.sense(id))
-        .filter((sense) => sense !== undefined),
-    }),
+    warmup,
+    ...(pressure && { sense: corridor.junctions.map(({ id }) => sim.sense(id)) }),
+    ...(decision && { explanations: corridor.junctions.map(({ id }) => current.explain(id)) }),
   };
   self.postMessage(message, { transfer: [buffer] });
 }
 
 function advance(targetTick: number) {
-  if (!sim) return;
+  if (!driver) return;
   const target = Math.min(endTick, targetTick);
-  while (currentTick < target) {
-    const interval = controller === "fixed" ? phaseRequestInterval : pressureRequestInterval;
-    if (currentTick % interval === 0) {
-      const time = currentTick * DT;
-      for (const junction of corridor.junctions) {
-        let desired =
-          Math.floor((time + junctionOffsets[junction.id]) / cycleSlotSeconds) %
-          junction.phases.length;
-        if (controller === "pressure") {
-          const reading = sim.sense(junction.id);
-          let largest = -Infinity;
-          desired = reading.phase;
-          for (let offset = 0; offset < junction.phases.length; offset++) {
-            const phase = (reading.phase + offset) % junction.phases.length;
-            let score = 0;
-            for (const link of junction.phases[phase].approaches) {
-              const approach = reading.approaches[junction.approaches.indexOf(link)];
-              score += approach.stoppedArea + approach.areaNear - approach.outArea;
-            }
-            if (score > largest) {
-              largest = score;
-              desired = phase;
-            }
-          }
-        }
-        sim.requestPhase(junction.id, desired);
-      }
-    }
-    const batch = Math.min(target - currentTick, interval - (currentTick % interval));
-    sim.step(batch);
-    currentTick += batch;
+  while (events[0] && events[0].tick <= target) {
+    const next = events.shift();
+    if (!next) break;
+    driver.advanceTo(next.tick - 1);
+    driver.sim.inject(next.event);
   }
+  driver.advanceTo(target);
   publish();
 }
 
 function init({
   seed,
   maxVehicles,
-  controller: choice = "fixed",
-  scenario = makeLiveScenario(),
+  controller = { id: "webster" },
+  scenario: requestedScenario = makeLiveScenario(),
 }: ToSimInit) {
-  sim = createSim({ network: corridor, scenario, seed, maxVehicles });
-  controller = choice;
+  scenario = requestedScenario;
   endTick = Math.floor(scenario.duration / DT);
-  currentTick = 0;
+  const sim = createSim({ network: corridor, scenario, seed, maxVehicles });
+  driver = new ControllerDriver(sim, corridor, scenario, controllerFor(controller));
+  events = [];
   buffers = Array.from(
     { length: 3 },
     () => new ArrayBuffer(maxVehicles * SNAPSHOT_STRIDE * Float32Array.BYTES_PER_ELEMENT),
   );
-  advance(Math.round(warmupSeconds / DT));
+  const target = Math.min(endTick, Math.round(warmupSeconds / DT));
+  const warmup: Metrics[] = [sim.metrics()];
+  // Retain the warm-up series at one simulated-second intervals for rolling metrics.
+  while (driver.tick < target) {
+    driver.advanceTo(Math.min(target, driver.tick + Math.round(1 / DT)));
+    warmup.push(sim.metrics());
+  }
+  publish(warmup);
 }
 
 self.onmessage = ({ data }: MessageEvent<ToSim>) => {
@@ -100,10 +96,16 @@ self.onmessage = ({ data }: MessageEvent<ToSim>) => {
         advance(data.tick);
         break;
       case "setController":
-        controller = data.controller;
+        driver?.setController(controllerFor(data.controller));
         break;
       case "setOverlayData":
         pressure = data.pressure;
+        decision = data.decision;
+        break;
+      case "event":
+        if (!driver || data.atTick <= driver.tick || data.atTick > endTick)
+          throw new Error("Event target must be after the current simulation tick.");
+        events.push({ tick: data.atTick, event: data.event });
         break;
       case "recycle":
         buffers.push(data.buffer);

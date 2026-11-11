@@ -19,7 +19,7 @@ import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { fadeMs, type SnapshotStream } from "../sim/SimHost";
 import { district } from "./corridorGeometry";
 import { createGlow, type Glow } from "./glow";
-import type { PlaybackSpeed } from "./sceneSettings";
+import type { OverlayMode, PlaybackSpeed } from "./sceneSettings";
 import { useVehicleGeometries } from "./vehicleGeometries";
 import { clipMaterial, type WipeClip } from "./wipeClip";
 
@@ -53,6 +53,8 @@ const beaconRed = new Color(6, 0.2, 0.15);
 const beaconBlue = new Color(0.2, 0.5, 6);
 const ambulanceClass = 5;
 const busClass = 4;
+const speeds = ["#fc4947", "#ffac52", "#81e389", "#35efbb"].map((color) => new Color(color));
+const occupancyColor = new Color("#9decca");
 
 /** Standard material that reads the model's mask attribute for trim, glass and lamps. */
 function makeVehicleMaterial(cls: number) {
@@ -165,6 +167,8 @@ function drawVehicle(
   flags: number,
   fade: number,
   id: number,
+  velocity: number,
+  overlay: OverlayMode,
 ) {
   const { length, width } = VEHICLE_CLASSES[cls];
   const headlight = length * 0.5 + 0.034;
@@ -177,7 +181,13 @@ function drawVehicle(
   matrix.updateMatrix();
   mesh.setMatrixAt(instance, matrix.matrix);
   const palette = paints[cls];
-  mesh.setColorAt(instance, palette[id % palette.length]);
+  const color =
+    overlay === "speed"
+      ? speeds[velocity < 0.5 ? 0 : velocity < 3 ? 1 : velocity < 7 ? 2 : 3]
+      : overlay === "people" && VEHICLE_CLASSES[cls].occupancy > 8
+        ? occupancyColor
+        : palette[id % palette.length];
+  mesh.setColorAt(instance, color);
 
   matrix.scale.set(lampSize * fade, lampSize * fade, 0.22 * fade);
   for (let light = 0; light < 2; light += 1) {
@@ -197,6 +207,8 @@ function drawVehicle(
   const rear = brake ? brakeGlow : tailGlow;
   const { positions, colors } = glow;
   const base = lampIndex * 3;
+  const emphasis =
+    overlay === "people" ? 1 + Math.min(1.3, VEHICLE_CLASSES[cls].occupancy / 22) : 1;
   positions[base] = x + forward * dx;
   positions[base + 1] = 0.62;
   positions[base + 2] = z + forward * dz;
@@ -204,8 +216,8 @@ function drawVehicle(
   positions[base + 4] = 0.66;
   positions[base + 5] = z - forward * dz;
   for (let channel = 0; channel < 3; channel += 1) {
-    colors[base + channel] = headGlow[channel] * fade;
-    colors[base + 3 + channel] = rear[channel] * fade;
+    colors[base + channel] = headGlow[channel] * fade * emphasis;
+    colors[base + 3 + channel] = rear[channel] * fade * emphasis;
   }
 
   if (beams) {
@@ -251,6 +263,7 @@ export function TrafficMeshes({
   lowDetail,
   beamDetail,
   visible,
+  overlay,
   clip,
 }: {
   host: RefObject<SnapshotStream | null>;
@@ -260,6 +273,7 @@ export function TrafficMeshes({
   lowDetail: boolean;
   beamDetail: boolean;
   visible: boolean;
+  overlay: OverlayMode;
   clip: WipeClip;
 }) {
   const bodies = useRef<(InstancedMesh | null)[]>([]);
@@ -297,7 +311,7 @@ export function TrafficMeshes({
     clipMaterial(new MeshBasicMaterial({ toneMapped: false }), clip),
     clipMaterial(new MeshBasicMaterial({ toneMapped: false }), clip),
   ]);
-  const models = useVehicleGeometries();
+  const models = useVehicleGeometries(lowDetail);
   const lastSignalTick = useRef(-1);
   const lastSettledTick = useRef(-1);
   const lampsCount = district.signalMounts.length * 3;
@@ -350,9 +364,10 @@ export function TrafficMeshes({
     signals.computeBoundingSphere();
   }, [capacity, matrix, signalHalo]);
 
+  const lastOverlay = useRef<OverlayMode | undefined>(undefined);
   useLayoutEffect(() => {
     if (beamDetail && !lowDetail && beams.current) prepareUpload(beams.current.instanceMatrix);
-    lastSettledTick.current = -1;
+    lastOverlay.current = undefined;
   }, [beamDetail, lowDetail]);
 
   useFrame((state) => {
@@ -375,7 +390,14 @@ export function TrafficMeshes({
       ((current.tick - (previous?.tick ?? current.tick)) * DT * 1000) / speed,
     );
     const mix = !previous || paused ? 1 : Math.min(age / sampleTime, 1);
-    if (mix === 1 && age >= fadeMs && lastSettledTick.current === current.tick) return;
+    if (
+      mix === 1 &&
+      age >= fadeMs &&
+      lastSettledTick.current === current.tick &&
+      lastOverlay.current === overlay
+    )
+      return;
+    lastOverlay.current = overlay;
     if (mix === 1 && age >= fadeMs) lastSettledTick.current = current.tick;
     counts.fill(0);
     const points = current.positions;
@@ -421,6 +443,8 @@ export function TrafficMeshes({
         points[offset + 7],
         fade,
         id,
+        points[offset + 4],
+        overlay,
       );
     }
     const departures = currentHost.departures;
@@ -446,6 +470,8 @@ export function TrafficMeshes({
         vehicle.flags,
         fade,
         vehicle.id,
+        0,
+        overlay,
       );
     }
 
@@ -493,7 +519,7 @@ export function TrafficMeshes({
             bodies.current[cls] = mesh;
           }}
           args={[undefined, undefined, capacity]}
-          geometry={(lowDetail ? null : models[cls]) ?? fallback[cls]}
+          geometry={models[cls] ?? fallback[cls]}
           material={finishes[cls].material}
           count={0}
           frustumCulled={false}

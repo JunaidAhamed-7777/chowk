@@ -153,7 +153,7 @@ export default function TrafficDebug() {
       <header>
         <a href="/">← Live</a>
         <h1>Corridor debug view</h1>
-        <p>Fixed-cycle signal control · Development demand · Seed {liveSeed}</p>
+        <p>Webster fixed-time · Morning peak · Seed {liveSeed}</p>
       </header>
       {error && <p role="alert">{error}</p>}
       <canvas
