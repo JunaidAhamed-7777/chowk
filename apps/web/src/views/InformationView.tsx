@@ -56,8 +56,14 @@ export function InformationView({ route }: { route: InformationRoute }) {
       {route !== "/limits" ? (
         <Suspense
           fallback={
-            <div className="information-empty" role="status">
-              Loading {route === "/results" ? "Results" : "Method"}…
+            <div className="information-loading" role="status">
+              <span className="information-spinner" aria-hidden="true" />
+              Loading {route === "/results" ? "the benchmark results" : "the method"}…
+              <span className="information-skeleton" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
             </div>
           }
         >
