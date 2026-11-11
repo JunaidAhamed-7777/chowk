@@ -100,12 +100,14 @@ assets/blender/<asset>.py        authored via Blender MCP, committed
         │  run in Blender
         ▼
 assets/export/<asset>.glb        raw export (git-ignored)
-        │  npm run assets:build      (gltf-transform: dedupe, weld, meshopt, texture compress)
+        │  npm run assets:build      (glTF Transform: dedupe, weld and meshopt)
         ▼
 apps/web/public/models/<asset>.glb   committed, loaded by the app
 ```
 
 `npm run assets:check` prints triangle counts, bounding boxes and file sizes for every model and fails if any exceeds its budget or a vehicle's bounding box does not match the simulator's dimensions.
+
+`npm run assets:placeholders` generates the initial vehicle stand-ins from the simulator's dimension table using Python's standard library. This stage can run without Blender. For textured assets, provide WebP or KTX2 palette textures in the raw export.
 
 ## Budgets
 

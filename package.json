@@ -16,11 +16,18 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "biome lint .",
     "format": "biome format --write .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "assets:placeholders": "python assets/blender/placeholders.py",
+    "assets:build": "node assets/scripts/build.mjs",
+    "assets:check": "node assets/scripts/check.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.6",
+    "@gltf-transform/core": "4.5.1",
+    "@gltf-transform/extensions": "4.5.1",
+    "@gltf-transform/functions": "4.5.1",
     "@types/node": "22.20.5",
+    "meshoptimizer": "1.3.0",
     "typescript": "7.0.2",
     "vitest": "5.1.0"
   }

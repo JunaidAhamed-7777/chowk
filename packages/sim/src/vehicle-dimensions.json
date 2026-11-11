@@ -1,0 +1,8 @@
+[
+  { "id": "two-wheeler", "length": 1.9, "width": 0.7, "strips": 2 },
+  { "id": "auto-rickshaw", "length": 3.2, "width": 1.4, "strips": 3 },
+  { "id": "car", "length": 4.2, "width": 1.7, "strips": 4 },
+  { "id": "light-commercial", "length": 5.5, "width": 2.0, "strips": 4 },
+  { "id": "bus", "length": 11.0, "width": 2.5, "strips": 5 },
+  { "id": "ambulance", "length": 5.5, "width": 2.0, "strips": 4 }
+]

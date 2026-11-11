@@ -215,3 +215,4 @@ Record spec changes here: date, what changed, why.
 - 12 Nov 2026 — Roadmap created from `plan/`.
 
 - 12 Nov 2026 — Use npm workspaces and a committed package lock for local tooling and CI.
+- 12 Nov 2026 — Generate the dimension-matched vehicle placeholders from the simulator's dimension table. The compression pipeline accepts pre-encoded WebP and KTX2 palettes.
