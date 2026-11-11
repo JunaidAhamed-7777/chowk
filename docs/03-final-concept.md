@@ -1,5 +1,7 @@
 # Final Concept — GREENWAVE (working title)
 
+> Locked in on 12 Nov 2026. The detailed, authoritative specification is in [`plan/`](../plan/00-vision.md) and the task list in [`ROADMAP.md`](../ROADMAP.md). Where this summary and `plan/` differ, `plan/` wins.
+
 **Problem statement:** PS04 Smart Cities & Sustainability — traffic optimization.
 
 ## One line
