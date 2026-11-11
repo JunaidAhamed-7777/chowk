@@ -1,0 +1,21 @@
+.live-view .scene-stage {
+  background-color: #080d18;
+  background-image: url("/poster.webp");
+  background-position: center;
+  background-size: cover;
+}
+
+.live-view .scene-stage canvas {
+  opacity: 1;
+  transition: opacity 350ms ease;
+}
+
+.instrument:not(:has(.simulation-status[data-ready="true"])) .scene-stage canvas {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-view .scene-stage canvas {
+    transition: none;
+  }
+}

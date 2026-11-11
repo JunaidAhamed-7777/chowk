@@ -60,12 +60,7 @@ In this order. A judge may read only the first screen.
 
 ## Statistics for the impact framing
 
-From the impact judge's search (`docs/judging/judge-3-impact.md`), found mostly through news coverage of the primary source:
-
-- TomTom Traffic Index 2024: Bengaluru drivers lose about 117 hours a year in rush hour.
-- Bengaluru's adaptive signal rollout (BATCS) reports 15–20% travel-time savings.
-
-**Before publishing either, open the primary source, confirm the figure and its year, and link it.** If a figure cannot be confirmed from a primary or reputable source, drop it. Do not add statistics from memory.
+TomTom estimates 168 hours lost to rush-hour traffic in Bengaluru in 2025. [TomTom Traffic Index for Bengaluru](https://www.tomtom.com/traffic-index/city/bengaluru/)
 
 ## Citations
 

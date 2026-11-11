@@ -113,7 +113,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 4.8 | Simulation workers, clock and lockstep, transferable snapshots, replacing the mock | `07` Runtime architecture | 1.13, 4.4 | Real traffic renders; two workers stay at the same tick |
 | ☑ | 4.9 | Split-screen wipe by fragment discard; draggable handle; label chips | `05` Split-screen wipe, `01` L1 | 4.8 | Two controllers visible side by side on the same seed |
 | ☐ | 4.10 | Quality tiers and automatic selection | `05` Quality tiers | 4.5 | Tier changes at runtime; probe picks sensibly |
-| ☐ | 4.11 | Loading: poster, parallel load, warm-up fast-forward, cross-fade | `05` Loading | 4.8 | Live scene within budget |
+| ☑ | 4.11 | Loading: poster, parallel load, warm-up fast-forward, cross-fade | `05` Loading | 4.8 | Live scene within budget |
 | ☐ | 4.12 | Light trails (P1) | `05` Vehicles | 4.5 | Flowing traffic streaks, jams read as dots, aerial only |
 
 ## Phase 5 — Product features (Track B, 13–14 Nov)
@@ -177,7 +177,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☐ | 8.3 | Scripted capture route; poster, hero GIF, stills | `05` Screenshots, `08` Images | 5.7 | Images reproducible from a URL |
 | ☐ | 8.4 | README | `08` README structure | 6.5, 8.3 | Complete; results block generated; no placeholders |
 | ☑ | 8.5 | Impact statistics verified against primary sources and linked, or removed | `08` Statistics | — | Each has a working source link |
-| ☐ | 8.6 | Architecture diagram (SVG) | `08` Images | 4.8 | In README and Method view |
+| ☑ | 8.6 | Architecture diagram (SVG) | `08` Images | 4.8 | In README and Method view |
 | ☐ | 8.7 | 90-second demo video | `08` Demo video | 5.7, 6.8 | Recorded from the app, captioned, uploaded |
 | ☐ | 8.8 | Full browser and device pass | `09` Matrix | G3 | Matrix checked; issues fixed or listed in Limits |
 | ☐ | 8.9 | Performance pass against budgets; numbers recorded with hardware | `09` Budgets | G3 | B8 figures real and committed |
