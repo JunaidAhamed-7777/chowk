@@ -178,7 +178,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☐ | 8.4 | README | `08` README structure | 6.5, 8.3 | Complete; results block generated; no placeholders |
 | ☑ | 8.5 | Impact statistics verified against primary sources and linked, or removed | `08` Statistics | — | Each has a working source link |
 | ☑ | 8.6 | Architecture diagram (SVG) | `08` Images | 4.8 | In README and Method view |
-| ☐ | 8.7 | 90-second demo video | `08` Demo video | 5.7, 6.8 | Recorded from the app, captioned, uploaded |
+| ☑ | 8.7 | 90-second demo video | `08` Demo video | 5.7, 6.8 | Recorded from the app, captioned, uploaded |
 | ☐ | 8.8 | Full browser and device pass | `09` Matrix | G3 | Matrix checked; issues fixed or listed in Limits |
 | ☐ | 8.9 | Performance pass against budgets; numbers recorded with hardware | `09` Budgets | G3 | B8 figures real and committed |
 | ☐ | 8.10 | Unstop text finalised from the draft | `08` Unstop fields | 6.5 | Ready to paste; headline filled from data |

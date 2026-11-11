@@ -128,7 +128,7 @@ All captured from the app through the scripted capture route, at fixed seeds.
 - [ ] Open the deployed demo privately in Chrome, Firefox and Safari or WebKit, and verify the Low tier on a phone.
 - [x] Watch the autoplay tour end to end without interacting.
 - [x] Complete "Run it yourself" and verify every match.
-- [ ] Record, upload and link the final captioned video.
+- [x] Record, upload and link the final captioned video.
 - [x] Verify every published statistic and citation against its source.
 - [ ] The user submits on Unstop and opens the links from the submitted entry.
 - [ ] Tag the submitted commit.
