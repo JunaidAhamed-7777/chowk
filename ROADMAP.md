@@ -64,7 +64,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 1.12 | Scenario modifiers: monsoon; lane-disciplined cars only | `02` Scenario modifiers | 1.8 | Both run; cars-only shows whole-lane changes only |
 | ☑ | 1.13 | Snapshot writer, `clone()`, public API finalised | `02` Public API | 1.8 | Snapshot positions match link geometry; clone test passes |
 | ☑ | 1.14 | 2D debug viewer (plain canvas page in the app, dev only) | — | 1.13 | The corridor, vehicles by class, and signals are visible and steppable |
-| ☐ | 1.15 | Validation checks as tests with plot data exported | `02` Validation checks | 1.9 | All checks pass; JSON for the Method page plots written |
+| ☑ | 1.15 | Validation checks as tests with plot data exported | `02` Validation checks | 1.9 | All checks pass; JSON for the Method page plots written |
 | ☑ | 1.16 | Performance pass and `npm run sim:bench` | `02` Performance, `09` | 1.13 | ≥ 100× real time at 1,500 vehicles; figure recorded |
 | ☑ | 1.17 | Author `grid-holdout.json` (P1) | `02` Held-out network | 1.2 | Loads and runs under fixed-time |
 

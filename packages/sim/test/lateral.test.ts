@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { DT, LANE_STRIPS, VEHICLE_CLASSES } from "../src/constants";
 import { corridor } from "../src/corridor";
 import type { SourceDemand } from "../src/demand";
-import { SnapshotWriter } from "../src/snapshots";
 import { createSim } from "../src/sim";
+import { PhysicalOverlapCheck } from "../tools/physical-overlap";
 
 function moderateLoad(rate: number): SourceDemand[] {
   return corridor.sources.map(({ id }) => ({
@@ -25,70 +25,34 @@ function rotatePhases(sim: ReturnType<typeof createSim>, tick: number): void {
   }
 }
 
-function separated(
-  x: number,
-  z: number,
-  dx: number,
-  dz: number,
-  ax: number,
-  az: number,
-  bx: number,
-  bz: number,
-  first: (typeof VEHICLE_CLASSES)[number],
-  second: (typeof VEHICLE_CLASSES)[number],
-): boolean {
-  const firstRadius =
-    (Math.abs(x * ax + z * az) * first.length + Math.abs(x * az - z * ax) * first.width) / 2;
-  const secondRadius =
-    (Math.abs(x * bx + z * bz) * second.length + Math.abs(x * bz - z * bx) * second.width) / 2;
-  return Math.abs(x * dx + z * dz) >= firstRadius + secondRadius - 1e-7;
-}
-
-function assertNoRectanglesOverlap(
-  sim: ReturnType<typeof createSim>,
-  writer: SnapshotWriter,
-  positions: Float64Array,
-  active: number[],
-): void {
-  const { vehicles } = sim;
-  active.length = 0;
-  for (let link = 0; link < vehicles.byLink.length; link++) {
-    for (let index = 0; index < vehicles.counts[link]; index++) {
-      const slot = vehicles.byLink[link][index];
-      writer.position(slot, positions, 4 * slot, false);
-      active.push(slot);
-    }
-  }
-  active.sort((first, second) => positions[4 * first] - positions[4 * second]);
-  for (let i = 0; i < active.length; i++) {
-    const a = active[i];
-    for (let j = i + 1; j < active.length; j++) {
-      const b = active[j];
-      const dx = positions[4 * b] - positions[4 * a];
-      if (dx >= 12) break;
-      const dz = positions[4 * b + 1] - positions[4 * a + 1];
-      if (Math.abs(dz) >= 12) continue;
-      const ax = positions[4 * a + 2];
-      const az = positions[4 * a + 3];
-      const bx = positions[4 * b + 2];
-      const bz = positions[4 * b + 3];
-      const first = VEHICLE_CLASSES[vehicles.cls[a]];
-      const second = VEHICLE_CLASSES[vehicles.cls[b]];
-      if (
-        !separated(ax, az, dx, dz, ax, az, bx, bz, first, second) &&
-        !separated(az, -ax, dx, dz, ax, az, bx, bz, first, second) &&
-        !separated(bx, bz, dx, dz, ax, az, bx, bz, first, second) &&
-        !separated(bz, -bx, dx, dz, ax, az, bx, bz, first, second)
-      ) {
-        throw new Error(
-          `Overlap at ${sim.time}s: ${vehicles.id[a]}/${vehicles.link[a]}/${vehicles.cls[a]} s=${vehicles.s[a]} strip=${vehicles.strip[a]}, ${vehicles.id[b]}/${vehicles.link[b]}/${vehicles.cls[b]} s=${vehicles.s[b]} strip=${vehicles.strip[b]}`,
-        );
-      }
-    }
-  }
-}
-
 describe("lateral traffic", () => {
+  it("detects a physical rectangle overlap in the spatial checker", () => {
+    const sim = createSim({
+      network: corridor,
+      scenario: { duration: 20, sources: [] },
+      seed: 500000,
+      demand: [],
+    });
+    const route = corridor.routes[0];
+    const spec = VEHICLE_CLASSES[2];
+    const pose = {
+      link: route.links[0],
+      cls: 2,
+      s: 40,
+      v: 0,
+      v0: spec.desiredSpeed,
+      route: route.id,
+      occ: spec.occupancy,
+      tEnter: 0,
+    };
+    sim.vehicles.add({ ...pose, strip: 0, lat: 0 });
+    const second = sim.vehicles.add({ ...pose, strip: 4, lat: 2 });
+    const check = new PhysicalOverlapCheck(corridor, sim);
+    expect(check.firstOverlap()).toBeUndefined();
+    sim.vehicles.strip[second] = 1;
+    expect(check.firstOverlap()).toBeDefined();
+  });
+
   it("lets a two-wheeler advance past a car held by a red signal", () => {
     const sim = createSim({
       network: corridor,
@@ -132,13 +96,12 @@ describe("lateral traffic", () => {
         scenario: { duration, sources: moderateLoad(0.085) },
         seed,
       });
-      const writer = new SnapshotWriter(corridor, sim.vehicles, sim.junctionTraffic);
-      const positions = new Float64Array(sim.vehicles.capacity * 4);
-      const active: number[] = [];
+      const overlap = new PhysicalOverlapCheck(corridor, sim);
       for (let tick = 0; tick < (duration + 3_000) / DT; tick++) {
         rotatePhases(sim, tick);
         sim.step();
-        assertNoRectanglesOverlap(sim, writer, positions, active);
+        const pair = overlap.firstOverlap();
+        if (pair) throw new Error(overlap.describe(pair));
         if (sim.time > duration && sim.vehicles.count === 0) break;
       }
       expect(sim.metrics().generated).toBeGreaterThan(300);

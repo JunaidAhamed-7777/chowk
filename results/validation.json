@@ -1,0 +1,686 @@
+{
+  "schema": 1,
+  "fundamentalDiagram": {
+    "warmup": 120,
+    "duration": 90,
+    "laneMetres": 6000,
+    "detectorMetres": 600,
+    "points": [
+      {
+        "initialDensity": 8,
+        "density": 7.75,
+        "flow": 387.5000000000099,
+        "speed": 50.00000000000128
+      },
+      {
+        "initialDensity": 15,
+        "density": 14.819444444444445,
+        "flow": 725.419602316389,
+        "speed": 48.95052611694472
+      },
+      {
+        "initialDensity": 25,
+        "density": 25,
+        "flow": 1171.4415101158852,
+        "speed": 46.85766040463541
+      },
+      {
+        "initialDensity": 35,
+        "density": 35,
+        "flow": 1520.5654275446068,
+        "speed": 43.44472650127448
+      },
+      {
+        "initialDensity": 45,
+        "density": 45,
+        "flow": 1743.3110262942425,
+        "speed": 38.740245028760945
+      },
+      {
+        "initialDensity": 60,
+        "density": 60,
+        "flow": 1817.4157808631064,
+        "speed": 30.290263014385108
+      },
+      {
+        "initialDensity": 85,
+        "density": 85,
+        "flow": 1530.2220172415132,
+        "speed": 18.002611967547217
+      },
+      {
+        "initialDensity": 110,
+        "density": 110,
+        "flow": 1117.6234561578083,
+        "speed": 10.160213237798256
+      },
+      {
+        "initialDensity": 140,
+        "density": 140,
+        "flow": 605.9652948902757,
+        "speed": 4.328323534930541
+      },
+      {
+        "initialDensity": 170,
+        "density": 170,
+        "flow": 92.99999385298167,
+        "speed": 0.5470587873704805
+      },
+      {
+        "initialDensity": 180,
+        "density": 180,
+        "flow": 0,
+        "speed": 0
+      }
+    ],
+    "peak": {
+      "initialDensity": 60,
+      "density": 60,
+      "flow": 1817.4157808631064,
+      "speed": 30.290263014385108
+    },
+    "passed": true
+  },
+  "discharge": {
+    "warmup": 6,
+    "windowSeconds": 40,
+    "points": [
+      {
+        "mix": "mixed",
+        "strips": 11,
+        "widthMetres": 5.5,
+        "vehiclesPerSecond": 0.86125,
+        "areaPerSecond": 3.7924750000000182,
+        "seeds": 20,
+        "splitHalfSpread": 0.15965166908563144
+      },
+      {
+        "mix": "mixed",
+        "strips": 14,
+        "widthMetres": 7,
+        "vehiclesPerSecond": 1.12625,
+        "areaPerSecond": 5.044175000000025,
+        "seeds": 20,
+        "splitHalfSpread": 0.15316315205327402
+      },
+      {
+        "mix": "mixed",
+        "strips": 21,
+        "widthMetres": 10.5,
+        "vehiclesPerSecond": 1.55,
+        "areaPerSecond": 7.412074999999985,
+        "seeds": 20,
+        "splitHalfSpread": 0.11612903225806448
+      },
+      {
+        "mix": "festival",
+        "strips": 11,
+        "widthMetres": 5.5,
+        "vehiclesPerSecond": 0.9475,
+        "areaPerSecond": 3.9582000000000175,
+        "seeds": 20,
+        "splitHalfSpread": 0
+      },
+      {
+        "mix": "festival",
+        "strips": 14,
+        "widthMetres": 7,
+        "vehiclesPerSecond": 1.1425,
+        "areaPerSecond": 4.9940000000000255,
+        "seeds": 20,
+        "splitHalfSpread": 0.03063457330415748
+      },
+      {
+        "mix": "festival",
+        "strips": 21,
+        "widthMetres": 10.5,
+        "vehiclesPerSecond": 1.73125,
+        "areaPerSecond": 7.592199999999959,
+        "seeds": 20,
+        "splitHalfSpread": 0.03898916967509019
+      },
+      {
+        "mix": "cars",
+        "strips": 11,
+        "widthMetres": 5.5,
+        "vehiclesPerSecond": 0.6,
+        "areaPerSecond": 4.283999999999992,
+        "seeds": 20,
+        "splitHalfSpread": 0
+      },
+      {
+        "mix": "cars",
+        "strips": 14,
+        "widthMetres": 7,
+        "vehiclesPerSecond": 0.6,
+        "areaPerSecond": 4.283999999999992,
+        "seeds": 20,
+        "splitHalfSpread": 0
+      },
+      {
+        "mix": "cars",
+        "strips": 21,
+        "widthMetres": 10.5,
+        "vehiclesPerSecond": 0.9,
+        "areaPerSecond": 6.42600000000009,
+        "seeds": 20,
+        "splitHalfSpread": 0
+      },
+      {
+        "mix": "two-wheeler-heavy",
+        "strips": 11,
+        "widthMetres": 5.5,
+        "vehiclesPerSecond": 1.22875,
+        "areaPerSecond": 3.7128000000000245,
+        "seeds": 20,
+        "splitHalfSpread": 0.07121057985757877
+      },
+      {
+        "mix": "two-wheeler-heavy",
+        "strips": 14,
+        "widthMetres": 7,
+        "vehiclesPerSecond": 1.43875,
+        "areaPerSecond": 4.862912500000041,
+        "seeds": 20,
+        "splitHalfSpread": 0.11989574283231964
+      },
+      {
+        "mix": "two-wheeler-heavy",
+        "strips": 21,
+        "widthMetres": 10.5,
+        "vehiclesPerSecond": 2.16375,
+        "areaPerSecond": 7.392724999999912,
+        "seeds": 20,
+        "splitHalfSpread": 0.0242634315424609
+      },
+      {
+        "mix": "bus-heavy",
+        "strips": 11,
+        "widthMetres": 5.5,
+        "vehiclesPerSecond": 0.6275,
+        "areaPerSecond": 3.9221625000000087,
+        "seeds": 20,
+        "splitHalfSpread": 0.095617529880478
+      },
+      {
+        "mix": "bus-heavy",
+        "strips": 14,
+        "widthMetres": 7,
+        "vehiclesPerSecond": 0.8125,
+        "areaPerSecond": 5.569187500000014,
+        "seeds": 20,
+        "splitHalfSpread": 0.1353846153846155
+      },
+      {
+        "mix": "bus-heavy",
+        "strips": 21,
+        "widthMetres": 10.5,
+        "vehiclesPerSecond": 1.2325,
+        "areaPerSecond": 8.481049999999993,
+        "seeds": 20,
+        "splitHalfSpread": 0.02028397565922932
+      }
+    ],
+    "mixComparison": [
+      {
+        "widthMetres": 5.5,
+        "mixedToCarsVehicleRate": 1.4354166666666666,
+        "mixedToCarsAreaRate": 0.8852649393090629
+      },
+      {
+        "widthMetres": 7,
+        "mixedToCarsVehicleRate": 1.8770833333333334,
+        "mixedToCarsAreaRate": 1.1774451447245646
+      },
+      {
+        "widthMetres": 10.5,
+        "mixedToCarsVehicleRate": 1.7222222222222223,
+        "mixedToCarsAreaRate": 1.1534508247743356
+      }
+    ],
+    "passed": true
+  },
+  "filtering": {
+    "duration": 18,
+    "zoneMetres": 10,
+    "queueShare": 0.3333333333333333,
+    "frontShare": 0.5,
+    "cases": [
+      {
+        "seed": 500000,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500001,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500002,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500003,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500004,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500005,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500006,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500007,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500008,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500009,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500010,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500011,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500012,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500013,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500014,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500015,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500016,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500017,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500018,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      },
+      {
+        "seed": 500019,
+        "twoWheelers": 2,
+        "vehicles": 4,
+        "passedLead": 1
+      }
+    ],
+    "trace": {
+      "stripWidth": 0.5,
+      "roadLength": 300,
+      "roadStrips": 21,
+      "carLength": 4.2,
+      "carWidth": 1.7,
+      "twoWheelerLength": 1.9,
+      "twoWheelerWidth": 0.7,
+      "frames": [
+        {
+          "time": 0,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 279.06002500327304,
+          "bikeStrip": 3
+        },
+        {
+          "time": 0.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 279.52818118603244,
+          "bikeStrip": 4
+        },
+        {
+          "time": 1,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 280.6157605691925,
+          "bikeStrip": 4
+        },
+        {
+          "time": 1.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 282.30389671867067,
+          "bikeStrip": 4
+        },
+        {
+          "time": 2,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 284.539825931946,
+          "bikeStrip": 4
+        },
+        {
+          "time": 2.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 287.2006333879611,
+          "bikeStrip": 4
+        },
+        {
+          "time": 3,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 290.048102244701,
+          "bikeStrip": 4
+        },
+        {
+          "time": 3.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 292.73521447801073,
+          "bikeStrip": 4
+        },
+        {
+          "time": 4,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 294.9552816642073,
+          "bikeStrip": 4
+        },
+        {
+          "time": 4.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 296.605414435242,
+          "bikeStrip": 4
+        },
+        {
+          "time": 5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 297.74239837332095,
+          "bikeStrip": 4
+        },
+        {
+          "time": 5.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 298.4756784990294,
+          "bikeStrip": 4
+        },
+        {
+          "time": 6,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 298.9210311622998,
+          "bikeStrip": 4
+        },
+        {
+          "time": 6.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.17913442098035,
+          "bikeStrip": 4
+        },
+        {
+          "time": 7,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.32419238961324,
+          "bikeStrip": 4
+        },
+        {
+          "time": 7.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.40427447581385,
+          "bikeStrip": 4
+        },
+        {
+          "time": 8,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.44805470213265,
+          "bikeStrip": 4
+        },
+        {
+          "time": 8.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.47186332448166,
+          "bikeStrip": 4
+        },
+        {
+          "time": 9,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.48477445466017,
+          "bikeStrip": 4
+        },
+        {
+          "time": 9.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.4917653916149,
+          "bikeStrip": 4
+        },
+        {
+          "time": 10,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.49554765528967,
+          "bikeStrip": 4
+        },
+        {
+          "time": 10.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.4975930502026,
+          "bikeStrip": 4
+        },
+        {
+          "time": 11,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.49869891052094,
+          "bikeStrip": 4
+        },
+        {
+          "time": 11.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.499296731436,
+          "bikeStrip": 4
+        },
+        {
+          "time": 12,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.4996198960801,
+          "bikeStrip": 4
+        },
+        {
+          "time": 12.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.499794599549,
+          "bikeStrip": 4
+        },
+        {
+          "time": 13,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.4998890733799,
+          "bikeStrip": 4
+        },
+        {
+          "time": 13.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.49994021790553,
+          "bikeStrip": 4
+        },
+        {
+          "time": 14,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.49996801043034,
+          "bikeStrip": 4
+        },
+        {
+          "time": 14.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.49998330710594,
+          "bikeStrip": 4
+        },
+        {
+          "time": 15,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.49999208309475,
+          "bikeStrip": 4
+        },
+        {
+          "time": 15.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.499997031043,
+          "bikeStrip": 4
+        },
+        {
+          "time": 16,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.4999988866246,
+          "bikeStrip": 4
+        },
+        {
+          "time": 16.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.4999995824819,
+          "bikeStrip": 4
+        },
+        {
+          "time": 17,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.4999998434304,
+          "bikeStrip": 4
+        },
+        {
+          "time": 17.5,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.4999999412863,
+          "bikeStrip": 4
+        },
+        {
+          "time": 18,
+          "carS": 298.5,
+          "carStrip": 0,
+          "bikeS": 299.4999999779824,
+          "bikeStrip": 4
+        }
+      ]
+    },
+    "passed": true
+  },
+  "invariants": [
+    {
+      "id": "off-peak",
+      "controller": "webster",
+      "seed": 500000,
+      "duration": 1200,
+      "vehicleTicks": 2770563,
+      "overlapTicks": 0,
+      "conservationViolations": 0,
+      "backstops": 5,
+      "rate": 0.0000018046873505493287,
+      "passed": true
+    },
+    {
+      "id": "morning-peak",
+      "controller": "mp-area",
+      "seed": 500001,
+      "duration": 1200,
+      "vehicleTicks": 3930950,
+      "overlapTicks": 0,
+      "conservationViolations": 0,
+      "backstops": 4,
+      "rate": 0.000001017565728386268,
+      "passed": true
+    },
+    {
+      "id": "cars-only",
+      "controller": "mp-count",
+      "seed": 500002,
+      "duration": 1200,
+      "vehicleTicks": 2041530,
+      "overlapTicks": 0,
+      "conservationViolations": 0,
+      "backstops": 2,
+      "rate": 9.796574138023934e-7,
+      "passed": true
+    }
+  ],
+  "twinDemand": {
+    "seed": 500003,
+    "duration": 240,
+    "arrivals": 518,
+    "passed": true
+  }
+}

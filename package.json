@@ -19,6 +19,7 @@
     "test": "vitest run",
     "test:browsers": "npm run build && playwright test",
     "sim:bench": "node scripts/run-node.mjs sim-bench",
+    "sim:validate": "node scripts/run-node.mjs sim-validate",
     "train": "node scripts/run-node.mjs train",
     "train:export": "node scripts/run-node.mjs train-export",
     "train:tune": "node scripts/run-node.mjs train-tune",
