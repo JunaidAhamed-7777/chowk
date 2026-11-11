@@ -1,6 +1,13 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { cpus, platform, release } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -14,6 +21,7 @@ const work = join(root, "runs/capture");
 const media = join(root, "assets/demo");
 const origin = "http://127.0.0.1:4185";
 const viewport = { width: 1440, height: 900 };
+const videoViewport = { width: 1920, height: 1080 };
 const mode = process.argv[2] ?? "stills";
 if (!["stills", "video", "measure"].includes(mode)) throw new Error(`Unknown capture mode ${mode}`);
 mkdirSync(work, { recursive: true });
@@ -28,8 +36,26 @@ function ffmpeg(args) {
   if (result.status !== 0) throw new Error(`ffmpeg exited with status ${result.status}`);
 }
 
-async function pageFor(browser, tier, recordVideo) {
-  const context = await browser.newContext({ viewport, recordVideo });
+function captureFont() {
+  if (platform() !== "win32") return "font=Arial";
+  const windows = (process.env.WINDIR ?? "C:/Windows").replaceAll("\\", "/");
+  const fontDirectory = `${windows}/Fonts`;
+  if (!process.env.FONTCONFIG_FILE) {
+    const config = join(work, "fonts.conf");
+    const escapeXml = (value) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
+    const cache = join(work, "font-cache").replaceAll("\\", "/");
+    writeFileSync(
+      config,
+      `<?xml version="1.0"?>\n<fontconfig><dir>${escapeXml(fontDirectory)}</dir><cachedir>${escapeXml(cache)}</cachedir></fontconfig>\n`,
+    );
+    process.env.FONTCONFIG_FILE = config;
+  }
+  const file = `${fontDirectory}/arial.ttf`.replaceAll(":", "\\:");
+  return `fontfile='${file}'`;
+}
+
+async function pageFor(browser, tier, size = viewport) {
+  const context = await browser.newContext({ viewport: size });
   await context.addInitScript((quality) => localStorage.setItem("chowk-quality", quality), tier);
   const page = await context.newPage();
   page.on("pageerror", (error) => process.stderr.write(`${error.message}\n`));
@@ -87,41 +113,112 @@ async function stills(browser) {
 }
 
 async function video(browser) {
-  const { context, page } = await pageFor(browser, "medium", { dir: work, size: viewport });
-  const recording = page.video();
-  if (!recording) throw new Error("Playwright did not start recording");
-  const start = performance.now();
-  const elapsed = () => (performance.now() - start) / 1000;
+  const { context, page } = await pageFor(browser, "high", videoViewport);
+  const raw = join(work, "demo-source.webm");
+  writeFileSync(raw, "");
+  await page.exposeFunction("saveCaptureChunk", (base64) => {
+    appendFileSync(raw, Buffer.from(base64, "base64"));
+  });
+  let tourStart = 0;
   let proofStart = 0;
   let proofEnd = 0;
   let recorded = 0;
   try {
-    await page.goto(`${origin}/`);
+    await page.goto(`${origin}/?tour=off`);
     await waitForScene(page);
-    await page.waitForTimeout(Math.max(0, 65_000 - (performance.now() - start)));
+    await page.evaluate(async () => {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { width: 1920, height: 1080, frameRate: { ideal: 60 } },
+        audio: false,
+        preferCurrentTab: true,
+      });
+      const track = stream.getVideoTracks()[0];
+      const { width, height, frameRate, displaySurface } = track.getSettings();
+      if (width !== 1920 || height !== 1080 || frameRate !== 60 || displaySurface !== "browser") {
+        track.stop();
+        throw new Error("Expected a 1080p60 capture of the CHOWK browser tab");
+      }
+      const recorder = new MediaRecorder(stream, {
+        mimeType: "video/webm;codecs=vp9",
+        videoBitsPerSecond: 16_000_000,
+      });
+      let saved = Promise.resolve();
+      recorder.addEventListener("dataavailable", ({ data }) => {
+        if (!data.size) return;
+        saved = saved.then(async () => {
+          const base64 = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result.split(",", 2)[1]);
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(data);
+          });
+          await window.saveCaptureChunk(base64);
+        });
+      });
+      window.finishDemoCapture = () =>
+        new Promise((resolve, reject) => {
+          recorder.addEventListener(
+            "stop",
+            () => {
+              track.stop();
+              saved.then(resolve, reject);
+            },
+            { once: true },
+          );
+          recorder.stop();
+        });
+      recorder.start(1_000);
+    });
+    const start = performance.now();
+    const elapsed = () => (performance.now() - start) / 1000;
+    await page.keyboard.press("t");
+    await page.getByText("A five-junction corridor, simulated live in your browser.").waitFor();
+    tourStart = elapsed();
+    await page.getByText("Compare person-delay, then reproduce the benchmark in Results.").waitFor({
+      timeout: 90_000,
+    });
+    await page.waitForTimeout(4800);
     proofStart = elapsed();
     await page.getByRole("link", { name: "Results", exact: true }).click();
+    await page.getByRole("button", { name: "Run benchmark", exact: true }).waitFor();
+    await page.screenshot({ path: join(work, "results.png") });
     await page.getByRole("button", { name: "Run benchmark", exact: true }).click();
     await page
       .getByText("Your browser reproduced our published numbers exactly.")
       .waitFor({ timeout: 120_000 });
     await page.waitForTimeout(4500);
     proofEnd = elapsed();
-    await page.getByRole("link", { name: "Method", exact: true }).click();
-    await page.getByRole("heading", { name: "How CHOWK works" }).waitFor();
-    await page.waitForTimeout(9000);
+    await page.getByRole("link", { name: "Live", exact: true }).click();
+    await page.getByText("Watch it learn", { exact: true }).click();
+    const slider = page.getByRole("slider", { name: "Policy checkpoint" });
+    await slider.press("Home");
+    await page.getByText("Generation 0 is active.").waitFor();
+    await page.waitForTimeout(1500);
+    await slider.press("End");
+    await page.getByText(/Generation [1-9]\d* is active\./).waitFor();
+    await page.waitForTimeout(2500);
     recorded = elapsed();
+    await page.evaluate(() => window.finishDemoCapture());
   } finally {
     await context.close();
   }
-  const raw = await recording.path();
   const proofScale = 17 / (proofEnd - proofStart);
-  const finalScale = 8 / (recorded - proofEnd);
+  const learningScale = 5 / (recorded - proofEnd);
+  const font = captureFont();
+  const title = [
+    "drawbox=x=0:y=0:w=iw:h=ih:color=0x060a13:t=fill",
+    `drawtext=text=CHOWK:${font}:fontsize=96:fontcolor=0x3df2b4:x=(w-tw)/2:y=430`,
+    `drawtext=text=Lane-free traffic simulation:${font}:fontsize=32:fontcolor=0xeaf1f8:x=(w-tw)/2:y=556`,
+    `drawtext=text=github.com/JunaidAhamed-7777/chowk:${font}:fontsize=24:fontcolor=0xa2b3c9:x=(w-tw)/2:y=618`,
+  ].map((filter) => `${filter}:enable='gte(t,87)'`);
+  const captions =
+    "subtitles=assets/demo/captions.vtt:force_style='FontName=Arial,FontSize=13,Outline=2,Shadow=0,Alignment=8,MarginV=31'";
   const vf = [
-    `[0:v]trim=end=${proofStart},setpts=(PTS-STARTPTS)*${65 / proofStart}[live]`,
+    `[0:v]trim=start=${tourStart}:end=${proofStart},setpts=(PTS-STARTPTS)*${65 / (proofStart - tourStart)},fade=t=in:d=0.6[live]`,
     `[0:v]trim=start=${proofStart}:end=${proofEnd},setpts=(PTS-STARTPTS)*${proofScale}[proof]`,
-    `[0:v]trim=start=${proofEnd}:end=${recorded},setpts=(PTS-STARTPTS)*${finalScale}[method]`,
-    "[live][proof][method]concat=n=3:v=1:a=0,tpad=stop_mode=clone:stop_duration=1,fps=25,scale=1280:-2[out]",
+    `[0:v]trim=start=${proofEnd}:end=${recorded},setpts=(PTS-STARTPTS)*${learningScale}[learning]`,
+    "[live][proof][learning]concat=n=3:v=1:a=0,tpad=stop_mode=clone:stop_duration=4,fps=60,format=yuv420p[edit]",
+    `[edit]${[...title, captions].join(",")}[out]`,
   ].join(";");
   ffmpeg([
     "-i",
@@ -144,8 +241,10 @@ async function video(browser) {
     "libx264",
     "-preset",
     "medium",
+    "-threads",
+    "4",
     "-crf",
-    "25",
+    "22",
     "-pix_fmt",
     "yuv420p",
     "-movflags",
@@ -155,7 +254,7 @@ async function video(browser) {
   const gif = join(media, "hero.gif");
   ffmpeg([
     "-ss",
-    "7",
+    `${tourStart + 6.7}`,
     "-i",
     raw,
     "-t",
@@ -167,6 +266,17 @@ async function video(browser) {
     gif,
   ]);
   if (statSync(gif).size > 8_000_000) throw new Error("Hero GIF exceeds 8 MB");
+  ffmpeg([
+    "-i",
+    join(work, "results.png"),
+    "-vf",
+    "scale=1440:-2",
+    "-c:v",
+    "libwebp",
+    "-quality",
+    "88",
+    join(media, "results.webp"),
+  ]);
 }
 
 function median(sorted) {
@@ -289,7 +399,10 @@ const server = await preview({
   preview: { host: "127.0.0.1", port: 4185, strictPort: true },
 });
 try {
-  const browser = await chromium.launch({ channel: "chrome" });
+  const browser = await chromium.launch({
+    channel: "chrome",
+    args: mode === "video" ? ["--auto-accept-this-tab-capture"] : [],
+  });
   try {
     if (mode === "stills") await stills(browser);
     if (mode === "video") await video(browser);

@@ -1,28 +1,31 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:07.500
+00:00:00.000 --> 00:00:07.000
 CHOWK simulates mixed traffic along a five-junction Indian arterial.
 
-00:00:08.000 --> 00:00:19.000
-Drag the divider to compare two controllers on identical demand.
+00:00:07.200 --> 00:00:17.500
+The divider compares fixed timers and CHOWK on identical demand.
 
-00:00:20.000 --> 00:00:31.000
+00:00:18.000 --> 00:00:28.000
 Two-wheelers filter through gaps beside stopped traffic.
 
-00:00:32.000 --> 00:00:43.000
+00:00:28.600 --> 00:00:38.500
 The pressure overlay shows how much of each approach is occupied.
 
-00:00:44.000 --> 00:00:57.000
+00:00:39.000 --> 00:00:51.500
 Both simulations receive an ambulance at the same tick.
 
-00:00:58.000 --> 00:01:04.000
+00:00:52.000 --> 00:01:04.500
 A demand surge tests how the controllers respond to a busier approach.
 
 00:01:05.000 --> 00:01:14.000
 Results reports the held-out benchmark. The browser rerun is edited for time.
 
-00:01:15.000 --> 00:01:22.000
+00:01:14.200 --> 00:01:22.000
 Each rerun checks the state hash and metrics against the published result.
 
-00:01:22.000 --> 00:01:30.000
-Method explains the simulator, training and validation. All results are simulated.
+00:01:22.000 --> 00:01:27.000
+The checkpoint slider runs the actual baseline and learned weights.
+
+00:01:27.000 --> 00:01:30.000
+All results are simulation results.

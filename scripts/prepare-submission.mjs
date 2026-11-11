@@ -36,7 +36,7 @@ Drag the divider to compare two controllers over the same demand. Block a lane, 
 
 ${benchmark.headline}
 
-The Results view reruns a published subset in browser workers and compares every metric and final state hash. All results are simulation results. The Method page documents the model assumptions, validation and prior work.
+The Results view reruns a published subset in browser workers and compares every metric and final state hash. All results are simulation results. The Method page documents the assumptions and validation. CHOWK builds on prior work on lane-free signal control. [Nandakumar, Banerjee and Vanajakshi](https://arxiv.org/abs/2509.21745) · [C-DAC CoSiCoSt-EnV](https://cdac.in/index.aspx?id=product_details&productId=CoSiCoStEnV%28CompositeSignalControlStrategyEnhancedVersion%29)
 
 ## Technologies
 
