@@ -40,6 +40,10 @@ const limits = [
     "Field validation",
     "Applying the approach on public roads would require local calibration, independent safety validation and an authority-approved field trial.",
   ],
+  [
+    "Browser coverage",
+    "Desktop testing covered Chrome, Edge, Firefox and the WebKit engine. Portrait testing used Chromium touch emulation at Low quality. Native macOS, iOS and Android devices remain untested.",
+  ],
 ];
 
 export function InformationView({ route }: { route: InformationRoute }) {
