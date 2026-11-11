@@ -14,6 +14,7 @@ import { Worker } from "node:worker_threads";
 import type { PolicyWeights } from "@chowk/controllers";
 import type { WorkerJob, WorkerReply } from "./cli-worker";
 import { headlineFor } from "./headline";
+import { measurePolicy } from "./measure-policy";
 import {
   benchmarkPath,
   policyDirectory,
@@ -182,6 +183,24 @@ async function main(): Promise<void> {
       : Number(values.jobs);
   if (!Number.isSafeInteger(concurrency) || concurrency <= 0)
     throw new RangeError("--jobs must be a positive integer");
+  if (command === "measure-policy") {
+    const { weights, hash } = readPolicy("chowk");
+    const measurement = {
+      ...measurePolicy(weights),
+      policyHash: hash,
+      runtime: `Node ${process.version}`,
+    };
+    const directory = resolve(root, "runs");
+    mkdirSync(directory, { recursive: true });
+    writeFileSync(
+      resolve(directory, "policy-inference.json"),
+      `${JSON.stringify(measurement, null, 2)}\n`,
+    );
+    console.log(
+      `Exported generation ${measurement.generation} · ${measurement.policyMicroseconds.toFixed(2)} µs per inference (${measurement.decisions} timed decisions)`,
+    );
+    return;
+  }
   if (command === "smoke") {
     const identities = suiteRuns("B1", [500_000]).filter(
       ({ scenario, controller }) =>

@@ -16,9 +16,19 @@ function recordEngineHash(engine: string, hash: number, nodeHash: number): void 
   const directory = resolve(root, "runs");
   mkdirSync(directory, { recursive: true });
   const file = resolve(directory, "determinism.json");
-  const saved: Record<string, number> = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : {};
-  const names: Record<string, string> = { chromium: "Chromium", firefox: "Firefox", webkit: "WebKit" };
-  const hashes = { ...(saved.Node === nodeHash ? saved : {}), Node: nodeHash, [names[engine] ?? engine]: hash };
+  const saved: Record<string, number> = existsSync(file)
+    ? JSON.parse(readFileSync(file, "utf8"))
+    : {};
+  const names: Record<string, string> = {
+    chromium: "Chromium",
+    firefox: "Firefox",
+    webkit: "WebKit",
+  };
+  const hashes = {
+    ...(saved.Node === nodeHash ? saved : {}),
+    Node: nodeHash,
+    [names[engine] ?? engine]: hash,
+  };
   const temporary = `${file}.${process.pid}.tmp`;
   writeFileSync(temporary, `${JSON.stringify(hashes, null, 2)}\n`);
   renameSync(temporary, file);
@@ -74,7 +84,8 @@ for (const engine of engines) {
       expect(actual).toEqual(expected);
       const hash = actual.checkpoints.at(-1);
       const nodeHash = expected.checkpoints.at(-1);
-      if (hash === undefined || nodeHash === undefined) throw new Error("The fixture returned no final state hash");
+      if (hash === undefined || nodeHash === undefined)
+        throw new Error("The fixture returned no final state hash");
       recordEngineHash(engine.name(), hash, nodeHash);
       console.log(`${engine.name()} state ${hash.toString(16).padStart(8, "0")}`);
     } finally {
