@@ -3,6 +3,7 @@ import type { BenchmarkRun, PairedComparison, SummaryCell } from "./types";
 
 const BOOTSTRAP_REPLICATES = 10_000;
 const BOOTSTRAP_SEED = 0x43484f57;
+const drawsBySampleSize = new Map<number, Uint32Array>();
 const higherIsBetter = new Set(["throughputPeoplePerHour", "completionRate", "ambulanceCompleted"]);
 
 export function mean(values: ArrayLike<number>): number {
@@ -24,6 +25,17 @@ function interval(samples: Float64Array): [number, number] {
   return [percentile(samples, 0.025), percentile(samples, 0.975)];
 }
 
+function bootstrapDraws(size: number): Uint32Array {
+  const cached = drawsBySampleSize.get(size);
+  if (cached) return cached;
+  const random = new Random(BOOTSTRAP_SEED);
+  const draws = Uint32Array.from({ length: BOOTSTRAP_REPLICATES * size }, () =>
+    Math.floor(random.next() * size),
+  );
+  drawsBySampleSize.set(size, draws);
+  return draws;
+}
+
 export function bootstrapMean(
   values: readonly number[],
 ): Pick<SummaryCell, "mean" | "ciLow" | "ciHigh" | "median"> {
@@ -32,12 +44,12 @@ export function bootstrapMean(
   if (values.every((value) => value === values[0])) {
     return { mean: average, median, ciLow: average, ciHigh: average };
   }
-  const random = new Random(BOOTSTRAP_SEED);
+  const draws = bootstrapDraws(values.length);
   const replicates = new Float64Array(BOOTSTRAP_REPLICATES);
   for (let sample = 0; sample < replicates.length; sample++) {
     let sum = 0;
     for (let draw = 0; draw < values.length; draw++) {
-      sum += values[Math.floor(random.next() * values.length)];
+      sum += values[draws[sample * values.length + draw]];
     }
     replicates[sample] = sum / values.length;
   }
@@ -60,14 +72,14 @@ export function pairedRelativeDifference(
   }
   if (sumB === 0) return undefined;
   const relDiff = (sumA - sumB) / sumB;
-  const random = new Random(BOOTSTRAP_SEED);
+  const draws = bootstrapDraws(pairs.length);
   const replicates = new Float64Array(BOOTSTRAP_REPLICATES);
   let count = 0;
   for (let sample = 0; sample < replicates.length; sample++) {
     let a = 0;
     let b = 0;
     for (let draw = 0; draw < pairs.length; draw++) {
-      const pair = pairs[Math.floor(random.next() * pairs.length)];
+      const pair = pairs[draws[sample * pairs.length + draw]];
       a += pair[0];
       b += pair[1];
     }
@@ -136,11 +148,20 @@ export function summariseRuns(runs: readonly BenchmarkRun[]): {
     if (!group) continue;
     const { base, byController } = group;
     const controllers = [...byController.keys()].sort(compareControllers);
+    const clean =
+      base.suite === "B5" && base.variant !== "clean"
+        ? groups.get(JSON.stringify([base.suite, base.scenario, base.network, "clean"]))
+            ?.byController
+        : undefined;
     for (let index = 0; index < controllers.length; index++) {
       const controller = controllers[index];
       const first = byController.get(controller);
       if (!first) continue;
       const seeds = [...first.keys()].sort((a, b) => a - b);
+      const opponents = controllers
+        .slice(index + 1)
+        .map((id) => ({ id, series: byController.get(id) }));
+      if (clean) opponents.push({ id: "clean", series: clean.get(controller) });
       const metrics = [
         ...new Set([...first.values()].flatMap((run) => Object.keys(run.metrics))),
       ].sort();
@@ -157,8 +178,7 @@ export function summariseRuns(runs: readonly BenchmarkRun[]): {
           seedCount: values.length,
           ...bootstrapMean(values),
         });
-        for (const b of controllers.slice(index + 1)) {
-          const second = byController.get(b);
+        for (const { id: b, series: second } of opponents) {
           const pairs: [number, number][] = [];
           for (const seed of seeds) {
             const aValue = first.get(seed)?.metrics[metric];

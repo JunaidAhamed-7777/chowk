@@ -1,5 +1,12 @@
 export { headlineFor, primaryMetric, primaryScenario, signedPercent } from "./headline";
 export {
+  controllerLabel,
+  formatMetric,
+  mainMetricKeys,
+  metricLabels,
+  windowMetrics,
+} from "./metrics";
+export {
   bootstrapMean,
   compareControllers,
   mean,
@@ -18,3 +25,5 @@ export type {
   SummaryCell,
 } from "./types";
 export { compareRuns, runKey } from "./types";
+export { type EpisodeOptions, runEpisode } from "./episode";
+export { reproductionRuns, scenarioLabel } from "./suites";
