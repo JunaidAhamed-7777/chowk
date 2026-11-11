@@ -20,21 +20,23 @@ Run `npm run dev` and open the URL it prints. `/` starts the tour, `/?tour=off` 
 
 ## Benchmark and engineering data
 
-The held-out runs, policy hashes and paired intervals live in [results/benchmark.json](results/benchmark.json). The generated [benchmark report](results/benchmark.md) and README results block come from that file. Use a clean checkout of the benchmark inputs. `npm run bench:smoke` exercises the runner on a validation seed. `npm run bench -- --suite B1` publishes the primary held-out comparison. The seed rules in [AGENTS.md](AGENTS.md) govern training, validation and evaluation.
+The held-out runs, policy hashes and paired intervals live in [results/benchmark.json](results/benchmark.json). The generated [benchmark report](results/benchmark.md) and README results block come from that file. Use a clean checkout of the benchmark inputs. `npm run bench:smoke` exercises the runner on a validation seed. `npm run bench -- --suite B1 --replace` recomputes a B1-only publication. `npm run bench:all -- --replace` recomputes every suite. The seed rules in [AGENTS.md](AGENTS.md) govern training, validation and evaluation.
 
 ```sh
 npm run sim:bench -- --write
 npm run bench -- measure-policy
+npm run build
+npm run browser:budgets -- load
+npm run browser:budgets -- soak
 npm run capture -- measure
 npm run bench -- --suite B8
-npm run bench:readme
 ```
 
-The first three commands record simulator throughput, exported-policy inference and desktop rendering measurements. The capture script incorporates the current inference timing into [results/engineering.json](results/engineering.json). B8 copies the measurements into the benchmark and the README generator reads them from there. `CHOWK_CAPTURE_GPU_LUID` accepts a machine-specific Windows DXGI adapter identifier in `high,low` form. It selects the adapter for the High-tier measurement and video capture.
+Run the rendering, shaped-load and replay measurements with other heavy processes idle. `CHOWK_WRITE_ENGINEERING=1` asks the Playwright determinism and exact-replay tests to preserve machine-readable evidence under `runs/`. Capture merges the available measurements into [results/engineering.json](results/engineering.json). B8 copies them into the benchmark and regenerates the reports. `CHOWK_CAPTURE_GPU_LUID` accepts a machine-specific Windows DXGI adapter identifier in `high,low` form for the High tier and the video.
 
 ## Media
 
-Install desktop Chrome and put FFmpeg on `PATH`. The capture script builds and serves the production app locally. The stills mode uses `/?capture=hero` and saves the loading poster and README stills. The video mode records the tour, the published browser replay and the checkpoint slider from the real app. It uses the caption track and produces the clip, looping hero and Results still in `assets/demo/`. [Caption track](assets/demo/captions.vtt)
+Install desktop Chrome and put FFmpeg on `PATH`. The capture script builds and serves the production app locally. The stills mode uses `/?capture=hero` and saves the loading poster and README stills. The video mode records the tour, a placed road closure, the published browser replay and the checkpoint slider from the real app. It exports an open-captioned MP4 and GIFs to `assets/demo/`. The `edit` mode reuses the captured source and timeline in `runs/capture/`. [Separate WebVTT file](assets/demo/captions.vtt)
 
 ```sh
 npm run capture -- stills
