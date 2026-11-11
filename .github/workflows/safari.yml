@@ -1,0 +1,36 @@
+name: Native Safari smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      verify_replay:
+        description: Replay the published benchmark in Safari
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: macos-15
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Enable the bundled Safari WebDriver
+        run: |
+          sw_vers
+          /usr/bin/safaridriver --version
+          sudo -n /usr/bin/safaridriver --enable
+      - name: Check the production app in Safari
+        run: node scripts/verify-native-safari.mjs
+        env:
+          CHOWK_SAFARI_VERIFY_REPLAY: ${{ inputs.verify_replay && '1' || '0' }}
