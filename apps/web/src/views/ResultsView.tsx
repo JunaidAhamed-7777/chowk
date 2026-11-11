@@ -14,7 +14,12 @@ import {
   signedPercent,
 } from "@chowk/bench";
 import { useEffect, useState } from "react";
-import { DelayChart, LaneChart, LoadSweepChart } from "../benchmark/BenchmarkCharts";
+import {
+  DelayChart,
+  LaneChart,
+  LoadSweepChart,
+  SensorNoiseChart,
+} from "../benchmark/BenchmarkCharts";
 import { BenchmarkReproduction } from "../benchmark/BenchmarkReproduction";
 import { TrainingCurveChart } from "../benchmark/TrainingCurveChart";
 import "../benchmark/results.css";
@@ -240,14 +245,21 @@ const extraSuites = [
   },
 ] as const;
 
+const generalisationCases: Record<string, string> = {
+  "two-wheelers-70": "70% two-wheelers",
+  "buses-15": "15% buses",
+  "held-out-grid": "Held-out grid",
+};
+
 function AdditionalResults({ benchmark }: { benchmark: BenchmarkFile }) {
   const { summary: rows, comparisons } = benchmark;
   return extraSuites.map(({ suite, title, metrics }) => {
+    const suiteRows = rows.filter((entry) => entry.suite === suite);
     const groups = new Map<string, SummaryCell[]>();
-    for (const row of rows.filter((entry) => entry.suite === suite)) {
-      const key = [scenarioLabel(row.scenario), row.variant?.replaceAll("-", " ")]
-        .filter(Boolean)
-        .join(" · ");
+    for (const row of suiteRows) {
+      const variant =
+        row.variant && (generalisationCases[row.variant] ?? row.variant.replaceAll("-", " "));
+      const key = [scenarioLabel(row.scenario), variant].filter(Boolean).join(" · ");
       const group = groups.get(key);
       if (group) group.push(row);
       else groups.set(key, [row]);
@@ -256,7 +268,28 @@ function AdditionalResults({ benchmark }: { benchmark: BenchmarkFile }) {
     return (
       <details key={suite} className="results-panel results-extra">
         <summary>{title}</summary>
-        {suite === "B4" && <LoadSweepChart rows={rows.filter(({ suite: id }) => id === "B4")} />}
+        {suite === "B3" && (
+          <DelayChart rows={suiteRows} caption="Delay per person across policy variants" />
+        )}
+        {suite === "B4" && (
+          <>
+            <LoadSweepChart rows={suiteRows} />
+            <DelayChart
+              rows={suiteRows.filter(
+                ({ variant }) => variant && Object.hasOwn(generalisationCases, variant),
+              )}
+              caption="Delay per person in unseen mixes and the held-out grid"
+              groupBy={({ variant }) => generalisationCases[variant ?? ""]}
+            />
+          </>
+        )}
+        {suite === "B5" && <SensorNoiseChart benchmark={benchmark} />}
+        {suite === "B7" && (
+          <p>
+            Approach wait tracks the longest vehicle wait within 150 m of each junction. The 95th
+            percentile uses one sample per approach per second.
+          </p>
+        )}
         {[...groups].map(([key, entries]) => (
           <div key={key}>
             <ResultsTable rows={entries} metrics={metrics} title={key} />

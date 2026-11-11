@@ -5,9 +5,9 @@ import {
   formatMetric,
   primaryMetric,
   primaryScenario,
+  type SummaryCell,
   scenarioLabel,
   signedPercent,
-  type SummaryCell,
 } from "@chowk/bench";
 import { useId } from "react";
 
@@ -17,6 +17,10 @@ const colours: Record<string, string> = {
   "mp-count": "#d5a9f4",
   actuated: "#f4b170",
   webster: "#bac5d9",
+  "chowk-vehicle": "#92bdff",
+  "chowk-count": "#d5a9f4",
+  "chowk-pure": "#f4b170",
+  "chowk-solo": "#bac5d9",
 };
 
 function IntervalMark({
@@ -48,22 +52,42 @@ function IntervalMark({
   );
 }
 
-export function DelayChart({ rows }: { rows: readonly SummaryCell[] }) {
+interface GroupedInterval {
+  group: string;
+  controller: string;
+  mean: number;
+  ciLow: number;
+  ciHigh: number;
+}
+
+function GroupedIntervals({
+  points,
+  caption,
+  description,
+  extent,
+  symmetric = false,
+  format,
+}: {
+  points: readonly GroupedInterval[];
+  caption: string;
+  description: string;
+  extent: number;
+  symmetric?: boolean;
+  format: (value: number) => string;
+}) {
   const titleId = useId();
-  const series = rows.filter(({ metric }) => metric === primaryMetric);
-  const controllers = [...new Set(series.map(({ controller }) => controller))].sort(
+  const controllers = [...new Set(points.map(({ controller }) => controller))].sort(
     compareControllers,
   );
-  const scenarios = [...new Set(series.map(({ scenario }) => scenario))];
-  if (series.length === 0) return null;
-  const high = Math.max(1, ...series.map(({ ciHigh }) => ciHigh));
-  const axisEnd = Math.ceil(high / 10) * 10;
-  const plot = (value: number) => 166 + (632 * value) / axisEnd;
+  const groups = [...new Set(points.map(({ group }) => group))];
+  if (points.length === 0) return null;
+  const start = symmetric ? -extent : 0;
+  const plot = (value: number) => 166 + (632 * (value - start)) / (extent - start);
   const groupHeight = controllers.length * 15 + 21;
-  const height = scenarios.length * groupHeight + 24;
+  const height = groups.length * groupHeight + 24;
   return (
     <figure className="results-chart">
-      <figcaption>Delay per person by scenario</figcaption>
+      <figcaption>{caption}</figcaption>
       <ul className="chart-legend">
         {controllers.map((controller) => (
           <li key={controller}>
@@ -75,42 +99,44 @@ export function DelayChart({ rows }: { rows: readonly SummaryCell[] }) {
       <div className="results-chart-scroll">
         <svg viewBox={`0 0 830 ${height}`} role="img" aria-labelledby={titleId}>
           <title id={titleId}>
-            Mean simulated delay per person by scenario and controller. Dots show means and whiskers
-            show 95% bootstrap confidence intervals.
+            {description} Whiskers show 95% bootstrap confidence intervals.
           </title>
-          {[0, 0.25, 0.5, 0.75, 1].map((step) => (
-            <g key={step}>
-              <line
-                className="chart-grid"
-                x1={plot(step * axisEnd)}
-                x2={plot(step * axisEnd)}
-                y1="2"
-                y2={height - 23}
-              />
-              <text x={plot(step * axisEnd)} y={height - 5} textAnchor="middle">
-                {formatMetric(primaryMetric, step * axisEnd)} s
-              </text>
-            </g>
-          ))}
-          {scenarios.map((scenario, group) => (
-            <g key={scenario}>
-              <text className="chart-scenario" x="4" y={group * groupHeight + 19}>
-                {scenarioLabel(scenario)}
+          {[0, 0.25, 0.5, 0.75, 1].map((step) => {
+            const value = start + step * (extent - start);
+            return (
+              <g key={step}>
+                <line
+                  className={symmetric && value === 0 ? "chart-axis" : "chart-grid"}
+                  x1={plot(value)}
+                  x2={plot(value)}
+                  y1="2"
+                  y2={height - 23}
+                />
+                <text x={plot(value)} y={height - 5} textAnchor="middle">
+                  {format(value)}
+                </text>
+              </g>
+            );
+          })}
+          {groups.map((group, row) => (
+            <g key={group}>
+              <text className="chart-scenario" x="4" y={row * groupHeight + 19}>
+                {group}
               </text>
               {controllers.map((controller, index) => {
-                const cell = series.find(
-                  (row) => row.scenario === scenario && row.controller === controller,
+                const point = points.find(
+                  (point) => point.group === group && point.controller === controller,
                 );
-                if (!cell) return null;
+                if (!point) return null;
                 return (
                   <IntervalMark
                     key={controller}
-                    x={plot(cell.mean)}
-                    low={plot(cell.ciLow)}
-                    high={plot(cell.ciHigh)}
-                    y={group * groupHeight + 11 + index * 15}
+                    x={plot(point.mean)}
+                    low={plot(point.ciLow)}
+                    high={plot(point.ciHigh)}
+                    y={row * groupHeight + 11 + index * 15}
                     colour={colours[controller] ?? "#bac5d9"}
-                    label={`${scenarioLabel(scenario)}, ${controllerLabel(controller)}: ${formatMetric(primaryMetric, cell.mean)} s (${formatMetric(primaryMetric, cell.ciLow)} to ${formatMetric(primaryMetric, cell.ciHigh)} s)`}
+                    label={`${group}, ${controllerLabel(controller)}: ${format(point.mean)} (${format(point.ciLow)} to ${format(point.ciHigh)})`}
                   />
                 );
               })}
@@ -119,6 +145,61 @@ export function DelayChart({ rows }: { rows: readonly SummaryCell[] }) {
         </svg>
       </div>
     </figure>
+  );
+}
+
+export function DelayChart({
+  rows,
+  caption = "Delay per person by scenario",
+  groupBy = (row) => scenarioLabel(row.scenario),
+}: {
+  rows: readonly SummaryCell[];
+  caption?: string;
+  groupBy?: (row: SummaryCell) => string;
+}) {
+  const points = rows
+    .filter(({ metric }) => metric === primaryMetric)
+    .map((row) => ({ ...row, group: groupBy(row) }));
+  const high = Math.max(1, ...points.map(({ ciHigh }) => ciHigh));
+  return (
+    <GroupedIntervals
+      points={points}
+      caption={caption}
+      description={`${caption}. Dots show simulated means.`}
+      extent={Math.ceil(high / 10) * 10}
+      format={(value) => `${formatMetric(primaryMetric, value)} s`}
+    />
+  );
+}
+
+export function SensorNoiseChart({ benchmark }: { benchmark: BenchmarkFile }) {
+  const points = benchmark.comparisons
+    .filter(
+      ({ suite, variant, b, metric }) =>
+        suite === "B5" &&
+        variant?.startsWith("noise-") &&
+        b === "clean" &&
+        metric === primaryMetric,
+    )
+    .map((point) => ({
+      ...point,
+      group: `${point.variant?.slice(6)}% sensor noise`,
+      controller: point.a,
+      mean: point.relDiff,
+    }));
+  const high = Math.max(
+    0.01,
+    ...points.flatMap(({ ciLow, ciHigh }) => [Math.abs(ciLow), Math.abs(ciHigh)]),
+  );
+  return (
+    <GroupedIntervals
+      points={points}
+      caption="Change in delay per person under sensor noise"
+      description="Relative change in simulated delay per person against the same controller on clean sensors. Positive values indicate more delay."
+      extent={Math.ceil(high * 100) / 100}
+      format={signedPercent}
+      symmetric
+    />
   );
 }
 

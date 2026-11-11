@@ -1,24 +1,54 @@
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import type { BenchmarkFile } from "@chowk/bench";
 import { chromium, expect, firefox, test, webkit } from "@playwright/test";
 
-const hasPublication = existsSync(
-  fileURLToPath(new URL("../../results/benchmark.json", import.meta.url)),
-);
+const publishedFile = new URL("../../results/benchmark.json", import.meta.url);
+const publication = existsSync(publishedFile)
+  ? (JSON.parse(readFileSync(publishedFile, "utf8")) as BenchmarkFile)
+  : undefined;
 
 test("Results shows published data or an honest pending state", async ({ page }) => {
   await page.goto("/results");
   await expect(page.getByRole("heading", { name: "Benchmark results", level: 1 })).toBeVisible();
-  if (!hasPublication) {
+  if (!publication) {
     await expect(page.getByRole("heading", { name: "Publication pending" })).toBeVisible();
     return;
   }
-  await expect(page.getByText(/Simulation result\.$/)).toBeVisible();
+  await expect(page.getByText(publication.headline, { exact: true })).toBeVisible();
   const scenario = page.getByRole("combobox", { name: "Scenario" });
   await expect(scenario).toHaveValue("morning-peak");
   await scenario.selectOption("off-peak");
   await expect(page.getByRole("table", { name: /Off-peak/ })).toBeVisible();
   await expect(page.getByRole("button", { name: "Run benchmark", exact: true })).toBeEnabled();
+  for (const [suite, name] of [
+    ["B3", "Policy ablations"],
+    ["B4", "Generalisation"],
+    ["B5", "Robustness"],
+    ["B7", "Fairness"],
+  ]) {
+    if (!publication.summary.some((row) => row.suite === suite)) continue;
+    const label = page.locator("summary").filter({ hasText: new RegExp(`^${name}$`) });
+    const panel = page.locator("details").filter({ has: label });
+    await label.click();
+    await expect(panel.getByRole("table").first()).toBeVisible();
+    if (suite === "B3")
+      await expect(panel.getByRole("img", { name: /across policy variants/ })).toBeVisible();
+    if (suite === "B4") {
+      await expect(panel.getByRole("img", { name: /over calibrated demand loads/ })).toBeVisible();
+      await expect(
+        panel.getByRole("img", { name: /unseen mixes and the held-out grid/ }),
+      ).toBeVisible();
+    }
+    if (suite === "B5") {
+      await expect(
+        panel.getByRole("img", { name: /same controller on clean sensors/ }),
+      ).toBeVisible();
+      await expect(
+        panel.getByRole("list", { name: "Delay per person compared to the clean run" }).first(),
+      ).toBeVisible();
+    }
+    await label.click();
+  }
 });
 
 const engines = process.env.CHOWK_BROWSER_MATRIX === "1" ? [chromium, firefox, webkit] : [chromium];
@@ -26,7 +56,7 @@ const engines = process.env.CHOWK_BROWSER_MATRIX === "1" ? [chromium, firefox, w
 for (const engine of engines) {
   test(`${engine.name()} reproduces the published raw results`, async ({ baseURL }) => {
     test.skip(
-      !hasPublication || process.env.CHOWK_VERIFY_REPRO !== "1",
+      !publication || process.env.CHOWK_VERIFY_REPRO !== "1",
       "Requires the published benchmark and CHOWK_VERIFY_REPRO=1",
     );
     test.setTimeout(120_000);
