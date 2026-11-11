@@ -1,4 +1,4 @@
-# Final Concept — GREENWAVE (working title)
+# Final Concept — CHOWK
 
 > Locked in on 12 Nov 2026. The detailed, authoritative specification is in [`plan/`](../plan/00-vision.md) and the task list in [`ROADMAP.md`](../ROADMAP.md). Where this summary and `plan/` differ, `plan/` wins.
 
@@ -14,9 +14,9 @@ Adaptive signal research assumes cars queue in lanes. Indian traffic does not: t
 
 This insight is not ours. Nandakumar, Banerjee and Vanajakshi ([arXiv 2509.21745](https://arxiv.org/abs/2509.21745), 2025) trained PPO signal control on a laneless heterogeneous intersection in SUMO and found a much larger gain over Webster there than on lane-based traffic. C-DAC's CoSiCoSt, designed for lane-free traffic, runs Bengaluru's adaptive signals. We cite both and build on them.
 
-**What is ours:** that research lives in papers and desktop simulators. GREENWAVE puts a lane-free simulator and a trained controller in a browser tab, at corridor scale, where anyone can watch it, attack it, and check the result for themselves.
+**What is ours:** that research lives in papers and desktop simulators. CHOWK puts a lane-free simulator and a trained controller in a browser tab, at corridor scale, where anyone can watch it, attack it, and check the result for themselves.
 
-GREENWAVE has three parts:
+CHOWK has three parts:
 
 1. **A lane-free mixed-traffic micro-simulator** written in TypeScript. Vehicles (two-wheelers, auto-rickshaws, cars, buses) have real footprints and move in continuous lateral space, so filtering and width-sharing emerge on their own.
 2. **A learned signal controller.** One shared policy controls every junction in a corridor. It observes occupied road area per approach rather than vehicle counts, and is trained in the same simulator running headless in Node.
@@ -24,7 +24,7 @@ GREENWAVE has three parts:
 
 ## What the judge sees
 
-- **0–10 s, no clicks:** an aerial night view of a corridor, thousands of head- and tail-lights. A vertical wipe splits the screen: the same traffic, same random seed, under fixed timers on one side and GREENWAVE on the other. Red queues on one side, flow on the other. Three large live numbers: delay per vehicle, stops, CO2.
+- **0–10 s, no clicks:** an aerial night view of a corridor, thousands of head- and tail-lights. A vertical wipe splits the screen: the same traffic, same random seed, under fixed timers on one side and CHOWK on the other. Red queues on one side, flow on the other. Three large live numbers: delay per vehicle, stops, CO2.
 - **First interaction:** drag the wipe. Queues dissolve or re-form under it.
 - **Break it:** buttons to inject a surge, block a lane, or dispatch an ambulance. The policy adapts live, and the ambulance gets a green corridor.
 - **See it think:** each approach glows by the pressure the controller perceives, and a signal change shows which approach won and why.
@@ -32,7 +32,7 @@ GREENWAVE has three parts:
 
 ## The number
 
-Mean delay per vehicle on held-out seeds, GREENWAVE versus two baselines, with 95% confidence intervals:
+Mean delay per vehicle on held-out seeds, CHOWK versus two baselines, with 95% confidence intervals:
 
 - Webster fixed-time (what most junctions run)
 - Max-pressure (the strong classical adaptive baseline)
@@ -82,7 +82,7 @@ The technical judge's fuller day-by-day outline is in [judging/judge-2-technical
 ## Open questions
 
 - Team size and who owns simulator, training, and 3D.
-- Final name. "Green wave" is a generic traffic-engineering term; a distinctive name would help.
+- Name: settled as CHOWK (Hindi for a junction). The ideation documents and judge reports still call it GREENWAVE.
 - Which Bengaluru stretch to model the corridor on.
 - Whether multi-junction corridor control in lane-free traffic has been published; the 2025 paper covers a single intersection, and corridor-scale prior work was not searched.
 - Whether to add a second original mechanism to lift originality, if time allows after the core works.

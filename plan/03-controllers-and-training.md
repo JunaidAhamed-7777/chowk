@@ -1,12 +1,12 @@
 # 03 — Controllers and Training
 
-Package `@greenwave/controllers` (runs everywhere) and `@greenwave/train` (Node only).
+Package `@chowk/controllers` (runs everywhere) and `@chowk/train` (Node only).
 
 ## Controller interface
 
 ```ts
 interface Controller {
-  readonly id: string;                       // 'webster' | 'actuated' | 'mp-count' | 'mp-area' | 'greenwave' | 'greenwave-pure'
+  readonly id: string;                       // 'webster' | 'actuated' | 'mp-count' | 'mp-area' | 'chowk' | 'chowk-pure'
   init(network: Network, scenario: Scenario): void;
   /** Called every 5 s per junction. Returns the phase to request. */
   act(junctionId: number, sense: JunctionSense, neighbours: NeighbourSense): number;
@@ -58,13 +58,13 @@ Request the phase with the highest pressure; switch only if it beats the current
 
 ### 4. Max-pressure, area — `mp-area`
 
-The same, with occupied road area in place of vehicle counts on both sides. This is the lane-free adaptation and the fairest strong baseline; **GREENWAVE must be judged against this one first.**
+The same, with occupied road area in place of vehicle counts on both sides. This is the lane-free adaptation and the fairest strong baseline; **CHOWK must be judged against this one first.**
 
 ### Emergency variants
 
-For the ambulance tests, each baseline also runs with a rule-based pre-emption: if an approach reports `emergency`, serve it. Reported as `mp-area+preempt` and so on, so GREENWAVE's learned behaviour is compared with the standard engineering answer, not with baselines that ignore the ambulance.
+For the ambulance tests, each baseline also runs with a rule-based pre-emption: if an approach reports `emergency`, serve it. Reported as `mp-area+preempt` and so on, so CHOWK's learned behaviour is compared with the standard engineering answer, not with baselines that ignore the ambulance.
 
-## GREENWAVE — the learned controller
+## CHOWK — the learned controller
 
 ### Design: a residual on area max-pressure
 
@@ -74,7 +74,7 @@ action   = argmax over valid phases of score(p)
 ```
 
 - `prior(p)` is the area max-pressure of phase `p`, scaled to roughly unit range.
-- `net_θ` is a small neural network. Its **final layer is initialised to zero**, so at the start of training GREENWAVE behaves exactly like `mp-area`.
+- `net_θ` is a small neural network. Its **final layer is initialised to zero**, so at the start of training CHOWK behaves exactly like `mp-area`.
 - Training then moves it away from the baseline only where that reduces delay.
 
 Why: plain reinforcement learning on signal control often fails to beat max-pressure in the time available. A residual starts at the baseline, so the risk is removed, and the learned part is cleanly separable for explanation ("the classical rule said North; the network overrode it because a bus is waiting on East").
@@ -171,7 +171,7 @@ Enforced in code, not by convention:
 | Validation | 500,000 – 500,019 | Choosing the checkpoint, tuning baseline hysteresis and any hyperparameter |
 | Test (held-out) | 1,000,000 – 1,000,019 (and onward if more are needed) | The published benchmark only |
 
-`@greenwave/train` refuses to run on any seed outside the training and validation ranges. The benchmark CLI is the only code that touches test seeds. **Nothing is ever tuned on test seeds.** If a result on test seeds is disappointing, it is reported as is.
+`@chowk/train` refuses to run on any seed outside the training and validation ranges. The benchmark CLI is the only code that touches test seeds. **Nothing is ever tuned on test seeds.** If a result on test seeds is disappointing, it is reported as is.
 
 ### Compute budget
 
@@ -182,7 +182,7 @@ Target simulator speed is at least 100x real time per core. One candidate evalua
 - `runs/<run-id>/log.jsonl`: per generation, mean and best fitness, validation fitness every 10 generations, σ, wall time.
 - `runs/<run-id>/checkpoints/gen-XXXX.json`: weights (base64 float32), `β`, config hash, git commit, generation, validation fitness.
 - The final model is the checkpoint with the **best validation fitness**, not the last one.
-- Export to the web app: `apps/web/public/policies/greenwave.json` plus the "watch it learn" checkpoints (generation 0, about 5, 20, 60 and final) and `training-curve.json`.
+- Export to the web app: `apps/web/public/policies/chowk.json` plus the "watch it learn" checkpoints (generation 0, about 5, 20, 60 and final) and `training-curve.json`.
 
 ### Run plan
 
@@ -194,7 +194,7 @@ Target simulator speed is at least 100x real time per core. One candidate evalua
 
 ### Failure handling
 
-- If after the main run validation fitness is not below 1.0, GREENWAVE has not improved on `mp-area`. Ship the best checkpoint anyway, report the true number, and shift the pitch to the simulator, the lane-free finding (area versus counts), the live demo and the reproducible benchmark. Do not hide or soften the result.
+- If after the main run validation fitness is not below 1.0, CHOWK has not improved on `mp-area`. Ship the best checkpoint anyway, report the true number, and shift the pitch to the simulator, the lane-free finding (area versus counts), the live demo and the reproducible benchmark. Do not hide or soften the result.
 - If training is unstable, lower σ and the learning rate and shorten episodes before changing anything structural.
 
 ## Ablations (trained variants)
@@ -203,10 +203,10 @@ Each is a separate, shorter training run, reported in `04-benchmark.md`. Priorit
 
 | Variant | Change | Shows | Priority |
 |---|---|---|---|
-| `greenwave-vehicle` | Objective is vehicle-delay, not person-delay | What weighting by people buys buses and total person-delay | P1 |
-| `greenwave-count` | Observations and prior use vehicle counts instead of area | Whether area perception matters in mixed traffic | P1 |
-| `greenwave-pure` | No prior (`β = 0`), random initialisation | What the residual design buys | P1 |
-| `greenwave-solo` | No neighbour features | Whether corridor coordination is learned | P2 |
+| `chowk-vehicle` | Objective is vehicle-delay, not person-delay | What weighting by people buys buses and total person-delay | P1 |
+| `chowk-count` | Observations and prior use vehicle counts instead of area | Whether area perception matters in mixed traffic | P1 |
+| `chowk-pure` | No prior (`β = 0`), random initialisation | What the residual design buys | P1 |
+| `chowk-solo` | No neighbour features | Whether corridor coordination is learned | P2 |
 
 ## Explanation, for the Decision overlay
 

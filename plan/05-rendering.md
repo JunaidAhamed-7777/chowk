@@ -25,7 +25,7 @@ The "Spectacle" pillar. The 3D scene is the product: every pixel either shows si
 | `sig-green` | Signal green, "better" | `#2BE38B` |
 | `sig-amber` | Signal amber | `#FFB020` |
 | `sig-red` | Signal red, "worse" | `#FF4D4D` |
-| `accent` | GREENWAVE brand, wipe line, highlights | `#3DF2B4` |
+| `accent` | CHOWK brand, wipe line, highlights | `#3DF2B4` |
 | `ui-text` | Primary text | `#E8EDF5` |
 | `ui-dim` | Secondary text | `#8A94A6` |
 

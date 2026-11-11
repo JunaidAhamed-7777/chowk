@@ -37,7 +37,7 @@ No backend. No database. No API keys. No analytics that need consent.
 │     ├─ index.html
 │     ├─ public/
 │     │  ├─ models/             built .glb files
-│     │  ├─ policies/           greenwave.json, checkpoints, training-curve.json
+│     │  ├─ policies/           chowk.json, checkpoints, training-curve.json
 │     │  └─ poster.webp
 │     └─ src/
 │        ├─ main.tsx, App.tsx, routes/
@@ -51,14 +51,14 @@ No backend. No database. No API keys. No analytics that need consent.
 │        ├─ tour/               timeline JSON and player
 │        └─ fallback2d/         canvas renderer
 ├─ packages/
-│  ├─ sim/                      @greenwave/sim: the simulator (zero dependencies)
+│  ├─ sim/                      @chowk/sim: the simulator (zero dependencies)
 │  │  ├─ src/                   network, vehicles, dynamics, signals, demand, events, metrics, sense, hash, rng
 │  │  ├─ networks/              corridor.json, grid-holdout.json
 │  │  └─ test/
-│  ├─ controllers/              @greenwave/controllers: baselines, greenwave policy, driver, explain
-│  ├─ scenarios/                @greenwave/scenarios: scenario definitions, calibration loader
-│  ├─ bench/                    @greenwave/bench: CLI, statistics, report generation
-│  └─ train/                    @greenwave/train: ES, worker pool, checkpoints, export
+│  ├─ controllers/              @chowk/controllers: baselines, chowk policy, driver, explain
+│  ├─ scenarios/                @chowk/scenarios: scenario definitions, calibration loader
+│  ├─ bench/                    @chowk/bench: CLI, statistics, report generation
+│  └─ train/                    @chowk/train: ES, worker pool, checkpoints, export
 ├─ assets/
 │  ├─ blender/                  Python scripts
 │  └─ CREDITS.md
@@ -76,8 +76,8 @@ sim  ←  scenarios  ←  controllers  ←  bench
                             train       web
 ```
 
-- `@greenwave/sim` imports nothing.
-- `@greenwave/controllers` imports `sim` and `scenarios` only. It must run in Node and in browser workers: no Node built-ins, no DOM.
+- `@chowk/sim` imports nothing.
+- `@chowk/controllers` imports `sim` and `scenarios` only. It must run in Node and in browser workers: no Node built-ins, no DOM.
 - `bench` core (run one episode, compute statistics) is environment-neutral and is imported by the web app's bench worker. Only its CLI entry uses Node built-ins.
 - `train` is Node-only.
 - `web` imports `sim`, `scenarios`, `controllers` and the neutral part of `bench`.
@@ -161,7 +161,7 @@ A small Vite plugin and a prebuild script:
 
 ```ts
 interface PolicyWeights {
-  format: 'greenwave-mlp-v1';
+  format: 'chowk-mlp-v1';
   layers: Array<{ in: number; out: number; w: string; b: string }>; // base64 Float32, row-major
   beta: number;
   obsVersion: number;

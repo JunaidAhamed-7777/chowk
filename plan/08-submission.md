@@ -10,9 +10,9 @@ Deadline: **15 Nov 2026, 23:55 IST**. Submit by **20:00 IST** to leave room for 
 
 ### Title
 
-**GREENWAVE — traffic signals that learned lane-free Indian traffic, live in your browser**
+**CHOWK — traffic signals that learned lane-free Indian traffic, live in your browser**
 
-The name is a working title; "green wave" is a generic traffic term. If the user picks another name, change it everywhere in one commit.
+"Chowk" is the Hindi word for a junction or crossroads. The project was called GREENWAVE during ideation; the documents under `docs/` other than `03-final-concept.md` still use that name.
 
 ### Description (draft)
 
@@ -20,7 +20,7 @@ The name is a working title; "green wave" is a generic traffic term. If the user
 >
 > Most adaptive signal research assumes cars queue in lanes. Indian traffic does not. Two-wheelers filter to the front, autos and buses share road width, and a queue is an area of road, not a count of cars.
 >
-> GREENWAVE is a signal controller trained for that reality, and a way to see and test it yourself:
+> CHOWK is a signal controller trained for that reality, and a way to see and test it yourself:
 >
 > - **A lane-free traffic simulator** written from scratch in TypeScript: five vehicle classes moving in continuous road width, deterministic to the bit, running in your browser.
 > - **A learned controller** that perceives occupied road area and people rather than vehicle counts, and coordinates a five-junction corridor. It is built as a learned correction on top of max-pressure control, the strongest classical method.
@@ -97,7 +97,7 @@ Screen capture from the real app at High quality, 1080p or better, 60 fps, with 
 |---|---|---|
 | 0–5 | Black, then the city fades in, aerial, traffic streaming | "Traffic signals assume lanes." |
 | 5–12 | Street-level: two-wheelers filtering through a queue | "Indian traffic doesn't have them." |
-| 12–25 | Aerial; wipe sweeps across; left jams, right flows; numbers diverge | "Same traffic. Left: fixed timers. Right: GREENWAVE." |
+| 12–25 | Aerial; wipe sweeps across; left jams, right flows; numbers diverge | "Same traffic. Left: fixed timers. Right: CHOWK." |
 | 25–37 | Pressure and Decision overlays at a junction | "It sees road area and people, not car counts." |
 | 37–50 | Ambulance cam, greens opening | "An ambulance gets a green corridor." |
 | 50–60 | Surge and blocked lane fired; right side recovers | "Break it. It adapts, live, in your browser." |

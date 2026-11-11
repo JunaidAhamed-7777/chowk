@@ -4,7 +4,9 @@ Instructions for AI agents working in this repository.
 
 ## What this is
 
-**GREENWAVE**: a reinforcement-learned traffic-signal controller for lane-free Indian mixed traffic, delivered as a live 3D city in the browser with a reproducible benchmark. It is an entry for the INNOVEX 2026 hackathon (problem statement PS04, Smart Cities & Sustainability). Deadline: **15 Nov 2026, 23:55 IST**; submit by 20:00 IST.
+**CHOWK**: a reinforcement-learned traffic-signal controller for lane-free Indian mixed traffic, delivered as a live 3D city in the browser with a reproducible benchmark. It is an entry for the INNOVEX 2026 hackathon (problem statement PS04, Smart Cities & Sustainability). Deadline: **15 Nov 2026, 23:55 IST**; submit by 20:00 IST.
+
+The name is Hindi for a junction or crossroads. Ideation documents under `docs/` (other than `03-final-concept.md`) use the earlier working title GREENWAVE; treat the two as the same project.
 
 The goal is a top-three finish. The strategy is to be far ahead of other entries on visual quality, liveness, proof and honesty. Read `plan/00-vision.md` before doing anything.
 
@@ -71,7 +73,7 @@ These are not style preferences. Breaking one can lose the entry.
 
 ### Integrity of the simulator
 
-8. **One simulator.** Training, benchmark and demo import `@greenwave/sim`. Never fork it, port it or write a "fast version".
+8. **One simulator.** Training, benchmark and demo import `@chowk/sim`. Never fork it, port it or write a "fast version".
 9. **Determinism.** In `packages/sim` and in policy inference: no `Math.random`, `Date`, `performance.now`, `Math.pow`, `sin`, `cos`, `exp`, `tanh`, and no iteration whose order depends on insertion. Use the package PRNG. Fixed loop orders.
 10. **No overlaps.** Vehicles never intersect. Fix the dynamics; never hide it in rendering.
 11. **Metrics stay uncensored.** Delay accrues for vehicles in the network and in the entry backlog.

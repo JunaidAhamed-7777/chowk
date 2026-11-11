@@ -38,7 +38,7 @@ A task is done when:
 |---|---|
 | Webster | Cycle and splits match a hand calculation |
 | Max-pressure | Picks the expected phase on constructed states |
-| GREENWAVE at generation 0 | With a zero final layer, actions equal `mp-area` on thousands of random states |
+| CHOWK at generation 0 | With a zero final layer, actions equal `mp-area` on thousands of random states |
 | Inference | Fixed input and weights give a stored output exactly |
 | Phase mask and starvation guard | Honoured by every adaptive controller |
 
@@ -130,7 +130,7 @@ When time runs short, drop from the top of this list first:
 4. P2 props and viaduct
 5. Free custom-scenario sliders
 6. Tilt-shift, headlight decals
-7. `greenwave-solo` ablation, then other ablations
+7. `chowk-solo` ablation, then other ablations
 8. Fairness and robustness suites
 9. "Watch it learn" slider
 10. Ride-along camera

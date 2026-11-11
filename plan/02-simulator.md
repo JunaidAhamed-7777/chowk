@@ -1,6 +1,6 @@
 # 02 — The Simulator
 
-A deterministic, lane-free, mixed-traffic micro-simulator in TypeScript. One package, `@greenwave/sim`, with zero runtime dependencies, used unchanged by training (Node), the benchmark (Node and browser workers) and the live demo (browser workers).
+A deterministic, lane-free, mixed-traffic micro-simulator in TypeScript. One package, `@chowk/sim`, with zero runtime dependencies, used unchanged by training (Node), the benchmark (Node and browser workers) and the live demo (browser workers).
 
 Numbers marked **(default)** are starting values chosen to be plausible. They are not field-calibrated. The implementing agent should look for a citable source (for example the Indian Highway Capacity Manual, Indo-HCM, CSIR-CRRI 2017) and either confirm, replace, or leave the value labelled as an assumption in the Method page. Never present a default as measured.
 

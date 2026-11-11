@@ -1,4 +1,4 @@
-# GREENWAVE — Roadmap
+# CHOWK — Roadmap
 
 Ordered work derived from `plan/`. Specs live in `plan/`; this file says what to build, in what order, and how to tell it is done.
 
@@ -81,7 +81,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☐ | 2.5 | Actuated | `03` Baselines | 2.1 | Extends and skips as specified |
 | ☐ | 2.6 | Max-pressure, counts and area; hysteresis tuned on validation seeds | `03` Baselines | 2.1 | Unit tests pass; both beat Webster at high load on validation seeds, or the reason they do not is understood |
 | ☐ | 2.7 | Emergency pre-emption variants | `03` Emergency variants | 2.6 | Ambulance is served on constructed states |
-| ☐ | 2.8 | GREENWAVE policy: observation builder, ReLU MLP inference, residual scoring, weights format | `03` GREENWAVE | 2.6 | Generation-0 equivalence with `mp-area` test passes; inference golden test passes |
+| ☐ | 2.8 | CHOWK policy: observation builder, ReLU MLP inference, residual scoring, weights format | `03` CHOWK | 2.6 | Generation-0 equivalence with `mp-area` test passes; inference golden test passes |
 | ☐ | 2.9 | `explain()` with occlusion reasons | `03` Explanation | 2.8 | Returns prior, learned, reason on live states |
 
 ## Phase 3 — Training (Track A, 13–15 Nov)
@@ -201,7 +201,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 If everything goes wrong, this is the smallest thing worth submitting. It must exist by **G3**:
 
 - Simulator with mixed traffic on the corridor
-- Webster, max-pressure (area) and GREENWAVE controllers
+- Webster, max-pressure (area) and CHOWK controllers
 - Night scene with instanced vehicles, lights, bloom
 - Split-screen wipe, metric cards, three events, pressure overlay
 - Autoplay tour

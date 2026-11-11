@@ -4,7 +4,7 @@ Read this first. Every other file in `plan/` serves what is written here.
 
 ## Product in one sentence
 
-GREENWAVE is a traffic-signal controller that learned to manage lane-free Indian traffic, shipped as a live, playable 3D night city in a browser tab, with a benchmark any visitor can re-run themselves.
+CHOWK is a traffic-signal controller that learned to manage lane-free Indian traffic, shipped as a live, playable 3D night city in a browser tab, with a benchmark any visitor can re-run themselves.
 
 ## Context
 
@@ -59,7 +59,7 @@ This is the script the product is built to deliver. Timings are targets.
 | Time | What the judge experiences | Criterion served |
 |---|---|---|
 | 0–3 s | Page paints. Night city fades in, traffic already flowing. No spinner longer than 2 s. | Spectacle |
-| 3–15 s | Autoplay tour. Camera glides down a corridor; a caption says what this is. A vertical wipe sweeps across: left half jams in red under fixed timers, right half flows under GREENWAVE. Three big live numbers diverge. | Spectacle, impact |
+| 3–15 s | Autoplay tour. Camera glides down a corridor; a caption says what this is. A vertical wipe sweeps across: left half jams in red under fixed timers, right half flows under CHOWK. Three big live numbers diverge. | Spectacle, impact |
 | 15–40 s | Tour continues: an ambulance gets a green corridor; a surge hits and the controller absorbs it; the perception overlay shows what the controller sees. | Play, insight, innovation |
 | 40–90 s | Judge takes over. Drags the wipe. Presses "Block a lane". Changes the controller. Rides along on a two-wheeler. | Play |
 | 90–180 s | Opens Results. Sees the benchmark table with confidence intervals and ablations. Presses "Run it yourself"; their browser reproduces a row in under a minute and it matches. | Proof, technical implementation |

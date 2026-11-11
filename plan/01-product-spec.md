@@ -21,7 +21,7 @@ Top bar: logo and name on the left; view links; a GitHub link; a quality selecto
 
 ```
 +--------------------------------------------------------------+
-| GREENWAVE   Live  Results  Method  Limits        GitHub  ⚙   |
+| CHOWK   Live  Results  Method  Limits        GitHub  ⚙   |
 +--------------------------------------------------------------+
 |                                                              |
 |   [ left controller label ]      |     [ right controller ]  |
@@ -42,7 +42,7 @@ On narrow screens the metric cards collapse to a single swipeable row and the co
 
 - Two simulations run side by side from the **same seed and the same demand**, one per controller. Vehicles are spawned identically; only signal decisions differ.
 - A draggable vertical wipe divides the screen. Left of the wipe shows simulation A, right shows simulation B, in the same camera.
-- Each side has a label chip naming its controller, with a dropdown to change it. Defaults: A = Fixed-time (Webster), B = GREENWAVE.
+- Each side has a label chip naming its controller, with a dropdown to change it. Defaults: A = Fixed-time (Webster), B = CHOWK.
 - Double-click the wipe to snap it to centre. Keyboard: `[` and `]` move it.
 - A "single view" toggle hides the wipe and shows only B.
 
@@ -70,8 +70,8 @@ Selectable on either side:
 2. Actuated (gap-out)
 3. Max-pressure (vehicle counts)
 4. Max-pressure (area)
-5. GREENWAVE (residual, the main model)
-6. GREENWAVE-pure (no max-pressure prior) — P1, shown if trained
+5. CHOWK (residual, the main model)
+6. CHOWK-pure (no max-pressure prior) — P1, shown if trained
 
 ### L4. Scenarios — P0
 
@@ -156,7 +156,7 @@ Muted by default. A low city ambience and soft tones on signal changes; a siren 
 
 ### R1. Headline — P0
 
-One sentence generated from the committed benchmark output, of the form: "On N held-out seeds, GREENWAVE changes delay per person by X% versus max-pressure and Y% versus Webster fixed-time (95% CI ...). Simulation result." The text is assembled from the data; if the result is unfavourable, the sentence says so.
+One sentence generated from the committed benchmark output, of the form: "On N held-out seeds, CHOWK changes delay per person by X% versus max-pressure and Y% versus Webster fixed-time (95% CI ...). Simulation result." The text is assembled from the data; if the result is unfavourable, the sentence says so.
 
 ### R2. Main table — P0
 
@@ -165,7 +165,7 @@ Rows: controllers. Columns: the metrics from L2, each as mean and 95% confidence
 ### R3. Charts — P0 for the first two
 
 - Delay per person by controller, with interval bars, one group per scenario.
-- Lane-disciplined versus mixed traffic: the gap between GREENWAVE and each baseline in both, side by side.
+- Lane-disciplined versus mixed traffic: the gap between CHOWK and each baseline in both, side by side.
 - Ablations: area versus count observation; person versus vehicle objective; residual versus pure — P1.
 - Generalisation: unseen demand levels, sensor noise, held-out network — P1.
 - Training curve — P1.
@@ -216,6 +216,6 @@ A plain list. At minimum:
 
 ## Copy rules
 
-- Name things by what they are: "Fixed-time (Webster)", "Max-pressure", "GREENWAVE".
+- Name things by what they are: "Fixed-time (Webster)", "Max-pressure", "CHOWK".
 - Never write "AI-powered", "revolutionary" or "real-time" as decoration.
 - Any sentence with a number ends with or sits beside the words "simulation result" or is inside a view that states it once prominently.
