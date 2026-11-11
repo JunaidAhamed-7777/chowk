@@ -145,12 +145,10 @@
 
 @media (max-width: 620px) {
   .guide {
-    top: auto;
-    right: var(--gutter);
-    bottom: 300px;
-    left: var(--gutter);
-    width: auto;
-    padding: 13px 14px;
+    padding: 14px 15px;
+  }
+  .guide p {
+    min-height: 0;
   }
   .guide h2 {
     font-size: 18px;

@@ -658,16 +658,6 @@ export default function LiveView({
               onClose={() => setInspecting(false)}
             />
           )}
-          {guide !== null && ready && (
-            <Onboarding
-              step={guide}
-              left={labelOf(controllers[0].id)}
-              right={labelOf(controllers[1].id)}
-              onStep={showGuide}
-              onClose={closeGuide}
-              onResults={openResults}
-            />
-          )}
           {notice && (
             <div className="live-notice" role="status">
               {notice}
@@ -849,6 +839,17 @@ export default function LiveView({
           </div>
         </div>
       </section>
+
+      {guide !== null && ready && (
+        <Onboarding
+          step={guide}
+          left={labelOf(controllers[0].id)}
+          right={labelOf(controllers[1].id)}
+          onStep={showGuide}
+          onClose={closeGuide}
+          onResults={openResults}
+        />
+      )}
 
       <footer className="live-footer">
         <p>

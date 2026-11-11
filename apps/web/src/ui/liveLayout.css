@@ -190,11 +190,29 @@
     max-width: 104px;
     font-size: 12px;
   }
+  .live-intro {
+    right: var(--gutter);
+    max-width: none;
+  }
+  .live-intro .section-label {
+    display: none;
+  }
   .instrument-bar {
-    top: 22px;
+    top: 60px;
+    right: auto;
+    left: var(--gutter);
+    height: 30px;
   }
   .checkpoint-control {
     top: 196px;
+  }
+  .tour-caption,
+  .live-notice,
+  .share-notice {
+    bottom: 372px;
+  }
+  .tour-caption-text {
+    border-radius: 12px;
   }
   .simulation-controls {
     bottom: 177px;
@@ -205,7 +223,15 @@
     border-top: 1px solid #ffffff1a;
     border-radius: 12px;
   }
+  /* On a phone the guide is a sheet over the controls; it would not fit beside them. */
   .guide {
+    position: fixed;
+    z-index: 30;
     top: auto;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+    background: #0a0f1a;
   }
 }
