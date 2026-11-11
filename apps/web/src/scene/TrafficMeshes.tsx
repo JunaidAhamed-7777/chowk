@@ -8,6 +8,7 @@ import {
   Color,
   DynamicDrawUsage,
   type InstancedMesh,
+  MeshBasicMaterial,
   MeshStandardMaterial,
   Object3D,
   type PerspectiveCamera,
@@ -15,11 +16,12 @@ import {
   ShaderMaterial,
 } from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import { fadeMs, type SimHost } from "../sim/SimHost";
+import { fadeMs, type SnapshotStream } from "../sim/SimHost";
 import { district } from "./corridorGeometry";
 import { createGlow, type Glow } from "./glow";
 import type { PlaybackSpeed } from "./sceneSettings";
 import { useVehicleGeometries } from "./vehicleGeometries";
+import { clipMaterial, type WipeClip } from "./wipeClip";
 
 const style = [
   { height: 1.02, roof: 0.28, color: "#576676" },
@@ -247,12 +249,18 @@ export function TrafficMeshes({
   paused,
   speed,
   lowDetail,
+  beamDetail,
+  visible,
+  clip,
 }: {
-  host: RefObject<SimHost | null>;
+  host: RefObject<SnapshotStream | null>;
   capacity: number;
   paused: boolean;
   speed: PlaybackSpeed;
   lowDetail: boolean;
+  beamDetail: boolean;
+  visible: boolean;
+  clip: WipeClip;
 }) {
   const bodies = useRef<(InstancedMesh | null)[]>([]);
   const heads = useRef<InstancedMesh>(null);
@@ -262,10 +270,33 @@ export function TrafficMeshes({
   const [counts] = useState(() => new Uint16Array(VEHICLE_CLASSES.length));
   const [fallback] = useState(makeFallbackGeometries);
   const beams = useRef<InstancedMesh>(null);
-  const [finishes] = useState(() => VEHICLE_CLASSES.map((_, cls) => makeVehicleMaterial(cls)));
-  const [beam] = useState(makeBeam);
-  const [vehicleGlow] = useState(() => createGlow(capacity * 2, 1.5, 2.8));
-  const [signalHalo] = useState(() => createGlow(district.signalMounts.length, 3.4, 4.5));
+  const [finishes] = useState(() =>
+    VEHICLE_CLASSES.map((_, cls) => {
+      const finish = makeVehicleMaterial(cls);
+      clipMaterial(finish.material, clip);
+      return finish;
+    }),
+  );
+  const [beam] = useState(() => {
+    const beam = makeBeam();
+    clipMaterial(beam.material, clip);
+    return beam;
+  });
+  const [vehicleGlow] = useState(() => {
+    const glow = createGlow(capacity * 2, 1.5, 2.8);
+    clipMaterial(glow.points.material, clip);
+    return glow;
+  });
+  const [signalHalo] = useState(() => {
+    const glow = createGlow(district.signalMounts.length, 3.4, 4.5);
+    clipMaterial(glow.points.material, clip);
+    return glow;
+  });
+  const [lampMaterials] = useState(() => [
+    clipMaterial(new MeshBasicMaterial({ color: headlightColor, toneMapped: false }), clip),
+    clipMaterial(new MeshBasicMaterial({ toneMapped: false }), clip),
+    clipMaterial(new MeshBasicMaterial({ toneMapped: false }), clip),
+  ]);
   const models = useVehicleGeometries();
   const lastSignalTick = useRef(-1);
   const lastSettledTick = useRef(-1);
@@ -279,8 +310,9 @@ export function TrafficMeshes({
       beam.material.dispose();
       vehicleGlow.dispose();
       signalHalo.dispose();
+      for (const material of lampMaterials) material.dispose();
     },
-    [fallback, beam, finishes, vehicleGlow, signalHalo],
+    [fallback, beam, finishes, vehicleGlow, signalHalo, lampMaterials],
   );
 
   useLayoutEffect(() => {
@@ -318,12 +350,18 @@ export function TrafficMeshes({
     signals.computeBoundingSphere();
   }, [capacity, matrix, signalHalo]);
 
+  useLayoutEffect(() => {
+    if (beamDetail && !lowDetail && beams.current) prepareUpload(beams.current.instanceMatrix);
+    lastSettledTick.current = -1;
+  }, [beamDetail, lowDetail]);
+
   useFrame((state) => {
+    if (!visible) return;
     const currentHost = host.current;
     const view = state.camera as PerspectiveCamera;
     const pixelsPerUnit =
       (state.size.height * state.viewport.dpr) / (2 * Math.tan((view.fov * Math.PI) / 360));
-    const beamMesh = lowDetail ? null : beams.current;
+    const beamMesh = beams.current;
     const head = heads.current;
     const tail = tails.current;
     const signals = signalLamps.current;
@@ -447,7 +485,7 @@ export function TrafficMeshes({
   });
 
   return (
-    <>
+    <group visible={visible}>
       {VEHICLE_CLASSES.map(({ id }, cls) => (
         <instancedMesh
           key={id}
@@ -464,26 +502,29 @@ export function TrafficMeshes({
       <instancedMesh
         ref={heads}
         args={[undefined, undefined, capacity * 2]}
+        material={lampMaterials[0]}
         count={0}
         frustumCulled={false}
       >
         <boxGeometry />
-        <meshBasicMaterial color={headlightColor} toneMapped={false} />
       </instancedMesh>
       <instancedMesh
         ref={tails}
         args={[undefined, undefined, capacity * 2]}
+        material={lampMaterials[1]}
         count={0}
         frustumCulled={false}
       >
         <boxGeometry />
-        <meshBasicMaterial toneMapped={false} />
       </instancedMesh>
-      <instancedMesh ref={signalLamps} args={[undefined, undefined, lampsCount]}>
+      <instancedMesh
+        ref={signalLamps}
+        args={[undefined, undefined, lampsCount]}
+        material={lampMaterials[2]}
+      >
         <boxGeometry />
-        <meshBasicMaterial toneMapped={false} />
       </instancedMesh>
-      {!lowDetail && (
+      {beamDetail && (
         <instancedMesh
           ref={beams}
           args={[beam.geometry, beam.material, capacity]}
@@ -494,6 +535,6 @@ export function TrafficMeshes({
       )}
       <primitive object={vehicleGlow.points} />
       <primitive object={signalHalo.points} />
-    </>
+    </group>
   );
 }

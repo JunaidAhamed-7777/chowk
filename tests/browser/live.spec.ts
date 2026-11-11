@@ -13,7 +13,7 @@ test("renders the night corridor and responds to playback, camera and navigation
   await expect(page.getByRole("heading", { name: "The corridor after dark." })).toBeVisible();
   const pause = page.getByRole("button", { name: "Pause simulation" });
   await expect(pause).toBeEnabled();
-  await expect(page.getByText("Fixed-cycle simulation", { exact: true })).toBeVisible();
+  await expect(page.getByText("Live comparison", { exact: true })).toBeVisible();
   await expect(page.getByText("Simulation result", { exact: true })).toBeVisible();
   const readout = (label: string) =>
     page.locator(".live-readouts div").filter({ hasText: label }).locator("dd");
@@ -24,6 +24,11 @@ test("renders the night corridor and responds to playback, camera and navigation
   await expect(elapsed).not.toHaveText(initialTime ?? "");
   await pause.click();
   await expect(page.getByRole("button", { name: "Play simulation" })).toBeEnabled();
+  const wipe = page.getByRole("slider", { name: "Comparison wipe" });
+  await expect(wipe).toBeVisible();
+  const initialWipe = Number(await wipe.getAttribute("aria-valuenow"));
+  await wipe.press("ArrowRight");
+  expect(Number(await wipe.getAttribute("aria-valuenow"))).toBeGreaterThan(initialWipe);
 
   const scene = page.locator(".scene-stage canvas");
   const screenshot = (await scene.screenshot()).toString("base64");

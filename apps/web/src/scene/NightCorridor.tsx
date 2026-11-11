@@ -1,4 +1,3 @@
-import type { Metrics } from "@chowk/sim";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   BlendFunction,
@@ -12,9 +11,10 @@ import {
   ToneMappingMode,
   VignetteEffect,
 } from "postprocessing";
-import { useEffect, useRef, useState } from "react";
+import { type RefObject, useEffect, useRef, useState } from "react";
 import { HalfFloatType, NoToneMapping, PerspectiveCamera, Vector3 } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import type { SimHost } from "../sim/SimHost";
 import { junctions } from "./corridorGeometry";
 import { SimulationTraffic } from "./SimulationTraffic";
 import { StaticDistrict } from "./StaticDistrict";
@@ -26,8 +26,9 @@ interface SceneProps {
   automatic: boolean;
   camera: CameraSelection;
   onQuality: (quality: Quality) => void;
-  onReady: (ready: boolean) => void;
-  onMetrics: (metrics: Metrics) => void;
+  host: RefObject<SimHost | null>;
+  wipe: number;
+  singleView: boolean;
   ready: boolean;
   paused: boolean;
   quality: Quality;
@@ -207,8 +208,9 @@ export function NightCorridor({
   automatic,
   camera,
   onQuality,
-  onReady,
-  onMetrics,
+  host,
+  wipe,
+  singleView,
   ready,
   paused,
   quality,
@@ -241,12 +243,12 @@ export function NightCorridor({
       <directionalLight position={[540, 450, -420]} color="#b1ccff" intensity={1.12} />
       <StaticDistrict />
       <SimulationTraffic
-        active={active}
+        host={host}
         paused={paused}
         speed={speed}
-        lowDetail={quality === "low"}
-        onReady={onReady}
-        onMetrics={onMetrics}
+        quality={quality}
+        wipe={wipe}
+        singleView={singleView}
       />
       <CorridorCamera selection={camera} reducedMotion={reducedMotion} />
       <QualityProbe automatic={automatic} ready={ready} quality={quality} onQuality={onQuality} />

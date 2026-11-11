@@ -1,60 +1,66 @@
-import type { Metrics } from "@chowk/sim";
 import { useFrame } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
-import { SimHost } from "../sim/SimHost";
-import type { PlaybackSpeed } from "./sceneSettings";
+import { type RefObject, useRef, useState } from "react";
+import type { SimHost, SnapshotStream } from "../sim/SimHost";
+import type { PlaybackSpeed, Quality } from "./sceneSettings";
 import { qualityPresets } from "./sceneSettings";
 import { TrafficMeshes } from "./TrafficMeshes";
-
-const capacity = qualityPresets.high.vehicleLimit;
+import type { WipeClip } from "./wipeClip";
 
 export function SimulationTraffic({
-  active,
+  host,
   paused,
   speed,
-  lowDetail,
-  onReady,
-  onMetrics,
+  quality,
+  wipe,
+  singleView,
 }: {
-  active: boolean;
+  host: RefObject<SimHost | null>;
   paused: boolean;
   speed: PlaybackSpeed;
-  lowDetail: boolean;
-  onReady: (ready: boolean) => void;
-  onMetrics: (metrics: Metrics) => void;
+  quality: Quality;
+  wipe: number;
+  singleView: boolean;
 }) {
-  const host = useRef<SimHost>(null);
-  const [failure, setFailure] = useState<string>();
-
-  useEffect(() => {
-    const source = new SimHost(
-      capacity,
-      () => onReady(true),
-      onMetrics,
-      (message) => {
-        onReady(false);
-        setFailure(message);
-      },
-    );
-    host.current = source;
-    return () => {
-      host.current = null;
-      source.dispose();
-    };
-  }, [onReady, onMetrics]);
-
-  useFrame((_, delta) => {
-    host.current?.advance(delta, speed, active && !paused && !document.hidden);
+  const left = useRef<SnapshotStream>(null);
+  const right = useRef<SnapshotStream>(null);
+  const [clips] = useState<readonly [WipeClip, WipeClip]>(() => {
+    const position = { value: 0 };
+    return [
+      { position, side: 0 },
+      { position, side: 1 },
+    ];
+  });
+  useFrame((state) => {
+    clips[0].position.value = singleView
+      ? 0
+      : Math.round((state.size.width * state.viewport.dpr * wipe) / 100);
+    left.current = host.current?.streams[0] ?? null;
+    right.current = host.current?.streams[1] ?? null;
   }, -2);
 
-  if (failure) throw new Error(failure);
+  const capacity = qualityPresets.high.vehicleLimit;
   return (
-    <TrafficMeshes
-      host={host}
-      capacity={capacity}
-      paused={paused}
-      speed={speed}
-      lowDetail={lowDetail}
-    />
+    <>
+      <TrafficMeshes
+        host={left}
+        capacity={capacity}
+        paused={paused}
+        speed={speed}
+        lowDetail={quality === "low"}
+        beamDetail={quality === "high"}
+        visible={!singleView && wipe > 0}
+        clip={clips[0]}
+      />
+      <TrafficMeshes
+        host={right}
+        capacity={capacity}
+        paused={paused}
+        speed={speed}
+        lowDetail={quality === "low"}
+        beamDetail={quality === "high"}
+        visible={singleView || wipe < 100}
+        clip={clips[1]}
+      />
+    </>
   );
 }

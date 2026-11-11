@@ -110,8 +110,8 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 4.5 | Headlights, tail-lights, brake response; bloom tuned | `05` Vehicles, Post-processing | 4.4 | Lights bloom; signal colours stay distinct |
 | ☑ | 4.6 | City: seeded building placement, window shader, lamps with fake light pools, skyline | `05` Buildings and windows, Lighting | 4.3 | The aerial view reads as a city at night |
 | ☑ | 4.7 | Signals: poles and state-driven lamps | `05` | 4.3 | Lamps follow signal state |
-| ☐ | 4.8 | Simulation workers, clock and lockstep, transferable snapshots, replacing the mock | `07` Runtime architecture | 1.13, 4.4 | Real traffic renders; two workers stay at the same tick |
-| ☐ | 4.9 | Split-screen wipe by fragment discard; draggable handle; label chips | `05` Split-screen wipe, `01` L1 | 4.8 | Two controllers visible side by side on the same seed |
+| ☑ | 4.8 | Simulation workers, clock and lockstep, transferable snapshots, replacing the mock | `07` Runtime architecture | 1.13, 4.4 | Real traffic renders; two workers stay at the same tick |
+| ☑ | 4.9 | Split-screen wipe by fragment discard; draggable handle; label chips | `05` Split-screen wipe, `01` L1 | 4.8 | Two controllers visible side by side on the same seed |
 | ☐ | 4.10 | Quality tiers and automatic selection | `05` Quality tiers | 4.5 | Tier changes at runtime; probe picks sensibly |
 | ☐ | 4.11 | Loading: poster, parallel load, warm-up fast-forward, cross-fade | `05` Loading | 4.8 | Live scene within budget |
 | ☐ | 4.12 | Light trails (P1) | `05` Vehicles | 4.5 | Flowing traffic streaks, jams read as dots, aerial only |

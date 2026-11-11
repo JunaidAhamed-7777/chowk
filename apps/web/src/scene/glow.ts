@@ -8,7 +8,7 @@ import {
 } from "three";
 
 export interface Glow {
-  readonly points: Points;
+  readonly points: Points<BufferGeometry, ShaderMaterial>;
   readonly positions: Float32Array;
   readonly colors: Float32Array;
   /** Uploads the first `count` lights and sets the pixels-per-metre factor at unit distance. */

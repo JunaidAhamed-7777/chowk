@@ -1,9 +1,11 @@
-import { DT, type Metrics, SNAPSHOT_STRIDE } from "@chowk/sim";
-import { liveDuration, liveSeed } from "./liveScenario";
-import type { FromSim, FromSimFrame, ToSim } from "./protocol";
+import { DT, type JunctionSense, type Metrics, type Scenario, SNAPSHOT_STRIDE } from "@chowk/sim";
+import { liveDuration } from "./liveScenario";
+import type { ControllerChoice, FromSim, FromSimFrame, ToSim } from "./protocol";
 
 export const fadeMs = 200;
-const maxTick = Math.floor(liveDuration / DT);
+export type SimulationSide = 0 | 1;
+export type ControllerPair = readonly [ControllerChoice, ControllerChoice];
+export type MetricsPair = readonly [Metrics, Metrics];
 
 export interface Snapshot {
   tick: number;
@@ -11,6 +13,7 @@ export interface Snapshot {
   positions: Float32Array<ArrayBuffer>;
   signals: Uint8Array;
   index: Map<number, number>;
+  sense?: JunctionSense[];
 }
 
 export interface Departure {
@@ -24,51 +27,35 @@ export interface Departure {
   flags: number;
 }
 
-export class SimHost {
+export class SnapshotStream {
   previous?: Snapshot;
   current?: Snapshot;
   receivedAt = 0;
   readonly births = new Map<number, number>();
   readonly departures: Departure[] = [];
-  private accumulator = 0;
-  private lastMetricsAt = -Infinity;
-  private inFlight = true;
   private readonly worker = new Worker(new URL("../workers/sim.worker.ts", import.meta.url), {
     type: "module",
   });
 
-  constructor(
-    maxVehicles: number,
-    onReady: () => void,
-    onMetrics: (metrics: Metrics) => void,
-    onError: (message: string) => void,
-  ) {
+  constructor(onFrame: (frame: FromSimFrame) => void, onError: (message: string) => void) {
     this.worker.onmessage = ({ data }: MessageEvent<FromSim>) => {
       if (data.type === "error") {
         onError(data.message);
         return;
       }
-      const first = !this.current;
-      const now = performance.now();
-      this.receive(data, now);
-      if (first) onReady();
-      if (now - this.lastMetricsAt >= 250 || data.tick === maxTick) {
-        this.lastMetricsAt = now;
-        onMetrics(data.metrics);
-      }
+      onFrame(data);
     };
     this.worker.onerror = (event) => {
       event.preventDefault();
       onError(event.message || "The simulation worker stopped.");
     };
-    this.send({ type: "init", seed: liveSeed, maxVehicles });
   }
 
-  private send(message: ToSim) {
+  send(message: ToSim) {
     this.worker.postMessage(message);
   }
 
-  private receive(frame: FromSimFrame, now: number) {
+  publish(frame: FromSimFrame, now: number) {
     const map = this.previous?.index ?? new Map<number, number>();
     if (this.previous) {
       const buffer = this.previous.positions.buffer;
@@ -83,9 +70,9 @@ export class SimHost {
       positions: new Float32Array(frame.vehicles),
       signals: frame.signals,
       index: map,
+      sense: frame.sense,
     };
     this.receivedAt = now;
-    this.inFlight = false;
 
     for (const [id, bornAt] of this.births) {
       if (now - bornAt > fadeMs) this.births.delete(id);
@@ -117,9 +104,114 @@ export class SimHost {
     }
   }
 
+  dispose() {
+    this.worker.terminate();
+  }
+}
+
+interface SimHostOptions {
+  seed: number;
+  maxVehicles: number;
+  scenario?: Scenario;
+  controllers: ControllerPair;
+  onReady: () => void;
+  onMetrics: (metrics: MetricsPair, tick: number) => void;
+  onError: (message: string) => void;
+}
+
+export class SimHost {
+  readonly streams: readonly [SnapshotStream, SnapshotStream];
+  private readonly pending: [FromSimFrame?, FromSimFrame?] = [];
+  private readonly maxTick: number;
+  private accumulator = 0;
+  private lastMetricsAt = -Infinity;
+  private inFlight = true;
+  private refreshRequested = false;
+  private pressure = false;
+  private disposed = false;
+  private tick: number | undefined;
+  private target: number | undefined;
+
+  constructor(private readonly options: SimHostOptions) {
+    this.maxTick = Math.floor((options.scenario?.duration ?? liveDuration) / DT);
+    const onError = (message: string) => this.fail(message);
+    this.streams = [
+      new SnapshotStream((frame) => this.receive(0, frame), onError),
+      new SnapshotStream((frame) => this.receive(1, frame), onError),
+    ];
+    for (const side of [0, 1] as const) {
+      this.streams[side].send({
+        type: "init",
+        seed: options.seed,
+        maxVehicles: options.maxVehicles,
+        controller: options.controllers[side],
+        scenario: options.scenario,
+      });
+    }
+  }
+
+  private fail(message: string) {
+    if (this.disposed) return;
+    this.dispose();
+    this.options.onError(message);
+  }
+
+  private receive(side: SimulationSide, frame: FromSimFrame) {
+    if (this.disposed) return;
+    if (this.pending[side] || (this.target !== undefined && frame.tick !== this.target)) {
+      this.fail("The simulation workers lost synchronisation.");
+      return;
+    }
+    this.pending[side] = frame;
+    const [left, right] = this.pending;
+    if (!left || !right) return;
+    if (left.tick !== right.tick) {
+      this.fail("The simulation workers returned different ticks.");
+      return;
+    }
+    this.pending[0] = undefined;
+    this.pending[1] = undefined;
+    const now = performance.now();
+    const first = this.tick === undefined;
+    this.tick = left.tick;
+    this.inFlight = false;
+    // Both snapshots become visible in the same turn, even if one worker was slow.
+    this.streams[0].publish(left, now);
+    this.streams[1].publish(right, now);
+    if (first) this.options.onReady();
+    if (now - this.lastMetricsAt >= 250 || this.tick === this.maxTick) {
+      this.lastMetricsAt = now;
+      this.options.onMetrics([left.metrics, right.metrics], this.tick);
+    }
+  }
+
+  setController(side: SimulationSide, controller: ControllerChoice) {
+    if (!this.disposed) this.streams[side].send({ type: "setController", controller });
+  }
+
+  setPressure(pressure: boolean) {
+    if (this.disposed || this.pressure === pressure) return;
+    this.pressure = pressure;
+    const message: ToSim = { type: "setOverlayData", pressure };
+    this.streams[0].send(message);
+    this.streams[1].send(message);
+    this.refreshRequested = true;
+  }
+
+  private request(tick: number) {
+    this.inFlight = true;
+    this.target = tick;
+    this.refreshRequested = false;
+    const message: ToSim = { type: "advanceTo", tick };
+    this.streams[0].send(message);
+    this.streams[1].send(message);
+  }
+
   advance(delta: number, speed: number, running: boolean) {
-    if (!this.current || !running || this.current.tick >= maxTick) {
+    if (this.disposed || this.tick === undefined) return;
+    if (!running || this.tick >= this.maxTick) {
       this.accumulator = 0;
+      if (!this.inFlight && this.refreshRequested) this.request(this.tick);
       return;
     }
     // Limit outstanding work and discard excess wall time when the worker is slow.
@@ -127,13 +219,18 @@ export class SimHost {
     this.accumulator = Math.min(this.accumulator + Math.min(delta, 0.1) * speed, budget);
     if (this.inFlight) return;
     const ticks = Math.floor(this.accumulator / DT);
-    if (ticks === 0) return;
+    if (ticks === 0) {
+      if (this.refreshRequested) this.request(this.tick);
+      return;
+    }
     this.accumulator -= ticks * DT;
-    this.inFlight = true;
-    this.send({ type: "advanceTo", tick: Math.min(maxTick, this.current.tick + ticks) });
+    this.request(Math.min(this.maxTick, this.tick + ticks));
   }
 
   dispose() {
-    this.worker.terminate();
+    if (this.disposed) return;
+    this.disposed = true;
+    this.streams[0].dispose();
+    this.streams[1].dispose();
   }
 }
