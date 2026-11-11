@@ -145,7 +145,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☐ | 6.1 | Episode runner (environment-neutral) and benchmark CLI with worker threads, dirty-tree guard | `04` Commands | 2.6 | A suite runs and writes records |
 | ☑ | 6.2 | Statistics: paired bootstrap intervals, relative differences, win rate; summary and comparisons | `04` Statistics | 6.1 | Matches reference values on fixed data |
 | ☐ | 6.3 | Headline generation for all three outcomes; README block and `benchmark.md` generation | `04` Headline, Output | 6.2 | Generated text correct in tests |
-| ☐ | 6.4 | Benchmark smoke in CI | `04` Commands | 6.1 | CI runs it |
+| ☑ | 6.4 | Benchmark smoke in CI | `04` Commands | 6.1 | CI runs it |
 | ☐ | 6.5 | **Run B1, B2, B6, B8 with the final policy; commit results** | `04` Suites | 3.6, 6.3 | `results/benchmark.json` committed from a clean tree |
 | ☑ | 6.6 | Build-time integrity check | `07` Build-time integrity | 6.5 | A stale build fails |
 | ☐ | 6.7 | Results view: headline, main table, charts, provenance | `01` R1–R3, R5 | 6.5, 4.1 | Renders entirely from the JSON |
