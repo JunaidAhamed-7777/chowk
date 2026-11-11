@@ -14,6 +14,7 @@ test("renders the night corridor and responds to playback, camera and navigation
   const pause = page.getByRole("button", { name: "Pause simulation" });
   await expect(pause).toBeEnabled();
   await expect(page.getByText("Fixed-cycle simulation", { exact: true })).toBeVisible();
+  await expect(page.getByText("Simulation result", { exact: true })).toBeVisible();
   const readout = (label: string) =>
     page.locator(".live-readouts div").filter({ hasText: label }).locator("dd");
   const elapsed = readout("Simulated time");

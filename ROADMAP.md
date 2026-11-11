@@ -107,9 +107,9 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 4.2 | R3F canvas, tone mapping, fog, base lights, damped camera with clamps | `05` | 4.1 | Empty night scene renders |
 | ☑ | 4.3 | Road, kerb, median and marking meshes generated from the network JSON | `05` Scene composition, `06` Generated | 1.2 | Roads match simulator geometry exactly |
 | ☑ | 4.4 | Mock snapshot source; instanced vehicles with placeholder meshes; interpolation; fade in and out | `05` Vehicles | 4.2 | 3,000 placeholder vehicles move smoothly |
-| ☐ | 4.5 | Headlights, tail-lights, brake response; bloom tuned | `05` Vehicles, Post-processing | 4.4 | Lights bloom; signal colours stay distinct |
+| ☑ | 4.5 | Headlights, tail-lights, brake response; bloom tuned | `05` Vehicles, Post-processing | 4.4 | Lights bloom; signal colours stay distinct |
 | ☑ | 4.6 | City: seeded building placement, window shader, lamps with fake light pools, skyline | `05` Buildings and windows, Lighting | 4.3 | The aerial view reads as a city at night |
-| ☐ | 4.7 | Signals: poles and state-driven lamps | `05` | 4.3 | Lamps follow signal state |
+| ☑ | 4.7 | Signals: poles and state-driven lamps | `05` | 4.3 | Lamps follow signal state |
 | ☐ | 4.8 | Simulation workers, clock and lockstep, transferable snapshots, replacing the mock | `07` Runtime architecture | 1.13, 4.4 | Real traffic renders; two workers stay at the same tick |
 | ☐ | 4.9 | Split-screen wipe by fragment discard; draggable handle; label chips | `05` Split-screen wipe, `01` L1 | 4.8 | Two controllers visible side by side on the same seed |
 | ☐ | 4.10 | Quality tiers and automatic selection | `05` Quality tiers | 4.5 | Tier changes at runtime; probe picks sensibly |

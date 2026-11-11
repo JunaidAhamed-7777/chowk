@@ -223,7 +223,9 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
       </section>
 
       <footer className="live-footer">
-        <p>Simulation result</p>
+        <p>
+          <span>Simulation result</span> · Uncalibrated demand
+        </p>
         {metrics && ready && (
           <dl className="live-readouts">
             <div>
