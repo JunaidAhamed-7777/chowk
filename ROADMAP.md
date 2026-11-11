@@ -51,7 +51,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ✓ | Id | Task | Spec | Depends | Done when |
 |---|---|---|---|---|---|
 | ☑ | 1.1 | PRNG with separate streams; state hash | `02` Determinism | 0.1 | Fixed-seed sequences and hashes match stored values |
-| ☐ | 1.2 | Network types, loader, validation; author `corridor.json` | `02` Network model | 0.1 | Loader rejects malformed networks; corridor loads; routes exist for every origin–destination pair |
+| ☑ | 1.2 | Network types, loader, validation; author `corridor.json` | `02` Network model | 0.1 | Loader rejects malformed networks; corridor loads; routes exist for every origin–destination pair |
 | ☐ | 1.3 | Vehicle storage (typed arrays, free list), per-link sorted lists | `02` Vehicle state | 1.2 | Add, remove, re-sort tested |
 | ☐ | 1.4 | Longitudinal dynamics: IDM against the constraining leader on a single link, with the overlap backstop and counter | `02` Longitudinal | 1.3 | A platoon behind a stopped obstacle queues without overlap; free-flow speed reached |
 | ☐ | 1.5 | Demand generation ahead of time; spawning with backlog | `02` Demand | 1.1, 1.3 | Same seed gives the same arrival list; backlog drains when space appears |
