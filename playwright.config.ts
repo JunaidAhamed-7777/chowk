@@ -11,7 +11,6 @@ export default defineConfig({
     baseURL: origin,
     browserName: "chromium",
     viewport: { width: 1440, height: 900 },
-    launchOptions: { args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] },
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
   },

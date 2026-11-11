@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+test.use({ launchOptions: { args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] } });
+
 test("renders the night corridor and responds to playback, camera and navigation controls", async ({
   page,
 }) => {
