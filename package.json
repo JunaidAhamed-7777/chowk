@@ -19,6 +19,7 @@
     "test": "vitest run",
     "test:browsers": "npm run build && playwright test",
     "assets:placeholders": "python assets/blender/placeholders.py",
+    "assets:vehicles": "blender --background --python assets/blender/vehicles.py",
     "assets:build": "node assets/scripts/build.mjs",
     "assets:check": "node assets/scripts/check.mjs"
   },
