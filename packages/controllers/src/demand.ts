@@ -1,4 +1,4 @@
-import type { Network, Scenario, SourceDemand } from "@chowk/sim";
+import { DT, type Network, type Scenario, type SourceDemand } from "@chowk/sim";
 
 export interface TurnShare {
   link: number;
@@ -31,7 +31,17 @@ export function expectedDemand(
   const approach = new Float64Array(network.links.length);
   const turns = network.links.map(() => new Map<number, number>());
   for (const source of scenario.sources) {
-    const rate = meanRate(source.rates, start, end);
+    let rate = meanRate(source.rates, start, end);
+    for (const { tick, event } of scenario.events ?? []) {
+      if (event.type !== "surge" || event.source !== source.source || end <= start) continue;
+      const left = Math.max(start, tick * DT);
+      const right = Math.min(end, tick * DT + event.duration);
+      if (right > left) {
+        rate +=
+          ((event.multiplier - 1) * meanRate(source.rates, left, right) * (right - left)) /
+          (end - start);
+      }
+    }
     const totalWeight = source.routes.reduce((total, { weight }) => total + weight, 0);
     if (totalWeight <= 0 || rate === 0) continue;
     for (const { route: routeId, weight } of source.routes) {

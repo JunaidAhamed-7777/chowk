@@ -79,7 +79,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 2.3 | Scenario definitions by load level | `04` Scenarios | 2.2 | All P0 scenarios generate demand at the intended load |
 | ☑ | 2.4 | Webster fixed-time with offsets | `03` Baselines | 2.3 | Matches a hand calculation |
 | ☑ | 2.5 | Actuated | `03` Baselines | 2.1 | Extends and skips as specified |
-| ☐ | 2.6 | Max-pressure, counts and area; hysteresis tuned on validation seeds | `03` Baselines | 2.1 | Unit tests pass; both beat Webster at high load on validation seeds, or the reason they do not is understood |
+| ☑ | 2.6 | Max-pressure, counts and area; hysteresis tuned on validation seeds | `03` Baselines | 2.1 | Unit tests pass; both beat Webster at high load on validation seeds, or the reason they do not is understood |
 | ☑ | 2.7 | Emergency pre-emption variants | `03` Emergency variants | 2.6 | Ambulance is served on constructed states |
 | ☑ | 2.8 | CHOWK policy: observation builder, ReLU MLP inference, residual scoring, weights format | `03` CHOWK | 2.6 | Generation-0 equivalence with `mp-area` test passes; inference golden test passes |
 | ☑ | 2.9 | `explain()` with occlusion reasons | `03` Explanation | 2.8 | Returns prior, learned, reason on live states |

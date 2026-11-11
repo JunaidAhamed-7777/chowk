@@ -1,9 +1,10 @@
 import type { JunctionSense, Network, Scenario } from "@chowk/sim";
 import { expectedDemand, type TurnShare } from "./demand";
 import type { BaselineId, Controller, Explanation } from "./types";
+import tunedHysteresis from "./tuned-hysteresis.json";
 
-export const AREA_HYSTERESIS = 0.025;
-export const COUNT_HYSTERESIS = 2;
+export const AREA_HYSTERESIS = tunedHysteresis.area;
+export const COUNT_HYSTERESIS = tunedHysteresis.count;
 export type PressureBasis = "area" | "count";
 
 export function bestPhase(scores: ArrayLike<number>, current: number): number {

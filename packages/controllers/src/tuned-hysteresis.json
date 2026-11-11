@@ -1,0 +1,87 @@
+{
+  "area": 0.0125,
+  "count": 1,
+  "scenario": "morning-peak",
+  "warmup": 150,
+  "measured": 450,
+  "validationSeeds": [500000, 500001, 500002, 500003, 500004, 500005, 500006, 500007],
+  "candidates": [
+    {
+      "controller": "webster",
+      "hysteresis": 0,
+      "delayPerPerson": 299.94773737246663,
+      "completed": 181.25,
+      "backlog": 154
+    },
+    {
+      "controller": "mp-area",
+      "hysteresis": 0,
+      "delayPerPerson": 282.14448041030334,
+      "completed": 199.5,
+      "backlog": 149
+    },
+    {
+      "controller": "mp-area",
+      "hysteresis": 0.0125,
+      "delayPerPerson": 280.8043798805701,
+      "completed": 205.125,
+      "backlog": 136
+    },
+    {
+      "controller": "mp-area",
+      "hysteresis": 0.025,
+      "delayPerPerson": 281.9024983367561,
+      "completed": 205.375,
+      "backlog": 141.75
+    },
+    {
+      "controller": "mp-area",
+      "hysteresis": 0.05,
+      "delayPerPerson": 284.0197794427062,
+      "completed": 200.125,
+      "backlog": 128.75
+    },
+    {
+      "controller": "mp-area",
+      "hysteresis": 0.1,
+      "delayPerPerson": 289.20162154527907,
+      "completed": 188.875,
+      "backlog": 149.375
+    },
+    {
+      "controller": "mp-count",
+      "hysteresis": 0,
+      "delayPerPerson": 285.5279181210144,
+      "completed": 199.625,
+      "backlog": 151.875
+    },
+    {
+      "controller": "mp-count",
+      "hysteresis": 1,
+      "delayPerPerson": 284.6851240519029,
+      "completed": 201.375,
+      "backlog": 139.375
+    },
+    {
+      "controller": "mp-count",
+      "hysteresis": 2,
+      "delayPerPerson": 287.0226482193535,
+      "completed": 201.75,
+      "backlog": 152.375
+    },
+    {
+      "controller": "mp-count",
+      "hysteresis": 4,
+      "delayPerPerson": 285.77086566021416,
+      "completed": 200.125,
+      "backlog": 134.75
+    },
+    {
+      "controller": "mp-count",
+      "hysteresis": 8,
+      "delayPerPerson": 287.70305451650546,
+      "completed": 200.125,
+      "backlog": 125
+    }
+  ]
+}
