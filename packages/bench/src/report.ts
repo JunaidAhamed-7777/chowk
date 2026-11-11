@@ -38,9 +38,20 @@ function measurementTable(rows: readonly SummaryCell[], metrics: readonly string
 
 function engineeringLines(report?: EngineeringReport): string[] {
   if (!report) return [];
-  const { hardware, simulator, policyMicroseconds, determinism, rendering, load, tests } = report;
+  const {
+    hardware,
+    simulator,
+    policyMicroseconds,
+    determinism,
+    rendering,
+    load,
+    shapedLoads,
+    memory,
+    reproduction,
+    tests,
+  } = report;
   const lines = [
-    `Measured on ${[hardware.cpu, hardware.gpu, hardware.os, hardware.runtime].filter(Boolean).join(" · ")}.`,
+    `Measured on ${[hardware.cpu, hardware.os, hardware.runtime].filter(Boolean).join(" · ")}.`,
   ];
   if (simulator?.length)
     lines.push(
@@ -72,6 +83,32 @@ function engineeringLines(report?: EngineeringReport): string[] {
     lines.push(
       `- Initial JavaScript was ${(load.initialJavaScriptGzipBytes / 1_000).toFixed(1)} kB compressed.`,
     );
+  for (const {
+    label,
+    downloadMbps,
+    latencyMs,
+    posterMs,
+    interactiveMs,
+    samples,
+    transferBytes,
+  } of shapedLoads ?? []) {
+    const transfer =
+      transferBytes === undefined
+        ? ""
+        : ` and transferred ${(transferBytes / 1_024).toFixed(1)} KiB`;
+    lines.push(
+      `- On ${label} (${downloadMbps} Mbps down, ${latencyMs} ms latency), the poster painted in ${(posterMs / 1_000).toFixed(2)} s and Live became interactive in ${(interactiveMs / 1_000).toFixed(2)} s${transfer}. Medians from ${samples} fresh Chrome contexts.`,
+    );
+  }
+  if (memory)
+    lines.push(
+      `- During a ${memory.minutes}-minute Live soak, sampled post-GC renderer V8 heap went from ${(memory.firstBytes / 1_048_576).toFixed(2)} to ${(memory.lastBytes / 1_048_576).toFixed(2)} MiB, with ${(memory.plateauRangeBytes / 1_048_576).toFixed(2)} MiB spread on the plateau and ${memory.workers} dedicated workers.`,
+    );
+  for (const { engine, environment, wallSeconds, episodes } of reproduction ?? []) {
+    lines.push(
+      `- ${engine}${environment ? ` (${environment})` : ""} reproduced all ${episodes} benchmark episodes exactly in ${wallSeconds.toFixed(2)} s.`,
+    );
+  }
   if (tests) lines.push(`- ${tests.passed} tests passed and ${tests.failed} failed.`);
   return lines;
 }

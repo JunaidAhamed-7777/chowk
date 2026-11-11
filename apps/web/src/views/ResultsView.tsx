@@ -9,9 +9,9 @@ import {
   primaryMetric,
   primaryScenario,
   rendererName,
+  type SummaryCell,
   scenarioLabel,
   signedPercent,
-  type SummaryCell,
 } from "@chowk/bench";
 import { useEffect, useState } from "react";
 import { DelayChart, LaneChart, LoadSweepChart } from "../benchmark/BenchmarkCharts";
@@ -103,18 +103,24 @@ function ResultsTable({
 }
 
 function Engineering({ measurements }: { measurements: EngineeringReport }) {
-  const { hardware, simulator, policyMicroseconds, determinism, rendering, load, tests } =
-    measurements;
+  const {
+    hardware,
+    simulator,
+    policyMicroseconds,
+    determinism,
+    rendering,
+    load,
+    shapedLoads,
+    memory,
+    reproduction,
+    tests,
+  } = measurements;
   return (
     <section className="results-panel" aria-labelledby="engineering-heading">
       <div className="results-section-heading">
         <div>
           <h2 id="engineering-heading">Engineering measurements</h2>
-          <p>
-            {[hardware.cpu, hardware.gpu, hardware.os, hardware.runtime]
-              .filter(Boolean)
-              .join(" · ")}
-          </p>
+          <p>{[hardware.cpu, hardware.os, hardware.runtime].filter(Boolean).join(" · ")}</p>
         </div>
       </div>
       <dl className="engineering-grid">
@@ -166,6 +172,46 @@ function Engineering({ measurements }: { measurements: EngineeringReport }) {
             <dd>{(load.initialJavaScriptGzipBytes / 1_000).toFixed(1)} kB compressed</dd>
           </div>
         )}
+        {shapedLoads?.map(
+          ({ label, downloadMbps, latencyMs, posterMs, interactiveMs, samples, transferBytes }) => (
+            <div key={label}>
+              <dt>
+                {label} · {downloadMbps} Mbps down · {latencyMs} ms latency
+              </dt>
+              <dd>
+                {(posterMs / 1_000).toFixed(2)} s to poster · {(interactiveMs / 1_000).toFixed(2)} s
+                to interactive
+              </dd>
+              <dd className="engineering-detail">
+                Median of {samples} fresh Chrome contexts
+                {transferBytes === undefined ? "" : ` · ${(transferBytes / 1_024).toFixed(1)} KiB`}
+              </dd>
+            </div>
+          ),
+        )}
+        {memory && (
+          <div>
+            <dt>{memory.minutes}-minute Live memory soak</dt>
+            <dd>
+              {(memory.firstBytes / 1_048_576).toFixed(2)} →{" "}
+              {(memory.lastBytes / 1_048_576).toFixed(2)} MiB
+            </dd>
+            <dd className="engineering-detail">
+              Post-GC renderer V8 heap · {(memory.plateauRangeBytes / 1_048_576).toFixed(2)} MiB
+              plateau range · {memory.workers} workers
+            </dd>
+          </div>
+        )}
+        {reproduction?.map(({ engine, environment, wallSeconds, episodes }) => (
+          <div key={engine}>
+            <dt>
+              {engine} reproduction{environment ? ` · ${environment}` : ""}
+            </dt>
+            <dd>
+              {episodes} exact matches · {wallSeconds.toFixed(2)} s
+            </dd>
+          </div>
+        ))}
         {tests && (
           <div>
             <dt>Tests</dt>

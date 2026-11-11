@@ -48,6 +48,23 @@ export interface EngineeringReport {
   determinism?: Record<string, number>;
   rendering?: { tier: string; medianFps: number; onePercentLowFps: number; gpu?: string }[];
   load?: { transferBytes: number; interactiveMs: number; initialJavaScriptGzipBytes?: number };
+  shapedLoads?: {
+    label: string;
+    downloadMbps: number;
+    latencyMs: number;
+    interactiveMs: number;
+    posterMs: number;
+    transferBytes?: number;
+    samples: number;
+  }[];
+  memory?: {
+    minutes: number;
+    firstBytes: number;
+    lastBytes: number;
+    plateauRangeBytes: number;
+    workers: number;
+  };
+  reproduction?: { engine: string; environment?: string; wallSeconds: number; episodes: number }[];
   tests?: { passed: number; failed: number };
 }
 

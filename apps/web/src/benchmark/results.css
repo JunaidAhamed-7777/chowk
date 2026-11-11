@@ -231,6 +231,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+.engineering-grid dd.engineering-detail {
+  color: var(--ui-dim);
+  font-size: 0.72rem;
+}
+
 .results-seed-list {
   grid-column: 1 / -1;
 }

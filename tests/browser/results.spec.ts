@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { chromium, expect, firefox, test, webkit } from "@playwright/test";
 
@@ -39,10 +39,20 @@ for (const engine of engines) {
       await expect(
         page.getByText("Your browser reproduced our published numbers exactly."),
       ).toBeVisible({ timeout: 110_000 });
-      await expect(page.getByRole("cell", { name: "Exact", exact: true })).toHaveCount(9);
-      console.log(
-        `${engine.name()} reproduced all episodes in ${((performance.now() - start) / 1_000).toFixed(2)} s`,
-      );
+      const wallSeconds = (performance.now() - start) / 1_000;
+      const matches = page.getByRole("cell", { name: "Exact", exact: true });
+      await expect(matches).toHaveCount(9);
+      const episodes = await matches.count();
+      const name = engine.name();
+      console.log(`${name} reproduced all ${episodes} episodes in ${wallSeconds.toFixed(2)} s`);
+      if (process.env.CHOWK_WRITE_ENGINEERING === "1") {
+        const directory = new URL("../../runs/", import.meta.url);
+        mkdirSync(directory, { recursive: true });
+        writeFileSync(
+          new URL(`reproduction-${name}.json`, directory),
+          `${JSON.stringify({ engine: name, version: browser.version(), wallSeconds, episodes }, null, 2)}\n`,
+        );
+      }
     } finally {
       await browser.close();
     }
