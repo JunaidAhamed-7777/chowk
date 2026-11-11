@@ -36,6 +36,8 @@ interface SceneProps {
 }
 
 const aerialPosition = [520, 214, 236] as const;
+const driftReach = 260;
+const driftRate = 0.045;
 const aerialTarget = [925, 0, -6] as const;
 
 function CorridorCamera({
@@ -52,6 +54,8 @@ function CorridorCamera({
     target: new Vector3(...aerialTarget),
   }));
   const transition = useRef(false);
+  // Until the visitor takes the camera, the aerial view travels slowly along the arterial.
+  const drift = useRef({ active: false, time: 0, offset: 0 });
 
   useEffect(() => {
     const controls = new OrbitControls(camera, gl.domElement);
@@ -66,6 +70,7 @@ function CorridorCamera({
     controls.update();
     const interrupt = () => {
       transition.current = false;
+      drift.current.active = false;
     };
     controls.addEventListener("start", interrupt);
     orbit.current = controls;
@@ -85,8 +90,9 @@ function CorridorCamera({
       preset.position.set(...aerialPosition);
       preset.target.set(...aerialTarget);
     }
+    drift.current = { active: !junction && !reducedMotion, time: 0, offset: 0 };
     transition.current = true;
-  }, [selection, preset]);
+  }, [selection, preset, reducedMotion]);
 
   useFrame((_, delta) => {
     const controls = orbit.current;
@@ -100,6 +106,13 @@ function CorridorCamera({
         controls.target.distanceToSquared(preset.target) < 0.006
       )
         transition.current = false;
+    } else if (drift.current.active) {
+      const state = drift.current;
+      state.time += Math.min(delta, 0.1);
+      const offset = Math.sin(state.time * driftRate) * driftReach;
+      camera.position.x += offset - state.offset;
+      controls.target.x += offset - state.offset;
+      state.offset = offset;
     }
     controls.update();
   }, -1);
