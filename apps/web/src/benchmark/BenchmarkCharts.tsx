@@ -172,6 +172,49 @@ export function DelayChart({
   );
 }
 
+function RelativeIntervals({
+  points,
+  caption,
+  description,
+}: {
+  points: readonly GroupedInterval[];
+  caption: string;
+  description: string;
+}) {
+  const high = Math.max(
+    0.01,
+    ...points.flatMap(({ ciLow, ciHigh }) => [Math.abs(ciLow), Math.abs(ciHigh)]),
+  );
+  return (
+    <GroupedIntervals
+      points={points}
+      caption={caption}
+      description={description}
+      extent={Math.ceil(high * 100) / 100}
+      format={signedPercent}
+      symmetric
+    />
+  );
+}
+
+export function AblationChart({ benchmark }: { benchmark: BenchmarkFile }) {
+  const points = benchmark.comparisons
+    .filter(({ suite, a, metric }) => suite === "B3" && a === "chowk" && metric === primaryMetric)
+    .map((point) => ({
+      ...point,
+      group: scenarioLabel(point.scenario),
+      controller: point.b,
+      mean: point.relDiff,
+    }));
+  return (
+    <RelativeIntervals
+      points={points}
+      caption="CHOWK’s delay compared with each variant"
+      description="Relative difference in simulated delay per person across policy variants. Negative values favour CHOWK."
+    />
+  );
+}
+
 export function SensorNoiseChart({ benchmark }: { benchmark: BenchmarkFile }) {
   const points = benchmark.comparisons
     .filter(
@@ -187,18 +230,11 @@ export function SensorNoiseChart({ benchmark }: { benchmark: BenchmarkFile }) {
       controller: point.a,
       mean: point.relDiff,
     }));
-  const high = Math.max(
-    0.01,
-    ...points.flatMap(({ ciLow, ciHigh }) => [Math.abs(ciLow), Math.abs(ciHigh)]),
-  );
   return (
-    <GroupedIntervals
+    <RelativeIntervals
       points={points}
       caption="Change in delay per person under sensor noise"
       description="Relative change in simulated delay per person against the same controller on clean sensors. Positive values indicate more delay."
-      extent={Math.ceil(high * 100) / 100}
-      format={signedPercent}
-      symmetric
     />
   );
 }

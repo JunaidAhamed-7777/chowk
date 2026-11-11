@@ -3,7 +3,6 @@ import {
   compareControllers,
   controllerLabel,
   type EngineeringReport,
-  formatMetric,
   mainMetricKeys,
   metricLabels,
   primaryMetric,
@@ -15,6 +14,7 @@ import {
 } from "@chowk/bench";
 import { useEffect, useState } from "react";
 import {
+  AblationChart,
   DelayChart,
   LaneChart,
   LoadSweepChart,
@@ -35,6 +35,19 @@ const dateFormat = new Intl.DateTimeFormat("en-IN", {
   dateStyle: "long",
   timeZone: "Asia/Kolkata",
 });
+const tableNumberFormats = Object.fromEntries(
+  Object.entries(metricLabels).map(([metric, { digits }]) => [
+    metric,
+    new Intl.NumberFormat("en-IN", {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    }),
+  ]),
+);
+
+function tableValue(metric: string, value: number) {
+  return tableNumberFormats[metric].format(value * (metricLabels[metric].scale ?? 1));
+}
 
 function ResultsTable({
   rows,
@@ -89,12 +102,12 @@ function ResultsTable({
                 const leading = row.mean === best[index] && controllers.length > 1;
                 return (
                   <td key={metric} className={leading ? "results-best" : undefined}>
-                    <strong>{formatMetric(metric, row.mean)}</strong>
+                    <strong>{tableValue(metric, row.mean)}</strong>
                     <small>
-                      {formatMetric(metric, row.ciLow)} – {formatMetric(metric, row.ciHigh)}
+                      {tableValue(metric, row.ciLow)} – {tableValue(metric, row.ciHigh)}
                     </small>
                     {row.scenario === "oversaturated" && (
-                      <small>Median {formatMetric(metric, row.median)}</small>
+                      <small>Median {tableValue(metric, row.median)}</small>
                     )}
                   </td>
                 );
@@ -281,9 +294,9 @@ function AdditionalResults({ benchmark }: { benchmark: BenchmarkFile }) {
           <>
             <p>
               The variants use separate, shorter training runs. All policies see the same held-out
-              demand and seeds.
+              demand and seeds. Negative differences favour CHOWK.
             </p>
-            <DelayChart rows={suiteRows} caption="Delay per person across policy variants" />
+            <AblationChart benchmark={benchmark} />
           </>
         )}
         {suite === "B4" && (
