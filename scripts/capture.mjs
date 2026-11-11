@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { cpus, platform, release } from "node:os";
 import { join } from "node:path";
@@ -253,6 +254,7 @@ async function measure(browser) {
   const existing = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : {};
   const determinismFile = join(root, "runs/determinism.json");
   const testFile = join(root, "runs/vitest-report.json");
+  const inferenceFile = join(root, "runs/policy-inference.json");
   const determinism = existsSync(determinismFile)
     ? JSON.parse(readFileSync(determinismFile, "utf8"))
     : existing.determinism;
@@ -260,6 +262,15 @@ async function measure(browser) {
   const tests = report
     ? { passed: report.numPassedTests, failed: report.numFailedTests }
     : existing.tests;
+  let policyMicroseconds = existing.policyMicroseconds;
+  if (existsSync(inferenceFile)) {
+    const timing = JSON.parse(readFileSync(inferenceFile, "utf8"));
+    const policy = readFileSync(join(app, "public/policies/chowk.json"));
+    const hash = createHash("sha256").update(policy).digest("hex");
+    if (timing.policyHash !== hash)
+      throw new Error("Measure inference again for the exported policy");
+    policyMicroseconds = timing.policyMicroseconds;
+  }
   const hardware = {
     cpu: cpus()[0]?.model.trim() ?? "Unknown CPU",
     gpu,
@@ -268,7 +279,7 @@ async function measure(browser) {
   };
   writeFileSync(
     file,
-    `${JSON.stringify({ ...existing, hardware, rendering, load, determinism, tests }, null, 2)}\n`,
+    `${JSON.stringify({ ...existing, hardware, rendering, load, determinism, tests, policyMicroseconds }, null, 2)}\n`,
   );
 }
 

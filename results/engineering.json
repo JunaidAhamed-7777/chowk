@@ -1,6 +1,7 @@
 {
   "hardware": {
-    "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics        ",
+    "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+    "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)",
     "os": "win32 10.0.26300",
     "runtime": "Node 26.8.1"
   },
@@ -20,5 +21,38 @@
       "realtime": 142.34529290806094,
       "meanActive": 3044.6354166666665
     }
-  ]
+  ],
+  "rendering": [
+    {
+      "tier": "low",
+      "medianFps": 163.93442622952287,
+      "onePercentLowFps": 160.64257028110924
+    },
+    {
+      "tier": "medium",
+      "medianFps": 163.93442622952287,
+      "onePercentLowFps": 135.1351351351307
+    },
+    {
+      "tier": "high",
+      "medianFps": 163.93442622952287,
+      "onePercentLowFps": 157.89473684210054
+    }
+  ],
+  "load": {
+    "interactiveMs": 1380.7000000029802,
+    "transferBytes": 854025,
+    "initialJavaScriptGzipBytes": 493867
+  },
+  "determinism": {
+    "Node": 1467674151,
+    "Chromium": 1467674151,
+    "WebKit": 1467674151,
+    "Firefox": 1467674151
+  },
+  "tests": {
+    "passed": 81,
+    "failed": 0
+  },
+  "policyMicroseconds": 6.61387
 }

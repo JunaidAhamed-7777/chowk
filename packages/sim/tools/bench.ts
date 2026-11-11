@@ -109,6 +109,10 @@ const simulator = targetCounts.map((vehicles) => {
   return { vehicles, ...median };
 });
 
+if (process.argv.includes("--check") && simulator[1].realtime < 100) {
+  throw new Error("Simulator fell below 100× real time at 1,500 active vehicles");
+}
+
 if (process.argv.includes("--write")) {
   const file = "results/engineering.json";
   const existing = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : {};
