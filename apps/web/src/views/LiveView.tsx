@@ -92,7 +92,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
           <p className="section-label">
             <span className="section-tick" /> Urban traffic simulation
           </p>
-          <h1 id="page-heading" tabIndex={-1}>
+          <h1 id="live-heading" tabIndex={-1}>
             The corridor after dark<span>.</span>
           </h1>
         </div>

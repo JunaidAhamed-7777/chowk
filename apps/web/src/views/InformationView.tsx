@@ -29,7 +29,7 @@ export function InformationView({ route }: { route: InformationRoute }) {
       <p className="section-label">{route.slice(1)}</p>
       {route === "/results" && (
         <>
-          <h1 id="page-heading" tabIndex={-1}>
+          <h1 id="information-heading" tabIndex={-1}>
             Benchmark results
           </h1>
           <div className="information-empty">
@@ -43,7 +43,7 @@ export function InformationView({ route }: { route: InformationRoute }) {
       )}
       {route === "/method" && (
         <>
-          <h1 id="page-heading" tabIndex={-1}>
+          <h1 id="information-heading" tabIndex={-1}>
             How CHOWK works
           </h1>
           <p className="information-intro">
@@ -84,7 +84,7 @@ export function InformationView({ route }: { route: InformationRoute }) {
       )}
       {route === "/limits" && (
         <>
-          <h1 id="page-heading" tabIndex={-1}>
+          <h1 id="information-heading" tabIndex={-1}>
             Scope and limitations
           </h1>
           <p className="information-intro">

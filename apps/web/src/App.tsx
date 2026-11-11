@@ -1,5 +1,5 @@
 import type { MouseEvent } from "react";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Quality, QualityMode } from "./scene/sceneSettings";
 import { qualityPresets } from "./scene/sceneSettings";
 import { Icon } from "./ui/Icon";
@@ -37,6 +37,7 @@ export default function App() {
   const [route, setRoute] = useState(readPath);
   const [qualityMode, setQualityMode] = useState(readQualityMode);
   const [automaticQuality, setAutomaticQuality] = useState<Quality>("medium");
+  const focusOnNavigation = useRef(false);
   const quality = qualityMode === "auto" ? automaticQuality : qualityMode;
 
   useEffect(() => {
@@ -50,15 +51,22 @@ export default function App() {
     document.title = `${label} · CHOWK`;
   }, [route]);
 
+  useLayoutEffect(() => {
+    if (!focusOnNavigation.current) return;
+    focusOnNavigation.current = false;
+    const heading = document.getElementById(route === "/" ? "live-heading" : "information-heading");
+    (heading ?? document.getElementById("main"))?.focus({ preventScroll: true });
+  }, [route]);
+
   function navigate(event: MouseEvent<HTMLAnchorElement>, next: Route) {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
       return;
     event.preventDefault();
     if (route === next) return;
     window.history.pushState(null, "", next);
+    focusOnNavigation.current = true;
     setRoute(next);
     window.scrollTo(0, 0);
-    requestAnimationFrame(() => document.getElementById("page-heading")?.focus());
   }
 
   function updateQuality(mode: QualityMode) {
@@ -130,7 +138,7 @@ export default function App() {
           </div>
         </div>
       </header>
-      <main id="main">
+      <main id="main" tabIndex={-1}>
         <section className="live-surface" hidden={route !== "/"}>
           <Suspense
             fallback={
@@ -150,7 +158,7 @@ export default function App() {
         {route && route !== "/" && <InformationView route={route satisfies InformationRoute} />}
         {!route && (
           <article className="information">
-            <h1 id="page-heading" tabIndex={-1}>
+            <h1 id="information-heading" tabIndex={-1}>
               This page is unavailable.
             </h1>
             <a href="/" onClick={(event) => navigate(event, "/")}>
