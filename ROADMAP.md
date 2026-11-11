@@ -74,15 +74,15 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 
 | ✓ | Id | Task | Spec | Depends | Done when |
 |---|---|---|---|---|---|
-| ☐ | 2.1 | Driver loop, controller interface, starvation guard, phase mask | `03` Controller interface | 1.10 | A trivial controller runs the corridor |
+| ☑ | 2.1 | Driver loop, controller interface, starvation guard, phase mask | `03` Controller interface | 1.10 | A trivial controller runs the corridor |
 | ☐ | 2.2 | Saturation-flow calibration script; `results/calibration.json` | `04` Demand calibration | 2.1 | File written and committed; values stable across seeds |
 | ☐ | 2.3 | Scenario definitions by load level | `04` Scenarios | 2.2 | All P0 scenarios generate demand at the intended load |
-| ☐ | 2.4 | Webster fixed-time with offsets | `03` Baselines | 2.3 | Matches a hand calculation |
-| ☐ | 2.5 | Actuated | `03` Baselines | 2.1 | Extends and skips as specified |
+| ☑ | 2.4 | Webster fixed-time with offsets | `03` Baselines | 2.3 | Matches a hand calculation |
+| ☑ | 2.5 | Actuated | `03` Baselines | 2.1 | Extends and skips as specified |
 | ☐ | 2.6 | Max-pressure, counts and area; hysteresis tuned on validation seeds | `03` Baselines | 2.1 | Unit tests pass; both beat Webster at high load on validation seeds, or the reason they do not is understood |
-| ☐ | 2.7 | Emergency pre-emption variants | `03` Emergency variants | 2.6 | Ambulance is served on constructed states |
-| ☐ | 2.8 | CHOWK policy: observation builder, ReLU MLP inference, residual scoring, weights format | `03` CHOWK | 2.6 | Generation-0 equivalence with `mp-area` test passes; inference golden test passes |
-| ☐ | 2.9 | `explain()` with occlusion reasons | `03` Explanation | 2.8 | Returns prior, learned, reason on live states |
+| ☑ | 2.7 | Emergency pre-emption variants | `03` Emergency variants | 2.6 | Ambulance is served on constructed states |
+| ☑ | 2.8 | CHOWK policy: observation builder, ReLU MLP inference, residual scoring, weights format | `03` CHOWK | 2.6 | Generation-0 equivalence with `mp-area` test passes; inference golden test passes |
+| ☑ | 2.9 | `explain()` with occlusion reasons | `03` Explanation | 2.8 | Returns prior, learned, reason on live states |
 
 ## Phase 3 — Training (Track A, 13–15 Nov)
 
