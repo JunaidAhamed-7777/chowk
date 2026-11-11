@@ -180,7 +180,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 8.6 | Architecture diagram (SVG) | `08` Images | 4.8 | In README and Method view |
 | ☑ | 8.7 | 90-second demo video | `08` Demo video | 5.7, 6.8 | Recorded from the app, captioned, uploaded |
 | ☐ | 8.8 | Full browser and device pass | `09` Matrix | G3 | Matrix checked; issues fixed or listed in Limits |
-| ☐ | 8.9 | Performance pass against budgets; numbers recorded with hardware | `09` Budgets | G3 | B8 figures real and committed |
+| ☑ | 8.9 | Performance pass against budgets; numbers recorded with hardware | `09` Budgets | G3 | B8 figures real and committed |
 | ☐ | 8.10 | Unstop text finalised from the draft | `08` Unstop fields | 6.5 | Ready to paste; headline filled from data |
 | ☐ | 8.11 | Submission-day checklist | `08` Checklist | all P0 | Every item ticked |
 | ☐ | 8.12 | Tag `v1.0-submission`; user submits on Unstop | `08` | 8.11 | Submitted before 20:00 IST |

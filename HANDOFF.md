@@ -32,7 +32,7 @@ npm run capture -- measure
 npm run bench -- --suite B8
 ```
 
-Run the rendering, shaped-load and replay measurements with other heavy processes idle. `CHOWK_WRITE_ENGINEERING=1` asks the Playwright determinism and exact-replay tests to preserve machine-readable evidence under `runs/`. Capture merges the available measurements into [results/engineering.json](results/engineering.json). B8 copies them into the benchmark and regenerates the reports. `CHOWK_CAPTURE_GPU_LUID` accepts a machine-specific Windows DXGI adapter identifier in `high,low` form for the High tier and the video.
+Run the rendering, shaped-load and replay measurements with other heavy processes idle. `CHOWK_WRITE_ENGINEERING=1` asks the Playwright determinism and exact-replay tests to preserve machine-readable evidence under `runs/`. Capture merges the available measurements into [results/engineering.json](results/engineering.json). B8 copies them into the benchmark and regenerates the reports. The load trials and memory samples are in [results/browser-budgets.json](results/browser-budgets.json). `CHOWK_CAPTURE_GPU_LUID` accepts a machine-specific Windows DXGI adapter identifier in `high,low` form for the High tier and the video.
 
 ## Media
 

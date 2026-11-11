@@ -123,7 +123,7 @@ All captured from the app through the scripted capture route, at fixed seeds.
 ## Submission-day checklist
 
 - [ ] Verify `npm test`, `npm run test:browsers` and `npm run build` on the submission commit.
-- [ ] Publish the final benchmark from the selected policy, commit `results/` and run the build integrity check.
+- [x] Publish the final benchmark from the selected policy, commit `results/` and run the build integrity check.
 - [x] Regenerate the README results block. The production build checks the README, app and generated submission copy for unfilled template tokens.
 - [ ] Open the deployed demo privately in Chrome, Firefox and Safari or WebKit, and verify the Low tier on a phone.
 - [x] Watch the autoplay tour end to end without interacting.

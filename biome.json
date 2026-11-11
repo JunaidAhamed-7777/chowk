@@ -9,7 +9,8 @@
       "!!**/assets/export",
       "!!**/test-results",
       "!!**/playwright-report",
-      "!package-lock.json"
+      "!package-lock.json",
+      "!results/benchmark.json"
     ]
   },
   "formatter": {
