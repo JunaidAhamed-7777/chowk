@@ -117,9 +117,11 @@ function Engineering({ measurements }: { measurements: EngineeringReport }) {
         </div>
       </div>
       <dl className="engineering-grid">
-        {simulator?.map(({ vehicles, realtime }) => (
+        {simulator?.map(({ vehicles, realtime, meanActive }) => (
           <div key={vehicles}>
-            <dt>Simulation · {vehicles.toLocaleString("en-IN")} vehicles</dt>
+            <dt>
+              Simulation · ~{Math.round(meanActive ?? vehicles).toLocaleString("en-IN")} vehicles
+            </dt>
             <dd>{realtime.toFixed(1)}× real time</dd>
           </div>
         ))}
@@ -148,11 +150,17 @@ function Engineering({ measurements }: { measurements: EngineeringReport }) {
         ))}
         {load && (
           <div>
-            <dt>Cold load</dt>
+            <dt>Cold localhost load</dt>
             <dd>
               {(load.transferBytes / 1_024).toFixed(1)} KiB ·{" "}
               {(load.interactiveMs / 1_000).toFixed(2)} s to interactive
             </dd>
+          </div>
+        )}
+        {load?.initialJavaScriptGzipBytes !== undefined && (
+          <div>
+            <dt>Initial JavaScript</dt>
+            <dd>{(load.initialJavaScriptGzipBytes / 1_000).toFixed(1)} kB compressed</dd>
           </div>
         )}
         {tests && (

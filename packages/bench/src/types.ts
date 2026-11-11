@@ -43,11 +43,11 @@ export interface PairedComparison extends Cell {
 
 export interface EngineeringReport {
   hardware: { cpu: string; gpu?: string; os: string; runtime: string };
-  simulator?: { vehicles: number; realtime: number }[];
+  simulator?: { vehicles: number; realtime: number; meanActive?: number }[];
   policyMicroseconds?: number;
   determinism?: Record<string, number>;
   rendering?: { tier: string; medianFps: number; onePercentLowFps: number }[];
-  load?: { transferBytes: number; interactiveMs: number };
+  load?: { transferBytes: number; interactiveMs: number; initialJavaScriptGzipBytes?: number };
   tests?: { passed: number; failed: number };
 }
 

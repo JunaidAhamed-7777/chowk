@@ -39,29 +39,39 @@ function engineeringLines(report?: EngineeringReport): string[] {
   if (!report) return [];
   const { hardware, simulator, policyMicroseconds, determinism, rendering, load, tests } = report;
   const lines = [
-    `Hardware and runtime: ${[hardware.cpu, hardware.gpu, hardware.os, hardware.runtime].filter(Boolean).join(" · ")}.`,
+    `Measured on ${[hardware.cpu, hardware.gpu, hardware.os, hardware.runtime].filter(Boolean).join(" · ")}.`,
   ];
   if (simulator?.length)
     lines.push(
-      `- Simulator: ${simulator.map(({ vehicles, realtime }) => `${realtime.toFixed(1)}× real time with ${vehicles.toLocaleString("en-IN")} vehicles`).join("; ")}.`,
+      `- The simulator ran at ${simulator.map(({ vehicles, realtime, meanActive }) => `${realtime.toFixed(1)}× real time with about ${Math.round(meanActive ?? vehicles).toLocaleString("en-IN")} vehicles`).join(", ")}.`,
     );
   if (typeof policyMicroseconds === "number")
-    lines.push(`- Policy inference: ${policyMicroseconds.toFixed(2)} µs per decision.`);
-  if (determinism && Object.keys(determinism).length)
-    lines.push(
-      `- State hash after 10,000 ticks: ${Object.entries(determinism)
-        .map(([engine, hash]) => `${engine} ${hash.toString(16).padStart(8, "0")}`)
-        .join(", ")}.`,
-    );
+    lines.push(`- Policy inference took ${policyMicroseconds.toFixed(2)} µs per decision.`);
+  if (determinism) {
+    const engines = Object.entries(determinism);
+    const format = (hash: number) => hash.toString(16).padStart(8, "0");
+    if (engines.length > 1 && new Set(engines.map(([, hash]) => hash)).size === 1)
+      lines.push(
+        `- ${engines.map(([engine]) => engine).join(", ")} all reached state hash ${format(engines[0][1])} after 10,000 ticks.`,
+      );
+    else if (engines.length > 0)
+      lines.push(
+        `- State hashes after 10,000 ticks were ${engines.map(([engine, hash]) => `${engine} ${format(hash)}`).join(", ")}.`,
+      );
+  }
   if (rendering?.length)
     lines.push(
-      `- Rendering: ${rendering.map(({ tier, medianFps, onePercentLowFps }) => `${tier} ${medianFps.toFixed(1)} fps median, ${onePercentLowFps.toFixed(1)} fps 1% low`).join("; ")}.`,
+      `- Rendering measurements were ${rendering.map(({ tier, medianFps, onePercentLowFps }) => `${medianFps.toFixed(1)} fps median and ${onePercentLowFps.toFixed(1)} fps 1% low on ${tier}`).join(", ")}.`,
     );
   if (load)
     lines.push(
-      `- Cold load: ${(load.transferBytes / 1_024).toFixed(1)} KiB transferred, ${(load.interactiveMs / 1_000).toFixed(2)} s to interactive.`,
+      `- A cold localhost load transferred ${(load.transferBytes / 1_024).toFixed(1)} KiB and became interactive in ${(load.interactiveMs / 1_000).toFixed(2)} s.`,
     );
-  if (tests) lines.push(`- Tests: ${tests.passed} passed, ${tests.failed} failed.`);
+  if (load?.initialJavaScriptGzipBytes !== undefined)
+    lines.push(
+      `- Initial JavaScript was ${(load.initialJavaScriptGzipBytes / 1_000).toFixed(1)} kB compressed.`,
+    );
+  if (tests) lines.push(`- ${tests.passed} tests passed and ${tests.failed} failed.`);
   return lines;
 }
 
