@@ -284,28 +284,38 @@ function median(sorted) {
   return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 }
 
+function adapterArgs() {
+  const luid = process.env.CHOWK_CAPTURE_GPU_LUID;
+  if (!luid) return [];
+  if (platform() !== "win32" || !/^-?\d+,\d+$/.test(luid)) {
+    throw new Error("CHOWK_CAPTURE_GPU_LUID requires a Windows adapter LUID as high,low");
+  }
+  return ["--use-angle=d3d11", `--use-adapter-luid=${luid}`];
+}
+
 async function measure(browser) {
   const rendering = [];
   let gpu;
   let load;
   for (const tier of ["low", "medium", "high"]) {
-    const { context, page } = await pageFor(browser, tier);
+    const args = tier === "high" ? adapterArgs() : [];
+    const tierBrowser = args.length ? await chromium.launch({ channel: "chrome", args }) : browser;
+    const { context, page } = await pageFor(tierBrowser, tier);
     try {
       const cdp = await context.newCDPSession(page);
       await cdp.send("Network.enable");
       await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
       await page.goto(`${origin}/?tour=off`);
       await waitForScene(page);
+      const tierGpu = await page.evaluate(() => {
+        const context = document.querySelector(".scene-stage canvas")?.getContext("webgl2");
+        const extension = context?.getExtension("WEBGL_debug_renderer_info");
+        return context && extension
+          ? context.getParameter(extension.UNMASKED_RENDERER_WEBGL)
+          : undefined;
+      });
       if (tier === "medium") {
         const data = await page.evaluate(() => {
-          const canvas = document.createElement("canvas");
-          const context = canvas.getContext("webgl2");
-          const extension = context?.getExtension("WEBGL_debug_renderer_info");
-          const renderer =
-            context && extension
-              ? context.getParameter(extension.UNMASKED_RENDERER_WEBGL)
-              : undefined;
-          context?.getExtension("WEBGL_lose_context")?.loseContext();
           const entries = [
             ...performance.getEntriesByType("navigation"),
             ...performance.getEntriesByType("resource"),
@@ -314,10 +324,9 @@ async function measure(browser) {
             interactiveMs: performance.now(),
             transferBytes: entries.reduce((sum, entry) => sum + entry.transferSize, 0),
             files: entries.map(({ name }) => new URL(name).pathname),
-            gpu: renderer,
           };
         });
-        gpu = data.gpu;
+        gpu = tierGpu;
         const initialJavaScriptGzipBytes = [...new Set(data.files)]
           .filter((name) => /^\/assets\/[\w.-]+\.js$/.test(name))
           .reduce(
@@ -352,12 +361,13 @@ async function measure(browser) {
       const medianFps = 1000 / median(intervals);
       const onePercentLowFps =
         (1000 * slowest.length) / slowest.reduce((sum, interval) => sum + interval, 0);
-      rendering.push({ tier, medianFps, onePercentLowFps });
+      rendering.push({ tier, medianFps, onePercentLowFps, gpu: tierGpu });
       process.stdout.write(
         `${tier}: ${medianFps.toFixed(1)} median FPS, ${onePercentLowFps.toFixed(1)} 1% low\n`,
       );
     } finally {
       await context.close();
+      if (tierBrowser !== browser) await tierBrowser.close();
     }
   }
   const file = join(root, "results/engineering.json");
@@ -401,7 +411,7 @@ const server = await preview({
 try {
   const browser = await chromium.launch({
     channel: "chrome",
-    args: mode === "video" ? ["--auto-accept-this-tab-capture"] : [],
+    args: mode === "video" ? ["--auto-accept-this-tab-capture", ...adapterArgs()] : [],
   });
   try {
     if (mode === "stills") await stills(browser);

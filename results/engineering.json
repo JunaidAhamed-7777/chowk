@@ -25,24 +25,27 @@
   "rendering": [
     {
       "tier": "low",
-      "medianFps": 163.93442622952287,
-      "onePercentLowFps": 160.64257028110924
+      "medianFps": 82.64462809917417,
+      "onePercentLowFps": 21.08222066057622,
+      "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)"
     },
     {
       "tier": "medium",
-      "medianFps": 163.93442622952287,
-      "onePercentLowFps": 135.1351351351307
+      "medianFps": 54.64480874316886,
+      "onePercentLowFps": 16.913319238900765,
+      "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)"
     },
     {
       "tier": "high",
-      "medianFps": 163.93442622952287,
-      "onePercentLowFps": 157.89473684210054
+      "medianFps": 163.93442622949843,
+      "onePercentLowFps": 32.979113228288575,
+      "gpu": "ANGLE (AMD, AMD Radeon RX 6600M (0x000073FF) Direct3D11 vs_5_0 ps_5_0, D3D11)"
     }
   ],
   "load": {
-    "interactiveMs": 1380.7000000029802,
-    "transferBytes": 854025,
-    "initialJavaScriptGzipBytes": 493867
+    "interactiveMs": 1731.3999999985099,
+    "transferBytes": 854537,
+    "initialJavaScriptGzipBytes": 494027
   },
   "determinism": {
     "Node": 1467674151,
