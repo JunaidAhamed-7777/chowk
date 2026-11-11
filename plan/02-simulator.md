@@ -197,6 +197,7 @@ The move is instantaneous in the dynamics. For rendering, `lat` eases towards th
 - A vehicle crossing the stop line enters the connector for its movement. Its strip is mapped proportionally to the connector's width, then again to the exit link's width.
 - Inside a connector, vehicles follow only vehicles on the same connector and the first vehicle on the exit link.
 - Because phasing is approach-based and all-red clears the box, connectors from different approaches are never occupied at the same time. A test asserts this.
+- Each box reserves one connector movement until the last vehicle's rear clears its exit. Straight movements can discharge in parallel strips. Curved turns use a single vehicle at a time and an 8 m/s speed cap (default) to keep turning sweeps clear. This choice affects junction capacity and is included in calibration.
 - A vehicle may enter the junction only if the exit link has room for it in its mapped strips.
 
 ### Yellow

@@ -55,8 +55,8 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 1.3 | Vehicle storage (typed arrays, free list), per-link sorted lists | `02` Vehicle state | 1.2 | Add, remove, re-sort tested |
 | ☑ | 1.4 | Longitudinal dynamics: IDM against the constraining leader on a single link, with the overlap backstop and counter | `02` Longitudinal | 1.3 | A platoon behind a stopped obstacle queues without overlap; free-flow speed reached |
 | ☑ | 1.5 | Demand generation ahead of time; spawning with backlog | `02` Demand | 1.1, 1.3 | Same seed gives the same arrival list; backlog drains when space appears |
-| ☐ | 1.6 | Signal state machine and stop-line obstacles; yellow decision | `02` Signal phasing | 1.4 | State-machine tests pass |
-| ☐ | 1.7 | Junction traversal: connectors, strip mapping, do-not-block-the-box | `02` Junctions | 1.6 | Vehicles complete routes through all five junctions; exclusivity test passes |
+| ☑ | 1.6 | Signal state machine and stop-line obstacles; yellow decision | `02` Signal phasing | 1.4 | State-machine tests pass |
+| ☑ | 1.7 | Junction traversal: connectors, strip mapping, do-not-block-the-box | `02` Junctions | 1.6 | Vehicles complete routes through all five junctions; exclusivity test passes |
 | ☐ | 1.8 | Lateral strip changes with class thresholds and biases; emergent filtering | `02` Lateral | 1.4 | No-overlap test passes over long mixed-traffic runs; filtering check passes |
 | ☐ | 1.9 | Metrics, uncensored; fuel and CO2 estimate | `02` Metrics | 1.7 | Hand-computed delay on a scripted case matches; conservation holds |
 | ☐ | 1.10 | Sensing interface with optional noise and dropout | `02` Observation | 1.7 | Values match hand counts on a constructed state |
@@ -216,3 +216,4 @@ Record spec changes here: date, what changed, why.
 
 - 12 Nov 2026 — Use npm workspaces and a committed package lock for local tooling and CI.
 - 12 Nov 2026 — Generate the dimension-matched vehicle placeholders from the simulator's dimension table. The compression pipeline accepts pre-encoded WebP and KTX2 palettes.
+- 12 Nov 2026 — Generate Poisson arrivals by integrating piecewise-linear rates. Reserve junction connectors by movement until the last vehicle clears the box. Turns use an assumed speed cap and pass one at a time.

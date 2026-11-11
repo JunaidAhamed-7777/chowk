@@ -1,7 +1,6 @@
-import { DT, LOOKAHEAD, VEHICLE_CLASSES } from "./constants";
+import { DT, LOOKAHEAD, MAX_VEHICLE_LENGTH, VEHICLE_CLASSES } from "./constants";
 import type { VehicleStore } from "./vehicles";
 
-const MAX_VEHICLE_LENGTH = Math.max(...VEHICLE_CLASSES.map(({ length }) => length));
 const MIN_GAP = 0.001;
 const EMERGENCY_DECEL = 9;
 
