@@ -55,7 +55,7 @@ No backend. No database. No API keys. No analytics that need consent.
 │  │  ├─ src/                   network, vehicles, dynamics, signals, demand, events, metrics, sense, hash, rng
 │  │  ├─ networks/              corridor.json, grid-holdout.json
 │  │  └─ test/
-│  ├─ controllers/              @chowk/controllers: baselines, chowk policy, driver, explain
+│  ├─ controllers/              @chowk/controllers: baselines, driver, explain, src/policy/ (guarded inference)
 │  ├─ scenarios/                @chowk/scenarios: scenario definitions, calibration loader
 │  ├─ bench/                    @chowk/bench: CLI, statistics, report generation
 │  └─ train/                    @chowk/train: ES, worker pool, checkpoints, export
