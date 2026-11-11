@@ -189,7 +189,7 @@ export function StaticDistrict() {
     <>
       <mesh rotation-x={-Math.PI / 2} position={[900, -0.52, 0]}>
         <planeGeometry args={[6400, 4600]} />
-        <meshStandardMaterial color="#151f2c" roughness={1} />
+        <meshStandardMaterial color="#0c121b" roughness={1} />
       </mesh>
       <BoxBatch boxes={district.asphalt} material={materials.asphalt} />
       <BoxBatch boxes={district.buildings} material={materials.facade} />

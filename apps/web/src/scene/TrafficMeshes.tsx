@@ -2,16 +2,21 @@ import { BRAKING_FLAG, corridor, DT, SNAPSHOT_STRIDE, VEHICLE_CLASSES } from "@c
 import { useFrame } from "@react-three/fiber";
 import { type RefObject, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
+  AdditiveBlending,
   BoxGeometry,
   type BufferAttribute,
   Color,
   DynamicDrawUsage,
   type InstancedMesh,
   Object3D,
+  type PerspectiveCamera,
+  PlaneGeometry,
+  ShaderMaterial,
 } from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { fadeMs, type SimHost } from "../sim/SimHost";
 import { district } from "./corridorGeometry";
+import { createGlow, type Glow } from "./glow";
 import type { PlaybackSpeed } from "./sceneSettings";
 import { useVehicleGeometries } from "./vehicleGeometries";
 
@@ -33,6 +38,15 @@ const darkLamp = new Color("#151b23");
 const headlightColor = new Color(6.4, 4.85, 2.95);
 const tailLight = new Color(2.85, 0.032, 0.023);
 const brakeLight = new Color(8.4, 0.057, 0.034);
+const headGlow = [2.3, 1.85, 1.2] as const;
+const tailGlow = [1.5, 0.05, 0.03] as const;
+const brakeGlow = [3.4, 0.09, 0.05] as const;
+const signalGlow = [
+  [3.2, 0.1, 0.06],
+  [3.4, 1.5, 0.05],
+  [0.08, 3.2, 1.1],
+] as const;
+const signalLampHeight = 4.95;
 const updateRanges = new WeakMap<BufferAttribute, { start: number; count: number }>();
 
 function prepareUpload(attribute: BufferAttribute) {
@@ -74,6 +88,8 @@ function drawVehicle(
   mesh: InstancedMesh,
   heads: InstancedMesh,
   tails: InstancedMesh,
+  beams: InstancedMesh | null,
+  glow: Glow,
   instance: number,
   lampIndex: number,
   x: number,
@@ -107,6 +123,56 @@ function drawVehicle(
     tails.setMatrixAt(lampIndex + light, matrix.matrix);
     tails.setColorAt(lampIndex + light, brake ? brakeLight : tailLight);
   }
+
+  // One halo at each end keeps the vehicle readable when its lamps are sub-pixel.
+  const forward = headlight * fade;
+  const rear = brake ? brakeGlow : tailGlow;
+  const { positions, colors } = glow;
+  const base = lampIndex * 3;
+  positions[base] = x + forward * dx;
+  positions[base + 1] = 0.62;
+  positions[base + 2] = z + forward * dz;
+  positions[base + 3] = x - forward * dx;
+  positions[base + 4] = 0.66;
+  positions[base + 5] = z - forward * dz;
+  for (let channel = 0; channel < 3; channel += 1) {
+    colors[base + channel] = headGlow[channel] * fade;
+    colors[base + 3 + channel] = rear[channel] * fade;
+  }
+
+  if (beams) {
+    matrix.position.set(x + forward * dx, 0.04, z + forward * dz);
+    matrix.scale.set((width + 1.5) * fade, 1, (width < 1 ? 7.5 : 11) * fade);
+    matrix.updateMatrix();
+    beams.setMatrixAt(lampIndex / 2, matrix.matrix);
+  }
+}
+
+function makeBeam() {
+  // Unit quad on the road, reaching from the bumper along local -Z, the forward axis of a vehicle.
+  const geometry = new PlaneGeometry(1, 1).rotateX(-Math.PI / 2).translate(0, 0, -0.5);
+  const material = new ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: AdditiveBlending,
+    toneMapped: false,
+    vertexShader: `
+      varying vec2 beamUV;
+      void main() {
+        beamUV = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.);
+      }`,
+    fragmentShader: `
+      varying vec2 beamUV;
+      void main() {
+        float reach = beamUV.y;
+        float spread = mix(.34, 1., reach);
+        float across = 1. - smoothstep(0., spread, abs(beamUV.x * 2. - 1.));
+        float along = pow(1. - reach, 1.6) * smoothstep(0., .06, reach);
+        gl_FragColor = vec4(vec3(.62, .5, .33) * across * along * .5, 1.);
+      }`,
+  });
+  return { geometry, material };
 }
 
 export function TrafficMeshes({
@@ -129,6 +195,10 @@ export function TrafficMeshes({
   const [matrix] = useState(() => new Object3D());
   const [counts] = useState(() => new Uint16Array(VEHICLE_CLASSES.length));
   const [fallback] = useState(makeFallbackGeometries);
+  const beams = useRef<InstancedMesh>(null);
+  const [beam] = useState(makeBeam);
+  const [vehicleGlow] = useState(() => createGlow(capacity * 2, 1.5, 2.2));
+  const [signalHalo] = useState(() => createGlow(district.signalMounts.length, 3.4, 4.5));
   const models = useVehicleGeometries();
   const lastSignalTick = useRef(-1);
   const lastSettledTick = useRef(-1);
@@ -137,8 +207,12 @@ export function TrafficMeshes({
   useEffect(
     () => () => {
       for (const geometry of fallback) geometry.dispose();
+      beam.geometry.dispose();
+      beam.material.dispose();
+      vehicleGlow.dispose();
+      signalHalo.dispose();
     },
-    [fallback],
+    [fallback, beam, vehicleGlow, signalHalo],
   );
 
   useLayoutEffect(() => {
@@ -149,13 +223,19 @@ export function TrafficMeshes({
       if (mesh) prepareUpload(mesh.instanceMatrix);
     }
     if (heads.current) prepareUpload(heads.current.instanceMatrix);
+    if (beams.current) prepareUpload(beams.current.instanceMatrix);
+    for (const [index, mount] of district.signalMounts.entries()) {
+      signalHalo.positions[index * 3] = mount.x;
+      signalHalo.positions[index * 3 + 1] = signalLampHeight - 0.38;
+      signalHalo.positions[index * 3 + 2] = mount.z;
+    }
     prepareUpload(tail.instanceMatrix);
     for (let index = 0; index < capacity * 2; index += 1) tail.setColorAt(index, tailLight);
     for (const [index, mount] of district.signalMounts.entries()) {
       matrix.rotation.y = mount.yaw;
       matrix.scale.set(0.14, 0.27, 0.26);
       for (let lamp = 0; lamp < 3; lamp += 1) {
-        matrix.position.set(mount.x, 4.95 - lamp * 0.38, mount.z);
+        matrix.position.set(mount.x, signalLampHeight - lamp * 0.38, mount.z);
         matrix.updateMatrix();
         signals.setMatrixAt(index * 3 + lamp, matrix.matrix);
         signals.setColorAt(index * 3 + lamp, darkLamp);
@@ -165,10 +245,14 @@ export function TrafficMeshes({
     if (signals.instanceColor) signals.instanceColor.needsUpdate = true;
     signals.instanceMatrix.needsUpdate = true;
     signals.computeBoundingSphere();
-  }, [capacity, matrix]);
+  }, [capacity, matrix, signalHalo]);
 
-  useFrame(() => {
+  useFrame((state) => {
     const currentHost = host.current;
+    const view = state.camera as PerspectiveCamera;
+    const pixelsPerUnit =
+      (state.size.height * state.viewport.dpr) / (2 * Math.tan((view.fov * Math.PI) / 360));
+    const beamMesh = lowDetail ? null : beams.current;
     const head = heads.current;
     const tail = tails.current;
     const signals = signalLamps.current;
@@ -216,6 +300,8 @@ export function TrafficMeshes({
         mesh,
         head,
         tail,
+        beamMesh,
+        vehicleGlow,
         counts[cls]++,
         drawn++ * 2,
         x,
@@ -238,6 +324,8 @@ export function TrafficMeshes({
         mesh,
         head,
         tail,
+        beamMesh,
+        vehicleGlow,
         counts[vehicle.cls]++,
         drawn++ * 2,
         vehicle.x,
@@ -257,6 +345,8 @@ export function TrafficMeshes({
     }
     uploadTransforms(head, drawn * 2);
     uploadTransforms(tail, drawn * 2);
+    if (beamMesh) uploadTransforms(beamMesh, drawn);
+    vehicleGlow.commit(drawn * 2, pixelsPerUnit);
     if (tail.instanceColor) upload(tail.instanceColor, drawn * 6);
 
     if (lastSignalTick.current === current.tick) return;
@@ -270,7 +360,11 @@ export function TrafficMeshes({
       for (let lamp = 0; lamp < 3; lamp += 1) {
         signals.setColorAt(index * 3 + lamp, lamp === lit ? lamps[lamp] : darkLamp);
       }
+      for (let channel = 0; channel < 3; channel += 1) {
+        signalHalo.colors[index * 3 + channel] = signalGlow[lit][channel];
+      }
     }
+    signalHalo.commit(district.signalMounts.length, pixelsPerUnit);
     if (signals.instanceColor) signals.instanceColor.needsUpdate = true;
   });
 
@@ -312,6 +406,17 @@ export function TrafficMeshes({
         <boxGeometry />
         <meshBasicMaterial toneMapped={false} />
       </instancedMesh>
+      {!lowDetail && (
+        <instancedMesh
+          ref={beams}
+          args={[beam.geometry, beam.material, capacity]}
+          count={0}
+          frustumCulled={false}
+          renderOrder={1}
+        />
+      )}
+      <primitive object={vehicleGlow.points} />
+      <primitive object={signalHalo.points} />
     </>
   );
 }

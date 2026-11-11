@@ -67,7 +67,7 @@ const linkRects = corridor.links.map((link) => {
       origin[1] + dir[1] * along - left[1] * lateral,
     ] as const;
   const [x, z] = center(length / 2, width / 2);
-  asphalt.push(box(x, -0.32, z, length, 0.5, width, "#12161f", yaw));
+  asphalt.push(box(x, -0.32, z, length, 0.5, width, "#1c222d", yaw));
   for (const [offset, curbWidth, color] of [
     [-0.98, 2, "#28313c"],
     [width + 0.3, 0.62, "#343943"],
@@ -76,15 +76,15 @@ const linkRects = corridor.links.map((link) => {
     furniture.push(box(cx, -0.22, cz, length, 0.43, curbWidth, color, yaw));
   }
   const [edgex, edgez] = center(length / 2, 0.26);
-  markings.push(box(edgex, -0.059, edgez, length - 4, 0.012, 0.09, "#666d74", yaw));
+  markings.push(box(edgex, -0.059, edgez, length - 4, 0.012, 0.09, "#8d949b", yaw));
 
   const endJunction = corridor.junctions.find((entry) => entry.node === link.to);
   if (endJunction) {
     const [sx, sz] = center(length - 3.8, width * 0.5);
-    markings.push(box(sx, -0.054, sz, 0.28, 0.016, width - 0.45, "#8a8e8e", yaw));
+    markings.push(box(sx, -0.054, sz, 0.28, 0.016, width - 0.45, "#c4c9cc", yaw));
     for (let i = 0.6; i < width - 0.35; i += 0.92) {
       const [px, pz] = center(length - 1.75, i);
-      markings.push(box(px, -0.052, pz, 2.1, 0.017, 0.46, "#777f82", yaw));
+      markings.push(box(px, -0.052, pz, 2.1, 0.017, 0.46, "#a9b0b4", yaw));
     }
     const [px, pz] = center(length - 1.7, -0.62);
     furniture.push(box(px, 2.35, pz, 0.22, 5.4, 0.22, "#51616a"));
@@ -137,7 +137,7 @@ for (const junction of junctions) {
       );
     }
   }
-  asphalt.push(box(junction.x, -0.335, junction.z, extentX * 2, 0.5, extentZ * 2, "#161b25"));
+  asphalt.push(box(junction.x, -0.335, junction.z, extentX * 2, 0.5, extentZ * 2, "#1e2430"));
 }
 
 const buildingColors = ["#222e40", "#273749", "#262f3a", "#303948", "#2a3241", "#232f42"];
