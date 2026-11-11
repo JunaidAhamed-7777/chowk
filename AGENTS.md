@@ -32,7 +32,7 @@ Background on why this concept was chosen is in `docs/`; you do not need it to b
 
 ## Current state
 
-The roadmap tracks which parts of the project are implemented. Commands below include planned work from `plan/07-architecture.md`. Check the corresponding task in the roadmap if a command does not exist yet.
+The roadmap tracks which parts of the project are implemented. `HANDOFF.md` records the latest pass and what to do next. Commands below include planned work from `plan/07-architecture.md`. Check the corresponding task in the roadmap if a command does not exist yet.
 
 ## Commands (once scaffolded)
 
@@ -105,7 +105,7 @@ Listed in `plan/07-architecture.md` under "Decisions already made". Do not reope
 - **Pick tasks from `ROADMAP.md`**: lowest-numbered unblocked task in your track; P0 before P1 before P2. Tick the box when its "Done when" is verified.
 - **Verify by running.** Type-checks and tests passing is necessary, not sufficient. Run the simulator, open the app, look at the scene. For anything visual, look at it at night from the aerial camera at the default quality tier.
 - **Keep specs true.** If you change behaviour that a spec describes, update the spec in the same commit and add a line to the roadmap's change log.
-- **Small commits, pushed often.** Commit after each roadmap task or coherent step, with a message that says what changed and why. Push to `main` after each commit unless the user says otherwise. Do not leave work uncommitted at the end of a session.
+- **Small commits, pushed often.** Commit after each roadmap task or coherent step, with a message that says what changed and why. Push to `main` after each commit unless the user says otherwise. Do not leave work uncommitted at the end of a session. Do not add `Co-Authored-By` or other attribution trailers to commit messages.
 - **Report honestly.** If something does not work, a test fails, or a step was skipped, say so plainly. Do not describe unverified work as done.
 - **Protect the schedule.** Check the gates in `ROADMAP.md`. When behind, cut in the order given in `plan/09-quality.md`; do not quietly reduce quality on P0 items.
 - **Do not wait on other tracks.** Rendering uses a mock snapshot source until the simulator is ready; scenes use placeholder models until assets are ready.

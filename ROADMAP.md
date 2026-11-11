@@ -160,7 +160,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ✓ | Id | Task | Spec | Depends | Done when |
 |---|---|---|---|---|---|
 | ☑ | 7.1 | Asset build and check scripts; placeholder models with correct dimensions and light masks | `06` Pipeline, Order of work | 0.1 | `npm run assets:check` passes on placeholders |
-| ☐ | 7.2 | Two-wheeler, car, auto-rickshaw, bus | `06` Vehicles | 7.1 | In the scene at night, each class is recognisable from the aerial camera |
+| ☑ | 7.2 | Two-wheeler, car, auto-rickshaw, bus | `06` Vehicles | 7.1 | In the scene at night, each class is recognisable from the aerial camera |
 | ☐ | 7.3 | Signal, street lamp, low and mid buildings | `06` Buildings, Street | 7.1 | In the scene; budgets met |
 | ☐ | 7.4 | Light commercial, ambulance, tall buildings, shop strips, trees | `06` | 7.2 | As above |
 | ☐ | 7.5 | Low-detail vehicle meshes for the Low tier | `06` Vehicles | 7.2 | Low tier uses them |
@@ -219,3 +219,4 @@ Record spec changes here: date, what changed, why.
 - 12 Nov 2026 — Generate Poisson arrivals by integrating piecewise-linear rates. Reserve junction connectors by movement until the last vehicle clears the box. Turns use an assumed speed cap and pass one at a time.
 - 12 Nov 2026 — Keep lateral alignment near connector boundaries and add straight lead-ins and lead-outs to curved paths after oriented-rectangle tests exposed overlaps.
 - 12 Nov 2026 — Connect the desktop scene and debug view to one fixed-cycle worker with provisional demand. Two-controller lockstep remains task 4.8.
+- 13 Nov 2026 — Vehicle `COLOR_0` now also marks trim and glass with values below 0.5, read by the body shader as a material mask. Live view is full-bleed with cumulative readouts; rolling metric cards remain task 5.1. Aerial camera drifts until the visitor interacts. See `HANDOFF.md`.
