@@ -48,6 +48,7 @@ export interface EngineeringReport {
   determinism?: Record<string, number>;
   rendering?: { tier: string; medianFps: number; onePercentLowFps: number; gpu?: string }[];
   load?: { transferBytes: number; interactiveMs: number; initialJavaScriptGzipBytes?: number };
+  models?: { count: number; bytes: number };
   shapedLoads?: {
     label: string;
     downloadMbps: number;

@@ -45,6 +45,7 @@ function engineeringLines(report?: EngineeringReport): string[] {
     determinism,
     rendering,
     load,
+    models,
     shapedLoads,
     memory,
     reproduction,
@@ -82,6 +83,10 @@ function engineeringLines(report?: EngineeringReport): string[] {
   if (load?.initialJavaScriptGzipBytes !== undefined)
     lines.push(
       `- Initial JavaScript was ${(load.initialJavaScriptGzipBytes / 1_000).toFixed(1)} kB compressed.`,
+    );
+  if (models)
+    lines.push(
+      `- The ${models.count} delivered GLB models totalled ${(models.bytes / 1_024).toFixed(1)} KiB.`,
     );
   for (const {
     label,
@@ -198,7 +203,8 @@ export function writeReports(root: string, benchmark: BenchmarkFile): void {
   if (engineering.length > 0) report.push("## Engineering measurements", engineering.join("\n\n"));
   report.push(
     "## Provenance",
-    `Source commit ${benchmark.meta.gitCommit}. Simulator ${benchmark.meta.simVersion}. Policy ${benchmark.meta.policyHash}. Raw runs and configuration are in [benchmark.json](benchmark.json).`,
+    `Source commit ${benchmark.meta.gitCommit}. Simulator ${benchmark.meta.simVersion}. Policy ${benchmark.meta.policyHash}.`,
+    `The recorded episodes cover ${(benchmark.meta.simulatedSeconds / 3_600).toFixed(1)} simulated hours and took ${(benchmark.meta.wallSeconds / 60).toFixed(1)} minutes of benchmark wall time across runs. Raw runs and configuration are in [benchmark.json](benchmark.json).`,
   );
   writeFileSync(resolve(reportDirectory, "benchmark.md"), `${report.join("\n\n")}\n`);
 

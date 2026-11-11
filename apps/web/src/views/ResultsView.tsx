@@ -115,6 +115,7 @@ function Engineering({ measurements }: { measurements: EngineeringReport }) {
     determinism,
     rendering,
     load,
+    models,
     shapedLoads,
     memory,
     reproduction,
@@ -175,6 +176,14 @@ function Engineering({ measurements }: { measurements: EngineeringReport }) {
           <div>
             <dt>Initial JavaScript</dt>
             <dd>{(load.initialJavaScriptGzipBytes / 1_000).toFixed(1)} kB compressed</dd>
+          </div>
+        )}
+        {models && (
+          <div>
+            <dt>Delivered models</dt>
+            <dd>
+              {models.count} GLBs · {(models.bytes / 1_024).toFixed(1)} KiB total
+            </dd>
           </div>
         )}
         {shapedLoads?.map(
@@ -465,6 +474,10 @@ export function ResultsView() {
           <div>
             <dt>Simulated time</dt>
             <dd>{(meta.simulatedSeconds / 3_600).toFixed(1)} hours</dd>
+          </div>
+          <div>
+            <dt>Benchmark wall time</dt>
+            <dd>{(meta.wallSeconds / 60).toFixed(1)} minutes across runs</dd>
           </div>
           <div>
             <dt>Episode</dt>
