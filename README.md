@@ -34,9 +34,9 @@ On 20 held-out seeds in simulated Indian mixed traffic, CHOWK showed no clear di
 
 ### Engineering measurements
 
-Hardware and runtime: AMD Ryzen 9 5900HX with Radeon Graphics         · win32 10.0.26300 · Node 26.8.1.
+Measured on AMD Ryzen 9 5900HX with Radeon Graphics         · win32 10.0.26300 · Node 26.8.1.
 
-- Simulator: 1220.1× real time with 500 vehicles; 327.4× real time with 1,500 vehicles; 142.3× real time with 3,000 vehicles.
+- The simulator ran at 1220.1× real time with about 502 vehicles, 327.4× real time with about 1,515 vehicles, 142.3× real time with about 3,045 vehicles.
 
 [Full benchmark and provenance](results/benchmark.md) · [Raw runs](results/benchmark.json)
 
