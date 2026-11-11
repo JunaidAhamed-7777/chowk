@@ -304,7 +304,7 @@ export function TrafficMeshes({
     return beam;
   });
   const [vehicleGlow] = useState(() => {
-    const glow = createGlow(capacity * 2, 1.5, 2.8);
+    const glow = createGlow(capacity * 2, 1.6, 3.7);
     clipMaterial(glow.points.material, clip);
     return glow;
   });

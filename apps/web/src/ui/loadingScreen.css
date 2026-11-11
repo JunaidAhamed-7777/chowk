@@ -5,8 +5,8 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  background: radial-gradient(ellipse at center, #05070dd9 0, #05070d8f 70%);
-  backdrop-filter: blur(5px);
+  background: radial-gradient(ellipse at center, #05070de6 0, #05070db8 70%);
+  backdrop-filter: blur(18px);
   opacity: 1;
   transition: opacity 420ms ease;
 }

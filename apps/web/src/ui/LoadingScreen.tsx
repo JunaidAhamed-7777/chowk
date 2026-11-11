@@ -15,6 +15,7 @@ const hints = [
 const exitMs = 450;
 // Long enough to read the card on a fast machine, short enough not to feel like a delay.
 const minimumMs = 1100;
+const canvasFadeMs = 420;
 
 /** The Live view's start-up sequence, shared by the route fallback and the view itself. */
 export function liveLoadingSteps(scene: boolean, controllers: boolean, traffic: boolean) {
@@ -41,7 +42,8 @@ export function LoadingScreen({ steps, done }: { steps: LoadingStep[]; done: boo
       setLeaving(false);
       return;
     }
-    const wait = Math.max(0, minimumMs - (performance.now() - shownAt));
+    // Stay up while the canvas fades in over the poster, which shows an older interface.
+    const wait = Math.max(canvasFadeMs, minimumMs - (performance.now() - shownAt));
     const leave = window.setTimeout(() => setLeaving(true), wait);
     const remove = window.setTimeout(() => setGone(true), wait + exitMs);
     return () => {

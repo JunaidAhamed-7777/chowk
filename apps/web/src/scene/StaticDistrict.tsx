@@ -66,7 +66,7 @@ function buildingMaterial() {
       vec3 warm = vec3(1., .52, .21);
       vec3 cool = vec3(.33, .65, .91);
       vec3 windowLight = mix(warm, cool, step(.70, windowHash(cell + buildingSeed * .43)));
-      float strength = mix(.2, 1.25, windowHash(cell + buildingSeed * .18));
+      float strength = mix(.16, .95, windowHash(cell + buildingSeed * .18));
       totalEmissiveRadiance += glass * lit * strength * windowLight;`,
       );
   };
@@ -207,7 +207,7 @@ function LightPools() {
       void main() {
         float radius = length(poolUV * 2. - 1.);
         float brightness = pow(1. - smoothstep(0., 1., radius), 2.3);
-        gl_FragColor = vec4(.38, .17, .051, brightness * .54);
+        gl_FragColor = vec4(.38, .17, .051, brightness * .4);
       }`,
       }),
     [],

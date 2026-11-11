@@ -52,7 +52,7 @@ export function createGlow(capacity: number, worldSize: number, minPixels: numbe
         float natural = worldSize * pixelsPerUnit / max(-viewPosition.z, 1.);
         gl_PointSize = clamp(natural, minPixels, 96.);
         // A light enlarged to stay visible is dimmed so distant traffic does not flare.
-        lightColor = glow * clamp(natural / minPixels, .6, 1.);
+        lightColor = glow * clamp(natural / minPixels, .85, 1.);
       }`,
     fragmentShader: `
       varying vec3 lightColor;
