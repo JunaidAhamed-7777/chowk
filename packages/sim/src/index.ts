@@ -4,6 +4,7 @@ export type { Arrival, DemandScenario, RatePoint, RouteShare, SourceDemand } fro
 export { generateDemand } from "./demand";
 export type { ScheduledEvent, SimEvent } from "./events";
 export { StateHash } from "./hash";
+export { holdoutNetwork } from "./holdout";
 export type { Metrics } from "./metrics";
 export { loadNetwork } from "./network";
 export type {
