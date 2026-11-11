@@ -60,7 +60,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 1.8 | Lateral strip changes with class thresholds and biases; emergent filtering | `02` Lateral | 1.4 | No-overlap test passes over long mixed-traffic runs; filtering check passes |
 | ☑ | 1.9 | Metrics, uncensored; fuel and CO2 estimate | `02` Metrics | 1.7 | Hand-computed delay on a scripted case matches; conservation holds |
 | ☑ | 1.10 | Sensing interface with optional noise and dropout | `02` Observation | 1.7 | Values match hand counts on a constructed state |
-| ☐ | 1.11 | Events: surge, block, ambulance (P0); sensor freeze (P1); outage (P2) | `02` Events | 1.8 | Each event has a passing test |
+| ☑ | 1.11 | Events: surge, block, ambulance (P0); sensor freeze (P1); outage (P2) | `02` Events | 1.8 | Each event has a passing test |
 | ☑ | 1.12 | Scenario modifiers: monsoon; lane-disciplined cars only | `02` Scenario modifiers | 1.8 | Both run; cars-only shows whole-lane changes only |
 | ☑ | 1.13 | Snapshot writer, `clone()`, public API finalised | `02` Public API | 1.8 | Snapshot positions match link geometry; clone test passes |
 | ☑ | 1.14 | 2D debug viewer (plain canvas page in the app, dev only) | — | 1.13 | The corridor, vehicles by class, and signals are visible and steppable |
@@ -220,3 +220,4 @@ Record spec changes here: date, what changed, why.
 - 12 Nov 2026 — Keep lateral alignment near connector boundaries and add straight lead-ins and lead-outs to curved paths after oriented-rectangle tests exposed overlaps.
 - 12 Nov 2026 — Connect the desktop scene and debug view to one fixed-cycle worker with provisional demand. Two-controller lockstep remains task 4.8.
 - 13 Nov 2026 — Vehicle `COLOR_0` now also marks trim and glass with values below 0.5, read by the body shader as a material mask. Live view is full-bleed with cumulative readouts; rolling metric cards remain task 5.1. Aerial camera drifts until the visitor interacts. See `HANDOFF.md`.
+- 12 Nov 2026 — Sensor freeze holds approach detector readings. The signal state machine continues to report its own phase and timer.

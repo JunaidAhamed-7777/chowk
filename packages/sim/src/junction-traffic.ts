@@ -5,6 +5,7 @@ import {
   TURN_SPEED,
   VEHICLE_CLASSES,
 } from "./constants";
+import type { Events } from "./events";
 import type { StateHash } from "./hash";
 import { constrain, type Leader, shareStrip } from "./longitudinal";
 import type { Connector, Link, Network } from "./network";
@@ -33,6 +34,7 @@ export class JunctionTraffic {
   private readonly occupied: Int32Array;
   private readonly admission: Int32Array;
   private readonly admittedTurn: Int32Array;
+  private readonly outageGrant: Uint32Array;
   private readonly stripStep: number;
   private readonly leader: Leader = { rear: Infinity, speed: 0 };
 
@@ -41,6 +43,7 @@ export class JunctionTraffic {
     private readonly vehicles: VehicleStore,
     private readonly signals: SignalBank,
     laneDisciplined = false,
+    private readonly events?: Events,
   ) {
     const { links, connectors, junctions, routes } = network;
     this.segments = [...links, ...connectors];
@@ -70,6 +73,7 @@ export class JunctionTraffic {
     this.occupied = new Int32Array(junctions.length).fill(-1);
     this.admission = new Int32Array(junctions.length).fill(-1);
     this.admittedTurn = new Int32Array(junctions.length).fill(-1);
+    this.outageGrant = new Uint32Array(junctions.length);
   }
 
   private connector(id: number): Connector {
@@ -84,12 +88,16 @@ export class JunctionTraffic {
     this.occupied.set(other.occupied);
     this.admission.set(other.admission);
     this.admittedTurn.set(other.admittedTurn);
+    this.outageGrant.set(other.outageGrant);
   }
 
   writeHash(hash: StateHash): void {
     for (let slot = 0; slot < this.vehicles.capacity; slot++) {
       if (this.vehicles.link[slot] === -1) continue;
       hash.addUint32(this.previousConnector[slot]).addUint32(this.connectorEntryStrip[slot]);
+    }
+    for (let id = 0; id < this.outageGrant.length; id++) {
+      if (this.outageGrant[id] > 0) hash.addUint32(id).addUint32(this.outageGrant[id]);
     }
   }
 
@@ -119,6 +127,11 @@ export class JunctionTraffic {
     admittedTurn.fill(-1);
     for (const junction of network.junctions) {
       const id = junction.id;
+      if (this.events?.isOutage(id)) {
+        this.admitOutage(id);
+        continue;
+      }
+      this.outageGrant[id] = 0;
       if (signals.state[id] === ALL_RED) continue;
       const road = network.links[junction.phases[signals.phase[id]].approaches[0]];
       const list = vehicles.byLink[road.id];
@@ -141,6 +154,47 @@ export class JunctionTraffic {
         break;
       }
     }
+  }
+
+  private admitOutage(junction: number): void {
+    const { vehicles, network } = this;
+    if (this.occupied[junction] !== -1) {
+      this.outageGrant[junction] = 0;
+      return;
+    }
+    let selected = -1;
+    let wait = -1;
+    for (const link of network.junctions[junction].approaches) {
+      const road = network.links[link];
+      const list = vehicles.byLink[link];
+      for (let index = 0; index < vehicles.counts[link]; index++) {
+        const slot = list[index];
+        if (road.length - vehicles.s[slot] > VEHICLE_CLASSES[vehicles.cls[slot]].standstillGap + 1)
+          break;
+        const granted = vehicles.id[slot] === this.outageGrant[junction];
+        const stopped = vehicles.wait[slot] >= 2 && vehicles.v[slot] < 0.5;
+        const next = this.nextConnector(slot);
+        if (
+          (!granted && !stopped) ||
+          next < 0 ||
+          !this.hasExitRoom(this.connector(next), slot, vehicles.strip[slot])
+        )
+          continue;
+        if (granted || vehicles.wait[slot] > wait) {
+          selected = slot;
+          wait = granted ? Infinity : vehicles.wait[slot];
+        }
+      }
+    }
+    this.outageGrant[junction] = selected < 0 ? 0 : vehicles.id[selected];
+    if (selected >= 0) {
+      this.admission[junction] = this.nextConnector(selected);
+      this.admittedTurn[junction] = selected;
+    }
+  }
+
+  blocksShift(link: number, slot: number, strip: number): boolean {
+    return this.events?.blocksShift(link, this.vehicles, slot, strip) ?? false;
   }
 
   nextConnector(slot: number): number {
@@ -187,6 +241,7 @@ export class JunctionTraffic {
     const { network, vehicles } = this;
     const current = this.segments[segment];
     const width = VEHICLE_CLASSES[vehicles.cls[slot]].strips;
+    this.events?.constrainBlock(segment, vehicles.s[slot], strip, width, 0, out);
     const distance = current.length - vehicles.s[slot];
     if (distance > LOOKAHEAD + MAX_VEHICLE_LENGTH) return;
     if (segment >= network.links.length) {
@@ -234,6 +289,7 @@ export class JunctionTraffic {
 
   private permitted(junction: number, road: Link, slot: number): boolean {
     const { vehicles } = this;
+    if (this.events?.isOutage(junction)) return this.admittedTurn[junction] === slot;
     return this.signals.permitsEntry(
       junction,
       road.id,
@@ -265,6 +321,7 @@ export class JunctionTraffic {
     out: Leader,
   ): void {
     const { vehicles } = this;
+    this.events?.entryObstacle(segment, strip, width, offset, out);
     const list = vehicles.byLink[segment];
     for (let index = vehicles.counts[segment] - 1; index >= 0; index--) {
       const slot = list[index];

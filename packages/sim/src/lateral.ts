@@ -93,6 +93,7 @@ export class LateralDynamics {
       if (
         strip < 0 ||
         strip + geometry.strips > road.strips ||
+        junctionTraffic.blocksShift(road.id, slot, strip) ||
         !this.feasible(road, index, slot, strip)
       )
         continue;

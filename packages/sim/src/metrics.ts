@@ -17,6 +17,7 @@ interface DemandCounts {
   readonly generatedPeople: number;
   readonly backlog: number;
   readonly backlogPeople: number;
+  readonly backlogByClass?: Uint32Array;
 }
 
 export interface Metrics {
@@ -31,6 +32,13 @@ export interface Metrics {
   backlogVehicleSeconds: number;
   personDelay: number;
   vehicleDelay: number;
+  busPassengerDelay: number;
+  carPassengerDelay: number;
+  ambulanceDelay: number;
+  currentMaxWait: number;
+  maxWait: number;
+  starvationSeconds: number;
+  longWaitSeconds: number;
   stops: number;
   travelTime: number;
   /** Integral of the sum of stopped-area fractions across approaches, in seconds. */
@@ -57,6 +65,13 @@ export class MetricAccumulator {
     backlogVehicleSeconds: 0,
     personDelay: 0,
     vehicleDelay: 0,
+    busPassengerDelay: 0,
+    carPassengerDelay: 0,
+    ambulanceDelay: 0,
+    currentMaxWait: 0,
+    maxWait: 0,
+    starvationSeconds: 0,
+    longWaitSeconds: 0,
     stops: 0,
     travelTime: 0,
     queueAreaSeconds: 0,
@@ -91,12 +106,20 @@ export class MetricAccumulator {
     totals.backlogVehicleSeconds += demand.backlog * DT;
     totals.personDelay += demand.backlogPeople * DT;
     totals.vehicleDelay += demand.backlog * DT;
+    const queued = demand.backlogByClass;
+    if (queued) {
+      totals.busPassengerDelay += queued[4] * VEHICLE_CLASSES[4].occupancy * DT;
+      totals.carPassengerDelay += queued[2] * VEHICLE_CLASSES[2].occupancy * DT;
+      totals.ambulanceDelay += queued[EMERGENCY_CLASS] * DT;
+    }
 
     let queueArea = 0;
+    let longestWait = 0;
     for (let segment = 0; segment < vehicles.byLink.length; segment++) {
       const list = vehicles.byLink[segment];
       const count = vehicles.counts[segment];
       const scale = this.areaScale[segment] ?? 0;
+      let approachWait = 0;
       for (let index = 0; index < count; index++) {
         const slot = list[index];
         this.recordVehicle(vehicles, slot);
@@ -105,10 +128,17 @@ export class MetricAccumulator {
           const front = Math.min(vehicles.s[slot], this.network.links[segment].length);
           const rear = Math.max(vehicles.s[slot] - vehicle.length, this.zoneStart[segment]);
           queueArea += Math.max(0, front - rear) * vehicle.width * scale;
+          if (front >= this.zoneStart[segment])
+            approachWait = Math.max(approachWait, vehicles.wait[slot]);
         }
       }
+      longestWait = Math.max(longestWait, approachWait);
+      if (approachWait > 150) totals.starvationSeconds += DT;
     }
     totals.queueAreaSeconds += queueArea * DT;
+    totals.currentMaxWait = longestWait;
+    totals.maxWait = Math.max(longestWait, totals.maxWait);
+    if (longestWait > 120) totals.longWaitSeconds += DT;
   }
 
   recordExit(vehicles: VehicleStore, slot: number, time: number): void {
@@ -154,6 +184,9 @@ export class MetricAccumulator {
     }
 
     const cls = vehicles.cls[slot];
+    if (cls === 4) totals.busPassengerDelay += delay * vehicles.occ[slot];
+    else if (cls === 2) totals.carPassengerDelay += delay * vehicles.occ[slot];
+    else if (cls === EMERGENCY_CLASS) totals.ambulanceDelay += delay;
     const fuel = FUEL_MODEL[cls];
     const energy =
       DT * (fuel.idle + speed * (fuel.cruise + fuel.acceleration * Math.max(0, vehicles.a[slot])));

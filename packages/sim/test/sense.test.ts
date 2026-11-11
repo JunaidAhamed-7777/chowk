@@ -45,7 +45,15 @@ describe("Sensing", () => {
     expect(result.areaMid).toBeCloseTo((2.2 * 1.7 + 10 * 2.5 + 1.9 * 0.7) / (90 * width), 10);
     expect(result.areaFar).toBeCloseTo((2.5 + 5.5 * 2) / (150 * width), 10);
     expect(result.stoppedArea).toBeCloseTo((4.2 * 1.7 + 10 * 2.5) / (150 * width), 10);
-    expect(result).toMatchObject({ count: 3, waitMax: 8, emergency: 1 });
+    expect(result).toMatchObject({
+      count: 3,
+      countNear: 1,
+      countMid: 2,
+      countFar: 1,
+      stoppedCount: 2,
+      waitMax: 8,
+      emergency: 1,
+    });
     expect(result.people).toBeCloseTo(42.9, 10);
 
     const firstArea = (3.2 * 1.7) / (60 * corridor.links[1].strips * corridor.stripWidth);
@@ -91,6 +99,10 @@ describe("Sensing", () => {
       areaFar: 0,
       stoppedArea: 0,
       count: 0,
+      countNear: 0,
+      countMid: 0,
+      countFar: 0,
+      stoppedCount: 0,
       people: 0,
       waitMax: 0,
       emergency: 0,

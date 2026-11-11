@@ -1,5 +1,6 @@
 import { DT } from "./constants";
 import { type Arrival, DemandQueue, type DemandScenario, generateDemand } from "./demand";
+import { Events, eventTicks, type ScheduledEvent, type SimEvent } from "./events";
 import { StateHash } from "./hash";
 import { JunctionTraffic } from "./junction-traffic";
 import { LateralDynamics } from "./lateral";
@@ -15,6 +16,7 @@ export interface Scenario extends DemandScenario {
   monsoon?: boolean;
   sensorNoise?: number;
   sensorDropout?: number;
+  events?: readonly ScheduledEvent[];
 }
 
 export interface SimConfig {
@@ -30,6 +32,7 @@ export class TrafficSim {
   readonly signalBank: SignalBank;
   readonly junctionTraffic: JunctionTraffic;
   private demand: DemandQueue;
+  private readonly events: Events;
   private readonly longitudinal: LongitudinalDynamics;
   private readonly lateral: LateralDynamics;
   private metricAccumulator: MetricAccumulator;
@@ -46,11 +49,13 @@ export class TrafficSim {
     const headwayScale = scenario.monsoon ? 1.2 : 1;
     this.vehicles = new VehicleStore(network.links.length + network.connectors.length, maxVehicles);
     this.signalBank = new SignalBank(network.junctions);
+    this.events = new Events(network, seed);
     this.junctionTraffic = new JunctionTraffic(
       network,
       this.vehicles,
       this.signalBank,
       scenario.laneDisciplined,
+      this.events,
     );
     this.demand = new DemandQueue(
       network,
@@ -103,6 +108,26 @@ export class TrafficSim {
     return this.sensing.read(junctionId, this.tick);
   }
 
+  inject(event: SimEvent): void {
+    switch (event.type) {
+      case "surge":
+        this.demand.insert(this.events.surge(event, this.config.scenario));
+        break;
+      case "ambulance":
+        this.demand.insert([this.events.ambulance(event)]);
+        break;
+      case "block":
+        this.events.block(event);
+        break;
+      case "sensorFreeze":
+        this.sensing.freeze(event.junction, this.tick, eventTicks(event.duration));
+        break;
+      case "outage":
+        this.events.outage(event.junction, event.duration);
+        break;
+    }
+  }
+
   writeSnapshot(out: Float32Array): number {
     return this.snapshotWriter.write(out);
   }
@@ -124,6 +149,8 @@ export class TrafficSim {
     this.vehicles.writeHash(hash);
     this.junctionTraffic.writeHash(hash);
     this.demand.writeHash(hash);
+    this.events.writeHash(hash);
+    this.sensing.writeHash(hash, this.tick);
     for (let id = 0; id < phase.length; id++) {
       hash
         .addUint32(phase[id])
@@ -144,6 +171,13 @@ export class TrafficSim {
       .addMilli(metrics.fuelJoules)
       .addMilli(metrics.co2Kg)
       .addMilli(metrics.ambulanceTravelTime);
+    hash
+      .addMilli(metrics.ambulanceDelay)
+      .addMilli(metrics.busPassengerDelay)
+      .addMilli(metrics.carPassengerDelay)
+      .addMilli(metrics.starvationSeconds)
+      .addMilli(metrics.longWaitSeconds)
+      .addMilli(metrics.maxWait);
     return hash.digest();
   }
 
@@ -155,6 +189,7 @@ export class TrafficSim {
     copy.vehicles.copyFrom(this.vehicles);
     copy.junctionTraffic.copyFrom(this.junctionTraffic);
     copy.demand = this.demand.clone();
+    copy.events.copyFrom(this.events);
     copy.metricAccumulator = this.metricAccumulator.copy();
     copy.signalBank.phase.set(this.signalBank.phase);
     copy.signalBank.state.set(this.signalBank.state);
@@ -177,9 +212,10 @@ export class TrafficSim {
     const { crossings, demand, junctionTraffic, longitudinal, signalBank, vehicles } = this;
     const { segments, speedLimits, obstacle } = junctionTraffic;
     this.tick++;
+    this.events.tick = this.tick;
     junctionTraffic.readOccupancy();
-    signalBank.step(junctionTraffic.canOpen);
-    demand.advance(this.tick, vehicles);
+    signalBank.step(junctionTraffic.canOpen, this.events.isOutage);
+    demand.advance(this.tick, vehicles, this.events.entryObstacle);
     junctionTraffic.prepareAdmissions();
     for (const segment of segments) {
       if (vehicles.counts[segment.id] === 0) continue;

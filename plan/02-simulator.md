@@ -232,7 +232,7 @@ Injected with `sim.inject(event)`; all take effect at the next tick.
 | `surge` | Multiplies one source's arrival rate for a duration. Implemented by merging a pre-generated extra arrival list, seeded from the `events` stream, so twin simulations stay identical. |
 | `block` | Places a static obstacle over a strip range and `s` range on a link for a duration. |
 | `ambulance` | Inserts an ambulance arrival at a source with a given route. |
-| `sensorFreeze` | Observations for one junction stop updating for a duration. |
+| `sensorFreeze` | Approach detector readings for one junction stop updating for a duration. The controller continues to receive the signal phase and elapsed time from the signal state machine. |
 | `outage` | One junction's signals go to all-red; vehicles treat the stop line as a four-way stop (enter if the box is empty and they have waited 2 s). P2. |
 
 ## Scenario modifiers
@@ -299,7 +299,7 @@ interface Sim {
   step(n?: number): void;                          // advance n ticks
   requestPhase(junctionId: number, phase: number): void;
   sense(junctionId: number): JunctionSense;
-  inject(e: SimEvent): void;                      // added with events in task 1.11
+  inject(e: SimEvent): void;                      // applies at the next tick
   metrics(): Metrics;
   writeSnapshot(out: Float32Array): number;        // render state; returns vehicle count
   signals(): Uint8Array;                           // per junction: phase, state

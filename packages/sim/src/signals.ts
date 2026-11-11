@@ -58,8 +58,16 @@ export class SignalBank {
     }
   }
 
-  step(canOpen?: (junctionId: number, targetPhase: number) => boolean): void {
+  step(
+    canOpen?: (junctionId: number, targetPhase: number) => boolean,
+    isOutage?: (junctionId: number) => boolean,
+  ): void {
     for (let id = 0; id < this.junctions.length; id++) {
+      if (isOutage?.(id)) {
+        this.state[id] = ALL_RED;
+        this.elapsedTicks[id] = 0;
+        continue;
+      }
       const elapsed = ++this.elapsedTicks[id];
       const state = this.state[id];
       if (state === GREEN) {

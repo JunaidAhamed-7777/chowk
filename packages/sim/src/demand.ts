@@ -44,6 +44,14 @@ export interface Arrival {
   readonly strip: number;
 }
 
+export type EntryObstacle = (
+  link: number,
+  strip: number,
+  width: number,
+  offset: number,
+  leader: Leader,
+) => void;
+
 function nextHazard(random: Random): number {
   let uniform = (random.nextUint32() + 0.5) / 0x1_0000_0000;
   let logOffset = 0;
@@ -182,7 +190,10 @@ export function generateDemand(
 export class DemandQueue {
   private readonly heads: Int32Array;
   private readonly tails: Int32Array;
-  private readonly next: Int32Array;
+  private arrivals: Arrival[];
+  private order: number[];
+  private baseArrivalCount: number;
+  private next: Int32Array;
   private readonly leader: Leader = { rear: Infinity, speed: 0 };
   private readonly spawn: VehicleSpawn = {
     link: 0,
@@ -200,15 +211,19 @@ export class DemandQueue {
   generatedPeople = 0;
   backlog = 0;
   backlogPeople = 0;
+  readonly backlogByClass = new Uint32Array(VEHICLE_CLASSES.length);
 
   constructor(
     private readonly network: Network,
-    private readonly arrivals: readonly Arrival[],
+    arrivals: readonly Arrival[],
     private readonly speedScale = 1,
     private readonly laneDisciplined = false,
   ) {
     this.heads = new Int32Array(network.sources.length).fill(-1);
     this.tails = new Int32Array(network.sources.length).fill(-1);
+    this.arrivals = Array.from(arrivals);
+    this.order = arrivals.map((_, index) => index);
+    this.baseArrivalCount = arrivals.length;
     this.next = new Int32Array(arrivals.length).fill(-1);
     let previousTime = 0;
     for (const arrival of arrivals) {
@@ -232,10 +247,32 @@ export class DemandQueue {
     }
   }
 
-  advance(tick: number, vehicles: VehicleStore): void {
+  insert(arrivals: readonly Arrival[]): void {
+    if (arrivals.length === 0) return;
+    const next = new Int32Array(this.arrivals.length + arrivals.length).fill(-1);
+    next.set(this.next);
+    this.next = next;
+    for (const arrival of arrivals) {
+      this.order.push(this.arrivals.length);
+      this.arrivals.push(arrival);
+    }
+    const future = this.order.slice(this.generated);
+    future.sort((first, second) => {
+      const a = this.arrivals[first];
+      const b = this.arrivals[second];
+      return a.t - b.t || a.source - b.source || first - second;
+    });
+    for (let index = 0; index < future.length; index++)
+      this.order[this.generated + index] = future[index];
+  }
+
+  advance(tick: number, vehicles: VehicleStore, obstacle?: EntryObstacle): void {
     const time = tick * DT;
-    while (this.generated < this.arrivals.length && this.arrivals[this.generated].t <= time) {
-      const index = this.generated++;
+    while (
+      this.generated < this.order.length &&
+      this.arrivals[this.order[this.generated]].t <= time
+    ) {
+      const index = this.order[this.generated++];
       const { source, cls } = this.arrivals[index];
       const tail = this.tails[source];
       if (tail < 0) this.heads[source] = index;
@@ -243,6 +280,7 @@ export class DemandQueue {
       this.tails[source] = index;
       const occupancy = VEHICLE_CLASSES[cls].occupancy;
       this.backlog++;
+      this.backlogByClass[cls]++;
       this.backlogPeople += occupancy;
       this.generatedPeople += occupancy;
     }
@@ -257,11 +295,15 @@ export class DemandQueue {
         const arrival = this.arrivals[index];
         const next = this.next[index];
         const classMask = 1 << arrival.cls;
-        if (!(blockedClasses & classMask) && this.trySpawn(arrival, link, time, vehicles)) {
+        if (
+          !(blockedClasses & classMask) &&
+          this.trySpawn(arrival, link, time, vehicles, obstacle)
+        ) {
           if (previous < 0) this.heads[source] = next;
           else this.next[previous] = next;
           if (next < 0) this.tails[source] = previous;
           this.backlog--;
+          this.backlogByClass[arrival.cls]--;
           this.backlogPeople -= VEHICLE_CLASSES[arrival.cls].occupancy;
         } else {
           // A failed attempt covered every strip. More spawns can only reduce the available space.
@@ -275,15 +317,14 @@ export class DemandQueue {
   }
 
   clone(): DemandQueue {
-    const copy = new DemandQueue(
-      this.network,
-      this.arrivals,
-      this.speedScale,
-      this.laneDisciplined,
-    );
+    const copy = new DemandQueue(this.network, [], this.speedScale, this.laneDisciplined);
     copy.heads.set(this.heads);
     copy.tails.set(this.tails);
-    copy.next.set(this.next);
+    copy.arrivals = this.arrivals.slice();
+    copy.order = this.order.slice();
+    copy.baseArrivalCount = this.baseArrivalCount;
+    copy.next = this.next.slice();
+    copy.backlogByClass.set(this.backlogByClass);
     copy.generated = this.generated;
     copy.generatedPeople = this.generatedPeople;
     copy.backlog = this.backlog;
@@ -294,12 +335,35 @@ export class DemandQueue {
   writeHash(hash: StateHash): void {
     hash.addUint32(this.generated).addUint32(this.backlog).addMilli(this.backlogPeople);
     for (let source = 0; source < this.heads.length; source++) {
-      for (let index = this.heads[source]; index >= 0; index = this.next[index])
+      for (let index = this.heads[source]; index >= 0; index = this.next[index]) {
         hash.addUint32(index);
+        this.writeAddedArrival(hash, index);
+      }
+    }
+    for (let cursor = this.generated; cursor < this.order.length; cursor++) {
+      this.writeAddedArrival(hash, this.order[cursor]);
     }
   }
 
-  private trySpawn(arrival: Arrival, link: Link, time: number, vehicles: VehicleStore): boolean {
+  private writeAddedArrival(hash: StateHash, index: number): void {
+    if (index < this.baseArrivalCount) return;
+    const arrival = this.arrivals[index];
+    hash
+      .addMilli(arrival.t)
+      .addUint32(arrival.source)
+      .addUint32(arrival.route)
+      .addUint32(arrival.cls)
+      .addUint32(arrival.strip)
+      .addMilli(arrival.v0Factor);
+  }
+
+  private trySpawn(
+    arrival: Arrival,
+    link: Link,
+    time: number,
+    vehicles: VehicleStore,
+    obstacle?: EntryObstacle,
+  ): boolean {
     const vehicle = VEHICLE_CLASSES[arrival.cls];
     const lastStrip = link.strips - vehicle.strips;
     const stride = this.laneDisciplined ? LANE_STRIPS : 1;
@@ -310,6 +374,7 @@ export class DemandQueue {
       const { leader } = this;
       leader.rear = Infinity;
       leader.speed = 0;
+      obstacle?.(link.id, strip, vehicle.strips, 0, leader);
       const list = vehicles.byLink[link.id];
       for (let index = vehicles.counts[link.id] - 1; index >= 0; index--) {
         const slot = list[index];

@@ -1,7 +1,8 @@
 export { DT, VEHICLE_CLASSES } from "./constants";
 export { corridor } from "./corridor";
-export type { Arrival, DemandScenario, SourceDemand } from "./demand";
+export type { Arrival, DemandScenario, RatePoint, RouteShare, SourceDemand } from "./demand";
 export { generateDemand } from "./demand";
+export type { ScheduledEvent, SimEvent } from "./events";
 export { StateHash } from "./hash";
 export type { Metrics } from "./metrics";
 export { loadNetwork } from "./network";

@@ -6,6 +6,7 @@ import {
   QUEUE_ZONE_METRES,
   VEHICLE_CLASSES,
 } from "./constants";
+import type { StateHash } from "./hash";
 import type { Link, Network } from "./network";
 import { createRandomStreams, Random } from "./random";
 import type { SignalBank, SignalState } from "./signals";
@@ -23,6 +24,10 @@ export interface ApproachSense {
   areaFar: number;
   stoppedArea: number;
   count: number;
+  countNear?: number;
+  countMid?: number;
+  countFar?: number;
+  stoppedCount?: number;
   people: number;
   waitMax: number;
   emergency: 0 | 1;
@@ -64,6 +69,9 @@ export class Sensing {
   private readonly dropout: number;
   private readonly eventSeed: number;
   private readonly seed: number;
+  private readonly frozen: (ApproachSense[] | undefined)[];
+  private readonly frozenFrom: Float64Array;
+  private readonly frozenUntil: Float64Array;
 
   constructor(
     private readonly network: Network,
@@ -80,6 +88,9 @@ export class Sensing {
       throw new RangeError("Sensor dropout must be a probability between 0 and 1");
     }
     this.seed = options?.seed ?? 0;
+    this.frozen = network.junctions.map(() => undefined);
+    this.frozenFrom = new Float64Array(network.junctions.length);
+    this.frozenUntil = new Float64Array(network.junctions.length);
     this.eventSeed = createRandomStreams(this.seed).events.getState();
     this.exits = network.links.map(() => []);
     for (const connector of network.connectors) {
@@ -91,6 +102,16 @@ export class Sensing {
   read(junctionId: number, tick: number): JunctionSense {
     const junction = this.network.junctions[junctionId];
     if (!junction) throw new RangeError(`Unknown junction ${junctionId}`);
+    const frozen = this.frozen[junctionId];
+    if (frozen && tick >= this.frozenFrom[junctionId] && tick < this.frozenUntil[junctionId]) {
+      return {
+        ...this.signals.stateAt(junctionId),
+        approaches: frozen.map((item) => ({
+          ...item,
+          exits: item.exits.map((exit) => ({ ...exit })),
+        })),
+      };
+    }
     // The same sensor reading must reach the controller regardless of UI polling or read order.
     const random =
       this.noise > 0 || this.dropout > 0
@@ -105,12 +126,43 @@ export class Sensing {
     return { ...this.signals.stateAt(junctionId), approaches };
   }
 
+  freeze(junction: number, tick: number, duration: number): void {
+    this.frozen[junction] = this.read(junction, tick).approaches;
+    this.frozenFrom[junction] = tick + 1;
+    this.frozenUntil[junction] = Math.max(this.frozenUntil[junction], tick + 1 + duration);
+  }
+
+  writeHash(hash: StateHash, tick: number): void {
+    for (let id = 0; id < this.frozenUntil.length; id++) {
+      const readings = this.frozen[id];
+      if (!readings || this.frozenUntil[id] <= tick) continue;
+      hash.addUint32(id).addUint32(this.frozenFrom[id]).addUint32(this.frozenUntil[id]);
+      for (const sense of readings) {
+        hash
+          .addMilli(sense.areaNear)
+          .addMilli(sense.areaMid)
+          .addMilli(sense.areaFar)
+          .addMilli(sense.stoppedArea)
+          .addUint32(sense.count)
+          .addMilli(sense.people)
+          .addMilli(sense.waitMax)
+          .addUint32(sense.emergency);
+        for (const exit of sense.exits)
+          hash.addUint32(exit.link).addMilli(exit.area).addUint32(exit.count);
+      }
+    }
+  }
+
   copy(vehicles: VehicleStore, signals: SignalBank): Sensing {
-    return new Sensing(this.network, vehicles, signals, {
+    const copy = new Sensing(this.network, vehicles, signals, {
       seed: this.seed,
       noise: this.noise,
       dropout: this.dropout,
     });
+    copy.frozenFrom.set(this.frozenFrom);
+    copy.frozenUntil.set(this.frozenUntil);
+    for (let id = 0; id < this.frozen.length; id++) copy.frozen[id] = this.frozen[id];
+    return copy;
   }
 
   private readApproach(
@@ -126,6 +178,10 @@ export class Sensing {
         areaFar: 0,
         stoppedArea: 0,
         count: 0,
+        countNear: 0,
+        countMid: 0,
+        countFar: 0,
+        stoppedCount: 0,
         people: 0,
         waitMax: 0,
         emergency: 0,
@@ -144,6 +200,9 @@ export class Sensing {
     let farArea = 0;
     let stoppedArea = 0;
     let count = 0;
+    let countNear = 0;
+    let countFar = 0;
+    let stoppedCount = 0;
     let people = 0;
     let waitMax = 0;
     let emergency: 0 | 1 = 0;
@@ -163,9 +222,11 @@ export class Sensing {
       }
       if (front >= mid && front <= length) {
         count++;
+        if (front >= near) countNear++;
+        if (vehicles.v[slot] < QUEUE_SPEED_THRESHOLD) stoppedCount++;
         people += vehicles.occ[slot];
         waitMax = Math.max(waitMax, vehicles.wait[slot]);
-      }
+      } else if (front < mid) countFar++;
       if (cls === EMERGENCY_CLASS && front <= length) emergency = 1;
     }
 
@@ -180,6 +241,10 @@ export class Sensing {
       areaFar: this.perturb(fraction(farArea, (mid - far) * width), random, 1),
       stoppedArea: this.perturb(fraction(stoppedArea, (length - mid) * width), random, 1),
       count: Math.floor(this.perturb(count, random) + 0.5),
+      countNear,
+      countMid: count - countNear,
+      countFar,
+      stoppedCount,
       people: this.perturb(people, random),
       waitMax: this.perturb(waitMax, random),
       emergency,
