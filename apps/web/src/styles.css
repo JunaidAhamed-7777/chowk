@@ -586,7 +586,7 @@ button:disabled {
   gap: 12px;
   margin-top: 14px;
 }
-.information-skeleton i {
+.information-bar {
   height: 84px;
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -608,7 +608,7 @@ button:disabled {
 }
 @media (prefers-reduced-motion: reduce) {
   .information-spinner,
-  .information-skeleton i {
+  .information-bar {
     animation: none;
   }
 }

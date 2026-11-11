@@ -60,9 +60,9 @@ export function InformationView({ route }: { route: InformationRoute }) {
               <span className="information-spinner" aria-hidden="true" />
               Loading {route === "/results" ? "the benchmark results" : "the method"}…
               <span className="information-skeleton" aria-hidden="true">
-                <i />
-                <i />
-                <i />
+                <span className="information-bar" />
+                <span className="information-bar" />
+                <span className="information-bar" />
               </span>
             </div>
           }
