@@ -122,13 +122,13 @@ All captured from the app through the scripted capture route, at fixed seeds.
 
 ## Submission-day checklist
 
-1. `npm test`, `npm run test:browsers`, `npm run build` all pass.
-2. Benchmark regenerated from the final policy; `results/` committed; build integrity check passes without the override.
-3. README results block regenerated; no `{{` left anywhere in the repository (a test checks this).
-4. Deployed; demo opened in a private window in Chrome, Firefox and Safari or WebKit, and on a phone.
-5. Autoplay tour watched end to end with no interaction.
-6. "Run it yourself" completes and matches.
-7. Video recorded, uploaded, linked.
-8. Every statistic and citation verified against its source.
-9. Unstop form filled by the user; links clicked from the submitted page.
-10. Commit tagged.
+- [ ] Verify `npm test`, `npm run test:browsers` and `npm run build` on the submission commit.
+- [ ] Publish the final benchmark from the selected policy, commit `results/` and run the build integrity check.
+- [x] Regenerate the README results block. The production build checks the README, app and generated submission copy for unfilled template tokens.
+- [ ] Open the deployed demo privately in Chrome, Firefox and Safari or WebKit, and verify the Low tier on a phone.
+- [x] Watch the autoplay tour end to end without interacting.
+- [x] Complete "Run it yourself" and verify every match.
+- [ ] Record, upload and link the final captioned video.
+- [x] Verify every published statistic and citation against its source.
+- [ ] The user submits on Unstop and opens the links from the submitted entry.
+- [ ] Tag the submitted commit.
