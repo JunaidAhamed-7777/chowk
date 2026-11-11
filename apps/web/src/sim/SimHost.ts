@@ -23,6 +23,7 @@ export interface Snapshot {
   index: Map<number, number>;
   sense?: JunctionSense[];
   explanations?: (Explanation | undefined)[];
+  observations?: (number[] | undefined)[];
 }
 
 export interface Departure {
@@ -81,6 +82,7 @@ export class SnapshotStream {
       index: map,
       sense: frame.sense,
       explanations: frame.explanations,
+      observations: frame.observations,
     };
     this.receivedAt = now;
 
@@ -137,7 +139,7 @@ export class SimHost {
   private lastMetricsAt = -Infinity;
   private inFlight = true;
   private refreshRequested = false;
-  private overlay = { pressure: false, decision: false };
+  private overlay = { pressure: false, decision: false, inspection: false };
   private readonly controllers: [ControllerChoice, ControllerChoice];
   private disposed = false;
   private tick: number | undefined;
@@ -210,11 +212,16 @@ export class SimHost {
     this.streams[side].send({ type: "setController", controller });
   }
 
-  setOverlayData(pressure: boolean, decision: boolean) {
-    if (this.disposed || (this.overlay.pressure === pressure && this.overlay.decision === decision))
+  setOverlayData(pressure: boolean, decision: boolean, inspection: boolean) {
+    if (
+      this.disposed ||
+      (this.overlay.pressure === pressure &&
+        this.overlay.decision === decision &&
+        this.overlay.inspection === inspection)
+    )
       return;
-    this.overlay = { pressure, decision };
-    const message: ToSim = { type: "setOverlayData", pressure, decision };
+    this.overlay = { pressure, decision, inspection };
+    const message: ToSim = { type: "setOverlayData", pressure, decision, inspection };
     this.streams[0].send(message);
     this.streams[1].send(message);
     this.refreshRequested = true;

@@ -18,7 +18,7 @@ export type ToSim =
   | ToSimInit
   | { type: "advanceTo"; tick: number }
   | { type: "setController"; controller: ControllerChoice }
-  | { type: "setOverlayData"; pressure: boolean; decision: boolean }
+  | { type: "setOverlayData"; pressure: boolean; decision: boolean; inspection: boolean }
   | { type: "event"; atTick: number; event: SimEvent }
   | { type: "recycle"; buffer: ArrayBuffer };
 
@@ -32,6 +32,7 @@ export interface FromSimFrame {
   warmup?: Metrics[];
   sense?: JunctionSense[];
   explanations?: (Explanation | undefined)[];
+  observations?: (number[] | undefined)[];
 }
 
 export type FromSim = FromSimFrame | { type: "error"; message: string };

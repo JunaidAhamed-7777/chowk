@@ -184,6 +184,7 @@ export default function LiveView({
     controllers,
     pressure: overlay === "pressure" || inspecting,
     decision: overlay === "decision" || inspecting,
+    inspection: inspecting,
     onReady: setReady,
     onRestart: () => {
       setReady(false);
@@ -330,6 +331,13 @@ export default function LiveView({
     if (!active || !ready) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.altKey || event.metaKey || event.ctrlKey || event.repeat) return;
+      if (event.key === "Escape") {
+        setPicking(false);
+        setEditingDemand(false);
+        setInspecting(false);
+        setShareUrl("");
+        return;
+      }
       if (
         event.target instanceof HTMLElement &&
         event.target.closest("input, select, textarea, button, [contenteditable]")
@@ -351,8 +359,7 @@ export default function LiveView({
         setSingleView(false);
         setWipe(0);
         setRevision((value) => value + 1);
-      } else if (event.key === "Escape") setPicking(false);
-      else return;
+      } else return;
       event.preventDefault();
     };
     window.addEventListener("keydown", onKey);

@@ -1,5 +1,8 @@
-import { DT } from "@chowk/sim";
+import { corridor, DT } from "@chowk/sim";
+import { useEffect, useState } from "react";
+import { type BufferGeometry, MeshStandardMaterial } from "three";
 import { type ActiveEvent, eventPoint } from "../sim/liveEvents";
+import { loadMeshAsset } from "./vehicleGeometries";
 
 const colours = {
   surge: "#f7a357",
@@ -10,11 +13,35 @@ const colours = {
 };
 
 export function EventMarkers({ events, tick }: { events: readonly ActiveEvent[]; tick: number }) {
+  const [cones, setCones] = useState<BufferGeometry | null>(null);
+  const [conePaint] = useState(
+    () =>
+      new MeshStandardMaterial({
+        color: "#f99a3e",
+        emissive: "#ed6920",
+        emissiveIntensity: 0.25,
+        roughness: 0.72,
+      }),
+  );
+  const hasBlock = events.some(({ event }) => event.type === "block");
+  useEffect(() => {
+    if (!hasBlock) return;
+    let mounted = true;
+    void loadMeshAsset("prop_breakdown").then((geometry) => {
+      if (mounted) setCones(geometry);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [hasBlock]);
+  useEffect(() => () => conePaint.dispose(), [conePaint]);
+
   return events.map(({ id, tick: start, event }) => {
     const duration = "duration" in event ? event.duration : 20;
     if (tick < start || tick - start >= duration / DT) return null;
     const [x, z] = eventPoint(event);
     const color = colours[event.type];
+    const link = event.type === "block" ? corridor.links[event.link] : undefined;
     return (
       <group key={id} position={[x, 0.16, z]}>
         <mesh rotation={[-Math.PI / 2, 0, 0]}>
@@ -29,6 +56,22 @@ export function EventMarkers({ events, tick }: { events: readonly ActiveEvent[];
           <octahedronGeometry args={[0.9]} />
           <meshBasicMaterial color={color} toneMapped={false} />
         </mesh>
+        {event.type === "block" && link && cones && (
+          <group rotation={[0, -Math.atan2(link.dir[1], link.dir[0]), 0]}>
+            <mesh
+              geometry={cones}
+              material={conePaint}
+              dispose={null}
+              position={[(event.start - event.end) / 2 - 1.3, -0.16, 0]}
+            />
+            <mesh
+              geometry={cones}
+              material={conePaint}
+              dispose={null}
+              position={[(event.end - event.start) / 2 + 1.3, -0.16, 0]}
+            />
+          </group>
+        )}
       </group>
     );
   });

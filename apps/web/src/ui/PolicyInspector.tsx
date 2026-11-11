@@ -6,6 +6,7 @@ import type { SimHost } from "../sim/SimHost";
 type Reading = {
   sense?: JunctionSense;
   decision?: Explanation;
+  observation?: number[];
 };
 
 const number = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2 });
@@ -19,6 +20,32 @@ const features = [
   { name: "Emergency", key: "emergency", max: 1 },
   { name: "Exit area", key: "outArea", max: 1 },
 ] satisfies readonly { name: string; key: keyof ApproachSense; max: number }[];
+const featureOrder = [
+  "Near area",
+  "Mid area",
+  "Far area",
+  "Stopped area",
+  "People",
+  "Wait",
+  "Emergency",
+  "Exit area",
+  "Green",
+  "Approach present",
+];
+const observationLabels = [
+  ...["Current", "Clockwise 1", "Clockwise 2", "Clockwise 3"].flatMap((group) =>
+    featureOrder.map((feature, index) => ({
+      label: `${group} · ${feature}`,
+      max: index === 4 || index === 7 ? 3 : index === 5 ? 2 : 1,
+    })),
+  ),
+  ...["Current", "Clockwise 1", "Clockwise 2", "Clockwise 3"].flatMap((group) => [
+    { label: `${group} · Upstream releasing`, max: 1 },
+    { label: `${group} · Upstream elapsed`, max: 1 },
+  ]),
+  { label: "Current green elapsed", max: 1 },
+  { label: "Signal clearance", max: 1 },
+];
 
 export function PolicyInspector({
   host,
@@ -37,8 +64,13 @@ export function PolicyInspector({
       if (!snapshot) return;
       const sense = snapshot.sense?.[junction];
       const decision = snapshot.explanations?.[junction];
+      const observation = snapshot.observations?.[junction];
       setReading((current) =>
-        current?.sense === sense && current?.decision === decision ? current : { sense, decision },
+        current?.sense === sense &&
+        current?.decision === decision &&
+        current?.observation === observation
+          ? current
+          : { sense, decision, observation },
       );
     }
     read();
@@ -50,6 +82,7 @@ export function PolicyInspector({
   const current = Math.min(approach, Math.max(0, (sense?.approaches.length ?? 1) - 1));
   const input = sense?.approaches[current];
   const decision = reading?.decision;
+  const observation = reading?.observation;
   return (
     <aside className="policy-inspector" aria-label="Controller inspector">
       <header>
@@ -116,6 +149,27 @@ export function PolicyInspector({
             </>
           ) : (
             <p>This controller exposes its current phase.</p>
+          )}
+          {observation && (
+            <details>
+              <summary>Model input vector</summary>
+              <dl className="observation-vector" aria-label="Model input vector">
+                {observationLabels.map(({ label, max }, index) => (
+                  <div key={label} className="inspector-feature">
+                    <dt>{label}</dt>
+                    <dd>{number.format(observation[index])}</dd>
+                    <meter
+                      min={0}
+                      max={max}
+                      value={Math.min(max, observation[index])}
+                      aria-label={label}
+                    >
+                      {observation[index]}
+                    </meter>
+                  </div>
+                ))}
+              </dl>
+            </details>
           )}
         </>
       ) : (

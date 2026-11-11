@@ -73,7 +73,7 @@ In mixed-traffic scenarios the road shows only edge lines, stop lines and crossi
 - Heading comes from the snapshot's direction vector, smoothed, with a small yaw during lateral moves so filtering looks like steering, not sliding.
 - Per-instance attributes: brake intensity (tail-lights brighten when decelerating), overlay tint, emergency flag (ambulance beacon flash).
 - **Headlights and tail-lights:** emissive regions on the mesh for close views, plus one additive billboard sprite per light for the bloom pass, plus (High tier) an elongated soft decal on the road ahead of each vehicle as a fake beam.
-- **Light trails (P1, Medium and High):** in the aerial camera, an accumulation pass on the emissive layer leaves short streaks behind moving lights. Length is tied to speed, so flowing traffic streaks and jammed traffic sits as dots. This is the single strongest visual signal of flow versus jam. Disabled in street-level cameras.
+- **Light trails (P1, Medium and High):** the aerial camera adds one batch of projected tail-light streaks per side of the wipe. Direction comes from the two latest snapshots and length follows speed. Stopped vehicles retain their lamp halos. Street-level cameras omit the streaks.
 
 ## Split-screen wipe
 
@@ -123,7 +123,7 @@ Bloom is the single most important effect. Tune it so signal colours stay distin
 | Vehicle cap per simulation | 3,000 | 2,000 | 1,200 (extra demand is scaled in the scenario, not hidden) |
 | Vehicle mesh detail | Full | Full | Low-detail meshes |
 
-**Automatic selection:** start at Medium; measure frame time over the first 90 frames after the scene is ready; move up if comfortably under 12 ms, down if over 28 ms. Re-check once after 5 s. The visitor can override in the top bar; the choice is remembered locally.
+**Automatic selection:** start at Medium on desktop and Low on narrow displays. Measure frame time over the first 90 frames after the scene is ready. Move up from Medium if comfortably under 12 ms and down from Medium or High if over 28 ms. Re-check once after 5 s. The top bar override is remembered locally.
 
 On Low the vehicle cap is a rendering and simulation setting applied to the **live demo only**. Benchmarks always run the full scenario.
 

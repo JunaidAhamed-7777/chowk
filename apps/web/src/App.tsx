@@ -38,7 +38,9 @@ export default function App() {
   const [route, setRoute] = useState(readPath);
   const [visitedLive, setVisitedLive] = useState(() => readPath() === "/");
   const [qualityMode, setQualityMode] = useState(readQualityMode);
-  const [automaticQuality, setAutomaticQuality] = useState<Quality>("medium");
+  const [automaticQuality, setAutomaticQuality] = useState<Quality>(() =>
+    window.matchMedia("(max-width: 620px)").matches ? "low" : "medium",
+  );
   const [sound, setSound] = useState(false);
   const [changingSound, setChangingSound] = useState(false);
   const focusOnNavigation = useRef(false);

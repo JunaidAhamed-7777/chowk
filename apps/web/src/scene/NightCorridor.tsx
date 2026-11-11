@@ -1,3 +1,4 @@
+import { DT, SNAPSHOT_STRIDE, VEHICLE_CLASSES } from "@chowk/sim";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   BlendFunction,
@@ -60,11 +61,15 @@ function CorridorCamera({
   reducedMotion,
   host,
   vehicle,
+  paused,
+  speed,
 }: {
   selection: CameraSelection;
   reducedMotion: boolean;
   host: RefObject<SimHost | null>;
   vehicle: VehicleFollow | undefined;
+  paused: boolean;
+  speed: PlaybackSpeed;
 }) {
   const { camera, gl } = useThree();
   const orbit = useRef<OrbitControls | null>(null);
@@ -123,7 +128,7 @@ function CorridorCamera({
     const perspective = camera instanceof PerspectiveCamera ? camera : null;
     const stream = host.current?.streams[selection === "ride" ? (vehicle?.side ?? 1) : 1];
     const snapshot = stream?.current;
-    if (following && snapshot) {
+    if (following && stream && snapshot) {
       let offset =
         followed.current === undefined ? undefined : snapshot.index.get(followed.current);
       if (offset === undefined) {
@@ -144,17 +149,29 @@ function CorridorCamera({
         controls.enabled = false;
         controls.minDistance = 1;
         const p = snapshot.positions;
+        const previous = stream.previous;
+        const old = previous?.index.get(p[offset + 6]);
+        let x = p[offset];
+        let z = p[offset + 1];
+        if (!paused && previous && old !== undefined) {
+          const period = Math.max(1, ((snapshot.tick - previous.tick) * DT * 1000) / speed);
+          const progress = Math.min(1, (performance.now() - stream.receivedAt) / period);
+          x = previous.positions[old] + (x - previous.positions[old]) * progress;
+          z = previous.positions[old + 1] + (z - previous.positions[old + 1]) * progress;
+        }
         const dx = p[offset + 2];
         const dz = p[offset + 3];
-        preset.position.set(p[offset] - 6 * dx, 1.4, p[offset + 1] - 6 * dz);
-        preset.target.set(p[offset] + 24 * dx, 1.1, p[offset + 1] + 24 * dz);
+        const behind = VEHICLE_CLASSES[p[offset + 5]].length / 2 + 5;
+        const sideways = 1.8;
+        preset.position.set(x - behind * dx + sideways * dz, 1.4, z - behind * dz - sideways * dx);
+        preset.target.set(x + 24 * dx, 1.1, z + 24 * dz);
         camera.position.lerp(preset.position, rate);
         controls.target.lerp(preset.target, rate);
         if (perspective && Math.abs(perspective.fov - 70) > 0.05) {
           perspective.fov += (70 - perspective.fov) * rate;
           perspective.updateProjectionMatrix();
         }
-        controls.update();
+        camera.lookAt(controls.target);
         return;
       }
     }
@@ -269,8 +286,7 @@ function QualityProbe({
     if (automatic) probe.current = { elapsed: 0, duration: 0, frames: -8, checks: 0, waitUntil: 0 };
   }, [automatic]);
   useFrame((_, delta) => {
-    if (!automatic || !ready || document.hidden || probe.current.checks === 2)
-      return;
+    if (!automatic || !ready || document.hidden || probe.current.checks === 2) return;
     const sample = probe.current;
     const time = Math.min(delta, 0.25);
     sample.elapsed += time;
@@ -352,6 +368,8 @@ export function NightCorridor({
         reducedMotion={reducedMotion}
         host={host}
         vehicle={vehicle}
+        paused={paused}
+        speed={speed}
       />
       <ContextRecovery onContext={onContext} />
       <QualityProbe automatic={automatic} ready={ready} quality={quality} onQuality={onQuality} />
@@ -359,4 +377,3 @@ export function NightCorridor({
     </Canvas>
   );
 }
-import { SNAPSHOT_STRIDE } from "@chowk/sim";

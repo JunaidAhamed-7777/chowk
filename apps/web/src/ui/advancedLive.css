@@ -82,6 +82,11 @@
   gap: 5px;
   align-items: center;
 }
+.policy-inspector .observation-vector .inspector-feature {
+  grid-template-columns: minmax(0, 1.6fr) 28px minmax(0, 1fr);
+  padding-block: 2px;
+  font-size: 10px;
+}
 .policy-inspector :is(dl, ul, p) {
   margin: 0;
 }
@@ -146,4 +151,81 @@
 .topbar-tools .sound-toggle {
   min-height: 33px;
   padding: 5px 8px;
+}
+.instrument-controls:has(.camera-menu[open]) {
+  z-index: 5;
+}
+
+@media (max-width: 620px) {
+  .live-view {
+    height: calc(100dvh - 90px);
+    min-height: 650px;
+    --hud-bottom: 283px;
+  }
+  .instrument-bar {
+    top: 112px;
+    right: var(--gutter);
+    bottom: auto;
+    left: auto;
+  }
+  .comparison-labels {
+    top: 154px;
+    gap: 6px;
+  }
+  .controller-chip {
+    min-width: 0;
+    gap: 4px;
+    padding-inline: 6px;
+  }
+  .controller-side {
+    font-size: 9px;
+    white-space: nowrap;
+  }
+  .checkpoint-control {
+    top: 196px;
+  }
+  .wipe-handle {
+    top: 44%;
+  }
+  .instrument-controls {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    padding: 6px;
+  }
+  .instrument-controls .playback-controls,
+  .instrument-controls .view-buttons {
+    justify-content: center;
+  }
+  .instrument-controls .junction-picker {
+    grid-row: 3;
+  }
+  .simulation-controls {
+    bottom: 177px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+  }
+  .event-buttons {
+    order: -1;
+    width: 100%;
+    justify-content: center;
+  }
+  .simulation-controls .control-select {
+    padding-inline: 0;
+  }
+  .simulation-controls .control-select select {
+    max-width: 120px;
+  }
+  .seed-form input {
+    width: 49px;
+  }
+  .block-instructions,
+  .tour-caption,
+  .live-notice,
+  .share-notice {
+    bottom: 360px;
+  }
+  .block-instructions {
+    bottom: 200px;
+  }
 }

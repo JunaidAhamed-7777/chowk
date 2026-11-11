@@ -14,6 +14,7 @@ interface SessionOptions {
   controllers: ControllerPair;
   pressure: boolean;
   decision: boolean;
+  inspection: boolean;
   onReady: (ready: boolean) => void;
   onMetrics: (metrics: MetricsPair, tick: number, warmup?: readonly MetricsPair[]) => void;
   onRestart: () => void;
@@ -32,6 +33,7 @@ export function useSimHost(options: SessionOptions) {
     controllers,
     pressure,
     decision,
+    inspection,
   } = options;
 
   useEffect(() => {
@@ -60,7 +62,11 @@ export function useSimHost(options: SessionOptions) {
       },
     });
     host.current = source;
-    source.setOverlayData(settings.current.pressure, settings.current.decision);
+    source.setOverlayData(
+      settings.current.pressure,
+      settings.current.decision,
+      settings.current.inspection,
+    );
     let lastTime = performance.now();
     let animation: number;
     const advance = (now: number) => {
@@ -83,8 +89,8 @@ export function useSimHost(options: SessionOptions) {
   }, [controllers]);
 
   useEffect(() => {
-    host.current?.setOverlayData(pressure, decision);
-  }, [pressure, decision]);
+    host.current?.setOverlayData(pressure, decision, inspection);
+  }, [pressure, decision, inspection]);
 
   return host;
 }

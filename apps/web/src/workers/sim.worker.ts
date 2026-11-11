@@ -11,6 +11,7 @@ import {
 } from "@chowk/sim";
 import { makeLiveScenario, warmupSeconds } from "../sim/liveScenario";
 import type { ControllerChoice, FromSim, FromSimFrame, ToSim, ToSimInit } from "../sim/protocol";
+import { InspectedController } from "./inspectedController";
 
 let driver: ControllerDriver | undefined;
 let scenario: Scenario;
@@ -19,12 +20,18 @@ let buffers: ArrayBuffer[] = [];
 let events: ScheduledEvent[] = [];
 let pressure = false;
 let decision = false;
+let inspection = false;
+let inspected: InspectedController | undefined;
 
 function controllerFor({ id, policy }: ControllerChoice) {
-  return createController(id, {
-    policy,
-    saturation: (link) => saturationFor(corridor, scenario, link),
-  });
+  inspected = new InspectedController(
+    createController(id, {
+      policy,
+      saturation: (link) => saturationFor(corridor, scenario, link),
+    }),
+  );
+  inspected.enabled = inspection;
+  return inspected;
 }
 
 function publish(warmup?: Metrics[]) {
@@ -44,6 +51,9 @@ function publish(warmup?: Metrics[]) {
     warmup,
     ...(pressure && { sense: corridor.junctions.map(({ id }) => sim.sense(id)) }),
     ...(decision && { explanations: corridor.junctions.map(({ id }) => current.explain(id)) }),
+    ...(inspection && {
+      observations: corridor.junctions.map(({ id }) => inspected?.observation(id)),
+    }),
   };
   self.postMessage(message, { transfer: [buffer] });
 }
@@ -101,6 +111,8 @@ self.onmessage = ({ data }: MessageEvent<ToSim>) => {
       case "setOverlayData":
         pressure = data.pressure;
         decision = data.decision;
+        inspection = data.inspection;
+        if (inspected) inspected.enabled = inspection;
         break;
       case "event":
         if (!driver || data.atTick <= driver.tick || data.atTick > endTick)

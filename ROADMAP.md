@@ -112,9 +112,9 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 4.7 | Signals: poles and state-driven lamps | `05` | 4.3 | Lamps follow signal state |
 | ☑ | 4.8 | Simulation workers, clock and lockstep, transferable snapshots, replacing the mock | `07` Runtime architecture | 1.13, 4.4 | Real traffic renders; two workers stay at the same tick |
 | ☑ | 4.9 | Split-screen wipe by fragment discard; draggable handle; label chips | `05` Split-screen wipe, `01` L1 | 4.8 | Two controllers visible side by side on the same seed |
-| ☐ | 4.10 | Quality tiers and automatic selection | `05` Quality tiers | 4.5 | Tier changes at runtime; probe picks sensibly |
+| ☑ | 4.10 | Quality tiers and automatic selection | `05` Quality tiers | 4.5 | Tier changes at runtime; probe picks sensibly |
 | ☑ | 4.11 | Loading: poster, parallel load, warm-up fast-forward, cross-fade | `05` Loading | 4.8 | Live scene within budget |
-| ☐ | 4.12 | Light trails (P1) | `05` Vehicles | 4.5 | Flowing traffic streaks, jams read as dots, aerial only |
+| ☑ | 4.12 | Light trails (P1) | `05` Vehicles | 4.5 | Flowing traffic streaks, jams read as dots, aerial only |
 
 ## Phase 5 — Product features (Track B, 13–14 Nov)
 
@@ -127,14 +127,14 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 5.5 | Pressure overlay | `01` L6, `05` Overlays | 4.9 | Zones colour by occupied area, respecting the wipe |
 | ☑ | 5.6 | Camera presets: aerial, junction fly-to | `01` L8 | 4.2 | Smooth transitions |
 | ☑ | 5.7 | **Autoplay tour**: JSON timeline, player, captions, interruption and restart | `01` L9 | 5.4, 5.5, 5.6 | The full tour plays unattended on first load and loops |
-| ☐ | 5.8 | Decision, Speed and People overlays (P1) | `01` L6 | 2.9, 5.5 | Each renders and fades |
-| ☐ | 5.9 | Ride-along and ambulance cameras (P1) | `01` L8 | 5.6 | Click a vehicle to follow |
+| ☑ | 5.8 | Decision, Speed and People overlays (P1) | `01` L6 | 2.9, 5.5 | Each renders and fades |
+| ☑ | 5.9 | Ride-along and ambulance cameras (P1) | `01` L8 | 5.6 | Click a vehicle to follow |
 | ☑ | 5.10 | "Watch it learn" slider (P1) | `01` L10 | 3.6, 5.2 | Sliding swaps checkpoints live |
-| ☐ | 5.11 | Share URL; keyboard shortcuts; reduced motion (P1) | `01` L7, Global | 5.3 | State round-trips through the URL |
-| ☐ | 5.12 | Mobile layout at Low tier | `01` Layout | 5.1 | Usable in portrait on a phone |
+| ☑ | 5.11 | Share URL; keyboard shortcuts; reduced motion (P1) | `01` L7, Global | 5.3 | State round-trips through the URL |
+| ☑ | 5.12 | Mobile layout at Low tier | `01` Layout | 5.1 | Usable in portrait on a phone |
 | ☑ | 5.13 | 2D canvas fallback (P1) | `05` Fallbacks | 4.8 | Appears when WebGL2 is unavailable |
-| ☐ | 5.14 | Error handling: worker restart, context loss, tab hidden | `01` Global | 4.8 | No blank screens under induced failures |
-| ☐ | 5.15 | Sensor-failure event, custom scenario sliders, policy inspector, audio (P1–P2) | `01` | 5.4 | As specified |
+| ☑ | 5.14 | Error handling: worker restart, context loss, tab hidden | `01` Global | 4.8 | No blank screens under induced failures |
+| ☑ | 5.15 | Sensor-failure event, custom scenario sliders, policy inspector, audio (P1–P2) | `01` | 5.4 | As specified |
 
 **Gate G3 after 5.7.**
 
@@ -164,7 +164,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 7.3 | Signal, street lamp, low and mid buildings | `06` Buildings, Street | 7.1 | In the scene; budgets met |
 | ☑ | 7.4 | Light commercial, ambulance, tall buildings, shop strips, trees | `06` | 7.2 | As above |
 | ☑ | 7.5 | Low-detail vehicle meshes for the Low tier | `06` Vehicles | 7.2 | Low tier uses them |
-| ☐ | 7.6 | P1 props: bus stop, hoarding, barrier, breakdown markers | `06` Street P1 | 7.3 | As above |
+| ☑ | 7.6 | P1 props: bus stop, hoarding, barrier, breakdown markers | `06` Street P1 | 7.3 | As above |
 | ☑ | 7.7 | P2 props: viaduct, auto stand | `06` Street P2 | 7.6 | As above |
 | ☑ | 7.8 | `assets/CREDITS.md` complete | `06` Rules | 7.4 | Every imported asset listed with licence |
 
@@ -223,3 +223,4 @@ Record spec changes here: date, what changed, why.
 - 12 Nov 2026 — Sensor freeze holds approach detector readings. The signal state machine continues to report its own phase and timer.
 - 12 Nov 2026 — Use vehicles generated as the stops-per-vehicle denominator in both live and benchmark metrics, consistent with the simulator definition.
 - 12 Nov 2026 — Run training early with full episode horizons and a smaller population after the smoke test showed unstable exploratory updates. Keep the main run checkpoint after the independent second run underperformed on validation.
+- 12 Nov 2026 — Draw aerial tail-light trails from the two latest vehicle snapshots in a batched pass that respects the wipe. Start automatic quality at Low on narrow displays.

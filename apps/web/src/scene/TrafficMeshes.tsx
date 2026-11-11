@@ -55,6 +55,11 @@ const ambulanceClass = 5;
 const busClass = 4;
 const speeds = ["#fc4947", "#ffac52", "#81e389", "#35efbb"].map((color) => new Color(color));
 const occupancyColor = new Color("#9decca");
+const overlayFadeSeconds = 0.3;
+
+function fadeOverlay(current: number, enabled: boolean, change: number) {
+  return enabled ? Math.min(1, current + change) : Math.max(0, current - change);
+}
 
 /** Standard material that reads the model's mask attribute for trim, glass and lamps. */
 function makeVehicleMaterial(cls: number) {
@@ -168,7 +173,9 @@ function drawVehicle(
   fade: number,
   id: number,
   velocity: number,
-  overlay: OverlayMode,
+  speedTint: number,
+  peopleTint: number,
+  color: Color,
 ) {
   const { length, width } = VEHICLE_CLASSES[cls];
   const headlight = length * 0.5 + 0.034;
@@ -181,12 +188,11 @@ function drawVehicle(
   matrix.updateMatrix();
   mesh.setMatrixAt(instance, matrix.matrix);
   const palette = paints[cls];
-  const color =
-    overlay === "speed"
-      ? speeds[velocity < 0.5 ? 0 : velocity < 3 ? 1 : velocity < 7 ? 2 : 3]
-      : overlay === "people" && VEHICLE_CLASSES[cls].occupancy > 8
-        ? occupancyColor
-        : palette[id % palette.length];
+  const occupancy = VEHICLE_CLASSES[cls].occupancy;
+  color.copy(palette[id % palette.length]);
+  if (speedTint > 0)
+    color.lerp(speeds[velocity < 0.5 ? 0 : velocity < 3 ? 1 : velocity < 7 ? 2 : 3], speedTint);
+  if (peopleTint > 0 && occupancy > 8) color.lerp(occupancyColor, peopleTint);
   mesh.setColorAt(instance, color);
 
   matrix.scale.set(lampSize * fade, lampSize * fade, 0.22 * fade);
@@ -207,8 +213,7 @@ function drawVehicle(
   const rear = brake ? brakeGlow : tailGlow;
   const { positions, colors } = glow;
   const base = lampIndex * 3;
-  const emphasis =
-    overlay === "people" ? 1 + Math.min(1.3, VEHICLE_CLASSES[cls].occupancy / 22) : 1;
+  const emphasis = 1 + Math.min(1.3, occupancy / 22) * peopleTint;
   positions[base] = x + forward * dx;
   positions[base + 1] = 0.62;
   positions[base + 2] = z + forward * dz;
@@ -281,6 +286,8 @@ export function TrafficMeshes({
   const tails = useRef<InstancedMesh>(null);
   const signalLamps = useRef<InstancedMesh>(null);
   const [matrix] = useState(() => new Object3D());
+  const [color] = useState(() => new Color());
+  const tint = useRef({ speed: 0, people: 0 });
   const [counts] = useState(() => new Uint16Array(VEHICLE_CLASSES.length));
   const [fallback] = useState(makeFallbackGeometries);
   const beams = useRef<InstancedMesh>(null);
@@ -364,13 +371,12 @@ export function TrafficMeshes({
     signals.computeBoundingSphere();
   }, [capacity, matrix, signalHalo]);
 
-  const lastOverlay = useRef<OverlayMode | undefined>(undefined);
   useLayoutEffect(() => {
     if (beamDetail && !lowDetail && beams.current) prepareUpload(beams.current.instanceMatrix);
-    lastOverlay.current = undefined;
+    lastSettledTick.current = -1;
   }, [beamDetail, lowDetail]);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (!visible) return;
     const currentHost = host.current;
     const view = state.camera as PerspectiveCamera;
@@ -390,14 +396,26 @@ export function TrafficMeshes({
       ((current.tick - (previous?.tick ?? current.tick)) * DT * 1000) / speed,
     );
     const mix = !previous || paused ? 1 : Math.min(age / sampleTime, 1);
+    const speedTint = fadeOverlay(
+      tint.current.speed,
+      overlay === "speed",
+      delta / overlayFadeSeconds,
+    );
+    const peopleTint = fadeOverlay(
+      tint.current.people,
+      overlay === "people",
+      delta / overlayFadeSeconds,
+    );
     if (
       mix === 1 &&
       age >= fadeMs &&
       lastSettledTick.current === current.tick &&
-      lastOverlay.current === overlay
+      tint.current.speed === speedTint &&
+      tint.current.people === peopleTint
     )
       return;
-    lastOverlay.current = overlay;
+    tint.current.speed = speedTint;
+    tint.current.people = peopleTint;
     if (mix === 1 && age >= fadeMs) lastSettledTick.current = current.tick;
     counts.fill(0);
     const points = current.positions;
@@ -444,7 +462,9 @@ export function TrafficMeshes({
         fade,
         id,
         points[offset + 4],
-        overlay,
+        speedTint,
+        peopleTint,
+        color,
       );
     }
     const departures = currentHost.departures;
@@ -471,7 +491,9 @@ export function TrafficMeshes({
         fade,
         vehicle.id,
         0,
-        overlay,
+        speedTint,
+        peopleTint,
+        color,
       );
     }
 
