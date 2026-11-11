@@ -151,7 +151,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 6.7 | Results view: headline, main table, charts, provenance | `01` R1–R3, R5 | 6.5, 4.1 | Renders entirely from the JSON |
 | ☑ | 6.8 | **"Run it yourself"**: bench worker pool, progress, match indicator | `01` R4, `04` In-browser | 6.5 | Reproduces published numbers exactly in Chromium, Firefox, WebKit |
 | ☑ | 6.9 | Cross-engine determinism test in Playwright | `09` Browser tests | 1.13 | Hashes equal across engines |
-| ☐ | 6.10 | Suites B3, B4, B5, B7 and their Results sections (P1) | `04` Suites | 3.8, 6.7 | Committed and displayed |
+| ☑ | 6.10 | Suites B3, B4, B5, B7 and their Results sections (P1) | `04` Suites | 3.8, 6.7 | Committed and displayed |
 
 **Gate G4 at 6.5.**
 
