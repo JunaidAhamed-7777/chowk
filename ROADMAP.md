@@ -226,3 +226,4 @@ Record spec changes here: date, what changed, why.
 - 12 Nov 2026 — Draw aerial tail-light trails from the two latest vehicle snapshots in a batched pass that respects the wipe. Start automatic quality at Low on narrow displays.
 
 - 12 Nov 2026 — Record the actual autoplay sequence, a placed lane closure, the completed browser replay and a checkpoint swap for the captioned submission video. Capture aerial and pressure stills at a paused seed.
+- 12 Nov 2026 — Live view: loading card with real start-up steps, a skippable first-visit guide (spec L13), controller chips flanking the divider, a compact title block and one control dock. The loading poster, README stills, GIFs and demo video predate this layout and need `npm run capture` to match.

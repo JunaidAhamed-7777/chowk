@@ -148,6 +148,14 @@ A slider over saved training checkpoints (for example generations 0, 5, 20, 60, 
 
 A compact panel showing the selected junction's observation vector as bars and the network's output scores, updating live.
 
+### L13. Getting-started guide — P0
+
+- Shown to first-time visitors once the scene is ready, as a card beside the scene. It never blocks the scene or the autoplay tour; a visitor who ignores it still sees the tour.
+- Six steps: what CHOWK is; one street under two controllers; reading the metric cards; events; junctions, overlays and ride-along; Results. Each step after the first rings the controls it describes.
+- "Skip" or `Esc` closes it at any step. Dismissal is remembered in local storage. A "?" button in the control dock reopens it.
+- Using the guide ends the tour, like any other interaction, and sets up the split view when a step needs it.
+- Automated browsers (`navigator.webdriver`) and capture mode do not get the guide. `?guide=on` forces it and `?guide=off` suppresses it.
+
 ### L12. Audio — P2
 
 Muted by default. A low city ambience and soft tones on signal changes; a siren for the ambulance. Never autoplay sound.
@@ -206,7 +214,7 @@ A plain list. At minimum:
 
 ## Global behaviours
 
-- **Loading — P0:** a static poster frame of the city renders immediately as a background image, replaced by the live scene when ready. A thin progress line, no blocking spinner. Target: interactive within 3 s on broadband.
+- **Loading — P0:** a static poster frame of the city renders immediately as a background image. Over it, a loading card shows the brand mark and the real start-up steps (3D corridor, signal controllers, traffic warm-up), ticking each off as it completes, with a rotating one-line hint. It stays for at least about a second so it can be read, and fades out once the scene has faded in. Target: interactive within 3 s on broadband.
 - **Quality tiers — P0:** High, Medium, Low, chosen automatically from a short frame-time probe and changeable in the top bar. See `05-rendering.md`.
 - **No-WebGL fallback — P1:** a 2D canvas top-down view of the same simulation with the same controls, so the product still works.
 - **Reduced motion — P1:** honours the system setting; the tour uses cuts instead of camera glides.

@@ -50,3 +50,11 @@ npm run capture -- video
 - Desktop coverage includes Chrome and Edge on Windows and macOS, native Safari on macOS, Firefox on WSL and Playwright WebKit on Windows. The [macOS workflow](.github/workflows/safari.yml) exercises the installed browsers. The 2D fallback and portrait touch-emulated Low tier passed locally. Physical iOS and Android checks remain open.
 - Regenerate the Unstop draft with `npm run submission:prepare -- --demo https://chowk-seven.vercel.app/`. The command takes the headline from the committed benchmark, uses the published video URL and writes `docs/SUBMISSION.md`. [Submission draft](docs/SUBMISSION.md)
 - The user submits the form on Unstop. Verify the links from the submitted page and record the final CI-green commit under the `v1.0-submission` tag as specified in [plan/08-submission.md](plan/08-submission.md).
+
+## Interface pass (loading, guide, layout)
+
+- `apps/web/src/ui/LoadingScreen.tsx` covers the scene until both simulations are ready. Its steps reflect real state (`policiesReady`, `ready`); do not turn them into timed animation.
+- `apps/web/src/ui/Onboarding.tsx` is the first-visit guide (spec L13 in [plan/01-product-spec.md](plan/01-product-spec.md)). `/?guide=on` forces it, `/?guide=off` hides it, and automated browsers skip it by default. A Playwright test covers it.
+- `apps/web/src/ui/liveLayout.css` holds the Live layout overrides and loads last.
+- **Media is out of date.** `apps/web/public/poster.webp`, the README stills and GIFs and the demo video show the previous layout. Run `npm run capture -- stills` and `npm run capture -- video`, then check the README. Until then the loading card hides the poster's old interface behind a blur.
+- Phone layout is not a target; do not spend time on it.

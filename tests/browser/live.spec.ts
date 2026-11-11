@@ -95,3 +95,38 @@ test("runs the same live corridor in 2D when WebGL 2 is unavailable", async ({ p
   await page.getByRole("link", { name: "Limits" }).click();
   await expect(page.getByRole("heading", { name: "Scope and limitations" })).toBeVisible();
 });
+
+test("guides a first-time visitor through the comparison and remembers dismissal", async ({
+  page,
+}) => {
+  if (process.env.CI) {
+    await page.addInitScript(() => localStorage.setItem("chowk-quality", "low"));
+  }
+
+  // Automated browsers skip the guide unless the URL asks for it.
+  await page.goto("/?guide=on");
+  const guide = page.getByRole("dialog", { name: "Getting started" });
+  await expect(guide).toBeVisible({ timeout: 60_000 });
+  await expect(guide.getByRole("heading", { name: "Welcome to CHOWK" })).toBeVisible();
+
+  await guide.getByRole("button", { name: "Show me around" }).click();
+  await expect(guide.getByRole("heading", { name: "One street, two controllers" })).toBeVisible();
+  await expect(page.getByRole("slider", { name: "Comparison wipe" })).toBeVisible();
+  for (const title of [
+    "Read the difference",
+    "Try to break it",
+    "Look closer",
+    "Check the proof",
+  ]) {
+    await guide.getByRole("button", { name: "Next" }).click();
+    await expect(guide.getByRole("heading", { name: title })).toBeVisible();
+  }
+  await guide.getByRole("button", { name: "Done" }).click();
+  await expect(guide).toBeHidden();
+  expect(await page.evaluate(() => localStorage.getItem("chowk-guide"))).toBe("done");
+
+  await page.getByRole("button", { name: "Open the getting started guide" }).click();
+  await expect(guide).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(guide).toBeHidden();
+});
