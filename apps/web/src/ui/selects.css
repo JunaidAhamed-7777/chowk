@@ -1,0 +1,116 @@
+/*
+ * Dropdown lists.
+ * Every browser gets a dark list with readable text. Browsers that support
+ * customisable selects (appearance: base-select) also get a rounded, padded
+ * panel with hover states and a tick on the current choice. The control stays
+ * a native <select>, so keyboard use and screen readers work as before.
+ */
+select option {
+  background: #0d1420;
+  color: var(--ui-text);
+}
+select option:checked {
+  background: #16382f;
+  color: #c8f9e8;
+}
+
+@supports (appearance: base-select) {
+  select,
+  select::picker(select) {
+    appearance: base-select;
+  }
+  select {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  select::picker-icon {
+    color: #9aa7b8;
+    font-size: 9px;
+    transition: rotate 180ms ease;
+  }
+  select:open::picker-icon {
+    rotate: 180deg;
+  }
+  /* The quality control draws its own chevron. */
+  .quality-control select::picker-icon {
+    display: none;
+  }
+
+  select::picker(select) {
+    width: max-content;
+    min-width: max(anchor-size(width), 216px);
+    max-width: min(360px, 92vw);
+    margin-block: 8px;
+    padding: 6px;
+    border: 1px solid #ffffff24;
+    border-radius: 12px;
+    background: #0b111cfa;
+    box-shadow:
+      0 20px 54px #02040ae6,
+      0 0 0 1px #3df2b412;
+    opacity: 0;
+    translate: 0 -4px;
+    transition:
+      opacity 140ms ease,
+      translate 140ms ease,
+      overlay 140ms allow-discrete,
+      display 140ms allow-discrete;
+  }
+  select:open::picker(select) {
+    opacity: 1;
+    translate: 0 0;
+  }
+  @starting-style {
+    select:open::picker(select) {
+      opacity: 0;
+      translate: 0 -4px;
+    }
+  }
+
+  select option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 36px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: transparent;
+    color: #d3dce8;
+    font:
+      520 13.5px / 1.25 "Inter Variable",
+      Inter,
+      sans-serif;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  select option:is(:hover, :focus-visible) {
+    outline: 0;
+    background: #ffffff14;
+    color: #ffffff;
+  }
+  select option:checked {
+    background: #3df2b41f;
+    color: #c8f9e8;
+    font-weight: 640;
+  }
+  select option:checked:is(:hover, :focus-visible) {
+    background: #3df2b42e;
+  }
+  /* Tick on the right, so option labels stay aligned on the left. */
+  select option::checkmark {
+    order: 1;
+    margin-left: auto;
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    select::picker(select),
+    select::picker-icon {
+      transition: none;
+    }
+  }
+}

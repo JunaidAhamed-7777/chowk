@@ -8,6 +8,7 @@ import { LoadingScreen, liveLoadingSteps } from "./ui/LoadingScreen";
 import type { InformationRoute } from "./views/InformationView";
 import { InformationView } from "./views/InformationView";
 import "./styles.css";
+import "./ui/selects.css";
 
 const LiveView = lazy(() => import("./views/LiveView"));
 const repository = "https://github.com/JunaidAhamed-7777/chowk";
