@@ -63,7 +63,7 @@ Use 6 px corners on controls and 12 px on the instrument. The round station mark
 
 ## Components
 
-Native buttons handle actions. Links handle navigation and expose the current route. The render-quality control uses a labelled native select with platform-owned popup geometry. Hover and focus states are visible. Scene controls remain unavailable while graphics initialise, and the viewport reserves its height for loading and recovery.
+Native buttons handle actions. Links handle navigation and expose the current route. The render-quality control and Results scenario control use labelled native selects with platform-owned popup geometry. Hover and focus states are visible. Scene controls remain unavailable while graphics initialise, and the viewport reserves its height for loading and recovery. Results uses the same panel tokens and monospace provenance, with interval whiskers and data tables for the simulation measurements.
 
 The viewport uses a thin progress line during scene setup. If graphics fail, the viewport shows the reason and offers reload when available. Information pages keep their headings and navigation in pending states.
 

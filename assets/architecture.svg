@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" role="img" aria-labelledby="title description">
+  <title id="title">One simulator powers CHOWK</title>
+  <desc id="description">The TypeScript simulator, calibrated demand and controller implementations are shared by the Node trainer, Live browser workers and benchmark runners. Validation selects exported policy weights. The benchmark CLI publishes held-out episode records that browser workers reproduce.</desc>
+  <defs>
+    <marker id="flow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M1 1l6 3-6 3" fill="none" stroke="#64849e" stroke-width="1.2"/>
+    </marker>
+    <marker id="artifact" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M1 1l6 3-6 3" fill="none" stroke="#3df2b4" stroke-width="1.2"/>
+    </marker>
+  </defs>
+  <rect width="960" height="420" rx="15" fill="#0a0f1a"/>
+  <g fill="none" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#flow)" stroke="#64849e">
+    <path d="M479 106v24H175v37"/>
+    <path d="M479 106v61"/>
+    <path d="M479 106v24h306v37"/>
+  </g>
+  <g fill="none" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#artifact)" stroke="#3df2b4">
+    <path d="M175 255v43"/>
+    <path d="M315 330h165v-69"/>
+    <path d="M315 346h318v-57h81v-28"/>
+    <path d="M785 255v43"/>
+  </g>
+  <g font-family="Inter, system-ui, sans-serif">
+    <g stroke="#385166" fill="#121b2a">
+      <rect x="267" y="27" width="424" height="79" rx="9"/>
+      <rect x="33" y="169" width="284" height="86" rx="9"/>
+      <rect x="337" y="169" width="286" height="86" rx="9"/>
+      <rect x="643" y="169" width="284" height="86" rx="9"/>
+    </g>
+    <g stroke="#25846d" fill="#0f2629">
+      <rect x="33" y="300" width="282" height="74" rx="9"/>
+      <rect x="643" y="300" width="284" height="74" rx="9"/>
+    </g>
+    <g fill="#e8edf5" font-size="18" font-weight="650">
+      <text x="288" y="56">Shared TypeScript simulator</text>
+      <text x="52" y="200">Evolution strategies</text>
+      <text x="357" y="200">Live comparison</text>
+      <text x="663" y="200">Evaluation and reproduction</text>
+      <text x="52" y="330">Exported policy</text>
+      <text x="663" y="330">Published benchmark JSON</text>
+    </g>
+    <g fill="#a9b7cc" font-size="13.5">
+      <text x="288" y="81">Demand profiles · vehicle dynamics · controller driver</text>
+      <text x="52" y="227">Node workers · training and validation</text>
+      <text x="357" y="227">Two browser workers · one 3D scene</text>
+      <text x="663" y="227">Node CLI and browser workers</text>
+      <text x="52" y="353">Checkpoint selected on validation seeds</text>
+      <text x="663" y="353">Held-out metrics, state hashes and intervals</text>
+    </g>
+  </g>
+</svg>

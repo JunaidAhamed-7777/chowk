@@ -1,0 +1,300 @@
+import { useId } from "react";
+import calibration from "../../../../results/calibration.json";
+import architecture from "../../../../assets/architecture.svg?url";
+import { TrainingCurveChart } from "../benchmark/TrainingCurveChart";
+import { FilteringReplay, ValidationPlots } from "./ValidationPlots";
+import "../benchmark/results.css";
+import "./method.css";
+
+const references = [
+  {
+    title: "Nandakumar, Banerjee and Vanajakshi (2025)",
+    url: "https://arxiv.org/abs/2509.21745",
+    detail:
+      "Queue-based reinforcement learning for a laneless, mixed-traffic intersection in SUMO.",
+  },
+  {
+    title: "C-DAC’s CoSiCoSt-EnV",
+    url: "https://cdac.in/index.aspx?id=product_details&productId=CoSiCoStEnV(CompositeSignalControlStrategyEnhancedVersion)",
+    detail: "Adaptive signal control designed for non-lane-based mixed traffic in India.",
+  },
+  {
+    title: "Varaiya (2013)",
+    url: "https://people.eecs.berkeley.edu/~varaiya/publications.html#:~:text=Max%20pressure%20control%20of%20a%20network%20of%20signalized%20intersections",
+    detail: "Max-pressure control for a network of signalized intersections.",
+  },
+  {
+    title: "Webster (1958)",
+    url: "https://books.google.co.uk/books/about/Traffic_Signal_Settings.html?id=c9QOQ4jXK5cC",
+    detail: "Traffic Signal Settings, including the calculation behind the fixed-time baseline.",
+  },
+  {
+    title: "Treiber, Hennecke and Helbing (2000)",
+    url: "https://journals.aps.org/pre/abstract/10.1103/PhysRevE.62.1805",
+    detail: "The Intelligent Driver Model for longitudinal car-following.",
+  },
+  {
+    title: "Salimans et al. (2017)",
+    url: "https://arxiv.org/abs/1703.03864",
+    detail: "Evolution strategies for optimizing policies with parallel episode evaluations.",
+  },
+];
+
+function RoadSpaceFigure() {
+  const titleId = useId();
+  return (
+    <figure className="method-figure">
+      <svg viewBox="0 0 740 186" role="img" aria-labelledby={titleId}>
+        <title id={titleId}>
+          A bus, an auto-rickshaw and a two-wheeler share a road cross-section and each occupies a
+          different width.
+        </title>
+        <rect x="8" y="12" width="724" height="155" rx="9" fill="#121b2a" />
+        {[42, 65, 88, 111, 134].map((y) => (
+          <line key={y} x1="9" x2="731" y1={y} y2={y} stroke="#314154" strokeDasharray="3 7" />
+        ))}
+        <path d="M8 24H732M8 155H732" stroke="#75879c" strokeWidth="1.1" />
+        <g fill="#3df2b4" stroke="#aafbe5" strokeWidth="0.7">
+          <rect x="120" y="46" width="166" height="55" rx="8" />
+          <rect x="410" y="91" width="71" height="35" rx="6" />
+          <rect x="342" y="52" width="38" height="15" rx="6" />
+        </g>
+        <g fill="#063128" fontSize="13" textAnchor="middle" fontWeight="700">
+          <text x="203" y="77">
+            Bus
+          </text>
+          <text x="445" y="113">
+            Auto
+          </text>
+        </g>
+        <path d="M358 48V33h100" fill="none" stroke="#a9b7cc" />
+        <text x="465" y="37" fill="#e8edf5" fontSize="13">
+          Two-wheeler
+        </text>
+        <path d="M581 109h73m-8 -7 8 7-8 7" fill="none" stroke="#a9b7cc" strokeWidth="1.5" />
+        <text x="581" y="134" fill="#a9b7cc" fontSize="12">
+          Direction of travel
+        </text>
+      </svg>
+      <figcaption>
+        Each vehicle reserves enough strips for its width. The dotted lines show the model’s spatial
+        grid.
+      </figcaption>
+    </figure>
+  );
+}
+
+function SaturationFigure() {
+  const titleId = useId();
+  const mixNames = {
+    mixed: "Mixed traffic",
+    festival: "Festival mix",
+    cars: "Lane-disciplined cars",
+  };
+  const rates = calibration.rows;
+  const maximum =
+    Math.ceil(Math.max(...rates.map(({ vehiclesPerSecond }) => vehiclesPerSecond)) * 5) / 5;
+  const scale = (value: number) => 147 + (528 * value) / maximum;
+  const widths = [...new Set(rates.map(({ strips }) => strips))].sort((a, b) => a - b);
+  const height = widths.length * 74 + 33;
+  return (
+    <figure className="results-chart">
+      <figcaption>Saturation flow across approach widths</figcaption>
+      <p>
+        Mean discharge measured after the start-up interval, during a long green in the simulator.
+      </p>
+      <ul className="chart-legend">
+        <li>
+          <span style={{ backgroundColor: "#3df2b4" }} />
+          Mixed traffic
+        </li>
+        <li>
+          <span style={{ backgroundColor: "#ffc27a" }} />
+          Festival mix
+        </li>
+        <li>
+          <span style={{ backgroundColor: "#92bdff" }} />
+          Lane-disciplined cars
+        </li>
+      </ul>
+      <div className="results-chart-scroll">
+        <svg viewBox={`0 0 740 ${height}`} role="img" aria-labelledby={titleId}>
+          <title id={titleId}>
+            Measured simulated saturation flow in vehicles per second at each approach width for
+            three demand mixes
+          </title>
+          {[0, 0.25, 0.5, 0.75, 1].map((fraction) => (
+            <g key={fraction}>
+              <line
+                className="chart-grid"
+                x1={scale(fraction * maximum)}
+                x2={scale(fraction * maximum)}
+                y1="4"
+                y2={height - 24}
+              />
+              <text x={scale(fraction * maximum)} y={height - 7} textAnchor="middle">
+                {(fraction * maximum).toFixed(2)}
+              </text>
+            </g>
+          ))}
+          {widths.map((width, group) => (
+            <g key={width}>
+              <text className="chart-scenario" x="8" y={group * 74 + 32}>
+                {width / 2} m approach
+              </text>
+              {(["mixed", "festival", "cars"] as const).map((mix, index) => {
+                const rate = rates.find((row) => row.strips === width && row.mix === mix);
+                if (!rate) return null;
+                const colours = ["#3df2b4", "#ffc27a", "#92bdff"];
+                return (
+                  <rect
+                    key={mix}
+                    x={scale(0)}
+                    y={group * 74 + 9 + 17 * index}
+                    width={scale(rate.vehiclesPerSecond) - scale(0)}
+                    height="10"
+                    rx="3"
+                    fill={colours[index]}
+                  >
+                    <title>
+                      {width / 2} m, {mixNames[mix]}: {rate.vehiclesPerSecond.toFixed(3)}{" "}
+                      vehicles/s, {rate.areaPerSecond.toFixed(2)} m²/s
+                    </title>
+                  </rect>
+                );
+              })}
+            </g>
+          ))}
+          <text x="735" y={height - 7} textAnchor="end">
+            veh/s
+          </text>
+        </svg>
+      </div>
+    </figure>
+  );
+}
+
+export function MethodView() {
+  return (
+    <div className="method-content">
+      <p className="information-intro">
+        CHOWK studies how signal control changes delay when people in two-wheelers, autos, cars and
+        buses share road width.
+      </p>
+
+      <section className="method-section" aria-labelledby="method-road-heading">
+        <h2 id="method-road-heading">A queue occupies road space</h2>
+        <p>
+          A bus and a two-wheeler each add one vehicle to a queue count. They occupy different
+          amounts of road and carry different numbers of people. TomTom estimates that Bengaluru
+          drivers lost 168 hours in rush-hour traffic in 2025.{" "}
+          <a href="https://www.tomtom.com/traffic-index/city/bengaluru/">TomTom Traffic Index</a>
+        </p>
+        <RoadSpaceFigure />
+      </section>
+
+      <section className="method-section" aria-labelledby="method-sim-heading">
+        <h2 id="method-sim-heading">Simulating shared width</h2>
+        <p>
+          Roads are divided into narrow strips. Vehicles follow the nearest obstacle across their
+          occupied strips and may move laterally when there is enough space. A two-wheeler can
+          filter past a stopped car because it can fit in space a wider vehicle cannot use.
+        </p>
+        <p>
+          Signal phases serve one approach at a time. The simulator enforces yellow and all-red
+          clearances, keeps conflicting movements out of the junction box, and tracks vehicles
+          waiting at the entry as well as vehicles on the road.
+        </p>
+        <FilteringReplay />
+      </section>
+
+      <section className="method-section" aria-labelledby="method-control-heading">
+        <h2 id="method-control-heading">Signal decisions</h2>
+        <ol className="method-flow">
+          <li>
+            <strong>Observe</strong>
+            <span>Road area, people, waiting time, exit occupancy and neighbouring releases.</span>
+          </li>
+          <li>
+            <strong>Score</strong>
+            <span>
+              Area max-pressure scores the approaches. A small ReLU network adds a learned
+              adjustment.
+            </span>
+          </li>
+          <li>
+            <strong>Serve</strong>
+            <span>
+              The driver masks invalid phases and applies minimum green and starvation rules.
+            </span>
+          </li>
+        </ol>
+        <p>
+          The same policy weights are shared across junctions. The Decision overlay shows the two
+          score components and estimates the influence of each approach by temporarily zeroing its
+          features.
+        </p>
+      </section>
+
+      <section className="method-section" aria-labelledby="method-train-heading">
+        <h2 id="method-train-heading">Training and selection</h2>
+        <p>
+          Evolution strategies evaluate paired weight perturbations on the same simulated demand.
+          Training varies load, vehicle mix, traffic direction, weather, sensing and scripted
+          events. The objective counts delay by occupancy and penalizes ambulance delay and
+          prolonged waiting.
+        </p>
+        <p>
+          Generation zero follows area max-pressure. Validation demand selects the exported
+          checkpoint. Held-out demand seeds are reserved for evaluation and browser reproduction.
+        </p>
+        <TrainingCurveChart />
+      </section>
+
+      <section className="method-section" aria-labelledby="method-eval-heading">
+        <h2 id="method-eval-heading">How comparisons work</h2>
+        <p>
+          Controllers run with identical seeded arrivals. The primary endpoint is delay per person
+          in morning-peak mixed traffic versus area max-pressure. Results use paired bootstrap
+          intervals. Secondary comparisons are exploratory and use unadjusted intervals.
+        </p>
+        <figure className="method-figure">
+          <img
+            src={architecture}
+            alt="The shared simulator supplies training, Live workers, and benchmark runners. Validation selects the exported policy used in both Live and the benchmark."
+          />
+          <figcaption>
+            Training, Live and reproduction share the same simulator and controller driver.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section className="method-section" aria-labelledby="method-validation-heading">
+        <h2 id="method-validation-heading">Simulator checks</h2>
+        <p>
+          Tests check vehicle conservation, junction exclusivity, filtering, rectangle overlap and
+          repeatability. The calibration runs measure discharge for each approach width and vehicle
+          mix, which sets the scale of scenario demand.
+        </p>
+        <SaturationFigure />
+        <ValidationPlots />
+      </section>
+
+      <section className="method-section" aria-labelledby="method-prior-heading">
+        <h2 id="method-prior-heading">Prior work and project contribution</h2>
+        <p>
+          CHOWK combines a deterministic browser simulator for mixed traffic, a shared corridor
+          policy with person-weighted delay, a side-by-side scene with live disturbances, and
+          benchmark reproduction in the browser.
+        </p>
+        <ul className="method-references">
+          {references.map(({ title, url, detail }) => (
+            <li key={url}>
+              {detail} <a href={url}>{title}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  );
+}

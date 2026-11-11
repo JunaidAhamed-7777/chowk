@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      browser_matrix:
+        description: Verify Chromium, Firefox and WebKit
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -24,6 +30,12 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run bench:smoke
+      - run: npm run assets:check
       - run: npm run build
       - run: npm exec -- playwright install --with-deps chromium
+      - if: ${{ inputs.browser_matrix }}
+        run: npm exec -- playwright install --with-deps firefox webkit
       - run: npm exec -- playwright test
+        env:
+          CHOWK_BROWSER_MATRIX: ${{ inputs.browser_matrix && '1' || '0' }}
+          CHOWK_VERIFY_REPRO: ${{ inputs.browser_matrix && '1' || '0' }}

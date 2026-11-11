@@ -1,0 +1,261 @@
+.information.information-results {
+  max-width: 1220px;
+}
+
+.results-content {
+  display: grid;
+  gap: 18px;
+  margin-top: 26px;
+}
+
+.results-headline {
+  max-width: 900px;
+  border-left: 2px solid var(--accent);
+  padding-left: 20px;
+  font-size: clamp(1.12rem, 1.55vw, 1.55rem);
+  line-height: 1.55;
+  letter-spacing: -0.025em;
+}
+
+.results-panel {
+  min-width: 0;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--night-1);
+}
+
+.results-section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.results-section-heading h2,
+.results-chart figcaption,
+.results-extra > summary {
+  color: var(--ui-text);
+  font-size: 1.1rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.results-section-heading p,
+.results-panel > p,
+.results-chart > p {
+  max-width: 64ch;
+  margin: 5px 0 0;
+  color: var(--ui-dim);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.results-select {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ui-dim);
+  font-size: 0.82rem;
+}
+
+.results-select select {
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--night-0);
+  color: var(--ui-text);
+}
+
+.results-table-scroll,
+.results-chart-scroll {
+  overflow-x: auto;
+}
+
+.results-table {
+  width: 100%;
+  min-width: 570px;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.results-table caption {
+  padding: 8px 0;
+  color: var(--ui-dim);
+  font-size: 0.78rem;
+  text-align: left;
+}
+
+.results-table th,
+.results-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.results-table thead th {
+  color: var(--ui-dim);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.results-table th:first-child {
+  padding-left: 0;
+}
+
+.results-table th[scope="row"] {
+  min-width: 12ch;
+  font-weight: 550;
+}
+
+.results-table td {
+  color: var(--ui-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.results-table small {
+  display: block;
+  color: var(--ui-dim);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.results-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.results-best strong,
+.results-panel .repro-match {
+  color: var(--accent);
+}
+
+.results-chart svg {
+  display: block;
+  width: 100%;
+  min-width: 670px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.results-chart svg text {
+  fill: var(--ui-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.results-chart svg .chart-scenario {
+  fill: var(--ui-text);
+}
+
+.chart-grid {
+  stroke: var(--line);
+}
+
+.chart-axis {
+  stroke: var(--ui-dim);
+  stroke-dasharray: 4 5;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 10px 0 3px;
+  color: var(--ui-dim);
+  font-size: 0.77rem;
+}
+
+.chart-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chart-legend li span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.repro-start {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.repro-panel progress {
+  display: block;
+  width: 100%;
+  height: 7px;
+  accent-color: var(--accent);
+}
+
+.results-table details > ul {
+  max-width: 320px;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+  color: var(--ui-dim);
+  font-size: 0.75rem;
+}
+
+.repro-hashes,
+.results-provenance,
+.engineering-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 245px), 1fr));
+  gap: 12px 22px;
+  margin-top: 13px;
+}
+
+.results-provenance {
+  margin-bottom: 16px;
+}
+
+.repro-hashes dt,
+.results-provenance dt,
+.engineering-grid dt {
+  color: var(--ui-dim);
+  font-size: 0.76rem;
+  font-weight: 550;
+}
+
+.repro-hashes dd,
+.results-provenance dd,
+.engineering-grid dd {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+  color: var(--ui-text);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.results-seed-list {
+  grid-column: 1 / -1;
+}
+
+.results-extra > summary {
+  cursor: pointer;
+}
+
+.results-extra .results-table-scroll {
+  margin-top: 12px;
+}
+
+.results-extra .results-chart {
+  margin-top: 16px;
+}
+
+.robustness-gaps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 7px 12px;
+  color: var(--ui-dim);
+  font-size: 0.8rem;
+}
+
+.robustness-gaps strong {
+  color: var(--ui-text);
+  font-weight: 550;
+}

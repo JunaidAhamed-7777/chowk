@@ -17,6 +17,8 @@ export interface EpisodeOptions {
   policy?: PolicyWeights;
 }
 
+const approachWaitZoneMetres = 150;
+
 export function runEpisode(identity: RunIdentity, options: EpisodeOptions = {}): BenchmarkRun {
   const warmup = options.warmup ?? warmupSeconds;
   const measurement = options.measurement ?? measurementSeconds;
@@ -49,7 +51,7 @@ export function runEpisode(identity: RunIdentity, options: EpisodeOptions = {}):
   const approachSamples = new Float64Array(
     Math.ceil(measurementTicks / second) * approachIds.length,
   );
-  const { byLink, counts, wait } = sim.vehicles;
+  const { byLink, counts, s, wait } = sim.vehicles;
   let sampled = 0;
   let maximumApproachWait = 0;
   let maxBacklog = before.backlog;
@@ -63,8 +65,12 @@ export function runEpisode(identity: RunIdentity, options: EpisodeOptions = {}):
     for (const id of approachIds) {
       const list = byLink[id];
       let maximum = 0;
-      for (let index = 0; index < counts[id]; index++)
-        maximum = Math.max(maximum, wait[list[index]]);
+      const zoneStart = Math.max(0, network.links[id].length - approachWaitZoneMetres);
+      for (let index = 0; index < counts[id]; index++) {
+        const slot = list[index];
+        if (s[slot] < zoneStart) break;
+        maximum = Math.max(maximum, wait[slot]);
+      }
       approachSamples[sampled++] = maximum;
     }
   }

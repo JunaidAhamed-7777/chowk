@@ -35,13 +35,18 @@ function readQualityMode(): QualityMode {
 
 export default function App() {
   const [route, setRoute] = useState(readPath);
+  const [visitedLive, setVisitedLive] = useState(() => readPath() === "/");
   const [qualityMode, setQualityMode] = useState(readQualityMode);
   const [automaticQuality, setAutomaticQuality] = useState<Quality>("medium");
   const focusOnNavigation = useRef(false);
   const quality = qualityMode === "auto" ? automaticQuality : qualityMode;
 
   useEffect(() => {
-    const handleHistory = () => setRoute(readPath());
+    const handleHistory = () => {
+      const next = readPath();
+      if (next === "/") setVisitedLive(true);
+      setRoute(next);
+    };
     window.addEventListener("popstate", handleHistory);
     return () => window.removeEventListener("popstate", handleHistory);
   }, []);
@@ -65,6 +70,7 @@ export default function App() {
     if (route === next) return;
     window.history.pushState(null, "", next);
     focusOnNavigation.current = true;
+    if (next === "/") setVisitedLive(true);
     setRoute(next);
     window.scrollTo(0, 0);
   }
@@ -139,22 +145,24 @@ export default function App() {
         </div>
       </header>
       <main id="main" tabIndex={-1}>
-        <section className="live-surface" hidden={route !== "/"}>
-          <Suspense
-            fallback={
-              <div className="loading-route" role="status">
-                Loading the corridor…
-              </div>
-            }
-          >
-            <LiveView
-              active={route === "/"}
-              quality={quality}
-              automatic={qualityMode === "auto"}
-              onQuality={setAutomaticQuality}
-            />
-          </Suspense>
-        </section>
+        {visitedLive && (
+          <section className="live-surface" hidden={route !== "/"}>
+            <Suspense
+              fallback={
+                <div className="loading-route" role="status">
+                  Loading the corridor…
+                </div>
+              }
+            >
+              <LiveView
+                active={route === "/"}
+                quality={quality}
+                automatic={qualityMode === "auto"}
+                onQuality={setAutomaticQuality}
+              />
+            </Suspense>
+          </section>
+        )}
         {route && route !== "/" && <InformationView route={route satisfies InformationRoute} />}
         {!route && (
           <article className="information">

@@ -1,0 +1,144 @@
+.method-content {
+  display: grid;
+  gap: 36px;
+}
+
+.method-content > .information-intro {
+  margin-bottom: 0;
+}
+
+.method-section {
+  border-top: 1px solid var(--line);
+  padding-top: 21px;
+}
+
+.method-section h2 {
+  margin-bottom: 10px;
+  color: var(--ui-text);
+  font-size: 1.29rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.method-section p {
+  max-width: 69ch;
+  margin: 0 0 11px;
+  color: #b1bdce;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.method-section a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 46%, transparent);
+  text-underline-offset: 3px;
+}
+
+.method-figure,
+.method-section .results-chart {
+  min-width: 0;
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--night-1);
+}
+
+.method-figure svg,
+.method-figure img {
+  display: block;
+  width: 100%;
+}
+
+.method-figure figcaption {
+  padding: 8px 3px 3px;
+  color: var(--ui-dim);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.method-flow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 172px), 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.method-flow li {
+  display: grid;
+  gap: 7px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--night-1);
+}
+
+.method-flow strong {
+  color: var(--accent);
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.method-flow span,
+.method-references li {
+  color: #b1bdce;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.filtering-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.filtering-controls input {
+  flex: 1 1 auto;
+  min-width: 60px;
+  accent-color: var(--accent);
+}
+
+.filtering-controls output {
+  min-width: 6ch;
+  color: var(--ui-dim);
+  font-size: 0.83rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.validation-measurements {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 225px), 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.validation-measurements > div {
+  border-top: 1px solid var(--line);
+  padding: 9px 0;
+}
+
+.validation-measurements dt {
+  color: var(--ui-text);
+  font-size: 0.86rem;
+  font-weight: 650;
+}
+
+.validation-measurements dd {
+  margin: 5px 0 0;
+  color: var(--ui-dim);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.method-references {
+  display: grid;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.method-references li {
+  border-left: 1px solid var(--line);
+  padding: 4px 0 4px 10px;
+}

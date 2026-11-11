@@ -10,7 +10,9 @@ const endMarker = "<!-- results:end -->";
 
 function metricCell(row: SummaryCell | undefined): string {
   if (!row) return "—";
-  return `${formatMetric(row.metric, row.mean)} [${formatMetric(row.metric, row.ciLow)}, ${formatMetric(row.metric, row.ciHigh)}]`;
+  const median =
+    row.scenario === "oversaturated" ? ` · median ${formatMetric(row.metric, row.median)}` : "";
+  return `${formatMetric(row.metric, row.mean)} [${formatMetric(row.metric, row.ciLow)}, ${formatMetric(row.metric, row.ciHigh)}]${median}`;
 }
 
 function measurementTable(rows: readonly SummaryCell[], metrics: readonly string[]): string {
