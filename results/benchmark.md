@@ -224,6 +224,76 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 924.3 [911.7, 938.6] | 1.30 [1.27, 1.33] | 3723 [3556, 3888] | 862.0 [846.5, 877.1] |
 | Fixed-time (Webster) | 918.5 [906.0, 932.6] | 1.08 [1.05, 1.11] | 4132 [3955, 4309] | 852.0 [843.9, 859.7] |
 
+## B5 · morning-peak · block
+
+| Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
+|---|---:|---:|---:|---:|
+| CHOWK | 900.2 [889.0, 912.5] | 1.53 [1.48, 1.58] | 5198 [5015, 5393] | 1034.6 [1023.2, 1044.8] |
+| Area max-pressure | 899.8 [889.1, 911.4] | 1.52 [1.46, 1.58] | 5170 [4948, 5401] | 1032.5 [1020.7, 1046.2] |
+| Count max-pressure | 903.9 [894.1, 914.5] | 1.53 [1.48, 1.59] | 5175 [4960, 5396] | 1045.3 [1029.3, 1061.6] |
+| Actuated | 893.7 [883.4, 904.4] | 1.47 [1.42, 1.52] | 5314 [5075, 5527] | 997.1 [982.9, 1011.3] |
+| Fixed-time (Webster) | 925.7 [915.4, 936.5] | 1.21 [1.17, 1.24] | 4936 [4761, 5118] | 984.8 [974.8, 994.8] |
+
+## B5 · morning-peak · clean
+
+| Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
+|---|---:|---:|---:|---:|
+| CHOWK | 898.3 [887.3, 910.9] | 1.53 [1.48, 1.58] | 5232 [5044, 5422] | 1030.8 [1019.8, 1041.0] |
+| Area max-pressure | 897.8 [886.9, 909.6] | 1.53 [1.47, 1.59] | 5231 [5035, 5438] | 1030.9 [1019.4, 1044.4] |
+| Count max-pressure | 902.5 [892.0, 913.6] | 1.55 [1.49, 1.62] | 5259 [5042, 5477] | 1043.3 [1026.2, 1060.1] |
+| Actuated | 891.7 [881.8, 902.2] | 1.47 [1.43, 1.52] | 5370 [5109, 5599] | 992.5 [977.6, 1007.5] |
+| Fixed-time (Webster) | 923.9 [913.8, 934.5] | 1.20 [1.16, 1.23] | 4941 [4766, 5124] | 981.4 [971.6, 991.0] |
+
+## B5 · morning-peak · noise-10
+
+| Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
+|---|---:|---:|---:|---:|
+| CHOWK | 900.2 [889.5, 911.6] | 1.45 [1.41, 1.48] | 5176 [4979, 5382] | 1015.1 [1005.0, 1025.1] |
+| Area max-pressure | 901.6 [890.3, 914.1] | 1.48 [1.45, 1.52] | 5168 [4963, 5368] | 1026.3 [1015.6, 1037.6] |
+| Count max-pressure | 902.5 [892.7, 913.1] | 1.47 [1.42, 1.51] | 5240 [5063, 5421] | 1023.6 [1009.5, 1037.5] |
+| Actuated | 894.1 [883.5, 905.0] | 1.45 [1.41, 1.49] | 5340 [5157, 5521] | 991.4 [978.6, 1004.3] |
+| Fixed-time (Webster) | 923.9 [913.8, 934.5] | 1.20 [1.16, 1.23] | 4941 [4766, 5124] | 981.4 [971.6, 991.0] |
+
+## B5 · morning-peak · noise-20
+
+| Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
+|---|---:|---:|---:|---:|
+| CHOWK | 902.2 [891.6, 914.0] | 1.51 [1.45, 1.56] | 5124 [4922, 5335] | 1017.8 [1005.9, 1029.5] |
+| Area max-pressure | 901.7 [892.1, 912.3] | 1.44 [1.40, 1.48] | 5188 [5014, 5361] | 1009.6 [997.2, 1021.7] |
+| Count max-pressure | 905.7 [895.8, 916.4] | 1.43 [1.39, 1.47] | 5137 [4926, 5359] | 1019.7 [1006.8, 1032.8] |
+| Actuated | 897.6 [887.2, 908.5] | 1.40 [1.38, 1.43] | 5220 [4996, 5432] | 991.0 [979.2, 1002.2] |
+| Fixed-time (Webster) | 923.9 [913.8, 934.5] | 1.20 [1.16, 1.23] | 4941 [4766, 5124] | 981.4 [971.6, 991.0] |
+
+## B5 · morning-peak · noise-30
+
+| Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
+|---|---:|---:|---:|---:|
+| CHOWK | 902.4 [891.7, 914.2] | 1.41 [1.37, 1.45] | 5139 [4938, 5340] | 1009.0 [998.0, 1020.0] |
+| Area max-pressure | 905.5 [895.0, 917.0] | 1.43 [1.39, 1.48] | 5177 [4995, 5355] | 1009.8 [999.9, 1019.3] |
+| Count max-pressure | 907.1 [896.5, 918.4] | 1.43 [1.39, 1.47] | 5142 [4924, 5343] | 1019.7 [1010.0, 1029.2] |
+| Actuated | 899.3 [889.3, 910.1] | 1.42 [1.38, 1.47] | 5224 [5007, 5426] | 991.6 [977.9, 1004.9] |
+| Fixed-time (Webster) | 923.9 [913.8, 934.5] | 1.20 [1.16, 1.23] | 4941 [4766, 5124] | 981.4 [971.6, 991.0] |
+
+## B5 · morning-peak · sensor-freeze
+
+| Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
+|---|---:|---:|---:|---:|
+| CHOWK | 899.8 [888.7, 912.1] | 1.54 [1.49, 1.59] | 5214 [5045, 5401] | 1034.2 [1022.9, 1044.5] |
+| Area max-pressure | 898.1 [887.3, 910.1] | 1.52 [1.46, 1.58] | 5280 [5052, 5512] | 1030.8 [1018.5, 1044.7] |
+| Count max-pressure | 903.5 [892.9, 914.9] | 1.53 [1.47, 1.59] | 5266 [5078, 5450] | 1045.4 [1028.8, 1062.1] |
+| Actuated | 891.9 [881.4, 902.9] | 1.49 [1.43, 1.54] | 5350 [5090, 5580] | 995.4 [980.7, 1009.8] |
+| Fixed-time (Webster) | 923.9 [913.8, 934.5] | 1.20 [1.16, 1.23] | 4941 [4766, 5124] | 981.4 [971.6, 991.0] |
+
+## B5 · morning-peak · surge
+
+| Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
+|---|---:|---:|---:|---:|
+| CHOWK | 899.7 [889.1, 912.1] | 1.55 [1.49, 1.62] | 5201 [5000, 5412] | 1034.7 [1021.6, 1046.5] |
+| Area max-pressure | 898.6 [888.0, 910.1] | 1.51 [1.46, 1.55] | 5328 [5102, 5558] | 1029.2 [1015.5, 1044.1] |
+| Count max-pressure | 902.9 [892.3, 914.4] | 1.54 [1.48, 1.59] | 5314 [5094, 5537] | 1041.9 [1023.4, 1060.3] |
+| Actuated | 892.6 [882.8, 902.8] | 1.47 [1.42, 1.53] | 5372 [5093, 5628] | 994.9 [980.3, 1009.4] |
+| Fixed-time (Webster) | 924.5 [914.3, 935.4] | 1.19 [1.15, 1.23] | 4910 [4720, 5104] | 990.7 [981.9, 999.8] |
+
 ## B6 · morning-peak
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Ambulance travel time (s) | Ambulances completed |
@@ -311,4 +381,6 @@ Measured on AMD Ryzen 9 5900HX with Radeon Graphics         · win32 10.0.26300 
 
 ## Provenance
 
-Source commit dce1e5f97f062223a80ff7de2264d28b59c07ab5. Simulator 3f8c913db8ce7c5ad101d2894b5d803c8ea9dcbee03853e1392f256d91857f8c. Policy 4b5f73013bb17d9211ae42110bfe5db2ae371b73fea73b6857ea6bed1d122275. Raw runs and configuration are in [benchmark.json](benchmark.json).
+Source commit 42f3bc6c19da4c6fe8dbda17efe23c9742f3a73c. Simulator 3f8c913db8ce7c5ad101d2894b5d803c8ea9dcbee03853e1392f256d91857f8c. Policy 4b5f73013bb17d9211ae42110bfe5db2ae371b73fea73b6857ea6bed1d122275.
+
+The recorded episodes cover 1540.0 simulated hours and took 58.1 minutes of benchmark wall time across runs. Raw runs and configuration are in [benchmark.json](benchmark.json).
