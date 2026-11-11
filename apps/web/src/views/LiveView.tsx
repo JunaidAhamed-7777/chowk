@@ -50,8 +50,10 @@ import { Icon } from "../ui/Icon";
 import { LiveControls } from "../ui/LiveControls";
 import { LoadingScreen, liveLoadingSteps } from "../ui/LoadingScreen";
 import { MetricHud } from "../ui/MetricHud";
+import { guideSteps, Onboarding, rememberGuideSeen, shouldOpenGuide } from "../ui/Onboarding";
 import { PolicyInspector } from "../ui/PolicyInspector";
 import "../ui/advancedLive.css";
+import "../ui/liveLayout.css";
 
 const stations = corridor.junctions.map(({ id }) => ({ id, name: `J${id + 1}` }));
 const formatCount = new Intl.NumberFormat("en-IN");
@@ -153,6 +155,9 @@ export default function LiveView({
   const [caption, setCaption] = useState("");
   const [notice, setNotice] = useState("");
   const [shareUrl, setShareUrl] = useState("");
+  const [guide, setGuide] = useState<number | null>(() =>
+    shouldOpenGuide(initial.tour, initial.capture) ? 0 : null,
+  );
   const [history] = useState(() => new LiveMetrics());
   const retries = useRef(0);
   const eventId = useRef(0);
@@ -246,6 +251,28 @@ export default function LiveView({
     setWipe((current) => (current === 0 ? 50 : current));
   }, [tour]);
 
+  function showGuide(step: number) {
+    setGuide(step);
+    // The comparison steps need both sides on screen and the whole corridor in view.
+    if (guideSteps[step].focus === "welcome") return;
+    setSingleView(false);
+    setWipe((current) => (current < 20 || current > 80 ? 50 : current));
+    setVehicle(undefined);
+    setCamera("aerial");
+  }
+
+  function closeGuide() {
+    setGuide(null);
+    rememberGuideSeen();
+  }
+
+  function openResults() {
+    closeGuide();
+    const link = document.querySelector<HTMLAnchorElement>('.topbar-nav a[href="/results"]');
+    if (link) link.click();
+    else window.location.assign("/results");
+  }
+
   function startTour() {
     retries.current = 0;
     setTour(true);
@@ -333,6 +360,10 @@ export default function LiveView({
     const onKey = (event: KeyboardEvent) => {
       if (event.altKey || event.metaKey || event.ctrlKey || event.repeat) return;
       if (event.key === "Escape") {
+        setGuide((current) => {
+          if (current !== null) rememberGuideSeen();
+          return null;
+        });
         setPicking(false);
         setEditingDemand(false);
         setInspecting(false);
@@ -449,6 +480,8 @@ export default function LiveView({
   }, []);
 
   const disabled = !ready || contextLost;
+  const labelOf = (id: string) =>
+    controllerChoices.find(({ controller }) => controller.id === id)?.label ?? id;
   const metrics = frame?.metrics[1];
 
   return (
@@ -463,7 +496,7 @@ export default function LiveView({
           </h1>
         </div>
         <p className="live-deck">
-          A modelled Indian arterial with buses, autos and two-wheelers sharing road space.
+          The same lane-free traffic under two signal controllers, simulated live in your browser.
         </p>
       </div>
 
@@ -623,6 +656,16 @@ export default function LiveView({
               host={host}
               junction={typeof camera === "number" ? camera : 2}
               onClose={() => setInspecting(false)}
+            />
+          )}
+          {guide !== null && ready && (
+            <Onboarding
+              step={guide}
+              left={labelOf(controllers[0].id)}
+              right={labelOf(controllers[1].id)}
+              onStep={showGuide}
+              onClose={closeGuide}
+              onResults={openResults}
             />
           )}
           {notice && (
@@ -791,6 +834,17 @@ export default function LiveView({
               onClick={startTour}
             >
               Tour
+            </button>
+            <button
+              className="control-button guide-button"
+              type="button"
+              disabled={disabled}
+              aria-pressed={guide !== null}
+              aria-label="Open the getting started guide"
+              title="Getting started guide"
+              onClick={() => (guide === null ? showGuide(0) : closeGuide())}
+            >
+              ?
             </button>
           </div>
         </div>

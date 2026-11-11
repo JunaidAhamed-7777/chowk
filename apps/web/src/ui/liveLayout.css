@@ -1,0 +1,211 @@
+/*
+ * Live view layout pass. Loaded after the other Live styles.
+ * Top-left: what this is. Top-centre: which controller is on each side of the divider.
+ * Top-right: status and camera. Bottom: readouts above one control dock.
+ */
+
+/* A compact title block that stays clear of the divider. */
+.live-intro {
+  top: 22px;
+  max-width: min(340px, 44vw);
+}
+.live-intro .section-label {
+  margin-bottom: 7px;
+}
+.live-intro h1 {
+  font-size: clamp(21px, 1.9vw, 27px);
+  letter-spacing: -0.045em;
+}
+.live-deck {
+  max-width: 40ch;
+  margin-top: 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/* Controller chips sit either side of the divider's starting position, so A | B reads at a glance. */
+.comparison-labels {
+  top: 22px;
+  right: auto;
+  left: 50%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: min(620px, 48vw);
+  gap: 30px;
+  translate: -50% 0;
+}
+.comparison-labels > .controller-chip {
+  justify-self: end;
+}
+.comparison-labels > .controller-chip-right {
+  justify-self: start;
+}
+.comparison-labels > .controller-chip:only-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+.controller-chip {
+  height: 36px;
+  padding: 0 8px 0 12px;
+  border-radius: 999px;
+  background: #0a0f1ae0;
+  box-shadow: 0 8px 28px #02040a8c;
+}
+.controller-chip::before {
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #92a1b6;
+  content: "";
+}
+.controller-chip-right {
+  margin-inline-start: 0;
+}
+.controller-chip-right::before {
+  background: var(--accent);
+  box-shadow: 0 0 9px var(--accent);
+}
+.controller-side {
+  letter-spacing: 0.08em;
+}
+.controller-chip select {
+  max-width: 190px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* Status, camera and checkpoint stack in the top-right corner. */
+.instrument-bar {
+  top: 22px;
+  height: 36px;
+}
+.scene-caption {
+  top: 72px;
+}
+.checkpoint-control {
+  top: 122px;
+}
+
+/* One dock: scenario and events on top, playback and cameras beneath, sharing a single frame. */
+.live-view {
+  --hud-bottom: 158px;
+}
+.simulation-controls,
+.instrument-controls {
+  width: min(1120px, calc(100% - var(--gutter) * 2));
+  border-color: #ffffff1a;
+  background: #0a0f1ae6;
+  backdrop-filter: blur(18px);
+}
+.simulation-controls {
+  bottom: 106px;
+  min-height: 44px;
+  padding: 6px 12px;
+  border-bottom-color: #ffffff12;
+  border-radius: 14px 14px 0 0;
+  box-shadow: none;
+}
+.instrument-controls {
+  bottom: 44px;
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  box-shadow: 0 22px 60px #02040ab3;
+}
+.comparison-hud {
+  width: min(1120px, calc(100% - var(--gutter) * 2));
+}
+.comparison-metric {
+  border-radius: 12px;
+  background: #0a0f1ae0;
+}
+.comparison-headline {
+  border-radius: 0 7px 7px 0;
+}
+.guide-button {
+  min-width: 34px;
+  justify-content: center;
+  padding-inline: 0;
+  font-weight: 650;
+}
+
+/* Captions and notices clear the taller readout stack. */
+.tour-caption {
+  bottom: 292px;
+}
+.tour-caption-text {
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #05070deb;
+  box-shadow: 0 10px 34px #02040aa6;
+}
+.live-notice,
+.share-notice {
+  bottom: 298px;
+}
+
+/* Darker edges keep floating text readable over lit windows. */
+.scene-stage::after {
+  background:
+    linear-gradient(180deg, #05070de6 0, #05070d73 12%, transparent 27%),
+    linear-gradient(0deg, #05070df7 0, #05070db3 20%, transparent 44%);
+}
+
+.guide {
+  top: 126px;
+}
+
+@media (max-width: 1180px) {
+  /* Not enough width for title, chips and status on one line: chips drop below. */
+  .comparison-labels {
+    top: 70px;
+  }
+  .live-deck {
+    display: none;
+  }
+  .guide {
+    top: 120px;
+  }
+}
+
+@media (max-width: 620px) {
+  .live-view {
+    --hud-bottom: 283px;
+  }
+  .live-intro {
+    max-width: 62vw;
+  }
+  .comparison-labels {
+    top: 154px;
+    right: var(--gutter);
+    left: var(--gutter);
+    width: auto;
+    gap: 6px;
+    translate: none;
+  }
+  .controller-chip {
+    height: 32px;
+  }
+  .controller-chip select {
+    max-width: 104px;
+    font-size: 12px;
+  }
+  .instrument-bar {
+    top: 22px;
+  }
+  .checkpoint-control {
+    top: 196px;
+  }
+  .simulation-controls {
+    bottom: 177px;
+    border-radius: 12px;
+    border-bottom-color: #ffffff1a;
+  }
+  .instrument-controls {
+    border-top: 1px solid #ffffff1a;
+    border-radius: 12px;
+  }
+  .guide {
+    top: auto;
+  }
+}
