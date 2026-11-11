@@ -35,8 +35,8 @@ interface SceneProps {
   speed: PlaybackSpeed;
 }
 
-const aerialPosition = [512, 296, 305] as const;
-const aerialTarget = [884, 0, -9] as const;
+const aerialPosition = [520, 214, 236] as const;
+const aerialTarget = [925, 0, -6] as const;
 
 function CorridorCamera({
   selection,

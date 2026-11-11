@@ -56,6 +56,41 @@ function formatTime(seconds: number) {
 }
 
 const formatCount = new Intl.NumberFormat("en-IN");
+const oneDecimal = new Intl.NumberFormat("en-IN", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+
+/** Cumulative measurements since the run started, taken from the simulator's own counters. */
+function readings(metrics: Metrics) {
+  const hours = metrics.elapsed / 3600;
+  return [
+    {
+      label: "Delay per person",
+      value: metrics.generatedPeople > 0 ? metrics.personDelay / metrics.generatedPeople : 0,
+      unit: "s",
+      format: oneDecimal,
+    },
+    {
+      label: "Stops per vehicle",
+      value: metrics.generated > 0 ? metrics.stops / metrics.generated : 0,
+      unit: "",
+      format: oneDecimal,
+    },
+    {
+      label: "People delivered",
+      value: hours > 0 ? metrics.completedPeople / hours : 0,
+      unit: "/h",
+      format: formatCount,
+    },
+    {
+      label: "CO\u2082 estimate",
+      value: hours > 0 ? metrics.co2Kg / hours : 0,
+      unit: "kg/h",
+      format: formatCount,
+    },
+  ];
+}
 
 export default function LiveView({ active, quality, automatic, onQuality }: LiveViewProps) {
   const [camera, setCamera] = useState<CameraSelection>("aerial");
@@ -152,6 +187,19 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               <h2>3D view unavailable</h2>
               <p>This browser needs WebGL 2 to display the corridor.</p>
             </div>
+          )}
+          {metrics && ready && (
+            <dl className="hud" aria-label="Measurements since the run started">
+              {readings(metrics).map(({ label, value, unit, format }) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd>
+                    {format.format(format === oneDecimal ? value : Math.round(value))}
+                    {unit && <small>{unit}</small>}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           )}
           {ready && (
             <div className="scene-caption">

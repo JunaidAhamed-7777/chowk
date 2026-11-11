@@ -197,7 +197,7 @@ export function TrafficMeshes({
   const [fallback] = useState(makeFallbackGeometries);
   const beams = useRef<InstancedMesh>(null);
   const [beam] = useState(makeBeam);
-  const [vehicleGlow] = useState(() => createGlow(capacity * 2, 1.5, 2.2));
+  const [vehicleGlow] = useState(() => createGlow(capacity * 2, 1.5, 2.8));
   const [signalHalo] = useState(() => createGlow(district.signalMounts.length, 3.4, 4.5));
   const models = useVehicleGeometries();
   const lastSignalTick = useRef(-1);

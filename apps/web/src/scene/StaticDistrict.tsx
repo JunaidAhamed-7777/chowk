@@ -51,7 +51,7 @@ function buildingMaterial() {
       float mullion = smoothstep(.025, .075, abs(uvWindow.x - .49));
       float glass = side * band * bay * mix(.46, 1., mullion);
       float randomWindow = windowHash(cell + buildingSeed * .68);
-      float lit = step(mix(.73, .94, buildingType), randomWindow);
+      float lit = step(mix(.79, .95, buildingType), randomWindow);
       float curb = smoothstep(.045, .09, abs(uvWindow.y - .9));
       diffuseColor.rgb *= mix(.59, 1.08, mix(1., curb, side));
       diffuseColor.rgb *= mix(1., .33, glass);
@@ -63,7 +63,7 @@ function buildingMaterial() {
       vec3 warm = vec3(1., .52, .21);
       vec3 cool = vec3(.33, .65, .91);
       vec3 windowLight = mix(warm, cool, step(.70, windowHash(cell + buildingSeed * .43)));
-      float strength = mix(.28, 1.78, windowHash(cell + buildingSeed * .18));
+      float strength = mix(.2, 1.25, windowHash(cell + buildingSeed * .18));
       totalEmissiveRadiance += glass * lit * strength * windowLight;`,
       );
   };
