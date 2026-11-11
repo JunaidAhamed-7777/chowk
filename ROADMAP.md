@@ -121,7 +121,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ✓ | Id | Task | Spec | Depends | Done when |
 |---|---|---|---|---|---|
 | ☑ | 5.1 | Metric cards with rolling values, sparklines, differences, headline figure | `01` L2 | 4.8 | Values update at 4 Hz and match worker metrics |
-| ☐ | 5.2 | Controller selectors per side; live swap | `01` L3 | 4.9, 2.8 | Swapping changes behaviour without reset |
+| ☑ | 5.2 | Controller selectors per side; live swap | `01` L3 | 4.9, 2.8 | Swapping changes behaviour without reset |
 | ☑ | 5.3 | Scenario selector; time controls; seed field | `01` L4, L7 | 4.8, 2.3 | Reset and fast-forward work; same seed reproduces |
 | ☑ | 5.4 | Events: surge, block (with click-to-place), ambulance; toasts, scene markers, sparkline ticks | `01` L5 | 1.11, 5.1 | Each fires in both simulations at the same tick |
 | ☑ | 5.5 | Pressure overlay | `01` L6, `05` Overlays | 4.9 | Zones colour by occupied area, respecting the wipe |
@@ -129,10 +129,10 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 5.7 | **Autoplay tour**: JSON timeline, player, captions, interruption and restart | `01` L9 | 5.4, 5.5, 5.6 | The full tour plays unattended on first load and loops |
 | ☐ | 5.8 | Decision, Speed and People overlays (P1) | `01` L6 | 2.9, 5.5 | Each renders and fades |
 | ☐ | 5.9 | Ride-along and ambulance cameras (P1) | `01` L8 | 5.6 | Click a vehicle to follow |
-| ☐ | 5.10 | "Watch it learn" slider (P1) | `01` L10 | 3.6, 5.2 | Sliding swaps checkpoints live |
+| ☑ | 5.10 | "Watch it learn" slider (P1) | `01` L10 | 3.6, 5.2 | Sliding swaps checkpoints live |
 | ☐ | 5.11 | Share URL; keyboard shortcuts; reduced motion (P1) | `01` L7, Global | 5.3 | State round-trips through the URL |
 | ☐ | 5.12 | Mobile layout at Low tier | `01` Layout | 5.1 | Usable in portrait on a phone |
-| ☐ | 5.13 | 2D canvas fallback (P1) | `05` Fallbacks | 4.8 | Appears when WebGL2 is unavailable |
+| ☑ | 5.13 | 2D canvas fallback (P1) | `05` Fallbacks | 4.8 | Appears when WebGL2 is unavailable |
 | ☐ | 5.14 | Error handling: worker restart, context loss, tab hidden | `01` Global | 4.8 | No blank screens under induced failures |
 | ☐ | 5.15 | Sensor-failure event, custom scenario sliders, policy inspector, audio (P1–P2) | `01` | 5.4 | As specified |
 

@@ -55,7 +55,9 @@ export function ComparisonWipe({
         event.preventDefault();
       }}
     >
-      <span className="wipe-handle" aria-hidden="true">‹ ›</span>
+      <span className="wipe-handle" aria-hidden="true">
+        ‹ ›
+      </span>
     </div>
   );
 }

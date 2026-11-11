@@ -1,0 +1,149 @@
+.top-down-corridor {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.context-recovery {
+  z-index: 4;
+  background: #05070dde;
+}
+
+.custom-demand-panel,
+.policy-inspector {
+  position: absolute;
+  z-index: 6;
+  top: min(207px, 26%);
+  right: var(--gutter);
+  display: grid;
+  width: min(310px, calc(100% - var(--gutter) * 2));
+  max-height: min(51%, 430px);
+  gap: 9px;
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #0a0f1af5;
+  color: var(--ui-text);
+  box-shadow: 0 14px 32px #02040a9c;
+  font-size: 12px;
+}
+.custom-demand-panel h2,
+.policy-inspector h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 620;
+}
+.demand-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 8px;
+  color: #b7c4d6;
+}
+.demand-field output {
+  color: #a4efd5;
+  font-family: var(--mono);
+}
+.demand-field input {
+  grid-column: 1 / -1;
+}
+.demand-field input,
+.checkpoint-panel input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+.mix-fields {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.mix-fields legend {
+  padding: 4px 0;
+  color: var(--ui-text);
+  font-weight: 620;
+}
+.custom-demand-actions,
+.policy-inspector header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.policy-inspector header .control-button {
+  min-height: 24px;
+  padding: 0 7px;
+}
+.policy-inspector .inspector-feature {
+  display: grid;
+  grid-template-columns: 85px 35px minmax(0, 1fr);
+  gap: 5px;
+  align-items: center;
+}
+.policy-inspector :is(dl, ul, p) {
+  margin: 0;
+}
+.policy-inspector dl {
+  display: grid;
+  gap: 4px;
+}
+.inspector-feature dd {
+  margin: 0;
+  color: #a4efd5;
+  font-family: var(--mono);
+}
+.inspector-feature meter {
+  width: 100%;
+}
+.policy-inspector ul {
+  display: grid;
+  gap: 3px;
+  padding: 0;
+  list-style: none;
+}
+.policy-inspector li {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  color: var(--ui-dim);
+  font: 500 10px var(--mono);
+}
+.policy-inspector li strong {
+  color: var(--ui-text);
+}
+.checkpoint-control {
+  position: absolute;
+  z-index: 5;
+  top: 200px;
+  right: var(--gutter);
+}
+.checkpoint-button {
+  background: #0a0f1ade;
+}
+.checkpoint-control > .checkpoint-panel {
+  top: calc(100% + 7px);
+  bottom: auto;
+  width: 244px;
+  padding: 9px;
+  color: #b6c4d5;
+  font-size: 11px;
+}
+.checkpoint-panel label {
+  display: grid;
+  gap: 6px;
+  color: var(--ui-text);
+}
+.checkpoint-panel svg {
+  display: block;
+  width: 100%;
+}
+.checkpoint-panel p {
+  min-height: 1em;
+  margin: 0;
+}
+.topbar-tools .sound-toggle {
+  min-height: 33px;
+  padding: 5px 8px;
+}

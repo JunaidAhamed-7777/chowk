@@ -84,7 +84,7 @@
   letter-spacing: 0;
   text-transform: none;
 }
-.metric-info:is(:hover, :focus-visible) + .metric-tooltip {
+.metric-info:is(:hover, :focus-visible, [aria-expanded="true"]) + .metric-tooltip {
   display: block;
 }
 .comparison-metric-values {

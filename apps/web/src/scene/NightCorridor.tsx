@@ -265,15 +265,19 @@ function QualityProbe({
   onQuality: (quality: Quality) => void;
 }) {
   const probe = useRef({ elapsed: 0, duration: 0, frames: -8, checks: 0, waitUntil: 0 });
+  useEffect(() => {
+    if (automatic) probe.current = { elapsed: 0, duration: 0, frames: -8, checks: 0, waitUntil: 0 };
+  }, [automatic]);
   useFrame((_, delta) => {
-    if (!automatic || !ready || document.hidden || delta > 0.25 || probe.current.checks === 2)
+    if (!automatic || !ready || document.hidden || probe.current.checks === 2)
       return;
     const sample = probe.current;
-    sample.elapsed += delta;
+    const time = Math.min(delta, 0.25);
+    sample.elapsed += time;
     if (sample.elapsed < sample.waitUntil) return;
     sample.frames += 1;
     if (sample.frames <= 0) return;
-    sample.duration += delta;
+    sample.duration += time;
     if (sample.frames < 90) return;
     const mean = sample.duration / sample.frames;
     if (mean > 0.028 && quality !== "low") onQuality(quality === "high" ? "medium" : "low");
@@ -339,6 +343,7 @@ export function NightCorridor({
         wipe={wipe}
         singleView={singleView}
         overlay={overlay}
+        aerial={camera === "aerial"}
       />
       <EventMarkers events={events} tick={tick} />
       <RoadPicker onPick={onRoadPick} />

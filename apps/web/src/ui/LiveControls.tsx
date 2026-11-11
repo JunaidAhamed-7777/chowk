@@ -1,6 +1,7 @@
-import { type ScenarioId, scenarioCatalog } from "@chowk/scenarios";
+import { scenarioCatalog } from "@chowk/scenarios";
 import { useState } from "react";
 import { type OverlayMode, overlays } from "../scene/sceneSettings";
+import type { LiveScenarioId } from "../sim/liveScenario";
 import { maxLiveSeed, parseLiveSeed } from "../sim/liveSession";
 import { Icon } from "./Icon";
 
@@ -8,8 +9,10 @@ type UserEvent = "surge" | "block" | "ambulance" | "sensorFreeze" | "outage";
 
 interface LiveControlsProps {
   enabled: boolean;
-  scenario: ScenarioId;
-  onScenario: (scenario: ScenarioId) => void;
+  scenario: LiveScenarioId;
+  onScenario: (scenario: LiveScenarioId) => void;
+  onCustom: () => void;
+  onInspect: () => void;
   overlay: OverlayMode;
   onOverlay: (overlay: OverlayMode) => void;
   seed: number;
@@ -25,6 +28,8 @@ export function LiveControls({
   enabled,
   scenario,
   onScenario,
+  onCustom,
+  onInspect,
   overlay,
   onOverlay,
   seed,
@@ -44,13 +49,17 @@ export function LiveControls({
         <select
           aria-label="Scenario"
           value={scenario}
-          onChange={(event) => onScenario(event.target.value as ScenarioId)}
+          onChange={(event) => {
+            if (event.target.value === "custom") onCustom();
+            else onScenario(event.target.value as LiveScenarioId);
+          }}
         >
           {scenarioCatalog.map(({ id, label }) => (
             <option key={id} value={id}>
               {label}
             </option>
           ))}
+          <option value="custom">Custom demand…</option>
         </select>
       </label>
       <fieldset className="event-buttons" aria-label="Traffic events">
@@ -100,6 +109,17 @@ export function LiveControls({
             >
               Signal outage
             </button>
+            <button className="control-button" type="button" onClick={onCustom}>
+              Custom demand
+            </button>
+            <button
+              className="control-button"
+              type="button"
+              disabled={!enabled}
+              onClick={onInspect}
+            >
+              Policy inspector
+            </button>
           </div>
         </details>
       </fieldset>
@@ -119,6 +139,7 @@ export function LiveControls({
       </label>
       <form
         className="seed-form"
+        noValidate
         onSubmit={(event) => {
           event.preventDefault();
           const next = parseLiveSeed(seedDraft ?? String(seed));

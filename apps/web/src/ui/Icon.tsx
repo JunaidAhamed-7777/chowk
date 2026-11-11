@@ -1,6 +1,16 @@
 import type { ReactNode } from "react";
 
-type IconName = "arrow" | "camera" | "chevron" | "github" | "layers" | "pause" | "play" | "reset";
+type IconName =
+  | "arrow"
+  | "camera"
+  | "chevron"
+  | "github"
+  | "layers"
+  | "muted"
+  | "pause"
+  | "play"
+  | "reset"
+  | "sound";
 
 const strokes: Record<IconName, ReactNode> = {
   arrow: <path d="M6 14 14 6M7 6h7v7" />,
@@ -20,9 +30,11 @@ const strokes: Record<IconName, ReactNode> = {
       <path d="m3 10 7 4 7-4M3 13l7 4 7-4" />
     </>
   ),
+  muted: <path d="M3 8v4h3l4 3V5L6 8H3m10 0 4 4m0-4-4 4" />,
   pause: <path d="M8 5v10m4-10v10" />,
   play: <path d="m7 5 8 5-8 5V5Z" fill="currentColor" strokeWidth="1" />,
   reset: <path d="M4 9a6 6 0 1 1 1 5m-1-9v4h4" />,
+  sound: <path d="M3 8v4h3l4 3V5L6 8H3m10-.5a3.5 3.5 0 0 1 0 5m2-7a6.5 6.5 0 0 1 0 9" />,
 };
 
 export function Icon({ name, size = 16 }: { name: IconName; size?: number }) {

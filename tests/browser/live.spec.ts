@@ -78,7 +78,7 @@ test("renders the night corridor and responds to playback, camera and navigation
   expect(browserErrors).toEqual([]);
 });
 
-test("opens a usable shell when WebGL 2 is unavailable", async ({ page }) => {
+test("runs the same live corridor in 2D when WebGL 2 is unavailable", async ({ page }) => {
   await page.addInitScript(() => {
     HTMLCanvasElement.prototype.getContext = new Proxy(HTMLCanvasElement.prototype.getContext, {
       apply: (getContext, canvas, args) =>
@@ -87,8 +87,9 @@ test("opens a usable shell when WebGL 2 is unavailable", async ({ page }) => {
   });
 
   await page.goto("/?tour=off");
-  await expect(page.getByRole("heading", { name: "3D view unavailable" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Aerial view" })).toBeDisabled();
+  await expect(page.getByRole("img", { name: "Top-down corridor simulation" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Aerial view" })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Pause simulation" })).toBeEnabled();
   await page.getByRole("link", { name: "Limits" }).click();
   await expect(page.getByRole("heading", { name: "Scope and limitations" })).toBeVisible();
 });

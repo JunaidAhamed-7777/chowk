@@ -2,6 +2,7 @@ import type { MouseEvent } from "react";
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Quality, QualityMode } from "./scene/sceneSettings";
 import { qualityPresets } from "./scene/sceneSettings";
+import { setTrafficSoundEnabled } from "./sim/trafficAudio";
 import { Icon } from "./ui/Icon";
 import type { InformationRoute } from "./views/InformationView";
 import { InformationView } from "./views/InformationView";
@@ -38,6 +39,8 @@ export default function App() {
   const [visitedLive, setVisitedLive] = useState(() => readPath() === "/");
   const [qualityMode, setQualityMode] = useState(readQualityMode);
   const [automaticQuality, setAutomaticQuality] = useState<Quality>("medium");
+  const [sound, setSound] = useState(false);
+  const [changingSound, setChangingSound] = useState(false);
   const focusOnNavigation = useRef(false);
   const quality = qualityMode === "auto" ? automaticQuality : qualityMode;
 
@@ -82,6 +85,12 @@ export default function App() {
     } catch {
       // The selected tier remains active for this session.
     }
+  }
+
+  async function toggleSound() {
+    setChangingSound(true);
+    setSound(await setTrafficSoundEnabled(!sound));
+    setChangingSound(false);
   }
 
   return (
@@ -136,6 +145,19 @@ export default function App() {
               </select>
               <Icon name="chevron" size={13} />
             </label>
+            {route === "/" && (
+              <button
+                className="control-button sound-toggle"
+                type="button"
+                aria-label="Simulation sound"
+                title={sound ? "Mute simulation sound" : "Enable simulation sound"}
+                aria-pressed={sound}
+                disabled={changingSound}
+                onClick={toggleSound}
+              >
+                <Icon name={sound ? "sound" : "muted"} />
+              </button>
+            )}
             <a className="repo-link" href={repository} target="_blank" rel="noreferrer">
               <Icon name="github" size={18} />
               GitHub
@@ -159,6 +181,7 @@ export default function App() {
                 quality={quality}
                 automatic={qualityMode === "auto"}
                 onQuality={setAutomaticQuality}
+                sound={sound}
               />
             </Suspense>
           </section>

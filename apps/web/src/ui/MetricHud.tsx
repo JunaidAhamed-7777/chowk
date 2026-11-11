@@ -86,6 +86,7 @@ function Series({
 }
 
 export function MetricHud({ readout, single }: { readout: LiveReadout; single: boolean }) {
+  const [help, setHelp] = useState<(typeof metricDefinitions)[number]["key"]>();
   const headline =
     readout.peopleHours < 0 ? "People-hours added this hour" : "People-hours saved this hour";
   return (
@@ -114,6 +115,12 @@ export function MetricHud({ readout, single }: { readout: LiveReadout; single: b
                   type="button"
                   aria-label={`About ${label.toLowerCase()}`}
                   aria-describedby={`metric-${key}-description`}
+                  aria-expanded={help === key}
+                  onClick={() => setHelp(help === key ? undefined : key)}
+                  onBlur={() => setHelp(undefined)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape") setHelp(undefined);
+                  }}
                 >
                   ?
                 </button>
@@ -165,3 +172,4 @@ export function MetricHud({ readout, single }: { readout: LiveReadout; single: b
     </section>
   );
 }
+import { useState } from "react";

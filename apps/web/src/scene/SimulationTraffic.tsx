@@ -1,6 +1,8 @@
 import { useFrame } from "@react-three/fiber";
 import { type RefObject, useRef, useState } from "react";
 import type { SimHost, SnapshotStream } from "../sim/SimHost";
+import { DecisionLabels } from "./DecisionLabels";
+import { MotionTrails } from "./MotionTrails";
 import { PressureZones } from "./PressureZones";
 import type { OverlayMode, PlaybackSpeed, Quality } from "./sceneSettings";
 import { qualityPresets } from "./sceneSettings";
@@ -15,6 +17,7 @@ export function SimulationTraffic({
   wipe,
   singleView,
   overlay,
+  aerial,
 }: {
   host: RefObject<SimHost | null>;
   paused: boolean;
@@ -23,6 +26,7 @@ export function SimulationTraffic({
   wipe: number;
   singleView: boolean;
   overlay: OverlayMode;
+  aerial: boolean;
 }) {
   const left = useRef<SnapshotStream>(null);
   const right = useRef<SnapshotStream>(null);
@@ -76,6 +80,32 @@ export function SimulationTraffic({
         host={right}
         enabled={overlay === "pressure"}
         visible={singleView || wipe < 100}
+        clip={clips[1]}
+      />
+      <DecisionLabels
+        host={left}
+        enabled={overlay === "decision"}
+        visible={!singleView && wipe > 0}
+        clip={clips[0]}
+      />
+      <DecisionLabels
+        host={right}
+        enabled={overlay === "decision"}
+        visible={singleView || wipe < 100}
+        clip={clips[1]}
+      />
+      <MotionTrails
+        host={left}
+        capacity={capacity}
+        enabled={aerial && quality !== "low" && !paused && !singleView && wipe > 0}
+        speed={speed}
+        clip={clips[0]}
+      />
+      <MotionTrails
+        host={right}
+        capacity={capacity}
+        enabled={aerial && quality !== "low" && !paused && (singleView || wipe < 100)}
+        speed={speed}
         clip={clips[1]}
       />
     </>

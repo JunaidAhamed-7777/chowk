@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { type ControllerPair, type MetricsPair, SimHost } from "./SimHost";
 
 interface SessionOptions {
+  start?: boolean;
   active: boolean;
   paused: boolean;
   speed: number;
@@ -22,13 +23,23 @@ interface SessionOptions {
 export function useSimHost(options: SessionOptions) {
   const host = useRef<SimHost>(null);
   const settings = useRef(options);
-  const { seed, maxVehicles, scenario, revision, controllers, pressure, decision } = options;
+  const {
+    start = true,
+    seed,
+    maxVehicles,
+    scenario,
+    revision,
+    controllers,
+    pressure,
+    decision,
+  } = options;
 
   useEffect(() => {
     settings.current = options;
   }, [options]);
 
   useEffect(() => {
+    if (!start) return;
     settings.current.onRestart();
     const source = new SimHost({
       seed,
@@ -64,7 +75,7 @@ export function useSimHost(options: SessionOptions) {
       host.current = null;
       source.dispose();
     };
-  }, [seed, maxVehicles, scenario, revision]);
+  }, [start, seed, maxVehicles, scenario, revision]);
 
   useEffect(() => {
     host.current?.setController(0, controllers[0]);
