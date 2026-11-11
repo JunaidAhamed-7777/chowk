@@ -37,4 +37,4 @@ Open `/debug` on the dev server for a top-down view with tick-by-tick playback. 
 
 ## Prior work
 
-CHOWK builds on existing research on signal control for lane-free traffic, including Nandakumar, Banerjee and Vanajakshi ([arXiv 2509.21745](https://arxiv.org/abs/2509.21745)) and C-DAC's CoSiCoSt. See [plan/08-submission.md](plan/08-submission.md).
+CHOWK builds on existing work on signal control for lane-free traffic. [Nandakumar, Banerjee and Vanajakshi](https://arxiv.org/abs/2509.21745) · [C-DAC’s CoSiCoSt-EnV](https://cdac.in/index.aspx?id=product_details&productId=CoSiCoStEnV%28CompositeSignalControlStrategyEnhancedVersion%29)

@@ -1,5 +1,30 @@
 export type InformationRoute = "/results" | "/method" | "/limits";
 
+const priorWork = [
+  {
+    title: "Nandakumar, Banerjee and Vanajakshi",
+    url: "https://arxiv.org/abs/2509.21745",
+    detail:
+      "Queue-based reinforcement learning for a laneless, mixed-traffic intersection in SUMO.",
+  },
+  {
+    title: "C-DAC’s CoSiCoSt-EnV",
+    url: "https://cdac.in/index.aspx?id=product_details&productId=CoSiCoStEnV(CompositeSignalControlStrategyEnhancedVersion)",
+    detail: "Adaptive signal control designed for non-lane-based mixed traffic in India.",
+  },
+  {
+    title: "Varaiya’s max-pressure control",
+    url: "https://people.eecs.berkeley.edu/~varaiya/publications.html#:~:text=Max%20pressure%20control%20of%20a%20network%20of%20signalized%20intersections",
+    detail: "The network signal-control method that underlies the planned max-pressure baselines.",
+  },
+  {
+    title: "Treiber, Hennecke and Helbing",
+    url: "https://journals.aps.org/pre/abstract/10.1103/PhysRevE.62.1805",
+    detail:
+      "The Intelligent Driver Model, which CHOWK adapts for longitudinal motion across shared road space.",
+  },
+] as const;
+
 const limits = [
   [
     "Modelled roads",
@@ -54,8 +79,8 @@ export function InformationView({ route }: { route: InformationRoute }) {
             <div>
               <dt>Road space</dt>
               <dd>
-                The simulator design divides each carriageway into narrow strips so vehicles of
-                different widths can occupy the road side by side.
+                The simulator divides each carriageway into narrow strips so vehicles of different
+                widths can occupy the road side by side.
               </dd>
             </div>
             <div>
@@ -69,11 +94,27 @@ export function InformationView({ route }: { route: InformationRoute }) {
               <dt>Evaluation</dt>
               <dd>
                 The benchmark protocol pairs controllers on identical demand and evaluates them on
-                held-out seeds. The authored protocol and prior-work references are available in the
-                repository.
+                held-out seeds.
               </dd>
             </div>
           </dl>
+          <section aria-labelledby="prior-work-heading">
+            <h2 id="prior-work-heading" className="mb-4 text-base font-semibold">
+              Prior work
+            </h2>
+            <dl className="information-list">
+              {priorWork.map(({ title, url, detail }) => (
+                <div key={url}>
+                  <dt>
+                    <a className="information-link" href={url}>
+                      {title}
+                    </a>
+                  </dt>
+                  <dd>{detail}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
           <a
             className="information-link"
             href="https://github.com/JunaidAhamed-7777/chowk/tree/main/plan"
