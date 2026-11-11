@@ -69,6 +69,8 @@
   font-size: 13.5px;
   line-height: 1.55;
   text-wrap: pretty;
+  /* Five lines, so the buttons stay put from step to step. */
+  min-height: 7.75em;
 }
 .guide footer {
   display: flex;
