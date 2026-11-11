@@ -49,10 +49,10 @@ function git(...args: string[]): string {
   return execFileSync("git", args, { cwd: root, encoding: "utf8" }).trim();
 }
 
-function assertCleanInputs(): void {
+function assertCleanInputs(policies: Iterable<string>): void {
   const inputs = [
     ...versionPaths,
-    policyDirectory,
+    ...Array.from(policies, (policy) => `${policyDirectory}/${policy}.json`),
     "packages/bench/src/cli.ts",
     "packages/bench/src/cli-worker.ts",
   ];
@@ -245,7 +245,12 @@ async function main(): Promise<void> {
     if (isSuiteId(suite)) suites.push(suite);
     else if (suite !== "B8") throw new RangeError(`Unknown benchmark suite ${suite}`);
   }
-  assertCleanInputs();
+  const requests = suites.flatMap((suite) => suiteRuns(suite));
+  const neededPolicies = new Set([
+    "chowk",
+    ...requests.flatMap(({ controller }) => policyFor(controller) ?? []),
+  ]);
+  assertCleanInputs(neededPolicies);
   const startCommit = git("rev-parse", "HEAD");
   const simVersion = simulatorVersion(root);
   const old = values.replace ? undefined : currentBenchmark();
@@ -254,13 +259,8 @@ async function main(): Promise<void> {
     throw new Error(
       "Record B8 measurements in results/engineering.json before adding them to the benchmark",
     );
-  const requests = suites.flatMap((suite) => suiteRuns(suite));
   if (requests.length === 0 && !old)
     throw new Error("Publish traffic runs before appending engineering measurements");
-  const neededPolicies = new Set([
-    "chowk",
-    ...requests.flatMap(({ controller }) => policyFor(controller) ?? []),
-  ]);
   const policies = new Map([...neededPolicies].sort().map((name) => [name, readPolicy(name)]));
   const canonicalResults = new Map(
     (old?.runs ?? []).map((run) => [runKey(equivalentIdentity(run)), run]),
@@ -283,7 +283,7 @@ async function main(): Promise<void> {
   const completed = await execute(jobs, concurrency);
   const elapsed = (performance.now() - start) / 1_000;
   for (const run of completed) canonicalResults.set(runKey(run), run);
-  assertCleanInputs();
+  assertCleanInputs(neededPolicies);
   if (simulatorVersion(root) !== simVersion)
     throw new Error("Simulator inputs changed during the benchmark");
   for (const [policy, data] of policies) {
