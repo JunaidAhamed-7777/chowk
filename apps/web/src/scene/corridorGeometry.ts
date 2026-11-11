@@ -49,6 +49,23 @@ const buildings: Box[] = [];
 const lights: Box[] = [];
 const pools: Lamp[] = [];
 const signs: Box[] = [];
+const shopfronts: Box[] = [];
+const buildingKits = new Map<string, Box[]>();
+const streetKits = new Map<string, { boxes: Box[]; fallback: Box[] }>();
+
+function buildingKit(asset: string, form: Box): void {
+  const batch = buildingKits.get(asset) ?? [];
+  batch.push(form);
+  buildingKits.set(asset, batch);
+}
+
+function streetKit(asset: string, form: Box, ...fallback: Box[]): void {
+  const batch = streetKits.get(asset) ?? { boxes: [], fallback: [] };
+  batch.boxes.push(form);
+  batch.fallback.push(...fallback);
+  streetKits.set(asset, batch);
+}
+
 const signalMounts: {
   x: number;
   z: number;
@@ -87,11 +104,15 @@ const linkRects = corridor.links.map((link) => {
       markings.push(box(px, -0.052, pz, 2.1, 0.017, 0.46, "#a9b0b4", yaw));
     }
     const [px, pz] = center(length - 1.7, -0.62);
-    furniture.push(box(px, 2.35, pz, 0.22, 5.4, 0.22, "#51616a"));
     const [ax, az] = center(length - 1.7, width * 0.28);
-    furniture.push(box(ax, 5, az, 0.2, 0.2, width * 0.57 + 1.2, "#4d5a64", yaw));
     const [hx, hz] = center(length - 2.08, width * 0.58);
-    furniture.push(box(hx, 4.55, hz, 0.42, 1.23, 0.5, "#202a30", yaw));
+    streetKit(
+      "prop_signal",
+      box(px, -0.15, pz, (width * 0.58 + 0.62) / 3.2, 1, 1, "#47535a", yaw - Math.PI / 2),
+      box(px, 2.35, pz, 0.22, 5.4, 0.22, "#51616a"),
+      box(ax, 5, az, 0.2, 0.2, width * 0.57 + 1.2, "#4d5a64", yaw),
+      box(hx, 4.55, hz, 0.42, 1.23, 0.5, "#202a30", yaw),
+    );
     signalMounts.push({
       x: hx - dir[0] * 0.24,
       z: hz - dir[1] * 0.24,
@@ -106,10 +127,41 @@ const linkRects = corridor.links.map((link) => {
     const [lx, lz] = center(distance, -0.93);
     const [hx, hz] = center(distance, 1.75);
     const [poolX, poolZ] = center(distance, 4);
-    furniture.push(box(lx, 3.35, lz, 0.17, 7.1, 0.17, "#526070"));
-    furniture.push(box((lx + hx) / 2, 6.86, (lz + hz) / 2, 0.14, 0.16, 2.8, "#526070", yaw));
+    streetKit(
+      "prop_lamp",
+      box(lx, -0.2, lz, 1, 1, 1, "#526070", yaw - Math.PI / 2),
+      box(lx, 3.35, lz, 0.17, 7.1, 0.17, "#526070"),
+      box((lx + hx) / 2, 6.86, (lz + hz) / 2, 0.14, 0.16, 2.8, "#526070", yaw),
+    );
     lights.push(box(hx, 6.8, hz, 0.33, 0.15, 0.67, "#ffb057", yaw));
     pools.push({ x: poolX, z: poolZ, radius: width > 8 ? 14 : 10 });
+  }
+
+  for (let distance = 58; distance < length - 46; distance += 82) {
+    const [treeX, treeZ] = center(distance, -3.2);
+    const variant = unit(link.id + distance, 19) < 0.5 ? 1 : 2;
+    streetKit(`prop_tree_${variant}`, box(treeX, -0.25, treeZ, 0.85, 0.85, 0.85, "#253e39", yaw));
+  }
+  if (length > 210 && link.id % 4 === 0) {
+    const [stopX, stopZ] = center(length * 0.58, -3.45);
+    streetKit("prop_busstop", box(stopX, -0.16, stopZ, 1, 1, 1, "#55747e", yaw));
+    const [panelX, panelZ] = center(length * 0.58 - 1.63, -4.03);
+    signs.push(box(panelX, 1.7, panelZ, 0.74, 1.8, 0.1, "#ffdb9c", yaw));
+  }
+  if (length > 210 && link.id % 8 === 2) {
+    const [signX, signZ] = center(length * 0.47, -7.4);
+    streetKit("prop_hoarding", box(signX, -0.32, signZ, 1, 1, 1, "#3e4e61", yaw));
+    signs.push(box(signX, 6.65, signZ, 6.35, 2.5, 0.34, "#c28372", yaw));
+  }
+  if (dir[0] > 0.9 && width > 8) {
+    for (let distance = 46; distance < length - 35; distance += 48) {
+      const [railX, railZ] = center(distance, width + 0.36);
+      streetKit("prop_barrier", box(railX, -0.13, railZ, 2.5, 1, 1, "#55616c", yaw));
+    }
+  }
+  if (length > 210 && link.id % 11 === 0) {
+    const [standX, standZ] = center(length * 0.35, -3.7);
+    streetKit("prop_autostand", box(standX, -0.15, standZ, 1, 1, 1, "#536f52", yaw));
   }
 
   const boundsX = (Math.abs(dir[0]) * length) / 2 + (Math.abs(left[0]) * width) / 2;
@@ -167,32 +219,43 @@ for (let z = -640; z <= 670; z += 27) {
     )
       continue;
 
+    if (cx > 855 && cx < 1695 && Math.abs(cz + 382) < 12 + depth / 2) continue;
     const nearRoad = frontage < 20;
     const height = nearRoad ? 5.7 + unit(lot, 6) * 15 : 8 + unit(lot, 6) ** 2.8 * 60;
     const color = buildingColors[Math.floor(unit(lot, 7) * buildingColors.length)] ?? "#252d3c";
-    buildings.push(box(cx, height / 2 - 0.42, cz, width, height, depth, color));
+    const building = box(cx, height / 2 - 0.42, cz, width, height, depth, color);
+    buildings.push(building);
+    const type = height < 12 ? "low" : height < 33 ? "mid" : "tall";
+    buildingKit(
+      `bld_${type}_${1 + Math.floor(unit(lot, 12) * (type === "tall" ? 2 : 3))}`,
+      building,
+    );
     if (unit(lot, 8) > 0.52) {
-      buildings.push(
-        box(
-          cx - width * 0.21,
-          height + 1.0,
-          cz - depth * 0.15,
-          width * 0.38,
-          2.9,
-          depth * 0.37,
-          color,
-        ),
+      const roof = box(
+        cx - width * 0.21,
+        height + 1.0,
+        cz - depth * 0.15,
+        width * 0.38,
+        2.9,
+        depth * 0.37,
+        color,
       );
+      buildings.push(roof);
+      buildingKit(`bld_roof_${1 + Math.floor(unit(lot, 13) * 3)}`, roof);
     }
     if (nearRoad && unit(lot, 9) > 0.25) {
       const signColor = signColors[Math.floor(unit(lot, 10) * signColors.length)] ?? "#ffe0a3";
       const facing = cz < 0 ? 1 : -1;
-      signs.push(
+      shopfronts.push(
         box(cx, 3.6, cz + facing * (depth / 2 + 0.1), width * 0.65, 0.82, 0.25, signColor),
       );
       pools.push({ x: cx, z: cz + facing * (depth / 2 + 1.4), radius: 5.4 });
     }
   }
+}
+
+for (let x = 864; x <= 1680; x += 18) {
+  streetKit("prop_viaduct", box(x, -0.39, -382, 1, 1, 1, "#263043"));
 }
 
 export const district = {
@@ -203,5 +266,8 @@ export const district = {
   lights,
   pools,
   signs,
+  shopfronts,
+  buildingKits,
+  streetKits,
   signalMounts,
 };

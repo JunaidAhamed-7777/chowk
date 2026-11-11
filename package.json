@@ -30,6 +30,7 @@
     "bench:smoke": "node scripts/run-node.mjs bench smoke",
     "assets:placeholders": "python assets/blender/placeholders.py",
     "assets:vehicles": "blender --background --python assets/blender/vehicles.py",
+    "assets:district": "blender --background --python assets/blender/district.py",
     "assets:build": "node assets/scripts/build.mjs",
     "assets:check": "node assets/scripts/check.mjs"
   },

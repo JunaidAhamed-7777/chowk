@@ -1,15 +1,18 @@
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   AdditiveBlending,
+  type BufferGeometry,
   Color,
   type InstancedMesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
   Object3D,
   ShaderMaterial,
+  Vector3,
 } from "three";
 import type { Box } from "./corridorGeometry";
 import { district } from "./corridorGeometry";
+import { loadMeshAsset } from "./vehicleGeometries";
 
 function buildingMaterial() {
   const material = new MeshStandardMaterial({ roughness: 0.94, metalness: 0 });
@@ -98,10 +101,12 @@ function BoxBatch({
   boxes,
   material,
   intensity = 1,
+  geometry,
 }: {
   boxes: Box[];
   material: BatchMaterial;
   intensity?: number;
+  geometry?: BufferGeometry;
 }) {
   const ref = useRef<InstancedMesh>(null);
   useLayoutEffect(() => {
@@ -123,10 +128,64 @@ function BoxBatch({
   }, [boxes, intensity]);
 
   return (
-    <instancedMesh ref={ref} args={[undefined, material, boxes.length]}>
-      <boxGeometry args={[1, 1, 1]} />
+    <instancedMesh ref={ref} args={[geometry, material, boxes.length]}>
+      {!geometry && <boxGeometry args={[1, 1, 1]} />}
     </instancedMesh>
   );
+}
+
+const fittedAssets = new Map<string, BufferGeometry>();
+
+function fitAsset(name: string, source: BufferGeometry): BufferGeometry {
+  const fitted = fittedAssets.get(name);
+  if (fitted) return fitted;
+  source.computeBoundingBox();
+  const bounds = source.boundingBox;
+  if (!bounds) return source;
+  const size = bounds.getSize(new Vector3());
+  if (Math.min(size.x, size.y, size.z) <= 0) return source;
+  const center = bounds.getCenter(new Vector3());
+  const geometry = source.clone().translate(-center.x, -center.y, -center.z);
+  geometry.scale(1 / size.x, 1 / size.y, 1 / size.z);
+  fittedAssets.set(name, geometry);
+  return geometry;
+}
+
+function KitBatch({
+  asset,
+  boxes,
+  fallback,
+  material,
+  fitted = false,
+  intensity,
+}: {
+  asset: string;
+  boxes: Box[];
+  fallback?: Box[];
+  material: BatchMaterial;
+  fitted?: boolean;
+  intensity?: number;
+}) {
+  const [geometry, setGeometry] = useState<BufferGeometry>();
+  useEffect(() => {
+    let active = true;
+    void loadMeshAsset(asset).then((source) => {
+      if (active && source) setGeometry(fitted ? fitAsset(asset, source) : source);
+    });
+    return () => {
+      active = false;
+    };
+  }, [asset, fitted]);
+  const visible = geometry || fitted ? boxes : fallback;
+  return visible?.length ? (
+    <BoxBatch
+      key={geometry?.uuid ?? "fallback"}
+      boxes={visible}
+      material={material}
+      intensity={intensity}
+      geometry={geometry}
+    />
+  ) : null;
 }
 
 function LightPools() {
@@ -174,7 +233,7 @@ function LightPools() {
   );
 }
 
-export function StaticDistrict() {
+export function StaticDistrict({ lowDetail = false }: { lowDetail?: boolean }) {
   const materials = useMemo(
     () => ({
       asphalt: roadMaterial(),
@@ -192,11 +251,33 @@ export function StaticDistrict() {
         <meshStandardMaterial color="#0c121b" roughness={1} />
       </mesh>
       <BoxBatch boxes={district.asphalt} material={materials.asphalt} />
-      <BoxBatch boxes={district.buildings} material={materials.facade} />
+      {lowDetail ? (
+        <BoxBatch boxes={district.buildings} material={materials.facade} />
+      ) : (
+        Array.from(district.buildingKits, ([asset, boxes]) => (
+          <KitBatch key={asset} asset={asset} boxes={boxes} material={materials.facade} fitted />
+        ))
+      )}
       <BoxBatch boxes={district.furniture} material={materials.fixtures} />
+      {Array.from(district.streetKits, ([asset, { boxes, fallback }]) => (
+        <KitBatch
+          key={asset}
+          asset={asset}
+          boxes={boxes}
+          fallback={fallback}
+          material={materials.fixtures}
+        />
+      ))}
       <BoxBatch boxes={district.markings} material={materials.fixtures} />
       <BoxBatch boxes={district.lights} material={materials.emitters} intensity={4.2} />
       <BoxBatch boxes={district.signs} material={materials.emitters} intensity={1.4} />
+      <KitBatch
+        asset="prop_shopstrip"
+        boxes={district.shopfronts}
+        material={materials.emitters}
+        intensity={1.4}
+        fitted
+      />
       <LightPools />
     </>
   );

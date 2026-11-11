@@ -35,7 +35,7 @@ Demand is specified as a **load level** relative to capacity measured in this si
 2. For a junction, `Y = Σ over phases of q_p / s_p`. The theoretical limit under the longest allowed cycle is `Y_max = 1 − L / 150`, with `L` the lost time per cycle.
 3. A scenario's **load** is `Y / Y_max` at the critical junction (J3). Load 1.0 is at theoretical capacity.
 
-Calibration holds one through phase green and seeds an overlapping-free standing queue. The reported rates use the discharge from 6 to 46 simulated seconds over the 20 validation seeds. Curved-turn reservations can reduce service below this nominal through capacity. Custom mixes use the nearest measured mix by the sum of absolute class-share differences. Scenario loads describe the nominal peak of the input profile. Route shares determine demand reaching each approach, including upstream entries.
+Calibration holds one through phase green and seeds a standing queue with no overlapping vehicles. The reported rates use the discharge from 6 to 46 simulated seconds over the 20 validation seeds. Curved-turn reservations can reduce service below this nominal through capacity. Custom mixes use the nearest measured mix by the sum of absolute class-share differences. Scenario loads describe the nominal peak of the input profile. Route shares determine demand reaching each approach, including upstream entries.
 
 ## Scenarios
 

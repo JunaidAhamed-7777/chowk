@@ -109,6 +109,8 @@ apps/web/public/models/<asset>.glb   committed, loaded by the app
 
 `npm run assets:placeholders` generates the initial vehicle stand-ins from the simulator's dimension table using Python's standard library. This stage can run without Blender. For textured assets, provide WebP or KTX2 palette textures in the raw export.
 
+With Blender on the path, run `npm run assets:vehicles` for the full vehicle meshes and `npm run assets:district` for their low-detail variants and the city kit. Both scripts also run with Blender's `--background --python` arguments when the Blender MCP add-on is unavailable.
+
 ## Budgets
 
 | Item | Budget |

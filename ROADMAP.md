@@ -161,12 +161,12 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 |---|---|---|---|---|---|
 | ☑ | 7.1 | Asset build and check scripts; placeholder models with correct dimensions and light masks | `06` Pipeline, Order of work | 0.1 | `npm run assets:check` passes on placeholders |
 | ☑ | 7.2 | Two-wheeler, car, auto-rickshaw, bus | `06` Vehicles | 7.1 | In the scene at night, each class is recognisable from the aerial camera |
-| ☐ | 7.3 | Signal, street lamp, low and mid buildings | `06` Buildings, Street | 7.1 | In the scene; budgets met |
-| ☐ | 7.4 | Light commercial, ambulance, tall buildings, shop strips, trees | `06` | 7.2 | As above |
-| ☐ | 7.5 | Low-detail vehicle meshes for the Low tier | `06` Vehicles | 7.2 | Low tier uses them |
+| ☑ | 7.3 | Signal, street lamp, low and mid buildings | `06` Buildings, Street | 7.1 | In the scene; budgets met |
+| ☑ | 7.4 | Light commercial, ambulance, tall buildings, shop strips, trees | `06` | 7.2 | As above |
+| ☑ | 7.5 | Low-detail vehicle meshes for the Low tier | `06` Vehicles | 7.2 | Low tier uses them |
 | ☐ | 7.6 | P1 props: bus stop, hoarding, barrier, breakdown markers | `06` Street P1 | 7.3 | As above |
-| ☐ | 7.7 | P2 props: viaduct, auto stand | `06` Street P2 | 7.6 | As above |
-| ☐ | 7.8 | `assets/CREDITS.md` complete | `06` Rules | 7.4 | Every imported asset listed with licence |
+| ☑ | 7.7 | P2 props: viaduct, auto stand | `06` Street P2 | 7.6 | As above |
+| ☑ | 7.8 | `assets/CREDITS.md` complete | `06` Rules | 7.4 | Every imported asset listed with licence |
 
 ## Phase 8 — Presentation and submission (Track C, 14–15 Nov)
 

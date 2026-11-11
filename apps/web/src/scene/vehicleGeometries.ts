@@ -9,16 +9,16 @@ const unloaded = models.map(() => null);
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 const requests = new Map<string, Promise<BufferGeometry | null>>();
 
-function loadModel(model: string): Promise<BufferGeometry | null> {
+export function loadMeshAsset(model: string): Promise<BufferGeometry | null> {
   const pending = requests.get(model);
   if (pending) return pending;
 
   const request = loader
-    .loadAsync(`${import.meta.env.BASE_URL}models/veh_${model}.glb`)
+    .loadAsync(`${import.meta.env.BASE_URL}models/${model}.glb`)
     .then(({ scene }) => {
       scene.updateMatrixWorld(true);
       const mesh = scene.getObjectByProperty("isMesh", true);
-      if (!(mesh instanceof Mesh)) throw new Error(`Missing mesh in vehicle asset ${model}`);
+      if (!(mesh instanceof Mesh)) throw new Error(`Missing mesh in asset ${model}`);
       const geometry: BufferGeometry = mesh.geometry;
       // Bake the node's quantization transform into floats so metre coordinates cannot wrap in Int16.
       for (const name of ["position", "normal"]) {
@@ -33,7 +33,7 @@ function loadModel(model: string): Promise<BufferGeometry | null> {
       geometry.applyMatrix4(mesh.matrixWorld);
       // COLOR_0 is the paint, trim, glass and lamp mask written by assets/blender/vehicles.py.
       const mask = geometry.getAttribute("color");
-      if (mask) {
+      if (mask && model.startsWith("veh_")) {
         geometry.setAttribute("mask", mask);
         geometry.deleteAttribute("color");
       }
@@ -47,18 +47,21 @@ function loadModel(model: string): Promise<BufferGeometry | null> {
   return request;
 }
 
-export function useVehicleGeometries(): readonly (BufferGeometry | null)[] {
+export function useVehicleGeometries(lowDetail = false): readonly (BufferGeometry | null)[] {
   const [geometries, setGeometries] = useState<readonly (BufferGeometry | null)[]>(unloaded);
 
   useEffect(() => {
     let mounted = true;
-    void Promise.all(models.map(loadModel)).then((loaded) => {
-      if (mounted) setGeometries(loaded);
-    });
+    const suffix = lowDetail ? "_lod1" : "";
+    void Promise.all(models.map((model) => loadMeshAsset(`veh_${model}${suffix}`))).then(
+      (loaded) => {
+        if (mounted) setGeometries(loaded);
+      },
+    );
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [lowDetail]);
 
   return geometries;
 }

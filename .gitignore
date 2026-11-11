@@ -4,6 +4,7 @@ coverage/
 *.tsbuildinfo
 /runs/
 /assets/export/
+__pycache__/
 /playwright-report/
 /test-results/
 .env
