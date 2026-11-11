@@ -1,4 +1,11 @@
-import { LOOKAHEAD, MAX_VEHICLE_LENGTH, TURN_SPEED, VEHICLE_CLASSES } from "./constants";
+import {
+  LANE_STRIPS,
+  LOOKAHEAD,
+  MAX_VEHICLE_LENGTH,
+  TURN_SPEED,
+  VEHICLE_CLASSES,
+} from "./constants";
+import type { StateHash } from "./hash";
 import { constrain, type Leader, shareStrip } from "./longitudinal";
 import type { Connector, Link, Network } from "./network";
 import { ALL_RED, type SignalBank } from "./signals";
@@ -9,11 +16,12 @@ export function mapStrip(
   vehicleStrips: number,
   fromStrips: number,
   toStrips: number,
+  step = 1,
 ): number {
-  const from = fromStrips - vehicleStrips;
-  const to = toStrips - vehicleStrips;
-  if (from === 0) return Math.floor(to / 2);
-  return Math.floor((strip * to) / from + 0.5);
+  const from = Math.floor((fromStrips - vehicleStrips) / step) * step;
+  const to = Math.floor((toStrips - vehicleStrips) / step);
+  if (from === 0) return Math.floor(to / 2) * step;
+  return Math.floor((strip * to) / from + 0.5) * step;
 }
 
 export class JunctionTraffic {
@@ -21,15 +29,18 @@ export class JunctionTraffic {
   readonly speedLimits: Float64Array;
   readonly routeConnectors: Int32Array[];
   readonly previousConnector: Int32Array;
+  readonly connectorEntryStrip: Uint16Array;
   private readonly occupied: Int32Array;
   private readonly admission: Int32Array;
   private readonly admittedTurn: Int32Array;
+  private readonly stripStep: number;
   private readonly leader: Leader = { rear: Infinity, speed: 0 };
 
   constructor(
     private readonly network: Network,
     private readonly vehicles: VehicleStore,
     private readonly signals: SignalBank,
+    laneDisciplined = false,
   ) {
     const { links, connectors, junctions, routes } = network;
     this.segments = [...links, ...connectors];
@@ -54,6 +65,8 @@ export class JunctionTraffic {
       ),
     );
     this.previousConnector = new Int32Array(vehicles.capacity).fill(-1);
+    this.connectorEntryStrip = new Uint16Array(vehicles.capacity);
+    this.stripStep = laneDisciplined ? LANE_STRIPS : 1;
     this.occupied = new Int32Array(junctions.length).fill(-1);
     this.admission = new Int32Array(junctions.length).fill(-1);
     this.admittedTurn = new Int32Array(junctions.length).fill(-1);
@@ -64,6 +77,21 @@ export class JunctionTraffic {
   }
 
   readonly canOpen = (junction: number): boolean => this.occupied[junction] === -1;
+
+  copyFrom(other: JunctionTraffic): void {
+    this.previousConnector.set(other.previousConnector);
+    this.connectorEntryStrip.set(other.connectorEntryStrip);
+    this.occupied.set(other.occupied);
+    this.admission.set(other.admission);
+    this.admittedTurn.set(other.admittedTurn);
+  }
+
+  writeHash(hash: StateHash): void {
+    for (let slot = 0; slot < this.vehicles.capacity; slot++) {
+      if (this.vehicles.link[slot] === -1) continue;
+      hash.addUint32(this.previousConnector[slot]).addUint32(this.connectorEntryStrip[slot]);
+    }
+  }
 
   readOccupancy(): void {
     const { network, vehicles, occupied } = this;
@@ -119,6 +147,17 @@ export class JunctionTraffic {
     return this.routeConnectors[this.vehicles.route[slot]][this.vehicles.routeIdx[slot]];
   }
 
+  exitStrip(connector: Connector, slot: number): number {
+    const { network, vehicles } = this;
+    return mapStrip(
+      vehicles.strip[slot],
+      VEHICLE_CLASSES[vehicles.cls[slot]].strips,
+      connector.strips,
+      network.links[connector.toLink].strips,
+      this.stripStep,
+    );
+  }
+
   transition(slot: number, segment: number): boolean {
     const { network, vehicles } = this;
     const from = this.segments[segment];
@@ -126,7 +165,14 @@ export class JunctionTraffic {
     if (segment < network.links.length && connector === -1) return false;
     const next = connector >= 0 ? connector : this.connector(segment).toLink;
     const width = VEHICLE_CLASSES[vehicles.cls[slot]].strips;
-    const strip = mapStrip(vehicles.strip[slot], width, from.strips, this.segments[next].strips);
+    if (connector >= 0) this.connectorEntryStrip[slot] = vehicles.strip[slot];
+    const strip = mapStrip(
+      vehicles.strip[slot],
+      width,
+      from.strips,
+      this.segments[next].strips,
+      this.stripStep,
+    );
     vehicles.strip[slot] = strip;
     vehicles.lat[slot] = strip * network.stripWidth;
     if (connector < 0) {
@@ -146,7 +192,7 @@ export class JunctionTraffic {
     if (segment >= network.links.length) {
       const connector = this.connector(segment);
       const road = network.links[connector.toLink];
-      const target = mapStrip(strip, width, connector.strips, road.strips);
+      const target = mapStrip(strip, width, connector.strips, road.strips, this.stripStep);
       this.constrainByEntry(road.id, target, width, current.length, out);
       return;
     }
@@ -159,8 +205,21 @@ export class JunctionTraffic {
     if (occupied >= 0) {
       const active = this.connector(occupied);
       if (active.fromLink === segment) {
-        const target = mapStrip(strip, width, current.strips, active.strips);
-        this.constrainByEntry(occupied, target, width, current.length, out);
+        if (active.movement === "through") {
+          const target = mapStrip(strip, width, current.strips, active.strips, this.stripStep);
+          this.constrainByEntry(occupied, target, width, current.length, out);
+        } else if (vehicles.counts[occupied] > 0) {
+          // A turning vehicle's tail is still in its entry strips until it clears the line.
+          const turn = vehicles.byLink[occupied][0];
+          const geometry = VEHICLE_CLASSES[vehicles.cls[turn]];
+          const rear = vehicles.s[turn] - geometry.length;
+          if (
+            rear < 0 &&
+            shareStrip(strip, width, this.connectorEntryStrip[turn], geometry.strips)
+          ) {
+            constrain(out, current.length + rear, vehicles.v[turn]);
+          }
+        }
       }
     }
     if (
@@ -190,8 +249,8 @@ export class JunctionTraffic {
     const from = network.links[connector.fromLink];
     const to = network.links[connector.toLink];
     if (strips > connector.strips || strips > to.strips) return false;
-    const connectorStrip = mapStrip(strip, strips, from.strips, connector.strips);
-    const target = mapStrip(connectorStrip, strips, connector.strips, to.strips);
+    const connectorStrip = mapStrip(strip, strips, from.strips, connector.strips, this.stripStep);
+    const target = mapStrip(connectorStrip, strips, connector.strips, to.strips, this.stripStep);
     leader.rear = Infinity;
     leader.speed = 0;
     this.constrainByEntry(to.id, target, strips, 0, leader);

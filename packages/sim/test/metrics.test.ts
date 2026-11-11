@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
+import { DT } from "../src/constants";
 import { corridor } from "../src/corridor";
 import { MetricAccumulator } from "../src/metrics";
+import { createSim } from "../src/sim";
 import { type VehicleSpawn, VehicleStore } from "../src/vehicles";
 
 const approach = corridor.links[corridor.junctions[0].approaches[0]];
@@ -54,6 +56,8 @@ describe("MetricAccumulator", () => {
     expect(totals.co2Kg).toBeCloseTo((10_875 * 76.11 + 5_750 * 74.14) / 1_055_055_852.62, 10);
     expect(vehicles.delay[car]).toBe(0.125);
     expect(vehicles.delay[bus]).toBe(0.25);
+    expect(vehicles.wait[car]).toBe(0);
+    expect(vehicles.wait[bus]).toBe(0.25);
   });
 
   it("counts full stops only after moving and includes a vehicle's final tick once", () => {
@@ -67,6 +71,7 @@ describe("MetricAccumulator", () => {
       metrics.recordTick(vehicles, demand);
     }
     expect(metrics.read().stops).toBe(1);
+    expect(vehicles.wait[car]).toBe(0);
 
     vehicles.v[car] = 0;
     metrics.recordExit(vehicles, car, 1.5);
@@ -105,5 +110,45 @@ describe("MetricAccumulator", () => {
       personDelay: 0,
     });
     expect(copy.read()).toMatchObject({ ambulanceCompleted: 0, lastAmbulanceTravelTime: null });
+  });
+
+  it("conserves generated traffic through a real entry backlog and both sink departures", () => {
+    const duration = 420;
+    const route = corridor.routes.find(({ source, links }) => source === 0 && links.length === 2);
+    if (!route) throw new Error("Missing single-junction route for the backlog fixture");
+    const first = { t: 0, source: route.source, cls: 2, route: route.id, strip: 0, v0Factor: 1 };
+    const sim = createSim({
+      network: corridor,
+      scenario: { duration, sources: [] },
+      seed: 500_000,
+      demand: [first, { ...first, cls: 4 }],
+      maxVehicles: 1,
+    });
+
+    sim.step();
+    const initial = sim.metrics();
+    expect(initial).toMatchObject({ generated: 2, inNetwork: 1, backlog: 1, completed: 0 });
+    expect(initial.personDelay).toBeGreaterThanOrEqual(40 * DT);
+
+    for (let tick = 1; tick < duration / DT; tick++) {
+      if (tick % 80 === 0) {
+        for (const junction of corridor.junctions) {
+          const phase = (sim.sense(junction.id).phase + 1) % junction.phases.length;
+          sim.requestPhase(junction.id, phase);
+        }
+      }
+      sim.step();
+      const { generated, completed, inNetwork, backlog } = sim.metrics();
+      if (generated !== completed + inNetwork + backlog) {
+        throw new Error(`Traffic was lost at tick ${tick}`);
+      }
+    }
+    expect(sim.metrics()).toMatchObject({
+      generated: 2,
+      completed: 2,
+      inNetwork: 0,
+      backlog: 0,
+      maxBacklog: 1,
+    });
   });
 });

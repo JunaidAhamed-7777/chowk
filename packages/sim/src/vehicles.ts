@@ -1,4 +1,5 @@
-import { DEFAULT_VEHICLE_CAPACITY } from "./constants";
+import { DEFAULT_VEHICLE_CAPACITY, MOVING_SPEED_THRESHOLD } from "./constants";
+import type { StateHash } from "./hash";
 
 export interface VehicleSpawn {
   link: number;
@@ -12,6 +13,20 @@ export interface VehicleSpawn {
   occ: number;
   tEnter: number;
 }
+
+const INTEGER_FIELDS = ["id", "strip", "cls", "route", "routeIdx", "stops", "moving"] as const;
+const CONTINUOUS_FIELDS = [
+  "s",
+  "lat",
+  "v",
+  "a",
+  "v0",
+  "occ",
+  "tEnter",
+  "delay",
+  "wait",
+  "lastShift",
+] as const;
 
 export class VehicleStore {
   readonly id: Uint32Array;
@@ -28,6 +43,7 @@ export class VehicleStore {
   readonly occ: Float64Array;
   readonly tEnter: Float64Array;
   readonly delay: Float64Array;
+  readonly wait: Float64Array;
   readonly stops: Uint32Array;
   readonly moving: Uint8Array;
   readonly lastShift: Float64Array;
@@ -63,6 +79,7 @@ export class VehicleStore {
     this.occ = new Float64Array(capacity);
     this.tEnter = new Float64Array(capacity);
     this.delay = new Float64Array(capacity);
+    this.wait = new Float64Array(capacity);
     this.stops = new Uint32Array(capacity);
     this.moving = new Uint8Array(capacity);
     this.lastShift = new Float64Array(capacity);
@@ -95,8 +112,9 @@ export class VehicleStore {
     this.occ[slot] = spawn.occ;
     this.tEnter[slot] = spawn.tEnter;
     this.delay[slot] = 0;
+    this.wait[slot] = 0;
     this.stops[slot] = 0;
-    this.moving[slot] = spawn.v > 2 ? 1 : 0;
+    this.moving[slot] = spawn.v > MOVING_SPEED_THRESHOLD ? 1 : 0;
     this.lastShift[slot] = -2;
     this.insert(slot, spawn.link);
     return slot;
@@ -124,6 +142,35 @@ export class VehicleStore {
     // Insertion sort is linear when this tick leaves most of the previous ordering intact.
     for (let index = 1; index < count; index++) {
       this.insertAt(list, index, list[index]);
+    }
+  }
+
+  copyFrom(other: VehicleStore): void {
+    this.link.set(other.link);
+    for (const field of INTEGER_FIELDS) this[field].set(other[field]);
+    for (const field of CONTINUOUS_FIELDS) this[field].set(other[field]);
+    this.counts.set(other.counts);
+    this.free.set(other.free);
+    this.freeCount = other.freeCount;
+    this.nextId = other.nextId;
+    for (let segment = 0; segment < this.byLink.length; segment++) {
+      this.byLink[segment].set(other.byLink[segment]);
+    }
+  }
+
+  writeHash(hash: StateHash): void {
+    hash.addUint32(this.nextId).addUint32(this.freeCount);
+    for (let free = 0; free < this.freeCount; free++) hash.addUint32(this.free[free]);
+    for (let segment = 0; segment < this.byLink.length; segment++) {
+      const count = this.counts[segment];
+      hash.addUint32(count);
+      const list = this.byLink[segment];
+      for (let index = 0; index < count; index++) {
+        const slot = list[index];
+        hash.addUint32(slot);
+        for (const field of INTEGER_FIELDS) hash.addUint32(this[field][slot]);
+        for (const field of CONTINUOUS_FIELDS) hash.addMilli(this[field][slot]);
+      }
     }
   }
 

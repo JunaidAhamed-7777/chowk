@@ -141,6 +141,7 @@ export class MetricAccumulator {
     const speed = vehicles.v[slot];
     const delay = DT * (1 - speed / vehicles.v0[slot]);
     vehicles.delay[slot] += delay;
+    vehicles.wait[slot] = speed < QUEUE_SPEED_THRESHOLD ? vehicles.wait[slot] + DT : 0;
     totals.vehicleDelay += delay;
     totals.personDelay += delay * vehicles.occ[slot];
 

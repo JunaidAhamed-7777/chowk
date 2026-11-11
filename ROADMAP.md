@@ -57,12 +57,12 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 1.5 | Demand generation ahead of time; spawning with backlog | `02` Demand | 1.1, 1.3 | Same seed gives the same arrival list; backlog drains when space appears |
 | ☑ | 1.6 | Signal state machine and stop-line obstacles; yellow decision | `02` Signal phasing | 1.4 | State-machine tests pass |
 | ☑ | 1.7 | Junction traversal: connectors, strip mapping, do-not-block-the-box | `02` Junctions | 1.6 | Vehicles complete routes through all five junctions; exclusivity test passes |
-| ☐ | 1.8 | Lateral strip changes with class thresholds and biases; emergent filtering | `02` Lateral | 1.4 | No-overlap test passes over long mixed-traffic runs; filtering check passes |
-| ☐ | 1.9 | Metrics, uncensored; fuel and CO2 estimate | `02` Metrics | 1.7 | Hand-computed delay on a scripted case matches; conservation holds |
-| ☐ | 1.10 | Sensing interface with optional noise and dropout | `02` Observation | 1.7 | Values match hand counts on a constructed state |
+| ☑ | 1.8 | Lateral strip changes with class thresholds and biases; emergent filtering | `02` Lateral | 1.4 | No-overlap test passes over long mixed-traffic runs; filtering check passes |
+| ☑ | 1.9 | Metrics, uncensored; fuel and CO2 estimate | `02` Metrics | 1.7 | Hand-computed delay on a scripted case matches; conservation holds |
+| ☑ | 1.10 | Sensing interface with optional noise and dropout | `02` Observation | 1.7 | Values match hand counts on a constructed state |
 | ☐ | 1.11 | Events: surge, block, ambulance (P0); sensor freeze (P1); outage (P2) | `02` Events | 1.8 | Each event has a passing test |
-| ☐ | 1.12 | Scenario modifiers: monsoon; lane-disciplined cars only | `02` Scenario modifiers | 1.8 | Both run; cars-only shows whole-lane changes only |
-| ☐ | 1.13 | Snapshot writer, `clone()`, public API finalised | `02` Public API | 1.8 | Snapshot positions match link geometry; clone test passes |
+| ☑ | 1.12 | Scenario modifiers: monsoon; lane-disciplined cars only | `02` Scenario modifiers | 1.8 | Both run; cars-only shows whole-lane changes only |
+| ☑ | 1.13 | Snapshot writer, `clone()`, public API finalised | `02` Public API | 1.8 | Snapshot positions match link geometry; clone test passes |
 | ☐ | 1.14 | 2D debug viewer (plain canvas page in the app, dev only) | — | 1.13 | The corridor, vehicles by class, and signals are visible and steppable |
 | ☐ | 1.15 | Validation checks as tests with plot data exported | `02` Validation checks | 1.9 | All checks pass; JSON for the Method page plots written |
 | ☐ | 1.16 | Performance pass and `npm run sim:bench` | `02` Performance, `09` | 1.13 | ≥ 100× real time at 1,500 vehicles; figure recorded |
@@ -217,3 +217,4 @@ Record spec changes here: date, what changed, why.
 - 12 Nov 2026 — Use npm workspaces and a committed package lock for local tooling and CI.
 - 12 Nov 2026 — Generate the dimension-matched vehicle placeholders from the simulator's dimension table. The compression pipeline accepts pre-encoded WebP and KTX2 palettes.
 - 12 Nov 2026 — Generate Poisson arrivals by integrating piecewise-linear rates. Reserve junction connectors by movement until the last vehicle clears the box. Turns use an assumed speed cap and pass one at a time.
+- 12 Nov 2026 — Keep lateral alignment near connector boundaries and add straight lead-ins and lead-outs to curved paths after oriented-rectangle tests exposed overlaps.

@@ -1,14 +1,20 @@
 import { DT } from "./constants";
 import { type Arrival, DemandQueue, type DemandScenario, generateDemand } from "./demand";
+import { StateHash } from "./hash";
 import { JunctionTraffic } from "./junction-traffic";
+import { LateralDynamics } from "./lateral";
 import { LongitudinalDynamics } from "./longitudinal";
+import { MetricAccumulator, type Metrics } from "./metrics";
 import type { Network } from "./network";
+import { type JunctionSense, Sensing } from "./sense";
 import { SignalBank } from "./signals";
+import { SnapshotWriter } from "./snapshots";
 import { VehicleStore } from "./vehicles";
 
 export interface Scenario extends DemandScenario {
   monsoon?: boolean;
-  laneDisciplined?: boolean;
+  sensorNoise?: number;
+  sensorDropout?: number;
 }
 
 export interface SimConfig {
@@ -23,26 +29,58 @@ export class TrafficSim {
   readonly vehicles: VehicleStore;
   readonly signalBank: SignalBank;
   readonly junctionTraffic: JunctionTraffic;
-  readonly demand: DemandQueue;
+  private demand: DemandQueue;
   private readonly longitudinal: LongitudinalDynamics;
+  private readonly lateral: LateralDynamics;
+  private metricAccumulator: MetricAccumulator;
+  private sensing: Sensing;
+  private readonly snapshotWriter: SnapshotWriter;
   private readonly crossings: Uint32Array;
   private tick = 0;
   completed = 0;
 
-  constructor(config: SimConfig) {
+  constructor(private readonly config: SimConfig) {
     const { network, scenario, seed, maxVehicles } = config;
     const demand = config.demand ?? generateDemand(network, scenario, seed);
+    const accelerationScale = scenario.monsoon ? 0.8 : 1;
+    const headwayScale = scenario.monsoon ? 1.2 : 1;
     this.vehicles = new VehicleStore(network.links.length + network.connectors.length, maxVehicles);
     this.signalBank = new SignalBank(network.junctions);
-    this.junctionTraffic = new JunctionTraffic(network, this.vehicles, this.signalBank);
-    this.demand = new DemandQueue(network, demand, scenario.monsoon ? 0.8 : 1);
+    this.junctionTraffic = new JunctionTraffic(
+      network,
+      this.vehicles,
+      this.signalBank,
+      scenario.laneDisciplined,
+    );
+    this.demand = new DemandQueue(
+      network,
+      demand,
+      scenario.monsoon ? 0.8 : 1,
+      scenario.laneDisciplined,
+    );
     this.longitudinal = new LongitudinalDynamics(
       this.vehicles,
       Math.max(...this.junctionTraffic.segments.map(({ strips }) => strips)),
-      scenario.monsoon ? 0.8 : 1,
-      scenario.monsoon ? 1.2 : 1,
+      accelerationScale,
+      headwayScale,
+    );
+    this.lateral = new LateralDynamics(
+      network,
+      this.vehicles,
+      this.junctionTraffic,
+      this.longitudinal,
+      scenario.laneDisciplined === true,
+      accelerationScale,
+      headwayScale,
     );
     this.crossings = new Uint32Array(this.vehicles.capacity);
+    this.metricAccumulator = new MetricAccumulator(network);
+    this.sensing = new Sensing(network, this.vehicles, this.signalBank, {
+      seed,
+      noise: scenario.sensorNoise,
+      dropout: scenario.sensorDropout,
+    });
+    this.snapshotWriter = new SnapshotWriter(network, this.vehicles, this.junctionTraffic);
   }
 
   get time(): number {
@@ -55,6 +93,75 @@ export class TrafficSim {
 
   requestPhase(junctionId: number, phase: number): void {
     this.signalBank.requestPhase(junctionId, phase);
+  }
+
+  metrics(): Metrics {
+    return this.metricAccumulator.read();
+  }
+
+  sense(junctionId: number): JunctionSense {
+    return this.sensing.read(junctionId, this.tick);
+  }
+
+  writeSnapshot(out: Float32Array): number {
+    return this.snapshotWriter.write(out);
+  }
+
+  signals(): Uint8Array {
+    const { phase, state } = this.signalBank;
+    const output = new Uint8Array(2 * phase.length);
+    for (let junction = 0; junction < phase.length; junction++) {
+      output[2 * junction] = phase[junction];
+      output[2 * junction + 1] = state[junction];
+    }
+    return output;
+  }
+
+  hash(): number {
+    const hash = new StateHash();
+    const { phase, state, elapsedTicks, targetPhase } = this.signalBank;
+    hash.addUint32(this.tick).addUint32(this.completed).addUint32(this.backstops);
+    this.vehicles.writeHash(hash);
+    this.junctionTraffic.writeHash(hash);
+    this.demand.writeHash(hash);
+    for (let id = 0; id < phase.length; id++) {
+      hash
+        .addUint32(phase[id])
+        .addUint32(state[id])
+        .addUint32(elapsedTicks[id])
+        .addUint32(targetPhase[id]);
+    }
+    const metrics = this.metrics();
+    hash
+      .addUint32(metrics.stops)
+      .addUint32(metrics.maxBacklog)
+      .addUint32(metrics.ambulanceCompleted)
+      .addMilli(metrics.completedPeople)
+      .addMilli(metrics.personDelay)
+      .addMilli(metrics.vehicleDelay)
+      .addMilli(metrics.travelTime)
+      .addMilli(metrics.queueAreaSeconds)
+      .addMilli(metrics.fuelJoules)
+      .addMilli(metrics.co2Kg)
+      .addMilli(metrics.ambulanceTravelTime);
+    return hash.digest();
+  }
+
+  clone(): TrafficSim {
+    const copy = new TrafficSim({ ...this.config, demand: [] });
+    copy.tick = this.tick;
+    copy.completed = this.completed;
+    copy.longitudinal.backstops = this.longitudinal.backstops;
+    copy.vehicles.copyFrom(this.vehicles);
+    copy.junctionTraffic.copyFrom(this.junctionTraffic);
+    copy.demand = this.demand.clone();
+    copy.metricAccumulator = this.metricAccumulator.copy();
+    copy.signalBank.phase.set(this.signalBank.phase);
+    copy.signalBank.state.set(this.signalBank.state);
+    copy.signalBank.elapsedTicks.set(this.signalBank.elapsedTicks);
+    copy.signalBank.targetPhase.set(this.signalBank.targetPhase);
+    copy.sensing = this.sensing.copy(copy.vehicles, copy.signalBank);
+    return copy;
   }
 
   step(count = 1): void {
@@ -75,10 +182,13 @@ export class TrafficSim {
     demand.advance(this.tick, vehicles);
     junctionTraffic.prepareAdmissions();
     for (const segment of segments) {
+      if (vehicles.counts[segment.id] === 0) continue;
       longitudinal.updateAccelerations(segment.id, speedLimits[segment.id], obstacle);
     }
+    this.lateral.step(this.tick);
     let crossingCount = 0;
     for (const segment of segments) {
+      if (vehicles.counts[segment.id] === 0) continue;
       longitudinal.integrate(segment.id, segment.strips, obstacle);
       const list = vehicles.byLink[segment.id];
       for (let index = 0; index < vehicles.counts[segment.id]; index++) {
@@ -90,10 +200,12 @@ export class TrafficSim {
     for (let index = 0; index < crossingCount; index++) {
       const slot = crossings[index];
       if (!junctionTraffic.transition(slot, vehicles.link[slot])) {
+        this.metricAccumulator.recordExit(vehicles, slot, this.time);
         vehicles.remove(slot);
         this.completed++;
       }
     }
+    this.metricAccumulator.recordTick(vehicles, demand);
   }
 }
 

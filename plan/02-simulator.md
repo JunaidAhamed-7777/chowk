@@ -190,6 +190,8 @@ Bias terms:
 
 The move is instantaneous in the dynamics. For rendering, `lat` eases towards the new strip at 1.5 m/s.
 
+Strip changes are suspended on connectors, within 11 m before a stop line and within 22 m after a junction exit, so vehicles whose bodies straddle a link boundary stay in their mapped strips.
+
 **Filtering is not coded as a special case.** A two-wheeler behind a stopped car sees zero acceleration where it is and positive acceleration in an adjacent free pair of strips, so it moves and advances. Narrow vehicles therefore accumulate at the front of queues. This emergent behaviour is one of the validation checks.
 
 ### Junctions
@@ -198,6 +200,7 @@ The move is instantaneous in the dynamics. For rendering, `lat` eases towards th
 - Inside a connector, vehicles follow only vehicles on the same connector and the first vehicle on the exit link.
 - Because phasing is approach-based and all-red clears the box, connectors from different approaches are never occupied at the same time. A test asserts this.
 - Each box reserves one connector movement until the last vehicle's rear clears its exit. Straight movements can discharge in parallel strips. Curved turns use a single vehicle at a time and an 8 m/s speed cap (default) to keep turning sweeps clear. This choice affects junction capacity and is included in calibration.
+- The authored corridor includes 6.25 m straight sections at both ends of a turning path. The vehicle retains its incoming alignment until its body clears the entry and reaches its outgoing alignment before entering the exit link.
 - A vehicle may enter the junction only if the exit link has room for it in its mapped strips.
 
 ### Yellow
@@ -296,7 +299,7 @@ interface Sim {
   step(n?: number): void;                          // advance n ticks
   requestPhase(junctionId: number, phase: number): void;
   sense(junctionId: number): JunctionSense;
-  inject(e: SimEvent): void;
+  inject(e: SimEvent): void;                      // added with events in task 1.11
   metrics(): Metrics;
   writeSnapshot(out: Float32Array): number;        // render state; returns vehicle count
   signals(): Uint8Array;                           // per junction: phase, state

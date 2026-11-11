@@ -102,6 +102,8 @@ export const CARS_ONLY_MIX = [0, 0, 1, 0, 0, 0] as const;
 export const LANE_STRIPS = 7;
 
 export const QUEUE_ZONE_METRES = 150;
+export const NEAR_ZONE_METRES = 60;
+export const FAR_ZONE_METRES = 300;
 export const QUEUE_SPEED_THRESHOLD = 1;
 export const STOP_SPEED_THRESHOLD = 0.5;
 export const MOVING_SPEED_THRESHOLD = 2;
