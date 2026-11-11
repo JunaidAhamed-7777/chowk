@@ -95,7 +95,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 3.5 | **Main run, overnight 13→14 Nov** | `03` Run plan | 3.4 | Run completes or is still improving; best-validation checkpoint identified |
 | ☑ | 3.6 | Export policy, "watch it learn" checkpoints and training curve to the app | `03` Outputs | 3.5 | Files in `apps/web/public/policies/` |
 | ☑ | 3.7 | Second run overnight 14→15 Nov, informed by the first (P1) | `03` Run plan | 3.5 | Adopted only if validation is better |
-| ☐ | 3.8 | Ablation runs: vehicle objective, count observation, pure, solo (P1, P2) | `03` Ablations | 3.5 | Each has a checkpoint chosen on validation |
+| ☑ | 3.8 | Ablation runs: vehicle objective, count observation, pure, solo (P1, P2) | `03` Ablations | 3.5 | Each has a checkpoint chosen on validation |
 
 **Gate G2 at 3.5.**
 

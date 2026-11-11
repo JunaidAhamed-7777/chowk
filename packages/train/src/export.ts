@@ -34,7 +34,12 @@ for (const generation of generations) {
       validationFitness: policy.meta.validationFitness,
     });
   }
-  if (generation === state.bestGeneration) await atomicText(join(out, `${variant}.json`), json);
+  if (generation === state.bestGeneration) {
+    // The pure policy ignores the residual coefficient. Persist its effective value.
+    const exported =
+      variant === "chowk-pure" ? `${JSON.stringify({ ...policy, beta: 0 })}\n` : json;
+    await atomicText(join(out, `${variant}.json`), exported);
+  }
 }
 if (variant === "chowk") {
   const points = state.history.map(
