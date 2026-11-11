@@ -4,6 +4,8 @@
 
 **A learned signal controller for lane-free Indian traffic, running live in the browser.**
 
+**[Open the live demo](https://chowk-seven.vercel.app/)**
+
 [![CI](https://github.com/JunaidAhamed-7777/chowk/actions/workflows/ci.yml/badge.svg)](https://github.com/JunaidAhamed-7777/chowk/actions/workflows/ci.yml) [![Tests](https://img.shields.io/badge/tests-Vitest%20%2B%20Playwright-2b5763)](#run-locally) [![MIT licence](https://img.shields.io/badge/licence-MIT-34d399)](LICENSE)
 
 [Download the captioned 90-second demo](https://github.com/JunaidAhamed-7777/chowk/raw/refs/heads/main/assets/demo/chowk-demo.mp4) · [WebVTT captions](assets/demo/captions.vtt)
@@ -72,7 +74,7 @@ Two-wheelers filter through gaps while auto-rickshaws and buses share the same r
 - **Disrupt traffic.** Trigger a demand surge or click a road to place a stalled bus. The event starts at the same tick in both simulations. [Surge clip](assets/demo/surge.gif)
 - **Follow an ambulance.** Send it through both simulations and switch to the ambulance camera. [Ambulance clip](assets/demo/ambulance.gif)
 - **Inspect a signal.** Use Pressure to see occupied road area or Decision to see what each controller scored. Watch it learn swaps in a saved training checkpoint while the run continues. [Pressure clip](assets/demo/decisions.gif)
-- **Re-run the benchmark.** Open Results and choose **Run benchmark** to check the published metrics and final state hashes in your browser. [Exact replay clip](assets/demo/reproduce.gif)
+- **Re-run the benchmark.** Choose **Run benchmark** in Results to check the published metrics and final state hashes in your browser. [Open Results](https://chowk-seven.vercel.app/results) · [Exact replay clip](assets/demo/reproduce.gif)
 
 ## How it works
 

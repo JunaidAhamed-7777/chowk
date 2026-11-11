@@ -6,7 +6,7 @@ CHOWK — Traffic signals that learned lane-free Indian traffic
 
 ## Description
 
-The public demo link is pending deployment.
+Open the live demo at https://chowk-seven.vercel.app/.
 
 On an Indian arterial, two-wheelers filter through queues, auto-rickshaws share road width with buses, and a vehicle count misses both road occupancy and the number of people waiting. CHOWK is a learned traffic-signal controller and a live simulation built around those differences.
 
@@ -23,4 +23,5 @@ TypeScript, React, three.js, React Three Fiber, WebGL 2, Web Workers, Node.js, e
 ## Links
 
 - [Source repository](https://github.com/JunaidAhamed-7777/chowk)
+- [Live demo](https://chowk-seven.vercel.app/)
 - [Captioned demo video](https://github.com/JunaidAhamed-7777/chowk/raw/refs/heads/main/assets/demo/chowk-demo.mp4)
