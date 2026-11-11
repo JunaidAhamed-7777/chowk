@@ -27,3 +27,4 @@ export type {
 export { compareRuns, runKey } from "./types";
 export { type EpisodeOptions, runEpisode } from "./episode";
 export { reproductionRuns, scenarioLabel } from "./suites";
+export { rendererName } from "./engineering";

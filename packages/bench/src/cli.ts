@@ -254,8 +254,11 @@ async function main(): Promise<void> {
   const startCommit = git("rev-parse", "HEAD");
   const simVersion = simulatorVersion(root);
   const old = values.replace ? undefined : currentBenchmark();
-  const engineering = readEngineering() ?? old?.engineering;
-  if (selected.includes("B8") && !engineering)
+  const refreshEngineering = selected.includes("B8");
+  const engineering = refreshEngineering
+    ? (readEngineering() ?? old?.engineering)
+    : old?.engineering;
+  if (refreshEngineering && !engineering)
     throw new Error(
       "Record B8 measurements in results/engineering.json before adding them to the benchmark",
     );
@@ -292,6 +295,7 @@ async function main(): Promise<void> {
   }
   withPublishLock(() => {
     const previous = values.replace ? undefined : currentBenchmark();
+    const reuseTrafficProvenance = completed.length === 0 && previous?.meta;
     const allRuns = new Map((previous?.runs ?? []).map((run) => [runKey(run), run]));
     for (const request of requests) {
       const result = canonicalResults.get(runKey(equivalentIdentity(request)));
@@ -313,13 +317,17 @@ async function main(): Promise<void> {
     };
     const benchmark = regenerate({
       meta: {
-        gitCommit: startCommit,
+        gitCommit: reuseTrafficProvenance ? reuseTrafficProvenance.gitCommit : startCommit,
         simVersion,
         policyHash: policyHashes.chowk,
         policyHashes,
-        createdAt: new Date().toISOString(),
-        runtime: `Node ${process.version}`,
-        wallSeconds: (previous?.meta.wallSeconds ?? 0) + elapsed,
+        createdAt: reuseTrafficProvenance
+          ? reuseTrafficProvenance.createdAt
+          : new Date().toISOString(),
+        runtime: reuseTrafficProvenance
+          ? reuseTrafficProvenance.runtime
+          : `Node ${process.version}`,
+        wallSeconds: (previous?.meta.wallSeconds ?? 0) + (completed.length === 0 ? 0 : elapsed),
         simulatedSeconds:
           new Set(runs.map((run) => runKey(equivalentIdentity(run)))).size *
           (warmupSeconds + measurementSeconds),
@@ -331,7 +339,9 @@ async function main(): Promise<void> {
       summary: [],
       comparisons: [],
       headline: "",
-      engineering,
+      engineering: refreshEngineering
+        ? (readEngineering() ?? previous?.engineering ?? engineering)
+        : (previous?.engineering ?? engineering),
     });
     save(benchmark);
     writeReports(root, benchmark);

@@ -1,5 +1,6 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { rendererName } from "./engineering";
 import { primaryMetric, primaryScenario, signedPercent } from "./headline";
 import { controllerLabel, formatMetric, mainMetricKeys, metricLabels } from "./metrics";
 import { compareControllers } from "./statistics";
@@ -61,7 +62,7 @@ function engineeringLines(report?: EngineeringReport): string[] {
   }
   if (rendering?.length)
     lines.push(
-      `- Rendering measurements were ${rendering.map(({ tier, medianFps, onePercentLowFps }) => `${medianFps.toFixed(1)} fps median and ${onePercentLowFps.toFixed(1)} fps 1% low on ${tier}`).join(", ")}.`,
+      `- Rendering measurements were ${rendering.map(({ tier, medianFps, onePercentLowFps, gpu }) => `${medianFps.toFixed(1)} fps median and ${onePercentLowFps.toFixed(1)} fps 1% low on ${tier}${gpu ? ` (${rendererName(gpu)})` : ""}`).join(", ")}.`,
     );
   if (load)
     lines.push(

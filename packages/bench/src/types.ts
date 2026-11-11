@@ -46,7 +46,7 @@ export interface EngineeringReport {
   simulator?: { vehicles: number; realtime: number; meanActive?: number }[];
   policyMicroseconds?: number;
   determinism?: Record<string, number>;
-  rendering?: { tier: string; medianFps: number; onePercentLowFps: number }[];
+  rendering?: { tier: string; medianFps: number; onePercentLowFps: number; gpu?: string }[];
   load?: { transferBytes: number; interactiveMs: number; initialJavaScriptGzipBytes?: number };
   tests?: { passed: number; failed: number };
 }

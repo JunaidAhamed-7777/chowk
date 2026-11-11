@@ -8,6 +8,7 @@ import {
   metricLabels,
   primaryMetric,
   primaryScenario,
+  rendererName,
   scenarioLabel,
   signedPercent,
   type SummaryCell,
@@ -140,9 +141,11 @@ function Engineering({ measurements }: { measurements: EngineeringReport }) {
               </dd>
             </div>
           ))}
-        {rendering?.map(({ tier, medianFps, onePercentLowFps }) => (
+        {rendering?.map(({ tier, medianFps, onePercentLowFps, gpu }) => (
           <div key={tier}>
-            <dt>{tier} quality</dt>
+            <dt>
+              {tier} quality{gpu ? ` · ${rendererName(gpu)}` : ""}
+            </dt>
             <dd>
               {medianFps.toFixed(1)} fps median · {onePercentLowFps.toFixed(1)} fps 1% low
             </dd>
