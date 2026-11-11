@@ -278,7 +278,13 @@ function AdditionalResults({ benchmark }: { benchmark: BenchmarkFile }) {
       <details key={suite} className="results-panel results-extra">
         <summary>{title}</summary>
         {suite === "B3" && (
-          <DelayChart rows={suiteRows} caption="Delay per person across policy variants" />
+          <>
+            <p>
+              The variants use separate, shorter training runs. All policies see the same held-out
+              demand and seeds.
+            </p>
+            <DelayChart rows={suiteRows} caption="Delay per person across policy variants" />
+          </>
         )}
         {suite === "B4" && (
           <>
