@@ -6,7 +6,7 @@
 |---|---|---|
 | Language | TypeScript, `strict` | One language for simulator, training, benchmark and app |
 | Runtime | Node 22 LTS for tooling | `worker_threads`, native test runner compatibility |
-| Package manager | pnpm workspaces | Fast, strict, monorepo-friendly |
+| Package manager | npm workspaces | Single package manager and lockfile across the monorepo |
 | App build | Vite | Fast dev server, simple static output, worker bundling |
 | UI | React | Ecosystem for react-three-fiber |
 | 3D | three.js, `@react-three/fiber`, `@react-three/drei`, `postprocessing` | Instancing, bloom, controllable render loop |
@@ -30,7 +30,7 @@ No backend. No database. No API keys. No analytics that need consent.
 ├─ AGENTS.md
 ├─ ROADMAP.md
 ├─ README.md
-├─ package.json, pnpm-workspace.yaml, tsconfig.base.json
+├─ package.json, package-lock.json, tsconfig.base.json
 ├─ .github/workflows/ci.yml
 ├─ apps/
 │  └─ web/                      the application
@@ -173,16 +173,16 @@ interface PolicyWeights {
 
 | Script | Does |
 |---|---|
-| `pnpm dev` | Web dev server |
-| `pnpm build` | Integrity check, type-check, production build |
-| `pnpm test` | Vitest across packages |
-| `pnpm test:browsers` | Playwright determinism and smoke tests |
-| `pnpm sim:bench` | Simulator speed measurement |
-| `pnpm train` | Start or resume a training run |
-| `pnpm train:export` | Export chosen checkpoints to the web app |
-| `pnpm bench:*` | See `04-benchmark.md` |
-| `pnpm assets:build`, `pnpm assets:check` | See `06-assets.md` |
-| `pnpm lint`, `pnpm typecheck` | Static checks |
+| `npm run dev` | Web dev server |
+| `npm run build` | Integrity check, type-check, production build |
+| `npm test` | Vitest across packages |
+| `npm run test:browsers` | Playwright determinism and smoke tests |
+| `npm run sim:bench` | Simulator speed measurement |
+| `npm run train` | Start or resume a training run |
+| `npm run train:export` | Export chosen checkpoints to the web app |
+| `npm run bench:*` | See `04-benchmark.md` |
+| `npm run assets:build`, `npm run assets:check` | See `06-assets.md` |
+| `npm run lint`, `npm run typecheck` | Static checks |
 
 ## Deployment
 

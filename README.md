@@ -10,7 +10,18 @@ An entry for INNOVEX 2026, problem statement PS04 (Smart Cities & Sustainability
 
 ## Status
 
-Planning is complete; nothing is built yet. There is no demo and there are no results.
+The application is in development. Benchmark results have yet to be published.
+
+## Run locally
+
+With Node.js 22.12 or later in the 22.x series:
+
+```sh
+npm ci
+npm run dev
+```
+
+Run `npm run build` to type-check the workspaces and build the static app in `apps/web/dist`.
 
 ## Where to look
 

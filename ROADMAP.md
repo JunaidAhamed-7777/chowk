@@ -41,7 +41,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 
 | ✓ | Id | Task | Spec | Done when |
 |---|---|---|---|---|
-| ☐ | 0.1 | Scaffold the pnpm monorepo: workspaces, TypeScript strict base config, lint and format, Vitest, empty packages and the Vite + React app | `07` Repository layout | `pnpm install`, `pnpm typecheck`, `pnpm test`, `pnpm build` all succeed |
+| ☑ | 0.1 | Scaffold the npm monorepo: workspaces, TypeScript strict base config, lint and format, Vitest, empty packages and the Vite + React app | `07` Repository layout | `npm install`, `npm run typecheck`, `npm test`, `npm run build` all succeed |
 | ☐ | 0.2 | GitHub Actions CI: install, type-check, lint, test, build | `09` CI | Workflow green on `main` |
 | ☐ | 0.3 | Deploy the skeleton app to the static host and keep it deploying on every push (needs the user's hosting account) | `07` Deployment | A public URL shows the placeholder page |
 | ☐ | 0.4 | Forbidden-call guard for `packages/sim` and policy inference | `02` Determinism rules, `09` | A test fails if `Math.random`, `Date`, `Math.pow`, `sin`, `exp`, `tanh` appear there |
@@ -65,7 +65,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☐ | 1.13 | Snapshot writer, `clone()`, public API finalised | `02` Public API | 1.8 | Snapshot positions match link geometry; clone test passes |
 | ☐ | 1.14 | 2D debug viewer (plain canvas page in the app, dev only) | — | 1.13 | The corridor, vehicles by class, and signals are visible and steppable |
 | ☐ | 1.15 | Validation checks as tests with plot data exported | `02` Validation checks | 1.9 | All checks pass; JSON for the Method page plots written |
-| ☐ | 1.16 | Performance pass and `pnpm sim:bench` | `02` Performance, `09` | 1.13 | ≥ 100× real time at 1,500 vehicles; figure recorded |
+| ☐ | 1.16 | Performance pass and `npm run sim:bench` | `02` Performance, `09` | 1.13 | ≥ 100× real time at 1,500 vehicles; figure recorded |
 | ☐ | 1.17 | Author `grid-holdout.json` (P1) | `02` Held-out network | 1.2 | Loads and runs under fixed-time |
 
 **Gate G1 after 1.8 and 1.14.**
@@ -159,7 +159,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 
 | ✓ | Id | Task | Spec | Depends | Done when |
 |---|---|---|---|---|---|
-| ☐ | 7.1 | Asset build and check scripts; placeholder models with correct dimensions and light masks | `06` Pipeline, Order of work | 0.1 | `pnpm assets:check` passes on placeholders |
+| ☐ | 7.1 | Asset build and check scripts; placeholder models with correct dimensions and light masks | `06` Pipeline, Order of work | 0.1 | `npm run assets:check` passes on placeholders |
 | ☐ | 7.2 | Two-wheeler, car, auto-rickshaw, bus | `06` Vehicles | 7.1 | In the scene at night, each class is recognisable from the aerial camera |
 | ☐ | 7.3 | Signal, street lamp, low and mid buildings | `06` Buildings, Street | 7.1 | In the scene; budgets met |
 | ☐ | 7.4 | Light commercial, ambulance, tall buildings, shop strips, trees | `06` | 7.2 | As above |
@@ -213,3 +213,5 @@ If everything goes wrong, this is the smallest thing worth submitting. It must e
 Record spec changes here: date, what changed, why.
 
 - 12 Nov 2026 — Roadmap created from `plan/`.
+
+- 12 Nov 2026 — Use npm workspaces and a committed package lock for local tooling and CI.

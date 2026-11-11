@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+/runs/
+/assets/export/
+/playwright-report/
+/test-results/
+.env
+.env.*
+!.env.example

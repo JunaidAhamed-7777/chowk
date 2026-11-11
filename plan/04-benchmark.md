@@ -31,7 +31,7 @@ This single comparison is the headline. Everything else is secondary and is desc
 
 Demand is specified as a **load level** relative to capacity measured in this simulator.
 
-1. `pnpm bench:calibrate` measures saturation flow for each approach width and each vehicle mix: a standing queue discharged through a long green, after start-up loss, in vehicles per second and in road area per second. Output: `results/calibration.json`, committed.
+1. `npm run bench:calibrate` measures saturation flow for each approach width and each vehicle mix: a standing queue discharged through a long green, after start-up loss, in vehicles per second and in road area per second. Output: `results/calibration.json`, committed.
 2. For a junction, `Y = Σ over phases of q_p / s_p`. The theoretical limit under the longest allowed cycle is `Y_max = 1 − L / 150`, with `L` the lost time per cycle.
 3. A scenario's **load** is `Y / Y_max` at the critical junction (J3). Load 1.0 is at theoretical capacity.
 
@@ -140,18 +140,18 @@ interface BenchmarkFile {
 }
 ```
 
-Also written: `results/benchmark.md` (human-readable tables) and the README results block, replaced between `<!-- results:start -->` and `<!-- results:end -->` markers by `pnpm bench:readme`.
+Also written: `results/benchmark.md` (human-readable tables) and the README results block, replaced between `<!-- results:start -->` and `<!-- results:end -->` markers by `npm run bench:readme`.
 
 ## Commands
 
 | Command | Does |
 |---|---|
-| `pnpm bench:calibrate` | Measures saturation flows, writes `results/calibration.json` |
-| `pnpm bench --suite B1` | Runs a suite across worker threads, appends to `results/benchmark.json` |
-| `pnpm bench:all` | Runs every suite |
-| `pnpm bench:summarise` | Recomputes summary, comparisons and headline |
-| `pnpm bench:readme` | Regenerates the README results block and `results/benchmark.md` |
-| `pnpm bench:smoke` | One seed, short episode, validation seeds; used in CI |
+| `npm run bench:calibrate` | Measures saturation flows, writes `results/calibration.json` |
+| `npm run bench -- --suite B1` | Runs a suite across worker threads, appends to `results/benchmark.json` |
+| `npm run bench:all` | Runs every suite |
+| `npm run bench:summarise` | Recomputes summary, comparisons and headline |
+| `npm run bench:readme` | Regenerates the README results block and `results/benchmark.md` |
+| `npm run bench:smoke` | One seed, short episode, validation seeds; used in CI |
 
 The CLI refuses to write results if the working tree has uncommitted changes to `packages/sim`, `packages/controllers` or the policy file, so published numbers always correspond to a commit.
 

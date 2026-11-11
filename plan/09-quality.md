@@ -7,7 +7,7 @@ The "Craft" pillar, and the safeguards that keep the demo working on a stranger'
 A task is done when:
 
 1. Its acceptance criteria in `ROADMAP.md` are met and were checked by running the thing, not by reading the code.
-2. `pnpm typecheck`, `pnpm lint` and `pnpm test` pass.
+2. `npm run typecheck`, `npm run lint` and `npm test` pass.
 3. New behaviour has a test where one is practical.
 4. Anything visual was looked at in the running app, at night, in the aerial camera, at the default quality tier.
 5. It is committed and pushed with a clear message.

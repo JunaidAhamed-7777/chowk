@@ -100,12 +100,12 @@ assets/blender/<asset>.py        authored via Blender MCP, committed
         │  run in Blender
         ▼
 assets/export/<asset>.glb        raw export (git-ignored)
-        │  pnpm assets:build      (gltf-transform: dedupe, weld, meshopt, texture compress)
+        │  npm run assets:build      (gltf-transform: dedupe, weld, meshopt, texture compress)
         ▼
 apps/web/public/models/<asset>.glb   committed, loaded by the app
 ```
 
-`pnpm assets:check` prints triangle counts, bounding boxes and file sizes for every model and fails if any exceeds its budget or a vehicle's bounding box does not match the simulator's dimensions.
+`npm run assets:check` prints triangle counts, bounding boxes and file sizes for every model and fails if any exceeds its budget or a vehicle's bounding box does not match the simulator's dimensions.
 
 ## Budgets
 

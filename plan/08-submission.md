@@ -129,7 +129,7 @@ All captured from the app through the scripted capture route, at fixed seeds.
 
 ## Submission-day checklist
 
-1. `pnpm test`, `pnpm test:browsers`, `pnpm build` all pass.
+1. `npm test`, `npm run test:browsers`, `npm run build` all pass.
 2. Benchmark regenerated from the final policy; `results/` committed; build integrity check passes without the override.
 3. README results block regenerated; no `{{` left anywhere in the repository (a test checks this).
 4. Deployed; demo opened in a private window in Chrome, Firefox and Safari or WebKit, and on a phone.

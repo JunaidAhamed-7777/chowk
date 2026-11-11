@@ -326,4 +326,4 @@ These run as tests and their plots appear on the Method page. They show the simu
 - Typed arrays, no allocation inside `step`.
 - Leader search scans the link's sorted array forward from the vehicle's index; stop at lookahead.
 - Per-link occupancy bitmap by coarse cell (strip × 2 m) to make lateral feasibility checks cheap.
-- Benchmark script `pnpm sim:bench` reports ticks per second at 500, 1,500 and 3,000 vehicles; it must not regress.
+- Benchmark script `npm run sim:bench` reports ticks per second at 500, 1,500 and 3,000 vehicles; it must not regress.

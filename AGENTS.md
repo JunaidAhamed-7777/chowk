@@ -32,27 +32,27 @@ Background on why this concept was chosen is in `docs/`; you do not need it to b
 
 ## Current state
 
-The repository contains plans and ideation documents only. **No code exists yet.** Commands listed below are the intended ones from `plan/07-architecture.md`; they work once task 0.1 in the roadmap is done. If a command does not exist yet, creating it is probably your task.
+The roadmap tracks which parts of the project are implemented. Commands below include planned work from `plan/07-architecture.md`. Check the corresponding task in the roadmap if a command does not exist yet.
 
 ## Commands (once scaffolded)
 
 ```
-pnpm install            install
-pnpm dev                web dev server
-pnpm build              integrity check, type-check, production build
-pnpm typecheck          TypeScript
-pnpm lint               lint
-pnpm test               unit tests
-pnpm test:browsers      Playwright determinism and smoke tests
-pnpm sim:bench          simulator speed
-pnpm train              start or resume training
-pnpm train:export       export policy checkpoints to the app
-pnpm bench:calibrate    measure saturation flows
-pnpm bench --suite B1   run a benchmark suite
-pnpm bench:summarise    recompute statistics and the headline
-pnpm bench:readme       regenerate README results and benchmark.md
-pnpm assets:build       compress models into the app
-pnpm assets:check       verify model budgets and dimensions
+npm install                  install
+npm run dev                  web dev server
+npm run build                integrity check, type-check, production build
+npm run typecheck            TypeScript
+npm run lint                 lint
+npm test                     unit tests
+npm run test:browsers        Playwright determinism and smoke tests
+npm run sim:bench            simulator speed
+npm run train                start or resume training
+npm run train:export         export policy checkpoints to the app
+npm run bench:calibrate      measure saturation flows
+npm run bench -- --suite B1  run a benchmark suite
+npm run bench:summarise      recompute statistics and the headline
+npm run bench:readme         regenerate README results and benchmark.md
+npm run assets:build         compress models into the app
+npm run assets:check         verify model budgets and dimensions
 ```
 
 Environment: Windows 11. Use forward slashes in paths inside code and config. Scripts must work in both PowerShell and Git Bash; prefer Node scripts over shell scripts.
