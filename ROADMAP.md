@@ -143,7 +143,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ✓ | Id | Task | Spec | Depends | Done when |
 |---|---|---|---|---|---|
 | ☐ | 6.1 | Episode runner (environment-neutral) and benchmark CLI with worker threads, dirty-tree guard | `04` Commands | 2.6 | A suite runs and writes records |
-| ☐ | 6.2 | Statistics: paired bootstrap intervals, relative differences, win rate; summary and comparisons | `04` Statistics | 6.1 | Matches reference values on fixed data |
+| ☑ | 6.2 | Statistics: paired bootstrap intervals, relative differences, win rate; summary and comparisons | `04` Statistics | 6.1 | Matches reference values on fixed data |
 | ☐ | 6.3 | Headline generation for all three outcomes; README block and `benchmark.md` generation | `04` Headline, Output | 6.2 | Generated text correct in tests |
 | ☐ | 6.4 | Benchmark smoke in CI | `04` Commands | 6.1 | CI runs it |
 | ☐ | 6.5 | **Run B1, B2, B6, B8 with the final policy; commit results** | `04` Suites | 3.6, 6.3 | `results/benchmark.json` committed from a clean tree |
