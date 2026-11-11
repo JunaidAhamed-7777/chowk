@@ -100,15 +100,17 @@ try {
     `Native Safari ${created.capabilities.browserVersion}: ${first.renderer}. Autoplay advanced from tick ${first.tick} to ${advancing.tick}.`,
   );
 
-  for (const [path, heading] of [
-    ["/method", "How CHOWK works"],
-    ["/limits", "Scope and limitations"],
-    ["/results", "Benchmark results"],
+  for (const [path, heading, content] of [
+    ["/method", "How CHOWK works", ".method-content"],
+    ["/limits", "Scope and limitations", ".information-list"],
+    ["/results", "Benchmark results", ".results-headline"],
   ]) {
     await navigate(path);
     await waitFor(
       `direct ${path} route`,
-      () => execute("return document.querySelector('#information-heading')?.textContent"),
+      () =>
+        execute(`return document.querySelector(${JSON.stringify(content)}) &&
+          document.querySelector('#information-heading')?.textContent`),
       (value) => value === heading,
     );
     console.log(`${path} rendered ${heading}.`);
@@ -135,7 +137,7 @@ try {
       120_000,
     );
     const episodes = await execute(
-      "return document.querySelectorAll('.repro-panel .repro-match').length",
+      "return document.querySelectorAll('.repro-panel tbody .repro-match').length",
     );
     assert.equal(episodes, 9);
     console.log(
