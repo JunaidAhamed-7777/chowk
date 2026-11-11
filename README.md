@@ -1,10 +1,12 @@
 # CHOWK
 
-![The CHOWK corridor at night](assets/demo/corridor.webp)
+![Two live controllers sharing the CHOWK corridor at night](assets/demo/hero.gif)
 
 **A learned signal controller for lane-free Indian traffic, running live in the browser.**
 
 [![CI](https://github.com/JunaidAhamed-7777/chowk/actions/workflows/ci.yml/badge.svg)](https://github.com/JunaidAhamed-7777/chowk/actions/workflows/ci.yml) [![Tests](https://img.shields.io/badge/tests-Vitest%20%2B%20Playwright-2b5763)](#run-locally) [![MIT licence](https://img.shields.io/badge/licence-MIT-34d399)](LICENSE)
+
+[Download the captioned 90-second demo](https://github.com/JunaidAhamed-7777/chowk/raw/refs/heads/main/assets/demo/chowk-demo.mp4)
 
 *Chowk* is Hindi for a junction. CHOWK pairs a playable night-time arterial with a benchmark you can reproduce in the browser. It is an INNOVEX 2026 entry for PS04, Smart Cities & Sustainability.
 
@@ -40,11 +42,11 @@ Two-wheelers filter through gaps while auto-rickshaws and buses share the same r
 
 ## In the live demo
 
-- **Compare controllers.** Drag the divider to see both respond to the same demand. Swap either controller while traffic keeps moving.
-- **Disrupt traffic.** Trigger a demand surge or click a road to place a stalled bus. The event starts at the same tick in both simulations.
-- **Follow an ambulance.** Send it through both simulations and switch to the ambulance camera.
-- **Inspect a signal.** Use Pressure to see occupied road area or Decision to see what each controller scored. Watch it learn swaps in a saved training checkpoint while the run continues.
-- **Re-run the benchmark.** Open Results and choose **Run benchmark** to check the published metrics and final state hashes in your browser.
+- **Compare controllers.** Drag the divider to see both respond to the same demand. Swap either controller while traffic keeps moving. [Wipe clip](assets/demo/wipe.gif)
+- **Disrupt traffic.** Trigger a demand surge or click a road to place a stalled bus. The event starts at the same tick in both simulations. [Surge clip](assets/demo/surge.gif)
+- **Follow an ambulance.** Send it through both simulations and switch to the ambulance camera. [Ambulance clip](assets/demo/ambulance.gif)
+- **Inspect a signal.** Use Pressure to see occupied road area or Decision to see what each controller scored. Watch it learn swaps in a saved training checkpoint while the run continues. [Pressure clip](assets/demo/decisions.gif)
+- **Re-run the benchmark.** Open Results and choose **Run benchmark** to check the published metrics and final state hashes in your browser. [Exact replay clip](assets/demo/reproduce.gif)
 
 ## How it works
 
@@ -66,10 +68,10 @@ Use Node.js 22.12 or later in the 22.x series. From a clean checkout, install, t
 ```sh
 npm ci
 npm test
-npm run bench -- --suite B1
+npm run bench -- --suite B1 --replace
 ```
 
-The Results view offers a shorter browser replay with a progress indicator. The full B1 suite runs across the published scenarios and its duration depends on worker count and hardware.
+The Results view offers a shorter browser replay with a progress indicator. B1 runs across the published scenarios and writes a fresh B1 publication to your checkout. Timing depends on worker count and hardware. [Published run provenance](results/benchmark.md#provenance)
 
 Run `npm run dev` and open the URL it prints. Use `/debug` for a top-down view with tick-by-tick playback. `npm run build` type-checks the workspaces and builds the static app in `apps/web/dist`.
 

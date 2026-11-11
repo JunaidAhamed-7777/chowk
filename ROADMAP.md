@@ -174,7 +174,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 |---|---|---|---|---|---|
 | ☑ | 8.1 | Method view with diagrams, validation plots, citations, "what is new and what is not" | `01` Method, `08` Citations | 1.15, 2.8 | Complete; every citation verified from its source |
 | ☑ | 8.2 | Limits view | `01` Limits | 4.1 | Complete |
-| ☐ | 8.3 | Scripted capture route; poster, hero GIF, stills | `05` Screenshots, `08` Images | 5.7 | Images reproducible from a URL |
+| ☑ | 8.3 | Scripted capture route; poster, hero GIF, stills | `05` Screenshots, `08` Images | 5.7 | Images reproducible from a URL |
 | ☐ | 8.4 | README | `08` README structure | 6.5, 8.3 | Complete; results block generated; no placeholders |
 | ☑ | 8.5 | Impact statistics verified against primary sources and linked, or removed | `08` Statistics | — | Each has a working source link |
 | ☑ | 8.6 | Architecture diagram (SVG) | `08` Images | 4.8 | In README and Method view |
@@ -224,3 +224,5 @@ Record spec changes here: date, what changed, why.
 - 12 Nov 2026 — Use vehicles generated as the stops-per-vehicle denominator in both live and benchmark metrics, consistent with the simulator definition.
 - 12 Nov 2026 — Run training early with full episode horizons and a smaller population after the smoke test showed unstable exploratory updates. Keep the main run checkpoint after the independent second run underperformed on validation.
 - 12 Nov 2026 — Draw aerial tail-light trails from the two latest vehicle snapshots in a batched pass that respects the wipe. Start automatic quality at Low on narrow displays.
+
+- 12 Nov 2026 — Record the actual autoplay sequence, a placed lane closure, the completed browser replay and a checkpoint swap for the captioned submission video. Capture aerial and pressure stills at a paused seed.

@@ -86,19 +86,17 @@ Do not write "first", "novel" or "state of the art" about anything we have not s
 
 ## Demo video (90 seconds)
 
-Screen capture from the real app at High quality, 1080p or better, 60 fps, with captions burned in and optional voice-over. No stock footage. The visual judge's storyboard is in `docs/judging/judge-4-visual.md`; this is the adapted version.
+Record the real browser tab at High quality and export 1080p60 with open captions and an accompanying caption track. The recording uses the live tour, places an actual lane closure, reproduces the published benchmark and swaps saved checkpoints. The browser replay is edited for length and labelled in the video.
 
 | Seconds | Shot | Caption |
 |---|---|---|
-| 0–5 | Black, then the city fades in, aerial, traffic streaming | "Traffic signals assume lanes." |
-| 5–12 | Street-level: two-wheelers filtering through a queue | "Indian traffic doesn't have them." |
-| 12–25 | Aerial; wipe sweeps across; left jams, right flows; numbers diverge | "Same traffic. Left: fixed timers. Right: CHOWK." |
-| 25–37 | Pressure and Decision overlays at a junction | "It sees road area and people, not car counts." |
-| 37–50 | Ambulance cam, greens opening | "An ambulance gets a green corridor." |
-| 50–60 | Surge and blocked lane fired; right side recovers | "Break it. It adapts, live, in your browser." |
-| 60–75 | Results page; "Run it yourself" completes with a tick | "{{headline, shortened}}. Re-run the proof yourself." |
-| 75–85 | "Watch it learn" slider from generation 0 to final | "Starts as the best classical method. Learns from there." |
-| 85–90 | Title card: name, URL, "simulation results" | — |
+| 0–18 | Night aerial and the wipe between fixed-time and CHOWK | Both sides face the same demand |
+| 18–39 | Junction view with Speed and Pressure overlays | Filtering and occupied approach area |
+| 39–52 | Ambulance camera | Both sides receive the ambulance at the same tick |
+| 52–65 | Demand surge and click-to-place road closure | Both sides encounter the same disruption |
+| 65–82 | Results and completed in-browser replay | Each row checks the published metrics and state hash |
+| 82–87 | Watch it learn from generation 0 to the selected checkpoint | The slider loads the actual weights |
+| 87–90 | Title, repository URL and scope | All results are simulation results |
 
 ## Images
 

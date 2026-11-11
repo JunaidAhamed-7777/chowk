@@ -19,7 +19,7 @@ function httpsUrl(value, field) {
 const demo = values.demo && httpsUrl(values.demo, "Demo");
 const video = values.video
   ? httpsUrl(values.video, "Video")
-  : `${repository}/blob/main/assets/demo/chowk-demo.mp4`;
+  : `${repository}/raw/refs/heads/main/assets/demo/chowk-demo.mp4`;
 const content = `# INNOVEX 2026 submission
 
 ## Title
