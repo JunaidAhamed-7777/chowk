@@ -42,7 +42,7 @@ const limits = [
   ],
   [
     "Browser coverage",
-    "Desktop testing covered Chrome, Edge, Firefox and the WebKit engine. Portrait testing used Chromium touch emulation at Low quality. Native macOS, iOS and Android devices remain untested.",
+    "Desktop testing covered Chrome and Edge on Windows and macOS, Safari on macOS, Firefox on Linux and Playwright WebKit on Windows. Portrait testing used Chromium touch emulation at Low quality. Testing on physical iOS and Android devices remains open.",
   ],
 ];
 

@@ -46,6 +46,6 @@ npm run capture -- video
 ## Public release checks
 
 - The static host configuration lives in [vercel.json](vercel.json). Obtain the user's deployment approval, then verify the live URL and direct Results, Method and Limits routes in a private window. Open the public demo from a different network.
-- Local coverage includes desktop Chrome and Edge on Windows, Firefox on WSL, Windows Playwright WebKit, the top-down fallback and a portrait touch-emulated Low-tier run. Native Safari on macOS and iOS and Chrome on a physical Android device still need release checks.
+- Desktop coverage includes Chrome and Edge on Windows and macOS, native Safari on macOS, Firefox on WSL and Playwright WebKit on Windows. The [macOS workflow](.github/workflows/safari.yml) exercises the installed browsers. The 2D fallback and portrait touch-emulated Low tier passed locally. Physical iOS and Android checks remain open.
 - Once the public demo and video URLs are confirmed, generate the Unstop draft with `npm run submission:prepare -- --demo <public-demo-url> --video <public-video-url>`. The command takes the headline from the committed benchmark and writes `docs/SUBMISSION.md`.
 - The user submits the form on Unstop. Verify the links from the submitted page and record the final CI-green commit under the `v1.0-submission` tag as specified in [plan/08-submission.md](plan/08-submission.md).
