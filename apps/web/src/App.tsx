@@ -4,6 +4,7 @@ import type { Quality, QualityMode } from "./scene/sceneSettings";
 import { qualityPresets } from "./scene/sceneSettings";
 import { setTrafficSoundEnabled } from "./sim/trafficAudio";
 import { Icon } from "./ui/Icon";
+import { LoadingScreen, liveLoadingSteps } from "./ui/LoadingScreen";
 import type { InformationRoute } from "./views/InformationView";
 import { InformationView } from "./views/InformationView";
 import "./styles.css";
@@ -173,8 +174,10 @@ export default function App() {
           <section className="live-surface" hidden={route !== "/"}>
             <Suspense
               fallback={
-                <div className="loading-route" role="status">
-                  Loading the corridor…
+                <div className="live-view">
+                  <div className="scene-stage">
+                    <LoadingScreen done={false} steps={liveLoadingSteps(false, false, false)} />
+                  </div>
                 </div>
               }
             >

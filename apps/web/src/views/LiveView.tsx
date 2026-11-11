@@ -48,6 +48,7 @@ import { CheckpointControl } from "../ui/CheckpointControl";
 import { CustomDemand } from "../ui/CustomDemand";
 import { Icon } from "../ui/Icon";
 import { LiveControls } from "../ui/LiveControls";
+import { LoadingScreen, liveLoadingSteps } from "../ui/LoadingScreen";
 import { MetricHud } from "../ui/MetricHud";
 import { PolicyInspector } from "../ui/PolicyInspector";
 import "../ui/advancedLive.css";
@@ -519,8 +520,8 @@ export default function LiveView({
               onRoadPick={pickRoad}
             />
           )}
-          {!ready && !failure && (
-            <div className="scene-load-line" role="status" aria-label="Loading the corridor" />
+          {!failure && (
+            <LoadingScreen done={ready} steps={liveLoadingSteps(true, policiesReady, ready)} />
           )}
           {contextLost && (
             <div className="scene-message context-recovery" role="status">

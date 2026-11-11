@@ -2,7 +2,14 @@ import type { Explanation } from "@chowk/controllers";
 import { corridor } from "@chowk/sim";
 import { useFrame } from "@react-three/fiber";
 import { type RefObject, useEffect, useState } from "react";
-import { CanvasTexture, LinearFilter, Sprite, SpriteMaterial, SRGBColorSpace, Vector3 } from "three";
+import {
+  CanvasTexture,
+  LinearFilter,
+  Sprite,
+  SpriteMaterial,
+  SRGBColorSpace,
+  Vector3,
+} from "three";
 import type { SnapshotStream } from "../sim/SimHost";
 import { clipMaterial, type WipeClip } from "./wipeClip";
 
@@ -32,7 +39,13 @@ function same(a: Explanation | undefined, b: Explanation | undefined) {
   return true;
 }
 
-function draw(label: Label, junction: number, side: WipeClip["side"], explanation: Explanation | undefined, phase: number) {
+function draw(
+  label: Label,
+  junction: number,
+  side: WipeClip["side"],
+  explanation: Explanation | undefined,
+  phase: number,
+) {
   const context = label.canvas.getContext("2d");
   if (!context) return;
   context.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -175,11 +188,16 @@ export function DecisionLabels({
       const lower = (clip.side === 0 ? 0 : edge) + pad;
       const upper = (clip.side === 0 ? edge : frameWidth) - pad;
       const anchorX = ((projected.x + 1) * frameWidth) / 2;
-      if (viewZ >= 0 || lower > upper || anchorX < lower - pad * 1.5 || anchorX > upper + pad * 1.5) {
+      if (
+        viewZ >= 0 ||
+        lower > upper ||
+        anchorX < lower - pad * 1.5 ||
+        anchorX > upper + pad * 1.5
+      ) {
         label.sprite.visible = false;
         continue;
       }
-      projected.x = Math.min(upper, Math.max(lower, anchorX)) * 2 / frameWidth - 1;
+      projected.x = (Math.min(upper, Math.max(lower, anchorX)) * 2) / frameWidth - 1;
       label.sprite.position.copy(projected.unproject(camera));
       label.sprite.scale.set(width, (width * canvasHeight) / canvasWidth, 1);
       const phase = snapshot.signals[index * 2];
