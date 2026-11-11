@@ -5,11 +5,15 @@ import { preview } from "vite";
 
 const host = "127.0.0.1";
 const port = 4173;
-const server = await preview({
-  root: fileURLToPath(new URL("../apps/web/", import.meta.url)),
-  configFile: false,
-  preview: { host, port, strictPort: true },
-});
+const deployedOrigin = process.env.CHOWK_SMOKE_ORIGIN;
+const origin = deployedOrigin || `http://${host}:${port}`;
+const server = deployedOrigin
+  ? undefined
+  : await preview({
+      root: fileURLToPath(new URL("../apps/web/", import.meta.url)),
+      configFile: false,
+      preview: { host, port, strictPort: true },
+    });
 
 try {
   for (const [channel, name] of [
@@ -24,7 +28,7 @@ try {
       page.on("console", (message) => {
         if (message.type() === "error") errors.push(message.text());
       });
-      await page.goto(`http://${host}:${port}/`);
+      await page.goto(`${origin}/`);
       const first = await page.waitForFunction(
         () => {
           const instrument = document.querySelector(".instrument");
@@ -68,5 +72,5 @@ try {
     }
   }
 } finally {
-  await server.close();
+  await server?.close();
 }

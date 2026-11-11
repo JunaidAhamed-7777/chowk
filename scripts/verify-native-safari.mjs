@@ -7,7 +7,8 @@ import { preview } from "vite";
 const host = "127.0.0.1";
 const appPort = 4173;
 const driverPort = 4444;
-const origin = `http://${host}:${appPort}`;
+const deployedOrigin = process.env.CHOWK_SMOKE_ORIGIN;
+const origin = deployedOrigin || `http://${host}:${appPort}`;
 const elementKey = "element-6066-11e4-a52e-4f735466cecf";
 
 async function request(method, path, data) {
@@ -53,11 +54,13 @@ const liveState = `
   };
 `;
 
-const server = await preview({
-  root: fileURLToPath(new URL("../apps/web/", import.meta.url)),
-  configFile: false,
-  preview: { host, port: appPort, strictPort: true },
-});
+const server = deployedOrigin
+  ? undefined
+  : await preview({
+      root: fileURLToPath(new URL("../apps/web/", import.meta.url)),
+      configFile: false,
+      preview: { host, port: appPort, strictPort: true },
+    });
 const driver = spawn("/usr/bin/safaridriver", ["-p", String(driverPort)], { stdio: "inherit" });
 let startupError;
 driver.once("error", (error) => {
@@ -147,5 +150,5 @@ try {
 } finally {
   if (session) await request("DELETE", session).catch((error) => console.error(error.message));
   driver.kill();
-  await server.close();
+  await server?.close();
 }
