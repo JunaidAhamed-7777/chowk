@@ -1,0 +1,1425 @@
+{
+  "load": {
+    "schema": 1,
+    "checkoutCommit": "456beb8089b953a6aa6a2c7805e3e0eefc3a277a",
+    "buildCommit": null,
+    "frontendStatus": [],
+    "indexSha256": "fb191bdcd77411567b1c35f87b88e0b63455841e7147b02bbd2f67b08e0b1854",
+    "liveAssetFingerprints": [
+      "LiveView-BduW-WdS.js",
+      "LiveView-CVZJhKtr.css",
+      "index-BGlhfM5_.css",
+      "index-SeeDtTFj.js",
+      "livePolicies-oZnIS9tz.js",
+      "sim.worker-DydnXRSU.js"
+    ],
+    "hardware": {
+      "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+      "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11-31.0.21925.1001)",
+      "os": "win32 10.0.26300",
+      "browser": "Chrome 157.0.8103.50",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      }
+    },
+    "method": "Fresh browser context for each trial. Chrome page-target CDP cache disabling and network emulation. Local gzip-enabled HTTP/1.1 serving the production build. Poster paint from image-specific Element Timing or LCP. Ready is the first visible canvas frame after worker warm-up.",
+    "profiles": [
+      {
+        "name": "broadband",
+        "downloadMbps": 10,
+        "uploadMbps": 5,
+        "latencyMs": 40
+      },
+      {
+        "name": "slow",
+        "downloadMbps": 2,
+        "uploadMbps": 1,
+        "latencyMs": 150
+      }
+    ],
+    "runs": [
+      {
+        "profile": "broadband",
+        "attempt": 1,
+        "posterPaintMs": 324,
+        "bootPosterPaintMs": null,
+        "scenePosterPaintMs": 928,
+        "readyMs": 1660.1000000014901,
+        "fadeCompleteMs": 1902.5,
+        "posterPaintSource": "largest-contentful-paint",
+        "firstContentfulPaintMs": 160,
+        "errors": [],
+        "failure": null
+      },
+      {
+        "profile": "broadband",
+        "attempt": 2,
+        "posterPaintMs": 296,
+        "bootPosterPaintMs": null,
+        "scenePosterPaintMs": 812,
+        "readyMs": 1405,
+        "fadeCompleteMs": 1647.3000000044703,
+        "posterPaintSource": "largest-contentful-paint",
+        "firstContentfulPaintMs": 132,
+        "errors": [],
+        "failure": null
+      },
+      {
+        "profile": "broadband",
+        "attempt": 3,
+        "posterPaintMs": 296,
+        "bootPosterPaintMs": null,
+        "scenePosterPaintMs": 816,
+        "readyMs": 1431.8999999985099,
+        "fadeCompleteMs": 1674.3999999985099,
+        "posterPaintSource": "largest-contentful-paint",
+        "firstContentfulPaintMs": 132,
+        "errors": [],
+        "failure": null
+      },
+      {
+        "profile": "slow",
+        "attempt": 1,
+        "posterPaintMs": 1096,
+        "bootPosterPaintMs": null,
+        "scenePosterPaintMs": 3108,
+        "readyMs": 4798.30000000447,
+        "fadeCompleteMs": 5033.30000000447,
+        "posterPaintSource": "largest-contentful-paint",
+        "firstContentfulPaintMs": 448,
+        "errors": [],
+        "failure": null
+      },
+      {
+        "profile": "slow",
+        "attempt": 2,
+        "posterPaintMs": 1076,
+        "bootPosterPaintMs": null,
+        "scenePosterPaintMs": 3052,
+        "readyMs": 4750.5999999940395,
+        "fadeCompleteMs": 4983.5,
+        "posterPaintSource": "largest-contentful-paint",
+        "firstContentfulPaintMs": 428,
+        "errors": [],
+        "failure": null
+      },
+      {
+        "profile": "slow",
+        "attempt": 3,
+        "posterPaintMs": 1092,
+        "bootPosterPaintMs": null,
+        "scenePosterPaintMs": 3068,
+        "readyMs": 4741.20000000298,
+        "fadeCompleteMs": 4977,
+        "posterPaintSource": "largest-contentful-paint",
+        "firstContentfulPaintMs": 444,
+        "errors": [],
+        "failure": null
+      }
+    ]
+  },
+  "memory": {
+    "schema": 1,
+    "checkoutCommit": "c2973e5e3307e692e8a07647d63107075733ffb2",
+    "buildCommit": "da8505454a77b15401be513ef2421a3eb44d466d",
+    "frontendStatus": [],
+    "indexSha256": "0f4009325cbec287455d655d142e10a49e8402b742bd6efe6954951ac325f193",
+    "liveAssetFingerprints": [
+      "LiveView-CVZJhKtr.css",
+      "LiveView-DXqyyNI_.js",
+      "index-B66qc-n5.js",
+      "index-BGlhfM5_.css",
+      "livePolicies-oZnIS9tz.js",
+      "sim.worker-DydnXRSU.js"
+    ],
+    "hardware": {
+      "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+      "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11-31.0.21925.1001)",
+      "os": "win32 10.0.26300",
+      "browser": "Chrome 157.0.8103.50",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      }
+    },
+    "method": "One unattended default-quality desktop Live tab with autoplay. Forced full renderer GC immediately before each minute sample. Renderer V8 heap, associated storage and DOM counters. Dedicated-worker count tracked separately. Worker heaps and GPU allocations are outside this measurement.",
+    "complete": true,
+    "plateau": {
+      "firstMinute": 3,
+      "minBytes": 13357960,
+      "maxBytes": 13765356,
+      "rangeBytes": 407396,
+      "firstBytes": 13513176,
+      "lastBytes": 13619556,
+      "relativeChange": 0.007872316618979802
+    },
+    "samples": [
+      {
+        "minute": 0,
+        "elapsedSeconds": 0.14482999999999993,
+        "pageWorkers": 2,
+        "tick": 961,
+        "tour": "true",
+        "overlay": "none",
+        "quality": "auto",
+        "heap": {
+          "usedSize": 11373236,
+          "totalSize": 13668352,
+          "embedderHeapUsedSize": 2030824,
+          "backingStorageSize": 7457334
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 559,
+          "jsEventListeners": 263
+        }
+      },
+      {
+        "minute": 1,
+        "elapsedSeconds": 60.1584644,
+        "pageWorkers": 2,
+        "tick": 2478,
+        "tour": "true",
+        "overlay": "pressure",
+        "quality": "auto",
+        "heap": {
+          "usedSize": 13541900,
+          "totalSize": 14716928,
+          "embedderHeapUsedSize": 2249440,
+          "backingStorageSize": 8041769
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 732,
+          "jsEventListeners": 238
+        }
+      },
+      {
+        "minute": 2,
+        "elapsedSeconds": 120.2550395,
+        "pageWorkers": 2,
+        "tick": 1553,
+        "tour": "true",
+        "overlay": "pressure",
+        "quality": "auto",
+        "heap": {
+          "usedSize": 13787788,
+          "totalSize": 15503360,
+          "embedderHeapUsedSize": 2279216,
+          "backingStorageSize": 8037771
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 700,
+          "jsEventListeners": 266
+        }
+      },
+      {
+        "minute": 3,
+        "elapsedSeconds": 180.04725209999998,
+        "pageWorkers": 2,
+        "tick": 1296,
+        "tour": "true",
+        "overlay": "speed",
+        "quality": "auto",
+        "heap": {
+          "usedSize": 13513176,
+          "totalSize": 14979072,
+          "embedderHeapUsedSize": 2061392,
+          "backingStorageSize": 8037663
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 700,
+          "jsEventListeners": 238
+        }
+      },
+      {
+        "minute": 4,
+        "elapsedSeconds": 240.0640869,
+        "pageWorkers": 2,
+        "tick": 1047,
+        "tour": "true",
+        "overlay": "none",
+        "quality": "auto",
+        "heap": {
+          "usedSize": 13357960,
+          "totalSize": 14716928,
+          "embedderHeapUsedSize": 2127264,
+          "backingStorageSize": 8037387
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 700,
+          "jsEventListeners": 238
+        }
+      },
+      {
+        "minute": 5,
+        "elapsedSeconds": 300.08234489999995,
+        "pageWorkers": 2,
+        "tick": 2637,
+        "tour": "true",
+        "overlay": "none",
+        "quality": "auto",
+        "heap": {
+          "usedSize": 13535448,
+          "totalSize": 14716928,
+          "embedderHeapUsedSize": 2030960,
+          "backingStorageSize": 8041555
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 730,
+          "jsEventListeners": 238
+        }
+      },
+      {
+        "minute": 6,
+        "elapsedSeconds": 360.09177029999995,
+        "pageWorkers": 2,
+        "tick": 2280,
+        "tour": "true",
+        "overlay": "none",
+        "quality": "auto",
+        "heap": {
+          "usedSize": 13765356,
+          "totalSize": 16027648,
+          "embedderHeapUsedSize": 2202920,
+          "backingStorageSize": 8037407
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 714,
+          "jsEventListeners": 238
+        }
+      },
+      {
+        "minute": 7,
+        "elapsedSeconds": 420.0542869,
+        "pageWorkers": 2,
+        "tick": 1504,
+        "tour": "true",
+        "overlay": "pressure",
+        "quality": "auto",
+        "heap": {
+          "usedSize": 13404524,
+          "totalSize": 15503360,
+          "embedderHeapUsedSize": 2093392,
+          "backingStorageSize": 8037367
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 700,
+          "jsEventListeners": 238
+        }
+      },
+      {
+        "minute": 8,
+        "elapsedSeconds": 480.07750020000003,
+        "pageWorkers": 2,
+        "tick": 1256,
+        "tour": "true",
+        "overlay": "speed",
+        "quality": "auto",
+        "heap": {
+          "usedSize": 13410964,
+          "totalSize": 15503360,
+          "embedderHeapUsedSize": 2037688,
+          "backingStorageSize": 8037387
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 700,
+          "jsEventListeners": 238
+        }
+      },
+      {
+        "minute": 9,
+        "elapsedSeconds": 540.0573794,
+        "pageWorkers": 2,
+        "tick": 1012,
+        "tour": "true",
+        "overlay": "none",
+        "quality": "auto",
+        "heap": {
+          "usedSize": 13422724,
+          "totalSize": 14716928,
+          "embedderHeapUsedSize": 2026952,
+          "backingStorageSize": 8037387
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 700,
+          "jsEventListeners": 238
+        }
+      },
+      {
+        "minute": 10,
+        "elapsedSeconds": 600.0671944000001,
+        "pageWorkers": 2,
+        "tick": 2628,
+        "tour": "true",
+        "overlay": "none",
+        "quality": "auto",
+        "heap": {
+          "usedSize": 13619556,
+          "totalSize": 14979072,
+          "embedderHeapUsedSize": 2043088,
+          "backingStorageSize": 8041555
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 730,
+          "jsEventListeners": 238
+        }
+      }
+    ],
+    "errors": []
+  },
+  "processMemory": {
+    "schema": 1,
+    "checkoutCommit": "d5f3ac9f58e2d90374392070ea34761eedc4d024",
+    "indexSha256": "3dcf53c81168a392e45baa115b991409d57d53565a76a2e552de9df45e0f1fd5",
+    "liveAssetFingerprints": [
+      "LiveView-CVZJhKtr.css",
+      "LiveView-CWd0bXHD.js",
+      "index-BGlhfM5_.css",
+      "index-Be4ub6Hb.js",
+      "livePolicies-oZnIS9tz.js",
+      "sim.worker-DydnXRSU.js"
+    ],
+    "hardware": {
+      "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+      "os": "Windows 10.0.26300",
+      "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11-31.0.21925.1001)",
+      "browser": "Chrome 157.0.8103.50",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      }
+    },
+    "method": "Locally served production build, one unattended default-quality Live tab with autoplay in a fresh Chrome session. Browser-level CDP SystemInfo.getProcessInfo supplies the process IDs; Windows Get-Process supplies PrivateMemorySize64 and WorkingSet64. Natural collection behavior. Samples every minute after Live readiness. Optional benchmark B5 ran on the same machine.",
+    "scope": "Private bytes are nonshareable process allocations. Browser, renderer, worker-hosting processes and GPU process are covered when returned by CDP. The GPU process figure covers its CPU-side process memory. GPU device allocations, processes outside the reported set, and total system commit are outside scope. Working-set sums include repeated shared pages.",
+    "references": {
+      "processSet": "https://chromedevtools.github.io/devtools-protocol/tot/SystemInfo/#method-getProcessInfo",
+      "privateBytes": "https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.privatememorysize64"
+    },
+    "complete": true,
+    "samples": [
+      {
+        "minute": 0,
+        "elapsedSeconds": 0.0000039000000001578886,
+        "collectionSeconds": 1.1380175,
+        "pageWorkers": 2,
+        "tick": 962,
+        "count": 7,
+        "missingPids": [],
+        "privateBytes": 608198656,
+        "summedWorkingSetBytes": 667680768,
+        "processes": [
+          {
+            "id": 13764,
+            "type": "browser",
+            "cpuTime": 0.940819,
+            "counters": {
+              "pid": 13764,
+              "name": "chrome",
+              "privateBytes": 36655104,
+              "workingSetBytes": 125153280
+            }
+          },
+          {
+            "id": 36836,
+            "type": "renderer",
+            "cpuTime": 0.059398,
+            "counters": {
+              "pid": 36836,
+              "name": "chrome",
+              "privateBytes": 15618048,
+              "workingSetBytes": 33837056
+            }
+          },
+          {
+            "id": 32348,
+            "type": "renderer",
+            "cpuTime": 1.947711,
+            "counters": {
+              "pid": 32348,
+              "name": "chrome",
+              "privateBytes": 119545856,
+              "workingSetBytes": 194191360
+            }
+          },
+          {
+            "id": 15028,
+            "type": "renderer",
+            "cpuTime": 0.171268,
+            "counters": {
+              "pid": 15028,
+              "name": "chrome",
+              "privateBytes": 36921344,
+              "workingSetBytes": 75010048
+            }
+          },
+          {
+            "id": 8040,
+            "type": "GPU",
+            "cpuTime": 2.075587,
+            "counters": {
+              "pid": 8040,
+              "name": "chrome",
+              "privateBytes": 375021568,
+              "workingSetBytes": 176885760
+            }
+          },
+          {
+            "id": 33912,
+            "type": "network.mojom.NetworkService",
+            "cpuTime": 0.198935,
+            "counters": {
+              "pid": 33912,
+              "name": "chrome",
+              "privateBytes": 15859712,
+              "workingSetBytes": 41435136
+            }
+          },
+          {
+            "id": 29464,
+            "type": "storage.mojom.StorageService",
+            "cpuTime": 0.044731,
+            "counters": {
+              "pid": 29464,
+              "name": "chrome",
+              "privateBytes": 8577024,
+              "workingSetBytes": 21168128
+            }
+          }
+        ]
+      },
+      {
+        "minute": 1,
+        "elapsedSeconds": 60.005258500000004,
+        "collectionSeconds": 0.7016163000000015,
+        "pageWorkers": 2,
+        "tick": 2481,
+        "count": 7,
+        "missingPids": [],
+        "privateBytes": 559808512,
+        "summedWorkingSetBytes": 717307904,
+        "processes": [
+          {
+            "id": 13764,
+            "type": "browser",
+            "cpuTime": 2.146582,
+            "counters": {
+              "pid": 13764,
+              "name": "chrome",
+              "privateBytes": 42811392,
+              "workingSetBytes": 140988416
+            }
+          },
+          {
+            "id": 36836,
+            "type": "renderer",
+            "cpuTime": 0.060891,
+            "counters": {
+              "pid": 36836,
+              "name": "chrome",
+              "privateBytes": 15556608,
+              "workingSetBytes": 33931264
+            }
+          },
+          {
+            "id": 32348,
+            "type": "renderer",
+            "cpuTime": 46.568534,
+            "counters": {
+              "pid": 32348,
+              "name": "chrome",
+              "privateBytes": 148951040,
+              "workingSetBytes": 237707264
+            }
+          },
+          {
+            "id": 15028,
+            "type": "renderer",
+            "cpuTime": 0.202998,
+            "counters": {
+              "pid": 15028,
+              "name": "chrome",
+              "privateBytes": 32894976,
+              "workingSetBytes": 74514432
+            }
+          },
+          {
+            "id": 8040,
+            "type": "GPU",
+            "cpuTime": 71.31706,
+            "counters": {
+              "pid": 8040,
+              "name": "chrome",
+              "privateBytes": 295743488,
+              "workingSetBytes": 167694336
+            }
+          },
+          {
+            "id": 33912,
+            "type": "network.mojom.NetworkService",
+            "cpuTime": 0.230696,
+            "counters": {
+              "pid": 33912,
+              "name": "chrome",
+              "privateBytes": 15421440,
+              "workingSetBytes": 41242624
+            }
+          },
+          {
+            "id": 29464,
+            "type": "storage.mojom.StorageService",
+            "cpuTime": 0.046281,
+            "counters": {
+              "pid": 29464,
+              "name": "chrome",
+              "privateBytes": 8429568,
+              "workingSetBytes": 21229568
+            }
+          }
+        ]
+      },
+      {
+        "minute": 2,
+        "elapsedSeconds": 119.9996884,
+        "collectionSeconds": 0.6934729000000079,
+        "pageWorkers": 2,
+        "tick": 1564,
+        "count": 7,
+        "missingPids": [],
+        "privateBytes": 569307136,
+        "summedWorkingSetBytes": 721256448,
+        "processes": [
+          {
+            "id": 13764,
+            "type": "browser",
+            "cpuTime": 2.317136,
+            "counters": {
+              "pid": 13764,
+              "name": "chrome",
+              "privateBytes": 42221568,
+              "workingSetBytes": 141021184
+            }
+          },
+          {
+            "id": 36836,
+            "type": "renderer",
+            "cpuTime": 0.062005,
+            "counters": {
+              "pid": 36836,
+              "name": "chrome",
+              "privateBytes": 15556608,
+              "workingSetBytes": 33931264
+            }
+          },
+          {
+            "id": 32348,
+            "type": "renderer",
+            "cpuTime": 88.400439,
+            "counters": {
+              "pid": 32348,
+              "name": "chrome",
+              "privateBytes": 169119744,
+              "workingSetBytes": 258478080
+            }
+          },
+          {
+            "id": 15028,
+            "type": "renderer",
+            "cpuTime": 0.207835,
+            "counters": {
+              "pid": 15028,
+              "name": "chrome",
+              "privateBytes": 30855168,
+              "workingSetBytes": 73035776
+            }
+          },
+          {
+            "id": 8040,
+            "type": "GPU",
+            "cpuTime": 138.987028,
+            "counters": {
+              "pid": 8040,
+              "name": "chrome",
+              "privateBytes": 287870976,
+              "workingSetBytes": 152317952
+            }
+          },
+          {
+            "id": 33912,
+            "type": "network.mojom.NetworkService",
+            "cpuTime": 0.244674,
+            "counters": {
+              "pid": 33912,
+              "name": "chrome",
+              "privateBytes": 15253504,
+              "workingSetBytes": 41242624
+            }
+          },
+          {
+            "id": 29464,
+            "type": "storage.mojom.StorageService",
+            "cpuTime": 0.047763,
+            "counters": {
+              "pid": 29464,
+              "name": "chrome",
+              "privateBytes": 8429568,
+              "workingSetBytes": 21229568
+            }
+          }
+        ]
+      },
+      {
+        "minute": 3,
+        "elapsedSeconds": 180.0147561,
+        "collectionSeconds": 0.7075738000000128,
+        "pageWorkers": 2,
+        "tick": 1321,
+        "count": 7,
+        "missingPids": [],
+        "privateBytes": 553238528,
+        "summedWorkingSetBytes": 718336000,
+        "processes": [
+          {
+            "id": 13764,
+            "type": "browser",
+            "cpuTime": 2.438191,
+            "counters": {
+              "pid": 13764,
+              "name": "chrome",
+              "privateBytes": 41787392,
+              "workingSetBytes": 140656640
+            }
+          },
+          {
+            "id": 36836,
+            "type": "renderer",
+            "cpuTime": 0.062577,
+            "counters": {
+              "pid": 36836,
+              "name": "chrome",
+              "privateBytes": 15556608,
+              "workingSetBytes": 33931264
+            }
+          },
+          {
+            "id": 32348,
+            "type": "renderer",
+            "cpuTime": 133.176145,
+            "counters": {
+              "pid": 32348,
+              "name": "chrome",
+              "privateBytes": 165412864,
+              "workingSetBytes": 253919232
+            }
+          },
+          {
+            "id": 15028,
+            "type": "renderer",
+            "cpuTime": 0.208656,
+            "counters": {
+              "pid": 15028,
+              "name": "chrome",
+              "privateBytes": 30855168,
+              "workingSetBytes": 73035776
+            }
+          },
+          {
+            "id": 8040,
+            "type": "GPU",
+            "cpuTime": 207.269823,
+            "counters": {
+              "pid": 8040,
+              "name": "chrome",
+              "privateBytes": 276094976,
+              "workingSetBytes": 154423296
+            }
+          },
+          {
+            "id": 33912,
+            "type": "network.mojom.NetworkService",
+            "cpuTime": 0.254742,
+            "counters": {
+              "pid": 33912,
+              "name": "chrome",
+              "privateBytes": 15122432,
+              "workingSetBytes": 41160704
+            }
+          },
+          {
+            "id": 29464,
+            "type": "storage.mojom.StorageService",
+            "cpuTime": 0.049121,
+            "counters": {
+              "pid": 29464,
+              "name": "chrome",
+              "privateBytes": 8409088,
+              "workingSetBytes": 21209088
+            }
+          }
+        ]
+      },
+      {
+        "minute": 4,
+        "elapsedSeconds": 240.00611,
+        "collectionSeconds": 0.7021655999999784,
+        "pageWorkers": 2,
+        "tick": 1076,
+        "count": 7,
+        "missingPids": [],
+        "privateBytes": 580689920,
+        "summedWorkingSetBytes": 726618112,
+        "processes": [
+          {
+            "id": 13764,
+            "type": "browser",
+            "cpuTime": 2.550173,
+            "counters": {
+              "pid": 13764,
+              "name": "chrome",
+              "privateBytes": 41750528,
+              "workingSetBytes": 140738560
+            }
+          },
+          {
+            "id": 36836,
+            "type": "renderer",
+            "cpuTime": 0.063401,
+            "counters": {
+              "pid": 36836,
+              "name": "chrome",
+              "privateBytes": 15556608,
+              "workingSetBytes": 33931264
+            }
+          },
+          {
+            "id": 32348,
+            "type": "renderer",
+            "cpuTime": 177.820131,
+            "counters": {
+              "pid": 32348,
+              "name": "chrome",
+              "privateBytes": 172638208,
+              "workingSetBytes": 260792320
+            }
+          },
+          {
+            "id": 15028,
+            "type": "renderer",
+            "cpuTime": 0.209645,
+            "counters": {
+              "pid": 15028,
+              "name": "chrome",
+              "privateBytes": 30855168,
+              "workingSetBytes": 73035776
+            }
+          },
+          {
+            "id": 8040,
+            "type": "GPU",
+            "cpuTime": 275.176377,
+            "counters": {
+              "pid": 8040,
+              "name": "chrome",
+              "privateBytes": 296431616,
+              "workingSetBytes": 155693056
+            }
+          },
+          {
+            "id": 33912,
+            "type": "network.mojom.NetworkService",
+            "cpuTime": 0.26845,
+            "counters": {
+              "pid": 33912,
+              "name": "chrome",
+              "privateBytes": 15048704,
+              "workingSetBytes": 41218048
+            }
+          },
+          {
+            "id": 29464,
+            "type": "storage.mojom.StorageService",
+            "cpuTime": 0.050624,
+            "counters": {
+              "pid": 29464,
+              "name": "chrome",
+              "privateBytes": 8409088,
+              "workingSetBytes": 21209088
+            }
+          }
+        ]
+      },
+      {
+        "minute": 5,
+        "elapsedSeconds": 300.00043769999996,
+        "collectionSeconds": 0.6716156000000192,
+        "pageWorkers": 2,
+        "tick": 2644,
+        "count": 7,
+        "missingPids": [],
+        "privateBytes": 562139136,
+        "summedWorkingSetBytes": 723132416,
+        "processes": [
+          {
+            "id": 13764,
+            "type": "browser",
+            "cpuTime": 2.64456,
+            "counters": {
+              "pid": 13764,
+              "name": "chrome",
+              "privateBytes": 41725952,
+              "workingSetBytes": 141107200
+            }
+          },
+          {
+            "id": 36836,
+            "type": "renderer",
+            "cpuTime": 0.064373,
+            "counters": {
+              "pid": 36836,
+              "name": "chrome",
+              "privateBytes": 15605760,
+              "workingSetBytes": 34066432
+            }
+          },
+          {
+            "id": 32348,
+            "type": "renderer",
+            "cpuTime": 222.88502,
+            "counters": {
+              "pid": 32348,
+              "name": "chrome",
+              "privateBytes": 164618240,
+              "workingSetBytes": 255066112
+            }
+          },
+          {
+            "id": 15028,
+            "type": "renderer",
+            "cpuTime": 0.211227,
+            "counters": {
+              "pid": 15028,
+              "name": "chrome",
+              "privateBytes": 30920704,
+              "workingSetBytes": 73216000
+            }
+          },
+          {
+            "id": 8040,
+            "type": "GPU",
+            "cpuTime": 344.127419,
+            "counters": {
+              "pid": 8040,
+              "name": "chrome",
+              "privateBytes": 285753344,
+              "workingSetBytes": 157016064
+            }
+          },
+          {
+            "id": 33912,
+            "type": "network.mojom.NetworkService",
+            "cpuTime": 0.27188,
+            "counters": {
+              "pid": 33912,
+              "name": "chrome",
+              "privateBytes": 15065088,
+              "workingSetBytes": 41336832
+            }
+          },
+          {
+            "id": 29464,
+            "type": "storage.mojom.StorageService",
+            "cpuTime": 0.052305,
+            "counters": {
+              "pid": 29464,
+              "name": "chrome",
+              "privateBytes": 8450048,
+              "workingSetBytes": 21323776
+            }
+          }
+        ]
+      },
+      {
+        "minute": 6,
+        "elapsedSeconds": 360.001778,
+        "collectionSeconds": 0.6823207999999867,
+        "pageWorkers": 2,
+        "tick": 2462,
+        "count": 7,
+        "missingPids": [],
+        "privateBytes": 588460032,
+        "summedWorkingSetBytes": 723005440,
+        "processes": [
+          {
+            "id": 13764,
+            "type": "browser",
+            "cpuTime": 2.750365,
+            "counters": {
+              "pid": 13764,
+              "name": "chrome",
+              "privateBytes": 42123264,
+              "workingSetBytes": 140828672
+            }
+          },
+          {
+            "id": 36836,
+            "type": "renderer",
+            "cpuTime": 0.065175,
+            "counters": {
+              "pid": 36836,
+              "name": "chrome",
+              "privateBytes": 15605760,
+              "workingSetBytes": 33652736
+            }
+          },
+          {
+            "id": 32348,
+            "type": "renderer",
+            "cpuTime": 265.769852,
+            "counters": {
+              "pid": 32348,
+              "name": "chrome",
+              "privateBytes": 179216384,
+              "workingSetBytes": 258875392
+            }
+          },
+          {
+            "id": 15028,
+            "type": "renderer",
+            "cpuTime": 0.212134,
+            "counters": {
+              "pid": 15028,
+              "name": "chrome",
+              "privateBytes": 30920704,
+              "workingSetBytes": 71634944
+            }
+          },
+          {
+            "id": 8040,
+            "type": "GPU",
+            "cpuTime": 413.362481,
+            "counters": {
+              "pid": 8040,
+              "name": "chrome",
+              "privateBytes": 297091072,
+              "workingSetBytes": 155430912
+            }
+          },
+          {
+            "id": 33912,
+            "type": "network.mojom.NetworkService",
+            "cpuTime": 0.281254,
+            "counters": {
+              "pid": 33912,
+              "name": "chrome",
+              "privateBytes": 15052800,
+              "workingSetBytes": 41324544
+            }
+          },
+          {
+            "id": 29464,
+            "type": "storage.mojom.StorageService",
+            "cpuTime": 0.054015,
+            "counters": {
+              "pid": 29464,
+              "name": "chrome",
+              "privateBytes": 8450048,
+              "workingSetBytes": 21258240
+            }
+          }
+        ]
+      },
+      {
+        "minute": 7,
+        "elapsedSeconds": 420.00142339999996,
+        "collectionSeconds": 0.6800838000000222,
+        "pageWorkers": 2,
+        "tick": 1542,
+        "count": 7,
+        "missingPids": [],
+        "privateBytes": 553013248,
+        "summedWorkingSetBytes": 714342400,
+        "processes": [
+          {
+            "id": 13764,
+            "type": "browser",
+            "cpuTime": 2.853731,
+            "counters": {
+              "pid": 13764,
+              "name": "chrome",
+              "privateBytes": 41766912,
+              "workingSetBytes": 140513280
+            }
+          },
+          {
+            "id": 36836,
+            "type": "renderer",
+            "cpuTime": 0.065925,
+            "counters": {
+              "pid": 36836,
+              "name": "chrome",
+              "privateBytes": 15568896,
+              "workingSetBytes": 33677312
+            }
+          },
+          {
+            "id": 32348,
+            "type": "renderer",
+            "cpuTime": 306.721537,
+            "counters": {
+              "pid": 32348,
+              "name": "chrome",
+              "privateBytes": 166387712,
+              "workingSetBytes": 248750080
+            }
+          },
+          {
+            "id": 15028,
+            "type": "renderer",
+            "cpuTime": 0.213012,
+            "counters": {
+              "pid": 15028,
+              "name": "chrome",
+              "privateBytes": 30883840,
+              "workingSetBytes": 71655424
+            }
+          },
+          {
+            "id": 8040,
+            "type": "GPU",
+            "cpuTime": 480.376861,
+            "counters": {
+              "pid": 8040,
+              "name": "chrome",
+              "privateBytes": 274952192,
+              "workingSetBytes": 157126656
+            }
+          },
+          {
+            "id": 33912,
+            "type": "network.mojom.NetworkService",
+            "cpuTime": 0.290096,
+            "counters": {
+              "pid": 33912,
+              "name": "chrome",
+              "privateBytes": 15040512,
+              "workingSetBytes": 41316352
+            }
+          },
+          {
+            "id": 29464,
+            "type": "storage.mojom.StorageService",
+            "cpuTime": 0.055696,
+            "counters": {
+              "pid": 29464,
+              "name": "chrome",
+              "privateBytes": 8413184,
+              "workingSetBytes": 21303296
+            }
+          }
+        ]
+      },
+      {
+        "minute": 8,
+        "elapsedSeconds": 479.9994092,
+        "collectionSeconds": 0.719280700000003,
+        "pageWorkers": 2,
+        "tick": 1298,
+        "count": 7,
+        "missingPids": [],
+        "privateBytes": 564002816,
+        "summedWorkingSetBytes": 715177984,
+        "processes": [
+          {
+            "id": 13764,
+            "type": "browser",
+            "cpuTime": 2.961272,
+            "counters": {
+              "pid": 13764,
+              "name": "chrome",
+              "privateBytes": 41693184,
+              "workingSetBytes": 140496896
+            }
+          },
+          {
+            "id": 36836,
+            "type": "renderer",
+            "cpuTime": 0.066783,
+            "counters": {
+              "pid": 36836,
+              "name": "chrome",
+              "privateBytes": 15568896,
+              "workingSetBytes": 33677312
+            }
+          },
+          {
+            "id": 32348,
+            "type": "renderer",
+            "cpuTime": 351.235061,
+            "counters": {
+              "pid": 32348,
+              "name": "chrome",
+              "privateBytes": 166866944,
+              "workingSetBytes": 248709120
+            }
+          },
+          {
+            "id": 15028,
+            "type": "renderer",
+            "cpuTime": 0.213975,
+            "counters": {
+              "pid": 15028,
+              "name": "chrome",
+              "privateBytes": 30883840,
+              "workingSetBytes": 71655424
+            }
+          },
+          {
+            "id": 8040,
+            "type": "GPU",
+            "cpuTime": 548.859338,
+            "counters": {
+              "pid": 8040,
+              "name": "chrome",
+              "privateBytes": 285601792,
+              "workingSetBytes": 158040064
+            }
+          },
+          {
+            "id": 33912,
+            "type": "network.mojom.NetworkService",
+            "cpuTime": 0.29895,
+            "counters": {
+              "pid": 33912,
+              "name": "chrome",
+              "privateBytes": 14974976,
+              "workingSetBytes": 41291776
+            }
+          },
+          {
+            "id": 29464,
+            "type": "storage.mojom.StorageService",
+            "cpuTime": 0.057225,
+            "counters": {
+              "pid": 29464,
+              "name": "chrome",
+              "privateBytes": 8413184,
+              "workingSetBytes": 21307392
+            }
+          }
+        ]
+      },
+      {
+        "minute": 9,
+        "elapsedSeconds": 540.0111170000001,
+        "collectionSeconds": 0.6927249999999767,
+        "pageWorkers": 2,
+        "tick": 1055,
+        "count": 7,
+        "missingPids": [],
+        "privateBytes": 585834496,
+        "summedWorkingSetBytes": 722612224,
+        "processes": [
+          {
+            "id": 13764,
+            "type": "browser",
+            "cpuTime": 3.067187,
+            "counters": {
+              "pid": 13764,
+              "name": "chrome",
+              "privateBytes": 41644032,
+              "workingSetBytes": 140472320
+            }
+          },
+          {
+            "id": 36836,
+            "type": "renderer",
+            "cpuTime": 0.067385,
+            "counters": {
+              "pid": 36836,
+              "name": "chrome",
+              "privateBytes": 15568896,
+              "workingSetBytes": 33677312
+            }
+          },
+          {
+            "id": 32348,
+            "type": "renderer",
+            "cpuTime": 396.535931,
+            "counters": {
+              "pid": 32348,
+              "name": "chrome",
+              "privateBytes": 174751744,
+              "workingSetBytes": 256114688
+            }
+          },
+          {
+            "id": 15028,
+            "type": "renderer",
+            "cpuTime": 0.214784,
+            "counters": {
+              "pid": 15028,
+              "name": "chrome",
+              "privateBytes": 30883840,
+              "workingSetBytes": 71655424
+            }
+          },
+          {
+            "id": 8040,
+            "type": "GPU",
+            "cpuTime": 617.885431,
+            "counters": {
+              "pid": 8040,
+              "name": "chrome",
+              "privateBytes": 299597824,
+              "workingSetBytes": 158093312
+            }
+          },
+          {
+            "id": 33912,
+            "type": "network.mojom.NetworkService",
+            "cpuTime": 0.307261,
+            "counters": {
+              "pid": 33912,
+              "name": "chrome",
+              "privateBytes": 14974976,
+              "workingSetBytes": 41291776
+            }
+          },
+          {
+            "id": 29464,
+            "type": "storage.mojom.StorageService",
+            "cpuTime": 0.058467,
+            "counters": {
+              "pid": 29464,
+              "name": "chrome",
+              "privateBytes": 8413184,
+              "workingSetBytes": 21307392
+            }
+          }
+        ]
+      },
+      {
+        "minute": 10,
+        "elapsedSeconds": 600.003052,
+        "collectionSeconds": 0.7435999000000302,
+        "pageWorkers": 2,
+        "tick": 2639,
+        "count": 7,
+        "missingPids": [],
+        "privateBytes": 570900480,
+        "summedWorkingSetBytes": 716267520,
+        "processes": [
+          {
+            "id": 13764,
+            "type": "browser",
+            "cpuTime": 3.160099,
+            "counters": {
+              "pid": 13764,
+              "name": "chrome",
+              "privateBytes": 41705472,
+              "workingSetBytes": 140509184
+            }
+          },
+          {
+            "id": 36836,
+            "type": "renderer",
+            "cpuTime": 0.068495,
+            "counters": {
+              "pid": 36836,
+              "name": "chrome",
+              "privateBytes": 15650816,
+              "workingSetBytes": 33730560
+            }
+          },
+          {
+            "id": 32348,
+            "type": "renderer",
+            "cpuTime": 441.138063,
+            "counters": {
+              "pid": 32348,
+              "name": "chrome",
+              "privateBytes": 166010880,
+              "workingSetBytes": 249458688
+            }
+          },
+          {
+            "id": 15028,
+            "type": "renderer",
+            "cpuTime": 0.216191,
+            "counters": {
+              "pid": 15028,
+              "name": "chrome",
+              "privateBytes": 31027200,
+              "workingSetBytes": 71708672
+            }
+          },
+          {
+            "id": 8040,
+            "type": "GPU",
+            "cpuTime": 686.665526,
+            "counters": {
+              "pid": 8040,
+              "name": "chrome",
+              "privateBytes": 292974592,
+              "workingSetBytes": 158183424
+            }
+          },
+          {
+            "id": 33912,
+            "type": "network.mojom.NetworkService",
+            "cpuTime": 0.310564,
+            "counters": {
+              "pid": 33912,
+              "name": "chrome",
+              "privateBytes": 15036416,
+              "workingSetBytes": 41320448
+            }
+          },
+          {
+            "id": 29464,
+            "type": "storage.mojom.StorageService",
+            "cpuTime": 0.060466,
+            "counters": {
+              "pid": 29464,
+              "name": "chrome",
+              "privateBytes": 8495104,
+              "workingSetBytes": 21356544
+            }
+          }
+        ]
+      }
+    ],
+    "errors": []
+  },
+  "reproduction": [
+    {
+      "engine": "Chromium",
+      "version": "158.0.8127.18",
+      "wallSeconds": 30.5883805,
+      "episodes": 9
+    },
+    {
+      "version": "159.0",
+      "environment": "WSL Ubuntu 6.18.33.2-microsoft-standard-WSL2",
+      "wallSeconds": 42.645967087,
+      "episodes": 9,
+      "engine": "Firefox"
+    },
+    {
+      "engine": "WebKit",
+      "version": "27.2",
+      "wallSeconds": 26.621700299999997,
+      "episodes": 9
+    }
+  ]
+}
