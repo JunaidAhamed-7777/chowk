@@ -354,6 +354,7 @@ function readMeasurement(name) {
 function supplementalMeasurements(existing) {
   const cold = readMeasurement("browser-budgets/load.json");
   const soak = readMeasurement("browser-budgets/memory.json");
+  const processMemory = readMeasurement("browser-budgets/process-memory.json");
   const firefox = readMeasurement("browser-matrix/firefox-repro.json");
   const labels = { chromium: "Chromium", firefox: "Firefox", webkit: "WebKit" };
   const wslReplay =
@@ -405,7 +406,12 @@ function supplementalMeasurements(existing) {
         }
       : existing.memory;
   if (cold && soak?.complete) {
-    const evidence = { load: cold, memory: soak, reproduction };
+    const evidence = {
+      load: cold,
+      memory: soak,
+      processMemory: processMemory?.complete ? processMemory : undefined,
+      reproduction,
+    };
     writeFileSync(
       join(root, "results", "browser-budgets.json"),
       `${JSON.stringify(evidence, null, 2)}\n`,
