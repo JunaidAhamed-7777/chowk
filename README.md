@@ -17,6 +17,29 @@ An entry for INNOVEX 2026, problem statement PS04 (Smart Cities & Sustainability
 The tour opens on a fictional five-junction arterial at night. Drag the divider to compare controllers on matched demand, trigger a surge or lane closure, or send an ambulance through both simulations. The pressure overlay shows the road occupancy the controller sees.
 
 <!-- results:start -->
+
+## Simulation results
+
+On 20 held-out seeds in simulated Indian mixed traffic, CHOWK showed no clear difference in delay per person versus area max-pressure (+0.1%, 95% CI −0.4% to +0.5%), with 2.8% lower delay versus Webster fixed-time (95% CI −3.2% to −2.3%). Simulation result.
+
+| Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
+|---|---:|---:|---:|---:|
+| CHOWK | 898.3 [887.3, 910.9] | 1.53 [1.48, 1.58] | 5232 [5044, 5422] | 1030.8 [1019.8, 1041.0] |
+| Area max-pressure | 897.8 [886.9, 909.6] | 1.53 [1.47, 1.59] | 5231 [5035, 5438] | 1030.9 [1019.4, 1044.4] |
+| Count max-pressure | 902.5 [892.0, 913.6] | 1.55 [1.49, 1.62] | 5259 [5042, 5477] | 1043.3 [1026.2, 1060.1] |
+| Actuated | 891.7 [881.8, 902.2] | 1.47 [1.43, 1.52] | 5370 [5109, 5599] | 992.5 [977.6, 1007.5] |
+| Fixed-time (Webster) | 923.9 [913.8, 934.5] | 1.20 [1.16, 1.23] | 4941 [4766, 5124] | 981.4 [971.6, 991.0] |
+
+![Paired delay differences for mixed traffic and lane-disciplined cars](results/lane-free.svg)
+
+### Engineering measurements
+
+Hardware and runtime: AMD Ryzen 9 5900HX with Radeon Graphics         · win32 10.0.26300 · Node 26.8.1.
+
+- Simulator: 1220.1× real time with 500 vehicles; 327.4× real time with 1,500 vehicles; 142.3× real time with 3,000 vehicles.
+
+[Full benchmark and provenance](results/benchmark.md) · [Raw runs](results/benchmark.json)
+
 <!-- results:end -->
 
 ## Why lane-free traffic matters
