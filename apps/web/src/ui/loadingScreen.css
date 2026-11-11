@@ -177,10 +177,13 @@
   .loading-screen {
     transition: none;
   }
-  .loading-mark i,
-  .loading-bar span,
-  .loading-hint,
-  .loading-steps li[data-state="active"] i {
+  .loading-screen
+    :is(
+      .loading-mark i,
+      .loading-bar span,
+      .loading-hint,
+      .loading-steps li[data-state="active"] i
+    ) {
     animation: none;
   }
   .loading-mark i {

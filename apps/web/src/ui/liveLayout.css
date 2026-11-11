@@ -34,16 +34,6 @@
   gap: 30px;
   translate: -50% 0;
 }
-.comparison-labels > .controller-chip {
-  justify-self: end;
-}
-.comparison-labels > .controller-chip-right {
-  justify-self: start;
-}
-.comparison-labels > .controller-chip:only-child {
-  grid-column: 1 / -1;
-  justify-self: center;
-}
 .controller-chip {
   height: 36px;
   padding: 0 8px 0 12px;
@@ -65,6 +55,16 @@
 .controller-chip-right::before {
   background: var(--accent);
   box-shadow: 0 0 9px var(--accent);
+}
+.comparison-labels > .controller-chip {
+  justify-self: end;
+}
+.comparison-labels > .controller-chip-right {
+  justify-self: start;
+}
+.comparison-labels > .controller-chip:only-child {
+  grid-column: 1 / -1;
+  justify-self: center;
 }
 .controller-side {
   letter-spacing: 0.08em;
