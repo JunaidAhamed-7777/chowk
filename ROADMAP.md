@@ -43,7 +43,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 |---|---|---|---|---|
 | ☑ | 0.1 | Scaffold the npm monorepo: workspaces, TypeScript strict base config, lint and format, Vitest, empty packages and the Vite + React app | `07` Repository layout | `npm install`, `npm run typecheck`, `npm test`, `npm run build` all succeed |
 | ☑ | 0.2 | GitHub Actions CI: install, type-check, lint, test, build | `09` CI | Workflow green on `main` |
-| ☐ | 0.3 | Deploy the skeleton app to the static host and keep it deploying on every push (needs the user's hosting account) | `07` Deployment | A public URL shows the placeholder page |
+| ☑ | 0.3 | Deploy the skeleton app to the static host and keep it deploying on every push (needs the user's hosting account) | `07` Deployment | A public URL shows the placeholder page |
 | ☑ | 0.4 | Forbidden-call guard for `packages/sim` and policy inference | `02` Determinism rules, `09` | A test fails if `Math.random`, `Date`, `Math.pow`, `sin`, `exp`, `tanh` appear there |
 
 ## Phase 1 — Simulator (Track A, 12–13 Nov)
