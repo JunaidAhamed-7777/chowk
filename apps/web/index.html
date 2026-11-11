@@ -8,9 +8,22 @@
     <link rel="preload" as="image" href="/poster.webp" />
     <meta name="description" content="CHOWK is a browser-based traffic simulation for lane-free Indian streets." />
     <title>CHOWK | Lane-free traffic simulation</title>
+    <style>
+      #boot-poster { display: none; }
+      html[data-live-boot] #root:empty + #boot-poster {
+        display: block;
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    </style>
+    <script>if (location.pathname === "/") document.documentElement.setAttribute("data-live-boot", "");</script>
   </head>
   <body style="margin: 0; background: #060a13; color: #eaf1f8">
     <div id="root"></div>
+    <img id="boot-poster" src="/poster.webp" alt="" elementtiming="chowk-boot-poster" />
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

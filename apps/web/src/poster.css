@@ -1,4 +1,5 @@
-.live-view .scene-stage {
+.live-view .scene-stage,
+.live-surface .loading-route {
   background-color: #080d18;
   background-image: url("/poster.webp");
   background-position: center;
