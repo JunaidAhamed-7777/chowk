@@ -267156,7 +267156,8 @@
   "headline": "On 20 held-out seeds in simulated Indian mixed traffic, CHOWK showed no clear difference in delay per person versus area max-pressure (+0.1%, 95% CI −0.4% to +0.5%), with 2.8% lower delay versus Webster fixed-time (95% CI −3.2% to −2.3%). Simulation result.",
   "engineering": {
     "hardware": {
-      "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics        ",
+      "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+      "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)",
       "os": "win32 10.0.26300",
       "runtime": "Node 26.8.1"
     },
@@ -267176,6 +267177,92 @@
         "realtime": 142.34529290806094,
         "meanActive": 3044.6354166666665
       }
-    ]
+    ],
+    "rendering": [
+      {
+        "tier": "low",
+        "medianFps": 163.93442622952287,
+        "onePercentLowFps": 161.29032258063413,
+        "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      },
+      {
+        "tier": "medium",
+        "medianFps": 163.93442622952287,
+        "onePercentLowFps": 161.07382550333998,
+        "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      },
+      {
+        "tier": "high",
+        "medianFps": 163.93442622952287,
+        "onePercentLowFps": 161.0738255033449,
+        "gpu": "ANGLE (AMD, AMD Radeon RX 6600M (0x000073FF) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      }
+    ],
+    "load": {
+      "interactiveMs": 970.2999999970198,
+      "transferBytes": 851676,
+      "initialJavaScriptGzipBytes": 494180
+    },
+    "determinism": {
+      "Node": 1467674151,
+      "Chromium": 1467674151,
+      "WebKit": 1467674151,
+      "Firefox": 1467674151
+    },
+    "tests": {
+      "passed": 81,
+      "failed": 0
+    },
+    "policyMicroseconds": 6.61387,
+    "shapedLoads": [
+      {
+        "label": "Broadband",
+        "downloadMbps": 10,
+        "latencyMs": 40,
+        "samples": 3,
+        "posterMs": 296,
+        "interactiveMs": 1431.8999999985099
+      },
+      {
+        "label": "Slow connection",
+        "downloadMbps": 2,
+        "latencyMs": 150,
+        "samples": 3,
+        "posterMs": 1092,
+        "interactiveMs": 4750.5999999940395
+      }
+    ],
+    "memory": {
+      "minutes": 10,
+      "firstBytes": 13513176,
+      "lastBytes": 13619556,
+      "plateauRangeBytes": 407396,
+      "workers": 2
+    },
+    "reproduction": [
+      {
+        "engine": "Chromium",
+        "version": "158.0.8127.18",
+        "wallSeconds": 30.5883805,
+        "episodes": 9
+      },
+      {
+        "version": "159.0",
+        "environment": "WSL Ubuntu 6.18.33.2-microsoft-standard-WSL2",
+        "wallSeconds": 42.645967087,
+        "episodes": 9,
+        "engine": "Firefox"
+      },
+      {
+        "engine": "WebKit",
+        "version": "27.2",
+        "wallSeconds": 26.621700299999997,
+        "episodes": 9
+      }
+    ],
+    "models": {
+      "count": 34,
+      "bytes": 109972
+    }
   }
 }

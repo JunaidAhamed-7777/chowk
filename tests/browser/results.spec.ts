@@ -49,6 +49,25 @@ test("Results shows published data or an honest pending state", async ({ page })
     }
     await label.click();
   }
+  if (publication.engineering) {
+    const engineering = page.getByRole("region", { name: "Engineering measurements" });
+    await expect(engineering).toBeVisible();
+    const { models, reproduction, shapedLoads } = publication.engineering;
+    if (models)
+      await expect(
+        engineering.getByText(
+          `${models.count} GLBs · ${(models.bytes / 1_024).toFixed(1)} KiB total`,
+        ),
+      ).toBeVisible();
+    for (const { label, downloadMbps, latencyMs } of shapedLoads ?? [])
+      await expect(
+        engineering.getByText(`${label} · ${downloadMbps} Mbps down · ${latencyMs} ms latency`),
+      ).toBeVisible();
+    for (const { episodes, wallSeconds } of reproduction ?? [])
+      await expect(
+        engineering.getByText(`${episodes} exact matches · ${wallSeconds.toFixed(2)} s`),
+      ).toBeVisible();
+  }
 });
 
 const engines = process.env.CHOWK_BROWSER_MATRIX === "1" ? [chromium, firefox, webkit] : [chromium];

@@ -375,9 +375,35 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 ## Engineering measurements
 
-Measured on AMD Ryzen 9 5900HX with Radeon Graphics         · win32 10.0.26300 · Node 26.8.1.
+Measured on AMD Ryzen 9 5900HX with Radeon Graphics · win32 10.0.26300 · Node 26.8.1.
 
 - The simulator ran at 1220.1× real time with about 502 vehicles, 327.4× real time with about 1,515 vehicles, 142.3× real time with about 3,045 vehicles.
+
+- Policy inference took 6.61 µs per decision.
+
+- Node, Chromium, WebKit, Firefox all reached state hash 577aee27 after 10,000 ticks.
+
+- Rendering measurements were 163.9 fps median and 161.3 fps 1% low on low (AMD Radeon(TM) Graphics), 163.9 fps median and 161.1 fps 1% low on medium (AMD Radeon(TM) Graphics), 163.9 fps median and 161.1 fps 1% low on high (AMD Radeon RX 6600M).
+
+- A cold localhost load transferred 831.7 KiB and became interactive in 0.97 s.
+
+- Initial JavaScript was 494.2 kB compressed.
+
+- The 34 delivered GLB models totalled 107.4 KiB.
+
+- On Broadband (10 Mbps down, 40 ms latency), the poster painted in 0.30 s and Live became interactive in 1.43 s. Medians from 3 fresh Chrome contexts.
+
+- On Slow connection (2 Mbps down, 150 ms latency), the poster painted in 1.09 s and Live became interactive in 4.75 s. Medians from 3 fresh Chrome contexts.
+
+- During a 10-minute Live soak, sampled post-GC renderer V8 heap went from 12.89 to 12.99 MiB, with 0.39 MiB spread on the plateau and 2 dedicated workers.
+
+- Chromium reproduced all 9 benchmark episodes exactly in 30.59 s.
+
+- Firefox (WSL Ubuntu 6.18.33.2-microsoft-standard-WSL2) reproduced all 9 benchmark episodes exactly in 42.65 s.
+
+- WebKit reproduced all 9 benchmark episodes exactly in 26.62 s.
+
+- 81 tests passed and 0 failed.
 
 ## Provenance
 
