@@ -43,7 +43,7 @@ The primary audience is a hackathon judge working at a desktop or laptop, follow
 
 ## Colors
 
-Night blue provides the background and surface hierarchy. Mint indicates focus, navigation selection and active camera controls. Amber identifies the scripted preview. Signal colors belong to traffic states, with visible lamp positions and the state-driven rendering used to distinguish them.
+Night blue provides the background and surface hierarchy. Mint indicates focus, navigation selection, active camera controls and a running simulation. Amber indicates the corridor is still initialising. Signal colors belong to traffic states, with visible lamp positions and the state-driven rendering used to distinguish them.
 
 ## Typography
 
@@ -72,6 +72,6 @@ Icons use a simple line style. Icon-only controls carry an accessible label. Cam
 ## Do's and Don'ts
 
 - Put the road network and its motion at the centre of the Live view.
-- Keep scripted preview state visibly identified until the simulator supplies snapshots.
+- Name the controller and label live measurements as simulation results.
 - Present benchmark numbers only from the results pipeline.
 - Keep vehicle and signal lighting legible against the city.

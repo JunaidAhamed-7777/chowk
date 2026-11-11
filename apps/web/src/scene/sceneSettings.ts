@@ -13,5 +13,3 @@ export const qualityPresets = {
 >;
 
 export const playingSpeeds = [1, 4, 16] as const;
-export const previewCapacity = qualityPresets.high.vehicleLimit;
-export const snapshotInterval = 50;

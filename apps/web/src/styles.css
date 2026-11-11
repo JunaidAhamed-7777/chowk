@@ -288,7 +288,7 @@ button:disabled {
   border-bottom: 1px solid var(--line);
 }
 .instrument-id,
-.preview-status {
+.simulation-status {
   display: flex;
   align-items: center;
   gap: 9px;
@@ -301,18 +301,22 @@ button:disabled {
 .instrument-id svg {
   color: var(--accent);
 }
-.preview-status {
+.simulation-status {
   color: #b0bfce;
   font: 500 10px / 1 var(--mono);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-.preview-status > span {
+.simulation-status > span {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: #ffc27a;
   box-shadow: 0 0 10px #ffc27a55;
+}
+.simulation-status[data-ready="true"] > span {
+  background: var(--accent);
+  box-shadow: 0 0 10px #3df2b469;
 }
 .scene-stage {
   position: relative;
@@ -513,6 +517,21 @@ button:disabled {
 }
 .live-footer p {
   margin: 0;
+}
+.live-readouts {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0;
+}
+.live-readouts div {
+  display: flex;
+  gap: 7px;
+}
+.live-readouts dd {
+  margin: 0;
+  color: var(--ui-text);
+  font-variant-numeric: tabular-nums;
 }
 
 .loading-route {

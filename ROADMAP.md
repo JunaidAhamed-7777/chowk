@@ -63,7 +63,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☐ | 1.11 | Events: surge, block, ambulance (P0); sensor freeze (P1); outage (P2) | `02` Events | 1.8 | Each event has a passing test |
 | ☑ | 1.12 | Scenario modifiers: monsoon; lane-disciplined cars only | `02` Scenario modifiers | 1.8 | Both run; cars-only shows whole-lane changes only |
 | ☑ | 1.13 | Snapshot writer, `clone()`, public API finalised | `02` Public API | 1.8 | Snapshot positions match link geometry; clone test passes |
-| ☐ | 1.14 | 2D debug viewer (plain canvas page in the app, dev only) | — | 1.13 | The corridor, vehicles by class, and signals are visible and steppable |
+| ☑ | 1.14 | 2D debug viewer (plain canvas page in the app, dev only) | — | 1.13 | The corridor, vehicles by class, and signals are visible and steppable |
 | ☐ | 1.15 | Validation checks as tests with plot data exported | `02` Validation checks | 1.9 | All checks pass; JSON for the Method page plots written |
 | ☐ | 1.16 | Performance pass and `npm run sim:bench` | `02` Performance, `09` | 1.13 | ≥ 100× real time at 1,500 vehicles; figure recorded |
 | ☐ | 1.17 | Author `grid-holdout.json` (P1) | `02` Held-out network | 1.2 | Loads and runs under fixed-time |
@@ -125,7 +125,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☐ | 5.3 | Scenario selector; time controls; seed field | `01` L4, L7 | 4.8, 2.3 | Reset and fast-forward work; same seed reproduces |
 | ☐ | 5.4 | Events: surge, block (with click-to-place), ambulance; toasts, scene markers, sparkline ticks | `01` L5 | 1.11, 5.1 | Each fires in both simulations at the same tick |
 | ☐ | 5.5 | Pressure overlay | `01` L6, `05` Overlays | 4.9 | Zones colour by occupied area, respecting the wipe |
-| ☐ | 5.6 | Camera presets: aerial, junction fly-to | `01` L8 | 4.2 | Smooth transitions |
+| ☑ | 5.6 | Camera presets: aerial, junction fly-to | `01` L8 | 4.2 | Smooth transitions |
 | ☐ | 5.7 | **Autoplay tour**: JSON timeline, player, captions, interruption and restart | `01` L9 | 5.4, 5.5, 5.6 | The full tour plays unattended on first load and loops |
 | ☐ | 5.8 | Decision, Speed and People overlays (P1) | `01` L6 | 2.9, 5.5 | Each renders and fades |
 | ☐ | 5.9 | Ride-along and ambulance cameras (P1) | `01` L8 | 5.6 | Click a vehicle to follow |
@@ -159,7 +159,7 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 
 | ✓ | Id | Task | Spec | Depends | Done when |
 |---|---|---|---|---|---|
-| ☐ | 7.1 | Asset build and check scripts; placeholder models with correct dimensions and light masks | `06` Pipeline, Order of work | 0.1 | `npm run assets:check` passes on placeholders |
+| ☑ | 7.1 | Asset build and check scripts; placeholder models with correct dimensions and light masks | `06` Pipeline, Order of work | 0.1 | `npm run assets:check` passes on placeholders |
 | ☐ | 7.2 | Two-wheeler, car, auto-rickshaw, bus | `06` Vehicles | 7.1 | In the scene at night, each class is recognisable from the aerial camera |
 | ☐ | 7.3 | Signal, street lamp, low and mid buildings | `06` Buildings, Street | 7.1 | In the scene; budgets met |
 | ☐ | 7.4 | Light commercial, ambulance, tall buildings, shop strips, trees | `06` | 7.2 | As above |
@@ -218,3 +218,4 @@ Record spec changes here: date, what changed, why.
 - 12 Nov 2026 — Generate the dimension-matched vehicle placeholders from the simulator's dimension table. The compression pipeline accepts pre-encoded WebP and KTX2 palettes.
 - 12 Nov 2026 — Generate Poisson arrivals by integrating piecewise-linear rates. Reserve junction connectors by movement until the last vehicle clears the box. Turns use an assumed speed cap and pass one at a time.
 - 12 Nov 2026 — Keep lateral alignment near connector boundaries and add straight lead-ins and lead-outs to curved paths after oriented-rectangle tests exposed overlaps.
+- 12 Nov 2026 — Connect the desktop scene and debug view to one fixed-cycle worker with provisional demand. Two-controller lockstep remains task 4.8.

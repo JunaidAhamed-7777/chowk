@@ -54,8 +54,7 @@ const signalMounts: {
   z: number;
   yaw: number;
   junction: number;
-  approach: number;
-  approachCount: number;
+  link: number;
 }[] = [];
 
 const linkRects = corridor.links.map((link) => {
@@ -98,8 +97,7 @@ const linkRects = corridor.links.map((link) => {
       z: hz - dir[1] * 0.24,
       yaw,
       junction: endJunction.id,
-      approach: endJunction.approaches.indexOf(link.id),
-      approachCount: endJunction.approaches.length,
+      link: link.id,
     });
   }
 

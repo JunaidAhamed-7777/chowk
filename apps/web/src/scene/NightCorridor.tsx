@@ -1,3 +1,4 @@
+import type { Metrics } from "@chowk/sim";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   BlendFunction,
@@ -15,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { HalfFloatType, NoToneMapping, PerspectiveCamera, Vector3 } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { junctions } from "./corridorGeometry";
-import { PreviewTraffic } from "./PreviewTraffic";
+import { SimulationTraffic } from "./SimulationTraffic";
 import { StaticDistrict } from "./StaticDistrict";
 import type { CameraSelection, PlaybackSpeed, Quality } from "./sceneSettings";
 import { qualityPresets } from "./sceneSettings";
@@ -26,14 +27,16 @@ interface SceneProps {
   camera: CameraSelection;
   onQuality: (quality: Quality) => void;
   onReady: (ready: boolean) => void;
+  onMetrics: (metrics: Metrics) => void;
+  ready: boolean;
   paused: boolean;
   quality: Quality;
   reducedMotion: boolean;
   speed: PlaybackSpeed;
 }
 
-const aerialPosition = [512, 262, 250] as const;
-const aerialTarget = [984, 0, -9] as const;
+const aerialPosition = [512, 296, 305] as const;
+const aerialTarget = [884, 0, -9] as const;
 
 function CorridorCamera({
   selection,
@@ -155,16 +158,19 @@ function PostProcessing({ quality }: { quality: Quality }) {
 
 function QualityProbe({
   automatic,
+  ready,
   quality,
   onQuality,
 }: {
   automatic: boolean;
+  ready: boolean;
   quality: Quality;
   onQuality: (quality: Quality) => void;
 }) {
   const probe = useRef({ elapsed: 0, duration: 0, frames: -8, checks: 0, waitUntil: 0 });
   useFrame((_, delta) => {
-    if (!automatic || document.hidden || delta > 0.25 || probe.current.checks === 2) return;
+    if (!automatic || !ready || document.hidden || delta > 0.25 || probe.current.checks === 2)
+      return;
     const sample = probe.current;
     sample.elapsed += delta;
     if (sample.elapsed < sample.waitUntil) return;
@@ -189,6 +195,8 @@ export function NightCorridor({
   camera,
   onQuality,
   onReady,
+  onMetrics,
+  ready,
   paused,
   quality,
   reducedMotion,
@@ -219,15 +227,16 @@ export function NightCorridor({
       <hemisphereLight args={["#a7c6f5", "#343149", 2.15]} />
       <directionalLight position={[540, 450, -420]} color="#b1ccff" intensity={1.12} />
       <StaticDistrict />
-      <PreviewTraffic
+      <SimulationTraffic
         active={active}
         paused={paused}
         speed={speed}
-        limit={tier.vehicleLimit}
+        lowDetail={quality === "low"}
         onReady={onReady}
+        onMetrics={onMetrics}
       />
       <CorridorCamera selection={camera} reducedMotion={reducedMotion} />
-      <QualityProbe automatic={automatic} quality={quality} onQuality={onQuality} />
+      <QualityProbe automatic={automatic} ready={ready} quality={quality} onQuality={onQuality} />
       <PostProcessing quality={quality} />
     </Canvas>
   );

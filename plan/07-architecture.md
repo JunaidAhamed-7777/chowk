@@ -84,6 +84,8 @@ sim  ←  scenarios  ←  controllers  ←  bench
 
 ## Runtime architecture in the browser
 
+The development Live view starts with one fixed-cycle simulation worker and uncalibrated demand. This exercises the same simulator and transferable vehicle snapshots that the two-controller comparison will use. The dev-only `/debug` view steps the same worker one tick at a time.
+
 ```
                     Main thread
    ┌───────────────────────────────────────────────┐

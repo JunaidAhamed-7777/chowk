@@ -11,10 +11,18 @@ test("renders the night corridor and responds to playback, camera and navigation
 
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "The corridor after dark." })).toBeVisible();
-  const pause = page.getByRole("button", { name: "Pause preview" });
+  const pause = page.getByRole("button", { name: "Pause simulation" });
   await expect(pause).toBeEnabled();
+  await expect(page.getByText("Fixed-cycle simulation", { exact: true })).toBeVisible();
+  const readout = (label: string) =>
+    page.locator(".live-readouts div").filter({ hasText: label }).locator("dd");
+  const elapsed = readout("Simulated time");
+  const count = readout("Vehicles on road");
+  await expect(count).toHaveText(/[1-9][\d,]*/);
+  const initialTime = await elapsed.textContent();
+  await expect(elapsed).not.toHaveText(initialTime ?? "");
   await pause.click();
-  await expect(page.getByRole("button", { name: "Play preview" })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Play simulation" })).toBeEnabled();
 
   const scene = page.locator(".scene-stage canvas");
   const screenshot = (await scene.screenshot()).toString("base64");
@@ -56,7 +64,7 @@ test("renders the night corridor and responds to playback, camera and navigation
   await page.goBack();
   await expect(page.getByRole("heading", { name: "How CHOWK works" })).toBeVisible();
   await nav.getByRole("link", { name: "Live" }).click();
-  await expect(page.getByRole("button", { name: "Play preview" })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Play simulation" })).toBeEnabled();
   expect(browserErrors).toEqual([]);
 });
 

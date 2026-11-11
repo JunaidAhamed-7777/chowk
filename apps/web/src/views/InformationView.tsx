@@ -35,8 +35,8 @@ export function InformationView({ route }: { route: InformationRoute }) {
           <div className="information-empty">
             <h2>Publication pending</h2>
             <p>
-              Results appear here after the benchmark runs on held-out demand seeds. The corridor
-              preview supplies no benchmark data.
+              Results appear here after the benchmark runs on held-out demand seeds. The Live view
+              runs a fixed-cycle simulation with provisional demand.
             </p>
           </div>
         </>
@@ -88,7 +88,8 @@ export function InformationView({ route }: { route: InformationRoute }) {
             Scope and limitations
           </h1>
           <p className="information-intro">
-            CHOWK is a simulation study. The current scene uses scripted preview traffic.
+            CHOWK is a simulation study. The Live view currently uses provisional traffic demand and
+            fixed-cycle signal requests.
           </p>
           <dl className="information-list">
             {limits.map(([title, description]) => (

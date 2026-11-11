@@ -1,0 +1,75 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+}
+
+.traffic-debug {
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: 24px;
+}
+
+.traffic-debug a {
+  color: #4de3ba;
+}
+
+.traffic-debug header p,
+.debug-legend {
+  color: #b4c3d9;
+}
+
+.traffic-debug h1 {
+  margin: 6px 0;
+  font-size: 1.8rem;
+  font-weight: 650;
+}
+
+.traffic-debug header p {
+  margin-bottom: 14px;
+}
+
+.traffic-debug canvas {
+  display: block;
+  width: 100%;
+  border: 1px solid #33435a;
+  background: #080e1a;
+}
+
+.debug-controls,
+.debug-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.debug-controls button,
+.debug-controls select {
+  padding: 7px 12px;
+  font: inherit;
+  border: 1px solid #33435a;
+  border-radius: 4px;
+  background: #141e2d;
+}
+
+.debug-controls :disabled {
+  opacity: 0.55;
+}
+
+.debug-counters {
+  font-variant-numeric: tabular-nums;
+}
+
+.debug-legend {
+  padding: 0;
+  list-style: none;
+  text-transform: capitalize;
+}
+
+.debug-legend span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+  border-radius: 50%;
+}

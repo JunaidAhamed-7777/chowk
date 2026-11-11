@@ -10,7 +10,7 @@ An entry for INNOVEX 2026, problem statement PS04 (Smart Cities & Sustainability
 
 ## Status
 
-The local app opens a 3D night preview of the authored corridor. The preview uses scripted traffic. The simulator and benchmark are in development.
+The local app runs the authored corridor in 3D with mixed traffic and fixed-cycle signals. It uses an uncalibrated development demand profile. The learned controller and benchmark are in development.
 
 ## Run locally
 
@@ -22,6 +22,8 @@ npm run dev
 ```
 
 Run `npm run build` to type-check the workspaces and build the static app in `apps/web/dist`.
+
+Open `/debug` on the dev server for a top-down view with tick-by-tick playback. Run `npm test` for the simulator tests. To run the desktop smoke tests, install Chromium with `npx playwright install chromium` and run `npm run test:browsers`.
 
 ## Where to look
 

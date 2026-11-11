@@ -1,4 +1,4 @@
-import { corridor } from "@chowk/sim";
+import { corridor, type Metrics } from "@chowk/sim";
 import type { ReactNode } from "react";
 import { Component, useEffect, useState } from "react";
 import { NightCorridor } from "../scene/NightCorridor";
@@ -48,6 +48,15 @@ function readReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+function formatTime(seconds: number) {
+  const time = Math.floor(seconds);
+  return `${Math.floor(time / 60)
+    .toString()
+    .padStart(2, "0")}:${(time % 60).toString().padStart(2, "0")}`;
+}
+
+const formatCount = new Intl.NumberFormat("en-IN");
+
 export default function LiveView({ active, quality, automatic, onQuality }: LiveViewProps) {
   const [camera, setCamera] = useState<CameraSelection>("aerial");
   const [speed, setSpeed] = useState<PlaybackSpeed>(1);
@@ -55,6 +64,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
   const [reducedMotion, setReducedMotion] = useState(readReducedMotion);
   const [revision, setRevision] = useState(0);
   const [ready, setReady] = useState(false);
+  const [metrics, setMetrics] = useState<Metrics>();
   const [webglAvailable] = useState(() => {
     try {
       const context = document.createElement("canvas").getContext("webgl2");
@@ -77,6 +87,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
 
   function reload() {
     setReady(false);
+    setMetrics(undefined);
     setRevision((value) => value + 1);
   }
 
@@ -101,14 +112,14 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
         </p>
       </div>
 
-      <section className="instrument" aria-label="Interactive corridor preview">
+      <section className="instrument" aria-label="Live corridor simulation">
         <div className="instrument-bar">
           <div className="instrument-id">
             <Icon name="camera" size={17} />
             <span>East–west corridor</span>
           </div>
-          <div className="preview-status" aria-live="polite">
-            <span /> Scene preview
+          <div className="simulation-status" data-ready={ready}>
+            <span /> Fixed-cycle simulation
           </div>
         </div>
 
@@ -121,6 +132,8 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
                 camera={camera}
                 onQuality={onQuality}
                 onReady={setReady}
+                onMetrics={setMetrics}
+                ready={ready}
                 paused={paused}
                 quality={quality}
                 reducedMotion={reducedMotion}
@@ -158,8 +171,8 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               type="button"
               disabled={!ready}
               onClick={() => setPaused(!paused)}
-              aria-label={paused ? "Play preview" : "Pause preview"}
-              title={paused ? "Play preview" : "Pause preview"}
+              aria-label={paused ? "Play simulation" : "Pause simulation"}
+              title={paused ? "Play simulation" : "Pause simulation"}
             >
               <Icon name={paused ? "play" : "pause"} size={19} />
             </button>
@@ -210,8 +223,20 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
       </section>
 
       <footer className="live-footer">
-        <p>Scripted preview traffic</p>
-        <p>Drag to orbit · Scroll to zoom</p>
+        <p>Simulation result</p>
+        {metrics && ready && (
+          <dl className="live-readouts">
+            <div>
+              <dt>Simulated time</dt>
+              <dd>{formatTime(metrics.elapsed)}</dd>
+            </div>
+            <div>
+              <dt>Vehicles on road</dt>
+              <dd>{formatCount.format(metrics.inNetwork)}</dd>
+            </div>
+          </dl>
+        )}
+        {ready && <p>Drag to orbit · Scroll to zoom</p>}
       </footer>
     </div>
   );
