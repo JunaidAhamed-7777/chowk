@@ -8,6 +8,7 @@ import {
   Color,
   DynamicDrawUsage,
   type InstancedMesh,
+  MeshStandardMaterial,
   Object3D,
   type PerspectiveCamera,
   PlaneGeometry,
@@ -28,6 +29,68 @@ const style = [
   { height: 3.12, roof: 0.89, color: "#ae7860" },
   { height: 2.45, roof: 0.65, color: "#d3c4aa" },
 ] as const;
+
+// Body paint per class, picked by vehicle id so a vehicle keeps its colour.
+const paints = [
+  ["#1b1d22", "#7a1418", "#17325e", "#c9ccd1", "#3a3d44"],
+  ["#d6a514", "#d6a514", "#2f7d46", "#d6a514"],
+  ["#d9dde2", "#9aa1a9", "#3b4048", "#14161a", "#7d1a1c", "#1c3d73", "#c9c2b0"],
+  ["#d8d6cf", "#b9b29e", "#2c4f7a", "#c9ccd1"],
+  ["#b3261e", "#1f5fa8", "#2a7f52", "#c96a1a"],
+  ["#e8eaed"],
+].map((palette) => palette.map((hex) => new Color(hex)));
+const signs = [
+  new Color(0, 0, 0),
+  new Color(2.2, 1.5, 0.2),
+  new Color(0, 0, 0),
+  new Color(0, 0, 0),
+  new Color(2.6, 1.3, 0.25),
+  new Color(0.2, 0.5, 6),
+];
+const beaconRed = new Color(6, 0.2, 0.15);
+const beaconBlue = new Color(0.2, 0.5, 6);
+const ambulanceClass = 5;
+const busClass = 4;
+
+/** Standard material that reads the model's mask attribute for trim, glass and lamps. */
+function makeVehicleMaterial(cls: number) {
+  const material = new MeshStandardMaterial({ roughness: 0.44, metalness: 0.3 });
+  const sign = { value: signs[cls].clone() };
+  const cabin = { value: cls === busClass ? 0.7 : 0.05 };
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.signColor = sign;
+    shader.uniforms.cabinGlow = cabin;
+    shader.vertexShader = shader.vertexShader
+      .replace(
+        "#include <common>",
+        "#include <common>\nattribute vec3 mask; varying vec3 paintMask;",
+      )
+      .replace("#include <begin_vertex>", "#include <begin_vertex>\npaintMask = mask;");
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        "#include <common>",
+        "#include <common>\nvarying vec3 paintMask; uniform vec3 signColor; uniform float cabinGlow;",
+      )
+      .replace(
+        "#include <color_fragment>",
+        `#include <color_fragment>
+      float lamp = step(.5, max(paintMask.r, max(paintMask.g, paintMask.b)));
+      float trim = step(.2, min(paintMask.r, min(paintMask.g, paintMask.b)));
+      float glass = trim * step(.08, paintMask.b - paintMask.r);
+      diffuseColor.rgb = mix(diffuseColor.rgb, vec3(.03, .034, .042), max(trim, lamp));
+      diffuseColor.rgb = mix(diffuseColor.rgb, vec3(.05, .075, .11), glass);`,
+      )
+      .replace(
+        "#include <emissivemap_fragment>",
+        `#include <emissivemap_fragment>
+      totalEmissiveRadiance += step(.5, paintMask.g) * vec3(5., 4., 2.6);
+      totalEmissiveRadiance += step(.5, paintMask.r) * vec3(2.4, .04, .03);
+      totalEmissiveRadiance += step(.5, paintMask.b) * signColor;
+      totalEmissiveRadiance += glass * cabinGlow * vec3(1., .72, .4);`,
+      );
+  };
+  return { material, sign };
+}
 
 const lamps = [
   new Color(3.1, 0.054, 0.025),
@@ -99,6 +162,7 @@ function drawVehicle(
   cls: number,
   flags: number,
   fade: number,
+  id: number,
 ) {
   const { length, width } = VEHICLE_CLASSES[cls];
   const headlight = length * 0.5 + 0.034;
@@ -110,6 +174,8 @@ function drawVehicle(
   matrix.scale.setScalar(fade);
   matrix.updateMatrix();
   mesh.setMatrixAt(instance, matrix.matrix);
+  const palette = paints[cls];
+  mesh.setColorAt(instance, palette[id % palette.length]);
 
   matrix.scale.set(lampSize * fade, lampSize * fade, 0.22 * fade);
   for (let light = 0; light < 2; light += 1) {
@@ -196,6 +262,7 @@ export function TrafficMeshes({
   const [counts] = useState(() => new Uint16Array(VEHICLE_CLASSES.length));
   const [fallback] = useState(makeFallbackGeometries);
   const beams = useRef<InstancedMesh>(null);
+  const [finishes] = useState(() => VEHICLE_CLASSES.map((_, cls) => makeVehicleMaterial(cls)));
   const [beam] = useState(makeBeam);
   const [vehicleGlow] = useState(() => createGlow(capacity * 2, 1.5, 2.8));
   const [signalHalo] = useState(() => createGlow(district.signalMounts.length, 3.4, 4.5));
@@ -207,12 +274,13 @@ export function TrafficMeshes({
   useEffect(
     () => () => {
       for (const geometry of fallback) geometry.dispose();
+      for (const { material } of finishes) material.dispose();
       beam.geometry.dispose();
       beam.material.dispose();
       vehicleGlow.dispose();
       signalHalo.dispose();
     },
-    [fallback, beam, vehicleGlow, signalHalo],
+    [fallback, beam, finishes, vehicleGlow, signalHalo],
   );
 
   useLayoutEffect(() => {
@@ -220,7 +288,10 @@ export function TrafficMeshes({
     const tail = tails.current;
     if (!signals || !tail) return;
     for (const mesh of bodies.current) {
-      if (mesh) prepareUpload(mesh.instanceMatrix);
+      if (!mesh) continue;
+      prepareUpload(mesh.instanceMatrix);
+      mesh.setColorAt(0, paints[0][0]);
+      if (mesh.instanceColor) prepareUpload(mesh.instanceColor);
     }
     if (heads.current) prepareUpload(heads.current.instanceMatrix);
     if (beams.current) prepareUpload(beams.current.instanceMatrix);
@@ -311,6 +382,7 @@ export function TrafficMeshes({
         cls,
         points[offset + 7],
         fade,
+        id,
       );
     }
     const departures = currentHost.departures;
@@ -335,6 +407,7 @@ export function TrafficMeshes({
         vehicle.cls,
         vehicle.flags,
         fade,
+        vehicle.id,
       );
     }
 
@@ -342,7 +415,12 @@ export function TrafficMeshes({
       const mesh = bodies.current[cls];
       if (!mesh) continue;
       uploadTransforms(mesh, counts[cls]);
+      if (mesh.instanceColor) upload(mesh.instanceColor, counts[cls] * 3);
     }
+    // The ambulance beacon alternates red and blue twice a second.
+    finishes[ambulanceClass].sign.value.copy(
+      Math.floor(now / 250) % 2 === 0 ? beaconRed : beaconBlue,
+    );
     uploadTransforms(head, drawn * 2);
     uploadTransforms(tail, drawn * 2);
     if (beamMesh) uploadTransforms(beamMesh, drawn);
@@ -378,11 +456,10 @@ export function TrafficMeshes({
           }}
           args={[undefined, undefined, capacity]}
           geometry={(lowDetail ? null : models[cls]) ?? fallback[cls]}
+          material={finishes[cls].material}
           count={0}
           frustumCulled={false}
-        >
-          <meshStandardMaterial color={style[cls].color} roughness={0.6} metalness={0.16} />
-        </instancedMesh>
+        />
       ))}
       <instancedMesh
         ref={heads}

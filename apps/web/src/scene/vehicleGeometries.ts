@@ -31,6 +31,12 @@ function loadModel(model: string): Promise<BufferGeometry | null> {
         geometry.setAttribute(name, floats);
       }
       geometry.applyMatrix4(mesh.matrixWorld);
+      // COLOR_0 is the paint, trim, glass and lamp mask written by assets/blender/vehicles.py.
+      const mask = geometry.getAttribute("color");
+      if (mask) {
+        geometry.setAttribute("mask", mask);
+        geometry.deleteAttribute("color");
+      }
       return geometry;
     })
     .catch(() => {

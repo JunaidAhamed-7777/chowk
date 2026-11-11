@@ -15,6 +15,7 @@ export interface Snapshot {
 
 export interface Departure {
   time: number;
+  id: number;
   x: number;
   z: number;
   dx: number;
@@ -105,6 +106,7 @@ export class SimHost {
       const values = previous.positions;
       this.departures.push({
         time: now,
+        id,
         x: values[offset],
         z: values[offset + 1],
         dx: values[offset + 2],
