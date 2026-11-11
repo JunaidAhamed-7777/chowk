@@ -45,7 +45,8 @@ npm run capture -- video
 
 ## Public release checks
 
-- The Vercel production site serves Live, Results, Method and Limits publicly. Verify the demo from a different network before submitting. [Live](https://chowk-seven.vercel.app/) · [Results](https://chowk-seven.vercel.app/results) · [Method](https://chowk-seven.vercel.app/method) · [Limits](https://chowk-seven.vercel.app/limits) · [Vercel config](vercel.json)
+- The Vercel production site deploys automatically from GitHub `main` and serves Live, Results, Method and Limits publicly. [Live](https://chowk-seven.vercel.app/) · [Results](https://chowk-seven.vercel.app/results) · [Method](https://chowk-seven.vercel.app/method) · [Limits](https://chowk-seven.vercel.app/limits) · [Vercel config](vercel.json)
+- Fresh desktop sessions verified the production app and exact benchmark replay. The native macOS smoke workflow also passed against the public URL from GitHub’s network. [Public browser smoke](https://github.com/JunaidAhamed-7777/chowk/actions/runs/43120182193)
 - Desktop coverage includes Chrome and Edge on Windows and macOS, native Safari on macOS, Firefox on WSL and Playwright WebKit on Windows. The [macOS workflow](.github/workflows/safari.yml) exercises the installed browsers. The 2D fallback and portrait touch-emulated Low tier passed locally. Physical iOS and Android checks remain open.
 - Regenerate the Unstop draft with `npm run submission:prepare -- --demo https://chowk-seven.vercel.app/`. The command takes the headline from the committed benchmark, uses the published video URL and writes `docs/SUBMISSION.md`. [Submission draft](docs/SUBMISSION.md)
 - The user submits the form on Unstop. Verify the links from the submitted page and record the final CI-green commit under the `v1.0-submission` tag as specified in [plan/08-submission.md](plan/08-submission.md).

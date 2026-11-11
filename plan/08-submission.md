@@ -125,7 +125,8 @@ All captured from the app through the scripted capture route, at fixed seeds.
 - [ ] Verify `npm test`, `npm run test:browsers` and `npm run build` on the submission commit.
 - [x] Publish the final benchmark from the selected policy, commit `results/` and run the build integrity check.
 - [x] Regenerate the README results block. The production build checks the README, app and generated submission copy for unfilled template tokens.
-- [ ] Open the deployed demo privately in Chrome, Firefox and Safari or WebKit, and verify the Low tier on a phone.
+- [x] Open the deployed demo privately in Chrome, Firefox and Safari or WebKit. Confirm public access from another network.
+- [ ] Verify the Low tier on a phone.
 - [x] Watch the autoplay tour end to end without interacting.
 - [x] Complete "Run it yourself" and verify every match.
 - [x] Record, upload and link the final captioned video.
