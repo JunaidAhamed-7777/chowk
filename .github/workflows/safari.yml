@@ -7,6 +7,10 @@ on:
         description: Replay the published benchmark in Safari
         type: boolean
         default: false
+      verify_chromium_channels:
+        description: Check the installed Google Chrome and Microsoft Edge
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -34,3 +38,6 @@ jobs:
         run: node scripts/verify-native-safari.mjs
         env:
           CHOWK_SAFARI_VERIFY_REPLAY: ${{ inputs.verify_replay && '1' || '0' }}
+      - name: Check first-click WebGL and autoplay in Chrome and Edge
+        if: ${{ inputs.verify_chromium_channels }}
+        run: node scripts/verify-macos-browser-channels.mjs
