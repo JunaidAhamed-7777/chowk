@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>CHOWK</title>
+  <rect width="64" height="64" rx="13" fill="#0d131d"/>
+  <g fill="#34f4bd" transform="rotate(-12 32 32)">
+    <rect x="16" y="16" width="13" height="13" rx="2"/>
+    <rect x="35" y="16" width="13" height="13" rx="2" opacity=".42"/>
+    <rect x="16" y="35" width="13" height="13" rx="2" opacity=".62"/>
+    <rect x="35" y="35" width="13" height="13" rx="2"/>
+  </g>
+</svg>

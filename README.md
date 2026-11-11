@@ -10,7 +10,7 @@ An entry for INNOVEX 2026, problem statement PS04 (Smart Cities & Sustainability
 
 ## Status
 
-The application is in development. Benchmark results have yet to be published.
+The local app opens a 3D night preview of the authored corridor. The preview uses scripted traffic. The simulator and benchmark are in development.
 
 ## Run locally
 
