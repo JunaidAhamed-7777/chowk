@@ -68,6 +68,7 @@
 }
 .controller-side {
   letter-spacing: 0.08em;
+  white-space: nowrap;
 }
 .controller-chip select {
   max-width: 190px;
@@ -158,7 +159,8 @@
 @media (max-width: 1180px) {
   /* Not enough width for title, chips and status on one line: chips drop below. */
   .comparison-labels {
-    top: 70px;
+    top: 78px;
+    width: min(620px, 60vw);
   }
   .live-deck {
     display: none;
@@ -234,4 +236,16 @@
     width: auto;
     background: #0a0f1a;
   }
+}
+
+/*
+ * The loading poster is a capture of an earlier interface. Blurring it keeps its
+ * city lights as a backdrop without showing stale text while the scene fades in.
+ */
+.live-view .scene-stage::before {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(22px) brightness(0.8);
+  pointer-events: none;
+  content: "";
 }
