@@ -7,6 +7,24 @@ const publication = existsSync(publishedFile)
   ? (JSON.parse(readFileSync(publishedFile, "utf8")) as BenchmarkFile)
   : undefined;
 
+test("the comparison explorer computes paired differences and replays a seed", async ({ page }) => {
+  test.skip(!publication, "No publication to explore");
+  test.setTimeout(180_000);
+  await page.goto("/results");
+  const section = page.getByRole("region", { name: "Check any comparison" });
+  await expect(section.getByText(/was better on d+ of 20 held-out seeds/)).toBeVisible();
+  await expect(section.locator(".skeptic-dot")).toHaveCount(20);
+  await section.getByRole("combobox", { name: "B" }).selectOption("webster");
+  await expect(section.getByText(/versus Fixed-time (Webster)/)).toBeVisible();
+  await section.getByText("Every seed").click();
+  await section.getByRole("button", { name: "Replay" }).first().click();
+  await expect(
+    section.getByText(/matched the published metrics and final state hashes/),
+  ).toBeVisible({
+    timeout: 150_000,
+  });
+});
+
 test("Results shows published data or an honest pending state", async ({ page }) => {
   await page.goto("/results");
   await expect(page.getByRole("heading", { name: "Benchmark results", level: 1 })).toBeVisible();

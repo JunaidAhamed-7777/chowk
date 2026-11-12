@@ -416,3 +416,59 @@
 .controller-chip select {
   font-family: "Inter Variable", Inter, sans-serif;
 }
+
+/* Cinematic tour: the dock steps aside so the city fills the frame. Any pointer or key
+   press ends the tour and brings the controls back. */
+.simulation-controls,
+.instrument-controls,
+.comparison-hud,
+.tour-caption {
+  transition:
+    opacity 0.35s ease,
+    translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+    bottom 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.live-view:has(.instrument[data-tour="true"]) {
+  --hud-bottom: 24px;
+}
+.instrument[data-tour="true"] .simulation-controls,
+.instrument[data-tour="true"] .instrument-controls {
+  opacity: 0;
+  translate: 0 24px;
+  pointer-events: none;
+}
+.instrument[data-tour="true"] .comparison-metric:nth-child(n + 4),
+.instrument[data-tour="true"] .metric-series,
+.instrument[data-tour="true"] .metric-info {
+  display: none;
+}
+.instrument[data-tour="true"] .comparison-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(720px, 100%);
+  justify-self: center;
+}
+.instrument[data-tour="true"] .comparison-headline {
+  justify-self: center;
+}
+.instrument[data-tour="true"] .tour-caption {
+  bottom: 156px;
+}
+.tour-caption {
+  flex-direction: column;
+  align-items: center;
+}
+.tour-caption-hint {
+  display: block;
+  margin-top: 6px;
+  color: #9aa6b8;
+  font-size: 11px;
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .simulation-controls,
+  .instrument-controls,
+  .comparison-hud,
+  .tour-caption {
+    transition: none;
+  }
+}

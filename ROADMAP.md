@@ -241,3 +241,11 @@ Record spec changes here: date, what changed, why.
 - 12 Nov 2026 — Re-tuned max-pressure hysteresis on all 20 validation seeds with 300 s warm-up and 900 s measured, over a finer grid, after the capacity fix: area 0.01 (was 0.0125), count 2 (was 1).
 - 13 Nov 2026 — B6 adds `chowk+preempt`: the published CHOWK policy under the same rule-based ambulance pre-emption as `mp-area+preempt` (issue #8).
 - 13 Nov 2026 — Retrained CHOWK on the capacity-fixed simulator (`capacity-v2`, σ 0.001, learning rate 0.0002, population 64, four episodes per candidate); generation 220 is published, validation fitness 0.939. A first run at σ 0.005 was unstable and stopped.
+- 13 Nov 2026 — Tour opens on a low street camera over J3 and cranes up to the aerial view at 8 s; the split comparison arrives at 2.5 s at 4× speed (issues #3, #5). During the tour the control dock steps aside and the readout shrinks to three cards with a "take control" hint (#6). Facades take a per-building paint colour, monsoon streaks and painted shutters at street level, and the daytime ground is warmer (#4, partial: massing and haze still to do).
+- 13 Nov 2026 — Live time-space diagram for both simulations (spec L15, issue #11).
+- 13 Nov 2026 — Beat the AI: the visitor runs J3 against CHOWK for three simulated minutes (spec L16, issue #9).
+- 13 Nov 2026 — Limits adds "Path to a real junction", a cited plan for what a field trial would take (issue #16).
+- 13 Nov 2026 — Results adds "Check any comparison": any published cell, two controllers and a metric, with per-seed paired differences, a bootstrap interval computed in the page and per-seed replay (spec R6, issue #18).
+- 13 Nov 2026 — Monsoon roads look wet: darker asphalt, puddles and lamp pools that streak towards the camera (issue #14, partial).
+- 13 Nov 2026 — Tour rides along with a two-wheeler for eight seconds before the junction beats (issue #15).
+- 13 Nov 2026 — How it decides shows the three inputs that moved CHOWK's learned correction most, by exact input × gradient, checked against the controller (spec L11, issue #13).

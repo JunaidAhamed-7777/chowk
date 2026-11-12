@@ -214,6 +214,13 @@ export class SimHost {
     this.streams[side].send({ type: "setController", controller });
   }
 
+  /** Hand one junction on one side to the visitor; phase -1 returns it to the controller. */
+  setManual(side: SimulationSide, junction: number, phase: number) {
+    if (this.disposed) return;
+    this.streams[side].send({ type: "manual", junction, phase });
+    this.refreshRequested = true;
+  }
+
   setOverlayData(pressure: boolean, decision: boolean, inspection: boolean) {
     if (
       this.disposed ||

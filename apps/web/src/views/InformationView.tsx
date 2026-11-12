@@ -1,3 +1,4 @@
+import { POLICY_PARAMETER_COUNT } from "@chowk/controllers";
 import { lazy, Suspense } from "react";
 
 const ResultsView = lazy(() =>
@@ -50,6 +51,48 @@ const limits = [
   ],
 ];
 
+const parameters = new Intl.NumberFormat("en-IN").format(POLICY_PARAMETER_COUNT);
+
+// None of these steps has been carried out. External facts are cited inline.
+const pathSteps: { title: string; body: React.ReactNode }[] = [
+  {
+    title: "Sensing",
+    body: (
+      <>
+        CHOWK needs, for each approach, how much road area is occupied and by whom. Camera-based
+        detection is one way to measure it. Bengaluru’s adaptive signal system, for example, uses
+        cameras and sensors to feed real-time traffic data to its controller.{" "}
+        <a href="https://indianinfrastructure.com/2026/04/06/smart-mobility-a-case-study-of-the-bengaluru-adaptive-traffic-control-system/">
+          Indian Infrastructure, April 2026
+        </a>
+      </>
+    ),
+  },
+  {
+    title: "Where it would sit",
+    body: (
+      <>
+        Indian cities already run adaptive control built for lane-free traffic: Bengaluru’s system
+        runs on C-DAC’s CoSiCoSt and covered 169 junctions by April 2025.{" "}
+        <a href="https://indianinfrastructure.com/2026/04/06/smart-mobility-a-case-study-of-the-bengaluru-adaptive-traffic-control-system/">
+          Indian Infrastructure, April 2026
+        </a>{" "}
+        A learned policy like CHOWK would be one more strategy inside such a system: it proposes the
+        next phase, while the signal controller keeps enforcing minimum green, yellow and all-red,
+        and falls back to its fixed-time plan if sensing or the policy fails.
+      </>
+    ),
+  },
+  {
+    title: "Compute",
+    body: `The policy is a hand-written network of ${parameters} parameters using only addition, multiplication and maximum. It needs no GPU or runtime library; the measured time per decision is on the Results page.`,
+  },
+  {
+    title: "Before any trial",
+    body: "Calibrate the simulator to counts and discharge measured at the target junctions, re-run the benchmark there, run CHOWK in shadow mode beside the existing controller while logging what it would have done, and only then seek an authority-approved, supervised pilot with independent safety review.",
+  },
+];
+
 export function InformationView({ route }: { route: InformationRoute }) {
   return (
     <article className={route === "/results" ? "information information-results" : "information"}>
@@ -89,6 +132,18 @@ export function InformationView({ route }: { route: InformationRoute }) {
               <div key={title}>
                 <dt>{title}</dt>
                 <dd>{description}</dd>
+              </div>
+            ))}
+          </dl>
+          <h2 className="information-subheading">Path to a real junction</h2>
+          <p className="information-intro">
+            What a field trial would take. This is a plan; none of it has been done.
+          </p>
+          <dl className="information-list">
+            {pathSteps.map(({ title, body }) => (
+              <div key={title}>
+                <dt>{title}</dt>
+                <dd>{body}</dd>
               </div>
             ))}
           </dl>

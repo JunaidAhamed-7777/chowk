@@ -193,6 +193,8 @@ test("shows the arithmetic behind live metrics and a junction's decision", async
     timeout: 60_000,
   });
   await expect(panel.getByText(/matches the controller's own numbers/)).toBeVisible();
+  await expect(panel.getByText(/What moved the correction for/)).toBeVisible({ timeout: 30_000 });
+  await expect(panel.getByText("✓ matches the controller")).toBeVisible();
   await panel.getByRole("button", { name: /^A · / }).click();
   await expect(panel.getByText("Follow the timetable")).toBeVisible({ timeout: 30_000 });
 });
@@ -239,4 +241,92 @@ test("explains every controller on its own page", async ({ page }) => {
   ])
     await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
   await expect(page.getByRole("img", { name: /Two identical signal cycles/ })).toBeVisible();
+});
+
+test("the tour opens the split comparison within five seconds and keeps the dock aside", async ({
+  page,
+}) => {
+  await page.goto("/?intro=off&guide=off");
+  const instrument = page.locator(".instrument");
+  await expect(instrument).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
+  await expect(instrument).toHaveAttribute("data-tour", "true");
+  const started = Date.now();
+  await expect(page.getByRole("slider", { name: "Comparison wipe" })).toBeVisible({
+    timeout: 5_000,
+  });
+  expect(Date.now() - started).toBeLessThan(5_000);
+  await expect(page.getByText("Click anywhere or press a key to take control")).toBeVisible();
+  await expect(page.locator(".instrument-controls")).toHaveCSS("opacity", "0");
+
+  await page.keyboard.press("Shift");
+  await expect(instrument).toHaveAttribute("data-tour", "false");
+  await expect(page.locator(".instrument-controls")).toHaveCSS("opacity", "1");
+});
+
+test("the time-space diagram plots both simulations along the corridor", async ({ page }) => {
+  await page.goto("/?tour=off");
+  await expect(page.locator(".instrument")).toHaveAttribute("data-ready", "true", {
+    timeout: 60_000,
+  });
+  await page.getByRole("button", { name: "4 times speed" }).click();
+  await page.getByRole("button", { name: "Time-space" }).click();
+  const panel = page.getByRole("region", { name: "Time-space diagram" });
+  await expect(panel).toBeVisible();
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() =>
+          [...document.querySelectorAll<HTMLCanvasElement>(".time-space-canvas canvas")].map(
+            (canvas) => {
+              const data = canvas
+                .getContext("2d")
+                ?.getImageData(0, 0, canvas.width, canvas.height).data;
+              let painted = 0;
+              for (let index = 3; data && index < data.length; index += 4)
+                if (data[index] > 0) painted++;
+              return painted;
+            },
+          ),
+        ),
+      { timeout: 30_000 },
+    )
+    .toEqual([expect.any(Number), expect.any(Number)]);
+  const painted = await page.evaluate(() =>
+    [...document.querySelectorAll<HTMLCanvasElement>(".time-space-canvas canvas")].every(
+      (canvas) => {
+        const data = canvas.getContext("2d")?.getImageData(0, 0, canvas.width, canvas.height).data;
+        let count = 0;
+        for (let index = 3; data && index < data.length; index += 4) if (data[index] > 0) count++;
+        return count > 500;
+      },
+    ),
+  );
+  expect(painted).toBe(true);
+  await page.keyboard.press("Escape");
+  await expect(panel).toBeHidden();
+});
+
+test("Beat the AI plays a round at J3 against CHOWK and reports a verdict", async ({ page }) => {
+  test.setTimeout(240_000);
+  await page.goto("/?tour=off");
+  await expect(page.locator(".instrument")).toHaveAttribute("data-ready", "true", {
+    timeout: 60_000,
+  });
+  await page.getByRole("button", { name: "Beat the AI" }).click();
+  const panel = page.getByRole("region", { name: "Beat the AI" });
+  await panel.getByRole("button", { name: "Start round" }).click();
+  await expect(panel.getByRole("group", { name: "Give green to" })).toBeVisible({
+    timeout: 60_000,
+  });
+  for (const key of ["2", "4", "1", "3"]) {
+    await page.keyboard.press(key);
+    await page.waitForTimeout(2_000);
+  }
+  await page.getByRole("button", { name: "16 times speed" }).click();
+  await expect(panel.getByRole("button", { name: "Play again" })).toBeVisible({
+    timeout: 150_000,
+  });
+  await expect(panel.getByText(/beat|draw/i).first()).toBeVisible();
+  await panel.getByRole("button", { name: "Leave Beat the AI" }).click();
+  await expect(panel).toBeHidden();
 });

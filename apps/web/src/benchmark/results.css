@@ -264,3 +264,79 @@
   color: var(--ui-text);
   font-weight: 550;
 }
+
+.skeptic {
+  display: grid;
+  gap: 12px;
+}
+.skeptic-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+.skeptic-controls label {
+  display: grid;
+  gap: 4px;
+  color: var(--ui-muted, #9aa6b8);
+  font-size: 12px;
+}
+.skeptic-controls select {
+  min-width: 160px;
+  padding: 6px 8px;
+  border: 1px solid #ffffff22;
+  border-radius: 8px;
+  background: #0a0f1a;
+  color: var(--ui-text);
+  font: inherit;
+}
+.skeptic-summary {
+  margin: 0;
+  line-height: 1.5;
+}
+.skeptic-plot {
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+  background: #05070d;
+}
+.skeptic-ci {
+  fill: #3df2b41f;
+}
+.skeptic-zero {
+  stroke: #ffffff55;
+  stroke-width: 0.3;
+}
+.skeptic-mean {
+  stroke: var(--accent, #3df2b4);
+  stroke-width: 0.4;
+}
+.skeptic-dot {
+  fill: #7dd3fc;
+}
+.skeptic-axis {
+  display: flex;
+  justify-content: space-between;
+  margin: -6px 0 0;
+  color: #8b96a8;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.skeptic-seeds table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.skeptic-seeds td,
+.skeptic-seeds th {
+  padding: 4px 8px;
+  border-bottom: 1px solid #ffffff12;
+  text-align: right;
+}
+.skeptic-seeds td:first-child,
+.skeptic-seeds th:first-child {
+  text-align: left;
+}
+.skeptic-replay {
+  margin: 0;
+  color: var(--accent, #3df2b4);
+}

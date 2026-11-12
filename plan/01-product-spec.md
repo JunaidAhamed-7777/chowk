@@ -132,14 +132,18 @@ Each event produces a toast, a marker in the 3D scene, and a tick on the metric 
 
 | Beat | Seconds | Camera | Action | Caption |
 |---|---|---|---|---|
-| 1 | 0–8 | Slow aerial push-in | Both sims flowing; wipe off-screen | "This is a city junction corridor, simulated live in your browser." |
-| 2 | 8–20 | Aerial hold | Wipe sweeps to centre; left jams, right flows; numbers diverge | "Left: fixed timers. Right: a controller that learned Indian traffic." |
-| 3 | 20–32 | Drop to a junction | Speed overlay on; two-wheelers filter to the front | "No lanes. Two-wheelers filter. A queue is an area, not a count." |
-| 4 | 32–44 | Junction hold | Pressure and Decision overlays on | "It sees road area and people, not just vehicles." |
-| 5 | 44–58 | Ambulance cam | Ambulance event fires; greens open ahead of it | "An ambulance gets a green corridor." |
-| 6 | 58–68 | Aerial | Surge event; right side absorbs it | "A sudden surge. Watch it adapt." |
-| 7 | 68–75 | Aerial pull-back | Headline figure enlarges | "People-hours saved, and you can re-run the proof yourself." |
+| 1 | 0–2.5 | Street, low over J3 | Wipe off-screen; 4× | "Morning rush at a chowk: two-wheelers, autos, buses and cars, no lanes." |
+| 2 | 2.5–8 | Street, low over J3 | Wipe at centre; 4× | "Left: <left controller>. Right: <right controller>. Same traffic, same seed." |
+| 3 | 8–16 | Aerial | Wipe at centre; 4× | "A five-junction corridor, simulated live in your browser." |
+| 3b | 16–24 | Ride along on a two-wheeler | Wipe at centre; 1× | "Ride along with a two-wheeler as it filters through traffic." |
+| 4 | 24–32 | Junction J3 | Wipe at centre; speed overlay; 4× | "Two-wheelers move through the gaps beside queues." |
+| 5 | 32–40 | Junction J3 | Wipe at centre; pressure overlay; 4× | "The pressure overlay shows how much road area traffic occupies." |
+| 5b | 40–44 | Junction J3 | Wipe at centre; people overlay; 4× | "Buses carry 40 people here. CHOWK minimises delay to people, not vehicles." |
+| 6 | 44–58 | Ambulance cam | Wipe at centre; ambulance event; 16× | "Follow an ambulance through the corridor." |
+| 7 | 58–68 | Aerial | Wipe at centre; pressure overlay; surge event; 4× | "A surge triples demand on one approach for three simulated minutes." |
+| 8 | 68–75 | Aerial | Wipe at centre; 1× | "Compare person-delay, then reproduce the benchmark in Results." |
 
+- The camera cranes slowly from the street view to the aerial view at beat 3. During the tour the control dock is hidden and the readout shows three cards, with a "Click anywhere or press a key to take control" hint under the caption.
 - The tour is data, not code: a JSON timeline of camera keyframes, events, overlay switches and captions, so it can be tuned without touching logic.
 
 ### L10. "Watch it learn" — P1
@@ -157,6 +161,8 @@ A panel that walks through one junction's latest decision, opened from **How it 
 
 A junction picker, an A/B side picker and a log of the last eight decisions complete the panel. The worker publishes the exact sensor reading each decision used; the recomputation is unit-tested against `scorePressure` and the live controllers.
 
+For CHOWK, the panel also lists the three inputs that moved the learned correction for the chosen phase most, by input × gradient through the active part of the network (`apps/web/src/sim/attribution.ts`), with a ✓ when the browser's restated network reproduces the controller's own output. Because the network is ReLU, the 50 parts plus the bias path add up exactly to the output.
+
 ### L13. Getting-started guide — P0
 
 - Shown to first-time visitors once the scene is ready, as a card beside the scene. It never blocks the scene or the autoplay tour; a visitor who ignores it still sees the tour.
@@ -173,6 +179,19 @@ A junction picker, an A/B side picker and a log of the last eight decisions comp
 - Every number in the briefing is computed from simulator constants, `training-curve.json` or `results/benchmark.json` (extracted at build time). No hand-written results.
 - When the visitor closes it, the autoplay tour starts and a first-time guide (L13) opens at its second card. The tour does not run while the briefing is open.
 - "What am I looking at?" under the title reopens it. Dismissal is remembered in local storage. Automated browsers and capture mode skip it; `?intro=on` forces it and `?intro=off` suppresses it.
+
+### L15. Time-space diagram — P1
+
+- "Time-space" in the dock opens a panel with one diagram per simulation: time on the horizontal axis (the last five simulated minutes), position along the arterial on the vertical axis, one dot per vehicle per simulated second, eastbound and westbound in different colours.
+- Each junction carries two thin bars for the arterial directions, green while that direction's phase is green and red otherwise, so platoons, queues and green waves read at a glance.
+- Sampling runs on the main thread from the snapshot stream into preallocated ring buffers; the canvas redraws four times a second. Opening it closes "How it decides", and Escape closes it.
+
+### L16. Beat the AI — P1
+
+- "Beat the AI" in the dock opens a panel. Starting a round restarts both simulations on the current seed with CHOWK on both sides, at 4×, with the camera on J3.
+- On the left the visitor runs J3: four buttons (or keys 1 to 4) request green for an approach. The request applies at once if minimum green allows and is held at every decision; maximum green, clearance and the starvation guard still apply. Every other junction stays with CHOWK on both sides, so only J3 differs.
+- The score is person-hours of delay since the round began on each side. After three simulated minutes the simulation pauses and a verdict names the winner and margin, with a note that one round on one seed is a game, not a benchmark.
+- The visitor's requests go through a wrapper in the web worker (`apps/web/src/workers/manualOverride.ts`); `packages/controllers/src` is unchanged.
 
 ### L12. Audio — removed
 
@@ -206,6 +225,10 @@ Rows: controllers. Columns: the metrics from L2, each as mean and 95% confidence
 
 The git commit, date, seed list and total simulated time behind the published numbers, with a link to the raw JSON in the repository.
 
+### R6. Check any comparison — P1
+
+Pick any published cell (suite, scenario, variant), controllers A and B, and a metric. The page computes the paired relative difference on every held-out seed from the raw runs, plots one dot per seed with the mean and a 95% bootstrap interval, says on how many seeds A was better, and lists every seed. Replay re-runs both runs for a seed in a browser worker and checks metrics and final state hashes against the publication. The interval uses its own resample, so its last digit can differ from the published table.
+
 ## Method view — P0
 
 Short, illustrated, scannable. Sections:
@@ -229,6 +252,8 @@ A plain list. At minimum:
 - Sensing is assumed available as area occupancy; real detectors are imperfect, which the sensor-noise test only approximates.
 - The emissions figure is an estimate from a simple fuel model.
 - Deployment would require field calibration and safety validation that this project has not done.
+
+A second section, "Path to a real junction", sets out what a field trial would take (sensing, where a learned policy would sit beside existing adaptive control, compute, and the validation steps before any trial). It is labelled as a plan, cites every external fact and computes the parameter count from the controller package.
 
 ## Global behaviours
 

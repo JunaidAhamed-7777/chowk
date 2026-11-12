@@ -21,7 +21,7 @@ type Status = "ready" | "loading" | "running" | "complete" | "stopped" | "error"
 
 const runPlan = reproductionRuns();
 
-async function loadPolicy(signal: AbortSignal, hash: string): Promise<PolicyWeights> {
+export async function loadPolicy(signal: AbortSignal, hash: string): Promise<PolicyWeights> {
   const response = await fetch(`${import.meta.env.BASE_URL}policies/chowk.json`, { signal });
   if (!response.ok) throw new Error("The published policy could not be loaded. Try again.");
   const bytes = await response.arrayBuffer();

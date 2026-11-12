@@ -3,7 +3,7 @@ import type { SimulationSide } from "../sim/SimHost";
 export type Quality = "low" | "medium" | "high";
 export type QualityMode = Quality | "auto";
 export type PlaybackSpeed = 1 | 4 | 16;
-export type CameraSelection = "aerial" | "ambulance" | "ride" | number;
+export type CameraSelection = "aerial" | "street" | "ambulance" | "ride" | number;
 export interface VehicleFollow {
   id: number;
   side: SimulationSide;

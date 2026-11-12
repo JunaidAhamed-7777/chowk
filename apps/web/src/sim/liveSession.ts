@@ -36,8 +36,15 @@ export function readSession() {
   ] as const;
   const rawCamera = params.get("camera");
   const junction = /^j[1-5]$/.test(rawCamera ?? "") ? Number(rawCamera?.slice(1)) - 1 : undefined;
+  const tour = !capture && params.get("tour") !== "off";
+  // The tour opens on the street camera, positioned while the loading card still covers it.
   const camera: CameraSelection =
-    junction ?? (rawCamera === "ambulance" || rawCamera === "ride" ? rawCamera : "aerial");
+    junction ??
+    (rawCamera === "ambulance" || rawCamera === "ride"
+      ? rawCamera
+      : tour && !rawCamera
+        ? "street"
+        : "aerial");
   return {
     capture,
     seed,
@@ -47,7 +54,7 @@ export function readSession() {
     controllers,
     requestedControllers: [params.get("left"), params.get("right")] as const,
     camera,
-    tour: !capture && params.get("tour") !== "off",
+    tour,
   };
 }
 

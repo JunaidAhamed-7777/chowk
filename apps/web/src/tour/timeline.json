@@ -1,11 +1,19 @@
 [
   {
     "t": 0,
-    "camera": "aerial",
+    "camera": "street",
     "wipe": 0,
     "overlay": "none",
-    "speed": 1,
-    "caption": "A five-junction corridor, simulated live in your browser."
+    "speed": 4,
+    "caption": "Morning rush at a chowk: two-wheelers, autos, buses and cars, no lanes."
+  },
+  {
+    "t": 2.5,
+    "camera": "street",
+    "wipe": 50,
+    "overlay": "none",
+    "speed": 4,
+    "caption": "Left: {left}. Right: {right}. Same traffic, same seed."
   },
   {
     "t": 8,
@@ -13,10 +21,18 @@
     "wipe": 50,
     "overlay": "none",
     "speed": 4,
-    "caption": "Two controllers face the same traffic demand and seed."
+    "caption": "A five-junction corridor, simulated live in your browser."
   },
   {
-    "t": 20,
+    "t": 16,
+    "camera": "ride",
+    "wipe": 50,
+    "overlay": "none",
+    "speed": 1,
+    "caption": "Ride along with a two-wheeler as it filters through traffic."
+  },
+  {
+    "t": 24,
     "camera": 2,
     "wipe": 50,
     "overlay": "speed",
@@ -30,6 +46,14 @@
     "overlay": "pressure",
     "speed": 4,
     "caption": "The pressure overlay shows how much road area traffic occupies."
+  },
+  {
+    "t": 40,
+    "camera": 2,
+    "wipe": 50,
+    "overlay": "people",
+    "speed": 4,
+    "caption": "Buses carry 40 people here. CHOWK minimises delay to people, not vehicles."
   },
   {
     "t": 44,

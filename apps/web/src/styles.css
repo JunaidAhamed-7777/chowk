@@ -1039,7 +1039,7 @@ button:disabled {
   pointer-events: none;
 }
 .tour-caption-text {
-  max-width: 49ch;
+  max-width: 64ch;
   padding: 8px 13px;
   border: 1px solid #ffffff20;
   border-radius: 7px;
@@ -1119,4 +1119,12 @@ button:disabled {
   .live-footer p:last-child {
     display: none;
   }
+}
+
+.information-subheading {
+  margin: 40px 0 8px;
+  font-size: 20px;
+}
+.information-list dd a {
+  color: var(--accent);
 }
