@@ -24,7 +24,6 @@ const unavailable = (
   </>
 );
 
-
 /** The rule behind each card, and this moment's window totals substituted into it. */
 const formulas: Record<
   MetricKey,
@@ -141,6 +140,33 @@ function MetricCalculation({
           );
         })}
       </ul>
+      {key === "delay" && (
+        <>
+          <p className="metric-calculation-window">Counting vehicles instead of people:</p>
+          <ul>
+            {sides.map((side) => {
+              const { vehicleDelay, vehicles } = readout.parts[side];
+              return (
+                <li key={side} data-side={side}>
+                  <span className="metric-calculation-side">{side === 0 ? "A" : "B"}</span>
+                  {vehicles > 0 ? (
+                    <span>
+                      {number.format(vehicleDelay)} vehicle-s ÷ {number.format(vehicles)} vehicles ={" "}
+                      <strong>{decimal.format(vehicleDelay / vehicles)}</strong> s
+                    </span>
+                  ) : (
+                    <span>No data in this window yet</span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+          <p className="metric-calculation-note">
+            Per person, a bus with 40 passengers counts 40 times; per vehicle it counts once. CHOWK
+            is trained to cut delay per person.
+          </p>
+        </>
+      )}
       <p className="metric-calculation-note">
         {single ? "" : "Change = (B − A) ÷ A. "}Simulation result.
       </p>

@@ -257,3 +257,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Fixed the wet lamp-pool shader (an undeclared uniform had stopped the pools rendering). The tour clock credits up to 0.5 s per frame so slow software rendering keeps time; the tour browser test asserts the timeline opens the comparison by 5 s.
 - 13 Nov 2026 — Green chevrons stream along the road ahead of an ambulance on the arterial, per side (issue #8).
 - 13 Nov 2026 — Monsoon lightning and a photo mode that hides the interface (spec L18, issue #14).
+- 13 Nov 2026 — The delay formula popover also shows delay per vehicle for the same window, so the effect of weighting by people is visible (spec L2, issue #12).

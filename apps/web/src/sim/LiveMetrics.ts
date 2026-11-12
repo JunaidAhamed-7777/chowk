@@ -54,6 +54,7 @@ type ReadingsPair = readonly [MetricReadings, MetricReadings];
 type Totals = Pick<
   Metrics,
   | "personDelay"
+  | "vehicleDelay"
   | "generatedPeople"
   | "stops"
   | "generated"
@@ -82,6 +83,7 @@ export interface EventMark {
 /** The window totals each reading divides, so the interface can show the arithmetic. */
 export interface MetricParts {
   personDelay: number;
+  vehicleDelay: number;
   people: number;
   stops: number;
   vehicles: number;
@@ -104,6 +106,7 @@ export interface LiveReadout {
 
 function totals({
   personDelay,
+  vehicleDelay,
   generatedPeople,
   stops,
   generated,
@@ -113,6 +116,7 @@ function totals({
 }: Metrics): Totals {
   return {
     personDelay,
+    vehicleDelay,
     generatedPeople,
     stops,
     generated,
@@ -125,6 +129,7 @@ function totals({
 function parts(current: Totals, base: Totals | undefined, hours: number): MetricParts {
   return {
     personDelay: current.personDelay - (base?.personDelay ?? 0),
+    vehicleDelay: current.vehicleDelay - (base?.vehicleDelay ?? 0),
     people: current.generatedPeople - (base?.generatedPeople ?? 0),
     stops: current.stops - (base?.stops ?? 0),
     vehicles: current.generated - (base?.generated ?? 0),
