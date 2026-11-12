@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { corridor, createRandomStreams, createSim, DT, VEHICLE_CLASSES } from "@chowk/sim";
-import { type MixId, trafficMixes } from "../src/mixes";
+import { ARTERIAL_STRIPS, type MixId, trafficMixes, turningShares } from "../src/mixes";
 
 const warmup = 6;
 const windowSeconds = 40;
@@ -12,18 +12,36 @@ const network = {
 };
 
 function sample(strips: number, mixId: MixId, seed: number) {
-  const connector = network.connectors.find(
-    (entry) => entry.movement === "through" && network.links[entry.fromLink].strips === strips,
+  // Use an approach that offers every movement, so the queue discharges with the scenario's
+  // turning shares through the same shared-box rules the scenarios run under.
+  const road = network.links.find(
+    (link) =>
+      link.strips === strips &&
+      (["through", "left", "right"] as const).every((movement) =>
+        network.connectors.some(
+          (entry) => entry.fromLink === link.id && entry.movement === movement,
+        ),
+      ),
   );
-  if (!connector) throw new Error(`No through movement for ${strips} strips`);
-  const road = network.links[connector.fromLink];
-  const junction = network.junctions[connector.junction];
-  const phase = junction.phases.findIndex(({ approaches }) => approaches.includes(road.id));
-  const route = network.routes.find(
-    ({ links }) =>
-      links[links.indexOf(road.id) + 1] === connector.toLink && links.includes(road.id),
-  );
-  if (!route || phase < 0) throw new Error(`Missing calibration route for link ${road.id}`);
+  if (!road) throw new Error(`No four-way approach with ${strips} strips`);
+  const junction = network.junctions.find(({ approaches }) => approaches.includes(road.id));
+  const phase = junction?.phases.findIndex(({ approaches }) => approaches.includes(road.id)) ?? -1;
+  if (!junction || phase < 0) throw new Error(`Approach ${road.id} has no phase`);
+  const routeFor = (movement: "through" | "left" | "right") => {
+    const connector = network.connectors.find(
+      (entry) => entry.fromLink === road.id && entry.movement === movement,
+    );
+    const route = network.routes.find(
+      ({ links }) =>
+        links.includes(road.id) && links[links.indexOf(road.id) + 1] === connector?.toLink,
+    );
+    if (!route) throw new Error(`Missing ${movement} calibration route for link ${road.id}`);
+    return route;
+  };
+  const movements = (["through", "left", "right"] as const).map((movement) => ({
+    route: routeFor(movement),
+    share: turningShares[strips === ARTERIAL_STRIPS ? "arterial" : "cross"][movement],
+  }));
   const sim = createSim({
     network,
     seed,
@@ -43,6 +61,14 @@ function sample(strips: number, mixId: MixId, seed: number) {
     }
     return 2;
   };
+  const chooseRoute = () => {
+    let remaining = random.next();
+    for (const { route, share } of movements) {
+      remaining -= share;
+      if (remaining < 0) return route;
+    }
+    return movements[0].route;
+  };
   // Place a standing queue at the line. Row depth keeps all rectangles disjoint
   // before lane-free motion and filtering begin.
   for (let s = road.length - 1.6; s >= 14; ) {
@@ -52,6 +78,7 @@ function sample(strips: number, mixId: MixId, seed: number) {
       const cls = chooseClass();
       const vehicle = VEHICLE_CLASSES[cls];
       if (strip + vehicle.strips > strips) break;
+      const route = chooseRoute();
       const slot = sim.vehicles.add({
         link: road.id,
         cls,
@@ -111,5 +138,5 @@ for (const mix of Object.keys(trafficMixes) as MixId[]) {
 mkdirSync("results", { recursive: true });
 writeFileSync(
   "results/calibration.json",
-  `${JSON.stringify({ schema: 1, warmup, windowSeconds, rows }, null, 2)}\n`,
+  `${JSON.stringify({ schema: 2, warmup, windowSeconds, turningShares, rows }, null, 2)}\n`,
 );

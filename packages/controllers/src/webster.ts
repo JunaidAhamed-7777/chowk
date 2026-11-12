@@ -5,11 +5,31 @@ import type { Controller, Explanation, NeighbourSense } from "./types";
 const MIN_CYCLE = 40;
 const MAX_CYCLE = 150;
 const PERIOD = 900;
+// Practical degree of saturation for a fixed-time phase (assumed). When minimum greens squeeze
+// a busy phase past it, the cycle is lengthened until no phase exceeds it, up to MAX_CYCLE.
+const TARGET_SATURATION = 0.9;
 
 export interface WebsterPlan {
   cycle: number;
   greens: number[];
   starts: number[];
+}
+
+function greensFor(junction: Junction, ratios: readonly number[], cycle: number, lost: number) {
+  const budget = Math.min(
+    junction.phases.length * junction.maxGreen,
+    Math.max(junction.phases.length * junction.minGreen, cycle - lost),
+  );
+  return splitGreens(ratios, budget, junction.minGreen, junction.maxGreen);
+}
+
+function peakSaturation(ratios: readonly number[], greens: readonly number[], lost: number) {
+  const cycle = greens.reduce((sum, green) => sum + green, lost);
+  let peak = 0;
+  for (let phase = 0; phase < ratios.length; phase++) {
+    peak = Math.max(peak, (ratios[phase] * cycle) / greens[phase]);
+  }
+  return peak;
 }
 
 export function websterPlan(junction: Junction, ratios: readonly number[]): WebsterPlan {
@@ -18,11 +38,17 @@ export function websterPlan(junction: Junction, ratios: readonly number[]): Webs
   const lost = count * clearance;
   const total = ratios.reduce((sum, ratio) => sum + ratio, 0);
   const raw = total >= 1 ? MAX_CYCLE : (1.5 * lost + 5) / (1 - total);
-  const greenBudget = Math.min(
-    count * junction.maxGreen,
-    Math.max(count * junction.minGreen, Math.min(MAX_CYCLE, Math.max(MIN_CYCLE, raw)) - lost),
-  );
-  const greens = splitGreens(ratios, greenBudget, junction.minGreen, junction.maxGreen);
+  const webster = Math.min(MAX_CYCLE, Math.max(MIN_CYCLE, raw));
+  let greens = greensFor(junction, ratios, webster, lost);
+  let peak = peakSaturation(ratios, greens, lost);
+  for (let cycle = Math.ceil(webster); peak > TARGET_SATURATION && cycle <= MAX_CYCLE; cycle++) {
+    const candidate = greensFor(junction, ratios, cycle, lost);
+    const candidatePeak = peakSaturation(ratios, candidate, lost);
+    if (candidatePeak < peak) {
+      greens = candidate;
+      peak = candidatePeak;
+    }
+  }
   const starts = new Array<number>(count);
   let cycle = 0;
   for (let phase = 0; phase < count; phase++) {

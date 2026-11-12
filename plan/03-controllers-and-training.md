@@ -39,6 +39,7 @@ Baselines must be strong. A weak baseline makes the result worthless to anyone w
 
 - For each junction and phase, flow ratio `y = q / s`: `q` is the scenario's **true mean arrival rate** for that approach (the baseline is told the real demand), `s` is the saturation flow measured in this simulator for the scenario's vehicle mix.
 - Lost time `L = phases × (yellow + allRed)`. Cycle `C = (1.5·L + 5) / (1 − Σy)`, clamped to 40–150 s. Greens split in proportion to `y`, each at least minimum green.
+- If minimum greens leave any phase above a degree of saturation `y·C / g` of 0.9 (assumed practical limit), the cycle is lengthened one second at a time, up to 150 s, until none is; otherwise the cycle with the lowest peak is kept. Without this, light cross streets padded to minimum green starved the arterial in off-peak demand.
 - Offsets between junctions along the arterial set from free-flow travel time for the heavier direction.
 - When the scenario has time-varying demand, plans are recomputed per 15-minute period from that period's true mean.
 

@@ -7,7 +7,7 @@ import {
   type SourceDemand,
 } from "@chowk/sim";
 import calibration from "../../../results/calibration.json";
-import { type MixId, trafficMixes } from "./mixes";
+import { ARTERIAL_STRIPS, type MixId, trafficMixes, turningShares } from "./mixes";
 
 const definitions = {
   "morning-peak": { label: "Morning peak", load: 0.95, east: 0.65, cross: 0.3, mix: "mixed" },
@@ -24,7 +24,7 @@ export const scenarioCatalog = (Object.keys(definitions) as ScenarioId[]).map((i
   id,
   label: definitions[id].label,
 }));
-export { trafficMixes } from "./mixes";
+export { ARTERIAL_STRIPS, trafficMixes, turningShares } from "./mixes";
 
 export interface ScenarioOptions {
   network?: Network;
@@ -98,9 +98,8 @@ function routeWeights(network: Network, source: number): SourceDemand["routes"] 
     );
     if (!connector) throw new Error(`Route references a missing connector from ${from} to ${to}`);
     const arterial =
-      network.links[from].strips === 21 && Math.abs(network.links[from].dir[0]) > 0.9;
-    const weight =
-      connector.movement === "through" ? (arterial ? 0.7 : 0.5) : arterial ? 0.15 : 0.25;
+      network.links[from].strips === ARTERIAL_STRIPS && Math.abs(network.links[from].dir[0]) > 0.9;
+    const weight = turningShares[arterial ? "arterial" : "cross"][connector.movement];
     return { movement: connector.movement, weight };
   };
   const grouped = { through: 0, left: 0, right: 0 };
@@ -205,8 +204,8 @@ export function makeScenario(id: ScenarioId, options: ScenarioOptions = {}): Cal
       (1 - lost / 150)
     );
   });
-  const criticalJunction =
-    network.id === corridor.id ? 2 : normalizedLoads.indexOf(Math.max(...normalizedLoads));
+  // The load is quoted at the most heavily loaded junction, so no junction is pushed past it.
+  const criticalJunction = normalizedLoads.indexOf(Math.max(...normalizedLoads));
   const rate = load / normalizedLoads[criticalJunction];
   if (!Number.isFinite(rate)) throw new Error("The critical junction has no calibratable flow");
   const ramp = id === "morning-peak" || id === "evening-peak" || id === "monsoon";

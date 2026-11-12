@@ -8,3 +8,13 @@ export const trafficMixes = {
 } as const;
 
 export type MixId = keyof typeof trafficMixes;
+
+// Default turning shares from plan/04 (assumed). Calibration discharges its standing queue
+// with the same shares, so a scenario's load is relative to the capacity of the movements
+// it actually asks for, turns included.
+export const turningShares = {
+  arterial: { through: 0.7, left: 0.15, right: 0.15 },
+  cross: { through: 0.5, left: 0.25, right: 0.25 },
+} as const;
+
+export const ARTERIAL_STRIPS = 21;

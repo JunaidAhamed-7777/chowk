@@ -76,6 +76,18 @@ describe("classical controllers", () => {
     expect(split.cycle).toBeLessThanOrEqual(150.000001);
   });
 
+  test("Webster lengthens the cycle when minimum greens would oversaturate a phase", () => {
+    const junction = corridor.junctions[0];
+    const ratios = [0.03, 0.03, 0.03, 0.23];
+    const lost = junction.phases.length * (junction.yellow + junction.allRed);
+    const peak = (plan: ReturnType<typeof websterPlan>) =>
+      Math.max(...ratios.map((ratio, phase) => (ratio * plan.cycle) / plan.greens[phase]));
+    const plan = websterPlan(junction, ratios);
+    expect(plan.cycle).toBeGreaterThan((1.5 * lost + 5) / (1 - 0.32));
+    expect(peak(plan)).toBeLessThanOrEqual(0.9);
+    expect(plan.greens.every((green) => green >= junction.minGreen)).toBe(true);
+  });
+
   test("actuated extends the green and skips empty phases", () => {
     const controller = createController("actuated");
     controller.init(corridor, scenario);

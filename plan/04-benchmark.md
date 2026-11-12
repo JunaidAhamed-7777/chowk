@@ -33,9 +33,9 @@ Demand is specified as a **load level** relative to capacity measured in this si
 
 1. `npm run bench:calibrate` measures saturation flow for each approach width and each vehicle mix: a standing queue discharged through a long green, after start-up loss, in vehicles per second and in road area per second. Output: `results/calibration.json`, committed.
 2. For a junction, `Y = Σ over phases of q_p / s_p`. The theoretical limit under the longest allowed cycle is `Y_max = 1 − L / 150`, with `L` the lost time per cycle.
-3. A scenario's **load** is `Y / Y_max` at the critical junction (J3). Load 1.0 is at theoretical capacity.
+3. A scenario's **load** is `Y / Y_max` at its critical junction, the junction with the highest `Y / Y_max` for that demand. No junction is loaded above the quoted value. Load 1.0 is at theoretical capacity.
 
-Calibration holds one through phase green and seeds a standing queue with no overlapping vehicles. The reported rates use the discharge from 6 to 46 simulated seconds over the 20 validation seeds. Curved-turn reservations can reduce service below this nominal through capacity. Custom mixes use the nearest measured mix by the sum of absolute class-share differences. Scenario loads describe the nominal peak of the input profile. Route shares determine demand reaching each approach, including upstream entries.
+Calibration holds one approach green at a four-way junction and seeds a standing queue with no overlapping vehicles. Each queued vehicle draws its movement from the default turning shares below, so the measured rate includes the cost of turns under the junction rules in `02-simulator.md`. The reported rates use the discharge from 6 to 46 simulated seconds over the 20 validation seeds. Until 12 Nov 2026 the queue was all through traffic; that overstated arterial capacity about threefold (1.56 against 0.49 vehicles per second for mixed traffic on 21 strips), so every scenario ran far above its quoted load. Custom mixes use the nearest measured mix by the sum of absolute class-share differences. Scenario loads describe the nominal peak of the input profile. Route shares determine demand reaching each approach, including upstream entries.
 
 ## Scenarios
 
