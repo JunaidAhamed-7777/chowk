@@ -99,6 +99,8 @@ export interface LiveReadout {
   window: { from: number; to: number };
   hour: { from: number; to: number; left: number; right: number };
   history: readonly HistoryPoint[];
+  /** The original timeline after the latest rewind, kept so the new one can be compared. */
+  ghost: readonly HistoryPoint[];
   marks: readonly EventMark[];
   peopleHours: number;
   elapsed: number;
@@ -156,16 +158,20 @@ export class LiveMetrics {
   private samples: Sample[] = [];
   private history: HistoryPoint[] = [];
   private marks: EventMark[] = [];
+  private ghost: HistoryPoint[] = [];
 
   reset() {
     this.samples = [];
     this.history = [];
     this.marks = [];
+    this.ghost = [];
   }
 
   /** Forget everything after `time`, after a rewind. Event marks stay; events replay. */
   rewindTo(time: number) {
     while ((this.samples.at(-1)?.time ?? -Infinity) > time) this.samples.pop();
+    const cut = this.history.findIndex((point) => point.time > time);
+    if (cut >= 0) this.ghost = this.history.slice(Math.max(0, cut - 1));
     while ((this.history.at(-1)?.time ?? -Infinity) > time) this.history.pop();
   }
 
@@ -221,6 +227,7 @@ export class LiveMetrics {
       window: { from: boundary?.time ?? 0, to: current.time },
       hour: { from: lastHour?.time ?? 0, to: current.time, left: a, right: b },
       history: this.history.at(-1)?.time === point.time ? this.history : [...this.history, point],
+      ghost: this.ghost,
       marks: this.marks,
       peopleHours: (a - b) / 3600,
       elapsed: current.time,

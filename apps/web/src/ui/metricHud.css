@@ -240,3 +240,17 @@
     flex: 0 0 135px;
   }
 }
+
+.metric-series-ghost {
+  fill: none;
+  stroke-width: 1.2;
+  stroke-dasharray: 3 3;
+  opacity: 0.55;
+  vector-effect: non-scaling-stroke;
+}
+.metric-series-ghost-left {
+  stroke: #9aa6b8;
+}
+.metric-series-ghost-right {
+  stroke: var(--accent, #3df2b4);
+}

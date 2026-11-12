@@ -185,7 +185,7 @@ function Series({
 }) {
   let min = Infinity;
   let max = -Infinity;
-  for (const { values } of readout.history) {
+  for (const { values } of [...readout.history, ...readout.ghost]) {
     for (const side of [0, 1] as const) {
       if (single && side === 0) continue;
       const value = values[side][metric];
@@ -194,7 +194,7 @@ function Series({
       max = Math.max(max, value);
     }
   }
-  const last = Math.max(readout.elapsed, 1);
+  const last = Math.max(readout.elapsed, readout.ghost.at(-1)?.time ?? 0, 1);
   const range = Math.max(max - min, 0.01);
   return (
     <svg
@@ -213,6 +213,24 @@ function Series({
             </path>
           );
         })}
+      {([0, 1] as const).map((side) => {
+        if (single && side === 0) return null;
+        let ghost = "";
+        readout.ghost.forEach(({ time, values }, index) => {
+          const value = values[side][metric];
+          if (value === null) return;
+          const x = ((time / last) * width).toFixed(2);
+          const y = (height - 2 - ((value - min) / range) * (height - 4)).toFixed(2);
+          ghost += `${index === 0 ? "M" : "L"}${x} ${y}`;
+        });
+        return ghost ? (
+          <path
+            key={`ghost-${side}`}
+            className={`metric-series-ghost metric-series-ghost-${side === 0 ? "left" : "right"}`}
+            d={ghost}
+          />
+        ) : null;
+      })}
       {([0, 1] as const).map((side) => {
         if (single && side === 0) return null;
         let path = "";

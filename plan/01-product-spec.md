@@ -200,7 +200,7 @@ For CHOWK, the panel also lists the three inputs that moved the learned correcti
 ### L17. Rewind — P1
 
 - "−1 min" beside play returns both simulations to their state about a minute ago. Each worker keeps a clone of its simulation every 10 simulated seconds (nine kept) and restores the latest one at least 60 s back with a fresh driver; events that happened after it are queued again at their original ticks, so the replay is exact. A unit test checks that a restored clone reaches the same state hash as the original under every controller.
-- The visitor can then change a controller or add an event and watch a different future unfold from the same moment. Rolling metrics forget the samples after the restored time.
+- The visitor can then change a controller or add an event and watch a different future unfold from the same moment. Rolling metrics forget the samples after the restored time, but the sparklines keep the original timeline as faint dashed "ghost" lines, so the new future can be compared with the old one.
 
 ### L18. Photo mode — P2
 

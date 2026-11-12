@@ -340,5 +340,6 @@ test("rewinding returns both simulations a minute back and they keep running", a
   await page.getByRole("button", { name: "Play simulation" }).click();
   const after = await tick();
   await expect.poll(tick, { timeout: 30_000 }).toBeGreaterThan(after);
+  await expect(page.locator(".metric-series-ghost").first()).toBeAttached({ timeout: 30_000 });
   await expect(page.getByRole("alert")).toHaveCount(0);
 });
