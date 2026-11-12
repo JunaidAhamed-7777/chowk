@@ -21,6 +21,7 @@ import {
   SensorNoiseChart,
 } from "../benchmark/BenchmarkCharts";
 import { BenchmarkReproduction } from "../benchmark/BenchmarkReproduction";
+import { SkepticExplorer } from "../benchmark/SkepticExplorer";
 import { TrainingCurveChart } from "../benchmark/TrainingCurveChart";
 import "../benchmark/results.css";
 
@@ -471,6 +472,20 @@ export function ResultsView() {
       <AdditionalResults benchmark={benchmark} />
       <TrainingCurveChart />
       {engineering && <Engineering measurements={engineering} />}
+      <section className="results-panel" aria-labelledby="skeptic-heading">
+        <div className="results-section-heading">
+          <div>
+            <h2 id="skeptic-heading">Check any comparison</h2>
+            <p>
+              Pick any published cell, two controllers and a metric to see the paired difference on
+              every held-out seed, computed here from the raw runs. Replay re-runs a seed in your
+              browser and checks it against the published result. Intervals here use a fresh
+              resample, so their last digit can differ from the published table.
+            </p>
+          </div>
+        </div>
+        <SkepticExplorer benchmark={benchmark} />
+      </section>
       <section className="results-panel" aria-labelledby="provenance-heading">
         <div className="results-section-heading">
           <div>

@@ -222,6 +222,10 @@ Rows: controllers. Columns: the metrics from L2, each as mean and 95% confidence
 
 The git commit, date, seed list and total simulated time behind the published numbers, with a link to the raw JSON in the repository.
 
+### R6. Check any comparison — P1
+
+Pick any published cell (suite, scenario, variant), controllers A and B, and a metric. The page computes the paired relative difference on every held-out seed from the raw runs, plots one dot per seed with the mean and a 95% bootstrap interval, says on how many seeds A was better, and lists every seed. Replay re-runs both runs for a seed in a browser worker and checks metrics and final state hashes against the publication. The interval uses its own resample, so its last digit can differ from the published table.
+
 ## Method view — P0
 
 Short, illustrated, scannable. Sections:
