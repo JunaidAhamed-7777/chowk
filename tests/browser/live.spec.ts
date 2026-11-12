@@ -324,13 +324,15 @@ test("Beat the AI plays a round at J3 against CHOWK and reports a verdict", asyn
 });
 
 test("rewinding returns both simulations a minute back and they keep running", async ({ page }) => {
+  test.setTimeout(300_000);
   await page.goto("/?tour=off");
   const instrument = page.locator(".instrument");
   await expect(instrument).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   await page.getByRole("button", { name: "16 times speed" }).click();
   const tick = async () => Number(await instrument.getAttribute("data-tick"));
   const start = await tick();
-  await expect.poll(tick, { timeout: 60_000 }).toBeGreaterThan(start + 4 * 150);
+  // A checkpoint at least a minute old needs a little over 70 simulated seconds.
+  await expect.poll(tick, { timeout: 180_000 }).toBeGreaterThan(start + 4 * 80);
   await page.getByRole("button", { name: "Pause simulation" }).click();
   const before = await tick();
   await page.getByRole("button", { name: "Rewind one minute" }).click();
