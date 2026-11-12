@@ -222,8 +222,8 @@
     {
       "mix": "mixed",
       "strips": 21,
-      "vehiclesPerSecond": 1.55,
-      "areaPerSecond": 7.412074999999985,
+      "vehiclesPerSecond": 1.5575,
+      "areaPerSecond": 7.4220499999999845,
       "samples": [
         {
           "seed": 500000,
@@ -232,8 +232,8 @@
         },
         {
           "seed": 500001,
-          "vehicles": 77,
-          "area": 270.1599999999992
+          "vehicles": 78,
+          "area": 265.67999999999915
         },
         {
           "seed": 500002,
@@ -267,8 +267,8 @@
         },
         {
           "seed": 500008,
-          "vehicles": 62,
-          "area": 281.2599999999993
+          "vehicles": 63,
+          "area": 288.39999999999964
         },
         {
           "seed": 500009,
@@ -282,8 +282,8 @@
         },
         {
           "seed": 500011,
-          "vehicles": 60,
-          "area": 282.2399999999989
+          "vehicles": 64,
+          "area": 287.55999999999904
         },
         {
           "seed": 500012,
@@ -546,13 +546,13 @@
     {
       "mix": "festival",
       "strips": 21,
-      "vehiclesPerSecond": 1.73125,
-      "areaPerSecond": 7.592199999999959,
+      "vehiclesPerSecond": 1.7375,
+      "areaPerSecond": 7.6522999999999595,
       "samples": [
         {
           "seed": 500000,
-          "vehicles": 78,
-          "area": 274.419999999998
+          "vehicles": 80,
+          "area": 306.3999999999976
         },
         {
           "seed": 500001,
@@ -566,8 +566,8 @@
         },
         {
           "seed": 500003,
-          "vehicles": 63,
-          "area": 305.1699999999978
+          "vehicles": 60,
+          "area": 292.21999999999775
         },
         {
           "seed": 500004,
@@ -581,8 +581,8 @@
         },
         {
           "seed": 500006,
-          "vehicles": 86,
-          "area": 294.5599999999972
+          "vehicles": 82,
+          "area": 289.2399999999975
         },
         {
           "seed": 500007,
@@ -616,18 +616,18 @@
         },
         {
           "seed": 500013,
-          "vehicles": 61,
-          "area": 291.599999999999
+          "vehicles": 60,
+          "area": 290.2699999999991
         },
         {
           "seed": 500014,
-          "vehicles": 62,
-          "area": 290.2699999999977
+          "vehicles": 61,
+          "area": 288.9399999999978
         },
         {
           "seed": 500015,
-          "vehicles": 61,
-          "area": 259.5700000000004
+          "vehicles": 71,
+          "area": 293.94000000000074
         },
         {
           "seed": 500016,
@@ -646,8 +646,8 @@
         },
         {
           "seed": 500019,
-          "vehicles": 95,
-          "area": 306.48000000000025
+          "vehicles": 97,
+          "area": 309.1400000000001
         }
       ]
     },
@@ -1194,8 +1194,8 @@
     {
       "mix": "two-wheeler-heavy",
       "strips": 21,
-      "vehiclesPerSecond": 2.16375,
-      "areaPerSecond": 7.392724999999912,
+      "vehiclesPerSecond": 2.14375,
+      "areaPerSecond": 7.319162499999914,
       "samples": [
         {
           "seed": 500000,
@@ -1204,13 +1204,13 @@
         },
         {
           "seed": 500001,
-          "vehicles": 103,
-          "area": 285.22999999999706
+          "vehicles": 102,
+          "area": 283.89999999999714
         },
         {
           "seed": 500002,
-          "vehicles": 98,
-          "area": 335.43999999999596
+          "vehicles": 89,
+          "area": 320.31999999999584
         },
         {
           "seed": 500003,
@@ -1224,13 +1224,13 @@
         },
         {
           "seed": 500005,
-          "vehicles": 76,
-          "area": 293.35999999999785
+          "vehicles": 72,
+          "area": 276.4199999999978
         },
         {
           "seed": 500006,
-          "vehicles": 96,
-          "area": 301.0699999999979
+          "vehicles": 95,
+          "area": 296.5899999999979
         },
         {
           "seed": 500007,
@@ -1264,13 +1264,13 @@
         },
         {
           "seed": 500013,
-          "vehicles": 81,
-          "area": 277.4399999999964
+          "vehicles": 82,
+          "area": 258.40999999999644
         },
         {
           "seed": 500014,
-          "vehicles": 80,
-          "area": 275.3999999999944
+          "vehicles": 79,
+          "area": 268.2599999999943
         },
         {
           "seed": 500015,
@@ -1284,18 +1284,18 @@
         },
         {
           "seed": 500017,
-          "vehicles": 104,
-          "area": 291.34999999999695
+          "vehicles": 107,
+          "area": 298.48999999999705
         },
         {
           "seed": 500018,
-          "vehicles": 104,
-          "area": 306.6099999999967
+          "vehicles": 99,
+          "area": 296.809999999997
         },
         {
           "seed": 500019,
-          "vehicles": 90,
-          "area": 282.7099999999987
+          "vehicles": 91,
+          "area": 290.55999999999835
         }
       ]
     },
@@ -1518,8 +1518,8 @@
     {
       "mix": "bus-heavy",
       "strips": 21,
-      "vehiclesPerSecond": 1.2325,
-      "areaPerSecond": 8.481049999999993,
+      "vehiclesPerSecond": 1.23375,
+      "areaPerSecond": 8.482712499999993,
       "samples": [
         {
           "seed": 500000,
@@ -1593,8 +1593,8 @@
         },
         {
           "seed": 500014,
-          "vehicles": 55,
-          "area": 367.4500000000003
+          "vehicles": 56,
+          "area": 368.7800000000002
         },
         {
           "seed": 500015,
