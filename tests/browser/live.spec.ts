@@ -330,3 +330,21 @@ test("Beat the AI plays a round at J3 against CHOWK and reports a verdict", asyn
   await panel.getByRole("button", { name: "Leave Beat the AI" }).click();
   await expect(panel).toBeHidden();
 });
+
+test("rewinding returns both simulations a minute back and they keep running", async ({ page }) => {
+  await page.goto("/?tour=off");
+  const instrument = page.locator(".instrument");
+  await expect(instrument).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
+  await page.getByRole("button", { name: "16 times speed" }).click();
+  const tick = async () => Number(await instrument.getAttribute("data-tick"));
+  const start = await tick();
+  await expect.poll(tick, { timeout: 60_000 }).toBeGreaterThan(start + 4 * 150);
+  await page.getByRole("button", { name: "Pause simulation" }).click();
+  const before = await tick();
+  await page.getByRole("button", { name: "Rewind one minute" }).click();
+  await expect.poll(tick, { timeout: 15_000 }).toBeLessThanOrEqual(before - 4 * 60);
+  await page.getByRole("button", { name: "Play simulation" }).click();
+  const after = await tick();
+  await expect.poll(tick, { timeout: 30_000 }).toBeGreaterThan(after);
+  await expect(page.getByRole("alert")).toHaveCount(0);
+});

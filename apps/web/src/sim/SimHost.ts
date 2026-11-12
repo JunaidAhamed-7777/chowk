@@ -146,6 +146,7 @@ export class SimHost {
   private disposed = false;
   private tick: number | undefined;
   private target: number | undefined;
+  private rewindSeconds = 0;
 
   constructor(private readonly options: SimHostOptions) {
     this.maxTick = Math.floor((options.scenario?.duration ?? liveDuration) / DT);
@@ -214,6 +215,11 @@ export class SimHost {
     this.streams[side].send({ type: "setController", controller });
   }
 
+  /** Return both simulations to their state about `seconds` ago, at the next idle moment. */
+  rewind(seconds: number) {
+    if (!this.disposed) this.rewindSeconds = seconds;
+  }
+
   /** Hand one junction on one side to the visitor; phase -1 returns it to the controller. */
   setManual(side: SimulationSide, junction: number, phase: number) {
     if (this.disposed) return;
@@ -257,6 +263,16 @@ export class SimHost {
 
   advance(delta: number, speed: number, running: boolean) {
     if (this.disposed || this.tick === undefined) return;
+    if (this.rewindSeconds > 0 && !this.inFlight) {
+      const message: ToSim = { type: "rewind", seconds: this.rewindSeconds };
+      this.rewindSeconds = 0;
+      this.inFlight = true;
+      this.target = undefined;
+      this.accumulator = 0;
+      this.streams[0].send(message);
+      this.streams[1].send(message);
+      return;
+    }
     if (!running || this.tick >= this.maxTick) {
       this.accumulator = 0;
       if (!this.inFlight && this.refreshRequested) this.request(this.tick);

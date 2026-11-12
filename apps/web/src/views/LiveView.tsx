@@ -151,6 +151,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
   const [briefing, setBriefing] = useState(() => shouldOpenBriefing(initial.tour, initial.capture));
   const [history] = useState(() => new LiveMetrics());
   const retries = useRef(0);
+  const lastTick = useRef(0);
   const eventId = useRef(0);
   const eventRandom = useRef<Random | undefined>(undefined);
   const [webglAvailable, setWebglAvailable] = useState(() => {
@@ -189,6 +190,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
       setFailure("");
       setPicking(false);
       history.reset();
+      lastTick.current = 0;
       eventRandom.current = createRandomStreams(seed).events;
       eventId.current = 0;
       setEvents(
@@ -201,6 +203,8 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
     },
     onMetrics: (metrics, tick, warmup) => {
       if (warmup) history.seed(warmup);
+      if (tick < lastTick.current) history.rewindTo(metrics[0].elapsed);
+      lastTick.current = tick;
       setFrame({ metrics, tick, readout: history.push(metrics) });
     },
     onError: (message) => {
@@ -814,6 +818,19 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               title={paused ? "Play simulation" : "Pause simulation"}
             >
               <Icon name={paused ? "play" : "pause"} size={19} />
+            </button>
+            <button
+              className="control-button rewind-button"
+              type="button"
+              disabled={disabled}
+              onClick={() => {
+                endTour();
+                host.current?.rewind(60);
+              }}
+              aria-label="Rewind one minute"
+              title="Return both simulations to their state a minute ago; they replay exactly"
+            >
+              −1 min
             </button>
             <fieldset className="speed-picker" aria-label="Playback speed">
               {playingSpeeds.map((value) => (

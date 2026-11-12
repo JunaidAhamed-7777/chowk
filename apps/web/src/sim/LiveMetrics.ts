@@ -158,6 +158,12 @@ export class LiveMetrics {
     this.marks = [];
   }
 
+  /** Forget everything after `time`, after a rewind. Event marks stay; events replay. */
+  rewindTo(time: number) {
+    while ((this.samples.at(-1)?.time ?? -Infinity) > time) this.samples.pop();
+    while ((this.history.at(-1)?.time ?? -Infinity) > time) this.history.pop();
+  }
+
   mark(id: number, time: number, label: string) {
     this.marks.push({ id, time, label });
   }

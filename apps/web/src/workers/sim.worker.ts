@@ -26,6 +26,12 @@ let inspected: InspectedController | undefined;
 let manual: ManualOverride | undefined;
 let manualJunction = -1;
 let manualPhase = -1;
+let choice: ControllerChoice = { id: "webster" };
+// Clones of the simulation every CHECKPOINT_TICKS, kept for rewinding.
+const CHECKPOINT_TICKS = Math.round(10 / DT);
+const CHECKPOINT_COUNT = 9;
+let checkpoints: { tick: number; sim: ReturnType<typeof createSim> }[] = [];
+let applied: ScheduledEvent[] = [];
 
 function controllerFor({ id, policy }: ControllerChoice) {
   manual = new ManualOverride(
@@ -74,8 +80,30 @@ function advance(targetTick: number) {
     if (!next) break;
     driver.advanceTo(next.tick - 1);
     driver.sim.inject(next.event);
+    applied.push(next);
   }
   driver.advanceTo(target);
+  const last = checkpoints[checkpoints.length - 1];
+  if (!last || driver.tick - last.tick >= CHECKPOINT_TICKS) {
+    checkpoints.push({ tick: driver.tick, sim: driver.sim.clone() });
+    if (checkpoints.length > CHECKPOINT_COUNT) checkpoints.shift();
+  }
+  publish();
+}
+
+function rewind(seconds: number) {
+  if (!driver) return;
+  const wanted = driver.tick - Math.round(seconds / DT);
+  let restore = checkpoints[0];
+  for (const checkpoint of checkpoints) if (checkpoint.tick <= wanted) restore = checkpoint;
+  if (!restore) return publish();
+  // A clone continues bit for bit, so both sides return to the same state they were in.
+  driver = new ControllerDriver(restore.sim.clone(), corridor, scenario, controllerFor(choice));
+  checkpoints = checkpoints.filter(({ tick }) => tick <= restore.tick);
+  const replay = applied.filter(({ tick }) => tick > restore.tick);
+  applied = applied.filter(({ tick }) => tick <= restore.tick);
+  events = [...replay, ...events].sort((a, b) => a.tick - b.tick);
+  if (manualPhase >= 0) driver.sim.requestPhase(manualJunction, manualPhase);
   publish();
 }
 
@@ -86,6 +114,9 @@ function init({
   scenario: requestedScenario = makeLiveScenario(),
 }: ToSimInit) {
   scenario = requestedScenario;
+  choice = controller;
+  checkpoints = [];
+  applied = [];
   manualJunction = -1;
   manualPhase = -1;
   endTick = Math.floor(scenario.duration / DT);
@@ -116,6 +147,7 @@ self.onmessage = ({ data }: MessageEvent<ToSim>) => {
         advance(data.tick);
         break;
       case "setController":
+        choice = data.controller;
         driver?.setController(controllerFor(data.controller));
         break;
       case "setOverlayData":
@@ -146,6 +178,9 @@ self.onmessage = ({ data }: MessageEvent<ToSim>) => {
           driver.sim.requestPhase(data.junction, data.phase);
         break;
       }
+      case "rewind":
+        rewind(data.seconds);
+        break;
       case "recycle":
         buffers.push(data.buffer);
         break;
