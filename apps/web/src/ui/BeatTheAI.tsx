@@ -120,7 +120,7 @@ export function BeatTheAI({
       )}
       {(stage === "starting" || stage === "playing") && (
         <>
-          <div className="challenge-phases" role="group" aria-label="Give green to">
+          <fieldset className="challenge-phases" aria-label="Give green to">
             {phaseNames.map((name, phase) => (
               <button
                 key={name}
@@ -137,7 +137,7 @@ export function BeatTheAI({
                 <kbd>{phase + 1}</kbd> {name}
               </button>
             ))}
-          </div>
+          </fieldset>
           <dl className="challenge-score">
             <div>
               <dt>You</dt>

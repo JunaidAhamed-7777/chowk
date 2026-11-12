@@ -214,7 +214,7 @@ export function TimeSpacePanel({
         </button>
       </header>
       {labels.map((label, side) => (
-        <figure className="time-space-figure" key={label + side}>
+        <figure className="time-space-figure" key={side === 0 ? "left" : "right"}>
           <figcaption>
             <span className="time-space-side">{side === 0 ? "A" : "B"}</span> {label}
           </figcaption>
