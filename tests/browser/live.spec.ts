@@ -294,7 +294,7 @@ test("the time-space diagram plots both simulations along the corridor", async (
       { timeout: 60_000 },
     )
     .toEqual([true, true]);
-  await page.keyboard.press("Escape");
+  await panel.getByRole("button", { name: "Close time-space diagram" }).click();
   await expect(panel).toBeHidden();
 });
 
