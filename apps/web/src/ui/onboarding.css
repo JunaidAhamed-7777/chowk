@@ -121,6 +121,7 @@
 :root[data-guide="numbers"] .comparison-metrics,
 :root[data-guide="events"] .event-buttons,
 :root[data-guide="look"] .junction-picker,
+:root[data-guide="look"] .decision-button,
 :root[data-guide="look"] .simulation-controls > .control-select:not(:first-child),
 :root[data-guide="proof"] .topbar-nav a[href="/results"] {
   border-radius: 9px;

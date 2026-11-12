@@ -16,7 +16,6 @@ import {
   useState,
 } from "react";
 import { NightCorridor } from "../scene/NightCorridor";
-import { TopDownCorridor } from "../scene/TopDownCorridor";
 import {
   type CameraSelection,
   type OverlayMode,
@@ -27,15 +26,16 @@ import {
   qualityPresets,
   type VehicleFollow,
 } from "../scene/sceneSettings";
+import { TopDownCorridor } from "../scene/TopDownCorridor";
+import { LiveMetrics, type LiveReadout } from "../sim/LiveMetrics";
 import {
+  type ActiveEvent,
   blockAt,
   defaultBlock,
   eventLabels,
   makeEvent,
   roadAt,
-  type ActiveEvent,
 } from "../sim/liveEvents";
-import { LiveMetrics, type LiveReadout } from "../sim/LiveMetrics";
 import { baselineChoices, hasPolicyAssets, loadControllerChoices } from "../sim/livePolicies";
 import { type LiveScenarioId, makeLiveScenario } from "../sim/liveScenario";
 import { readSession, sessionUrl } from "../sim/liveSession";
@@ -43,15 +43,16 @@ import type { ControllerPair, MetricsPair, SimulationSide } from "../sim/SimHost
 import { useSimHost } from "../sim/useSimHost";
 import { useTrafficAudio } from "../sim/useTrafficAudio";
 import { useTour } from "../tour/useTour";
-import { ComparisonWipe } from "../ui/ComparisonWipe";
+import { Briefing, shouldOpenBriefing } from "../ui/Briefing";
 import { CheckpointControl } from "../ui/CheckpointControl";
+import { ComparisonWipe } from "../ui/ComparisonWipe";
 import { CustomDemand } from "../ui/CustomDemand";
+import { DecisionPanel } from "../ui/DecisionPanel";
 import { Icon } from "../ui/Icon";
 import { LiveControls } from "../ui/LiveControls";
 import { LoadingScreen, liveLoadingSteps } from "../ui/LoadingScreen";
 import { MetricHud } from "../ui/MetricHud";
 import { guideSteps, Onboarding, rememberGuideSeen, shouldOpenGuide } from "../ui/Onboarding";
-import { PolicyInspector } from "../ui/PolicyInspector";
 import "../ui/advancedLive.css";
 import "../ui/liveLayout.css";
 
@@ -149,6 +150,7 @@ export default function LiveView({
   const [custom, setCustom] = useState(initial.custom);
   const [editingDemand, setEditingDemand] = useState(false);
   const [inspecting, setInspecting] = useState(false);
+  const [inspectedJunction, setInspectedJunction] = useState(2);
   const [picking, setPicking] = useState(false);
   const [events, setEvents] = useState<ActiveEvent[]>([]);
   const [tour, setTour] = useState(initial.tour);
@@ -158,6 +160,7 @@ export default function LiveView({
   const [guide, setGuide] = useState<number | null>(() =>
     shouldOpenGuide(initial.tour, initial.capture) ? 0 : null,
   );
+  const [briefing, setBriefing] = useState(() => shouldOpenBriefing(initial.tour, initial.capture));
   const [history] = useState(() => new LiveMetrics());
   const retries = useRef(0);
   const eventId = useRef(0);
@@ -261,6 +264,12 @@ export default function LiveView({
     setCamera("aerial");
   }
 
+  function closeBriefing() {
+    setBriefing(false);
+    // The briefing already said what CHOWK is, so a first-time guide skips its welcome card.
+    setGuide((current) => (current === 0 ? 1 : current));
+  }
+
   function closeGuide() {
     setGuide(null);
     rememberGuideSeen();
@@ -311,7 +320,7 @@ export default function LiveView({
   }
 
   useTour({
-    running: active && ready && tour && !paused && !initial.capture,
+    running: active && ready && tour && !paused && !initial.capture && !briefing,
     reducedMotion,
     onBeat: (beat) => {
       setCaption(beat.caption);
@@ -346,17 +355,17 @@ export default function LiveView({
   }, [notice]);
 
   useEffect(() => {
-    if (!active || !tour) return;
+    if (!active || !tour || briefing) return;
     window.addEventListener("pointerdown", endTour, true);
     window.addEventListener("keydown", endTour, true);
     return () => {
       window.removeEventListener("pointerdown", endTour, true);
       window.removeEventListener("keydown", endTour, true);
     };
-  }, [active, tour, endTour]);
+  }, [active, tour, endTour, briefing]);
 
   useEffect(() => {
-    if (!active || !ready) return;
+    if (!active || !ready || briefing) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.altKey || event.metaKey || event.ctrlKey || event.repeat) return;
       if (event.key === "Escape") {
@@ -396,7 +405,7 @@ export default function LiveView({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active, ready, singleView]);
+  }, [active, ready, singleView, briefing]);
 
   function reload() {
     retries.current = 0;
@@ -419,6 +428,16 @@ export default function LiveView({
     endTour();
     setVehicle(undefined);
     setCamera(choice);
+    if (typeof choice === "number") setInspectedJunction(choice);
+  }
+
+  function openDecision(junction: number) {
+    endTour();
+    setEditingDemand(false);
+    setInspectedJunction(junction);
+    setInspecting(true);
+    setCamera(junction);
+    setVehicle(undefined);
   }
 
   function selectController(side: SimulationSide, id: string) {
@@ -495,9 +514,14 @@ export default function LiveView({
             The corridor after dark<span>.</span>
           </h1>
         </div>
-        <p className="live-deck">
-          The same lane-free traffic under two signal controllers, simulated live in your browser.
-        </p>
+        <div>
+          <p className="live-deck">
+            The same lane-free traffic under two signal controllers, simulated live in your browser.
+          </p>
+          <button className="briefing-open" type="button" onClick={() => setBriefing(true)}>
+            What am I looking at? <span aria-hidden="true">→</span>
+          </button>
+        </div>
       </div>
 
       <section
@@ -652,9 +676,16 @@ export default function LiveView({
             />
           )}
           {inspecting && ready && (
-            <PolicyInspector
+            <DecisionPanel
               host={host}
-              junction={typeof camera === "number" ? camera : 2}
+              junction={inspectedJunction}
+              controllers={controllers}
+              labelOf={labelOf}
+              scenario={scenario}
+              onJunction={(id) => {
+                setInspectedJunction(id);
+                chooseCamera(id);
+              }}
               onClose={() => setInspecting(false)}
             />
           )}
@@ -693,11 +724,7 @@ export default function LiveView({
             setInspecting(false);
             setEditingDemand(true);
           }}
-          onInspect={() => {
-            endTour();
-            setEditingDemand(false);
-            setInspecting(true);
-          }}
+          onInspect={() => openDecision(typeof camera === "number" ? camera : inspectedJunction)}
           overlay={overlay}
           onOverlay={(next) => {
             endTour();
@@ -817,6 +844,19 @@ export default function LiveView({
               Aerial view
             </button>
             <button
+              className="control-button decision-button"
+              type="button"
+              disabled={disabled}
+              aria-pressed={inspecting}
+              onClick={() =>
+                inspecting
+                  ? setInspecting(false)
+                  : openDecision(typeof camera === "number" ? camera : inspectedJunction)
+              }
+            >
+              How it decides
+            </button>
+            <button
               className="control-button tour-button"
               type="button"
               disabled={disabled}
@@ -840,7 +880,15 @@ export default function LiveView({
         </div>
       </section>
 
-      {guide !== null && ready && (
+      {briefing && active && (
+        <Briefing
+          ready={ready}
+          onClose={closeBriefing}
+          onDecision={() => openDecision(inspectedJunction)}
+        />
+      )}
+
+      {guide !== null && ready && !briefing && (
         <Onboarding
           step={guide}
           left={labelOf(controllers[0].id)}

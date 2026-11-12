@@ -53,6 +53,7 @@ function publish(warmup?: Metrics[]) {
     ...(decision && { explanations: corridor.junctions.map(({ id }) => current.explain(id)) }),
     ...(inspection && {
       observations: corridor.junctions.map(({ id }) => inspected?.observation(id)),
+      decisions: corridor.junctions.map(({ id }) => inspected?.decision(id)),
     }),
   };
   self.postMessage(message, { transfer: [buffer] });

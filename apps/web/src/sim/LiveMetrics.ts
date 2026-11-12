@@ -79,8 +79,23 @@ export interface EventMark {
   label: string;
 }
 
+/** The window totals each reading divides, so the interface can show the arithmetic. */
+export interface MetricParts {
+  personDelay: number;
+  people: number;
+  stops: number;
+  vehicles: number;
+  completedPeople: number;
+  co2Kg: number;
+  hours: number;
+  ambulance: number | null;
+}
+
 export interface LiveReadout {
   values: ReadingsPair;
+  parts: readonly [MetricParts, MetricParts];
+  window: { from: number; to: number };
+  hour: { from: number; to: number; left: number; right: number };
   history: readonly HistoryPoint[];
   marks: readonly EventMark[];
   peopleHours: number;
@@ -104,6 +119,19 @@ function totals({
     completedPeople,
     co2Kg,
     lastAmbulanceTravelTime,
+  };
+}
+
+function parts(current: Totals, base: Totals | undefined, hours: number): MetricParts {
+  return {
+    personDelay: current.personDelay - (base?.personDelay ?? 0),
+    people: current.generatedPeople - (base?.generatedPeople ?? 0),
+    stops: current.stops - (base?.stops ?? 0),
+    vehicles: current.generated - (base?.generated ?? 0),
+    completedPeople: current.completedPeople - (base?.completedPeople ?? 0),
+    co2Kg: current.co2Kg - (base?.co2Kg ?? 0),
+    hours,
+    ambulance: current.lastAmbulanceTravelTime,
   };
 }
 
@@ -175,6 +203,12 @@ export class LiveMetrics {
     const b = current.totals[1].personDelay - (lastHour?.totals[1].personDelay ?? 0);
     return {
       values,
+      parts: [
+        parts(current.totals[0], boundary?.totals[0], hours),
+        parts(current.totals[1], boundary?.totals[1], hours),
+      ],
+      window: { from: boundary?.time ?? 0, to: current.time },
+      hour: { from: lastHour?.time ?? 0, to: current.time, left: a, right: b },
       history: this.history.at(-1)?.time === point.time ? this.history : [...this.history, point],
       marks: this.marks,
       peopleHours: (a - b) / 3600,

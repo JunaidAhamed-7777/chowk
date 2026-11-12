@@ -8,7 +8,7 @@ import {
   SNAPSHOT_STRIDE,
 } from "@chowk/sim";
 import { liveDuration } from "./liveScenario";
-import type { ControllerChoice, FromSim, FromSimFrame, ToSim } from "./protocol";
+import type { ControllerChoice, DecisionRecord, FromSim, FromSimFrame, ToSim } from "./protocol";
 
 export const fadeMs = 200;
 export type SimulationSide = 0 | 1;
@@ -24,6 +24,7 @@ export interface Snapshot {
   sense?: JunctionSense[];
   explanations?: (Explanation | undefined)[];
   observations?: (number[] | undefined)[];
+  decisions?: (DecisionRecord | undefined)[];
 }
 
 export interface Departure {
@@ -83,6 +84,7 @@ export class SnapshotStream {
       sense: frame.sense,
       explanations: frame.explanations,
       observations: frame.observations,
+      decisions: frame.decisions,
     };
     this.receivedAt = now;
 

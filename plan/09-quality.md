@@ -125,19 +125,18 @@ These are tests or review items, not aspirations:
 When time runs short, drop from the top of this list first:
 
 1. Audio
-2. Policy inspector
-3. Signal-outage event
-4. P2 props and viaduct
-5. Free custom-scenario sliders
-6. Tilt-shift, headlight decals
-7. `chowk-solo` ablation, then other ablations
-8. Fairness and robustness suites
-9. "Watch it learn" slider
-10. Ride-along camera
-11. Light trails
-12. 2D fallback
+2. Signal-outage event
+3. P2 props and viaduct
+4. Free custom-scenario sliders
+5. Tilt-shift, headlight decals
+6. `chowk-solo` ablation, then other ablations
+7. Fairness and robustness suites
+8. "Watch it learn" slider
+9. Ride-along camera
+10. Light trails
+11. 2D fallback
 
-Never cut: the split-screen wipe, autoplay tour, live metric cards, surge / block / ambulance events, pressure overlay, main benchmark with confidence intervals, "Run it yourself", Method and Limits pages, README with hero, working deployment.
+Never cut: the first-visit briefing, the metric formula popovers and "How it decides", the split-screen wipe, autoplay tour, live metric cards, surge / block / ambulance events, pressure overlay, main benchmark with confidence intervals, "Run it yourself", Method and Limits pages, README with hero, working deployment.
 
 ## Release checklist
 

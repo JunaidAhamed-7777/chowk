@@ -1,11 +1,16 @@
-import { type LiveReadout, metricDefinitions } from "../sim/LiveMetrics";
+import { type ReactNode, useState } from "react";
+import { type LiveReadout, type MetricParts, metricDefinitions } from "../sim/LiveMetrics";
 import "./metricHud.css";
+
+type MetricKey = (typeof metricDefinitions)[number]["key"];
+type Explained = MetricKey | "headline";
 
 const number = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
 const decimal = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 1,
   minimumFractionDigits: 1,
 });
+const precise = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 3 });
 const relative = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 1,
   signDisplay: "exceptZero",
@@ -19,13 +24,141 @@ const unavailable = (
   </>
 );
 
+function clock(seconds: number) {
+  const time = Math.max(0, Math.floor(seconds));
+  return `${Math.floor(time / 60)
+    .toString()
+    .padStart(2, "0")}:${(time % 60).toString().padStart(2, "0")}`;
+}
+
+/** The rule behind each card, and this moment's window totals substituted into it. */
+const formulas: Record<
+  MetricKey,
+  { rule: string; line: (parts: MetricParts) => [string, string] | undefined }
+> = {
+  delay: {
+    rule: "Every 0.25 s tick, each person in a vehicle on the road or still waiting to enter adds the time lost against free speed: occupancy × 0.25 s × (1 − speed ÷ free speed).",
+    line: ({ personDelay, people }) =>
+      people > 0
+        ? [`${number.format(personDelay)} person-s ÷ ${number.format(people)} people`, "s"]
+        : undefined,
+  },
+  stops: {
+    rule: "A stop counts when a vehicle slows below 0.5 m/s after having exceeded 2 m/s.",
+    line: ({ stops, vehicles }) =>
+      vehicles > 0
+        ? [`${number.format(stops)} stops ÷ ${number.format(vehicles)} vehicles`, ""]
+        : undefined,
+  },
+  throughput: {
+    rule: "People in vehicles that finished their trip during the window, scaled to one simulated hour.",
+    line: ({ completedPeople, hours }) =>
+      hours > 0
+        ? [`${number.format(completedPeople)} people ÷ ${precise.format(hours)} h`, "people/h"]
+        : undefined,
+  },
+  emissions: {
+    rule: "Each tick, per vehicle: fuel = idle + k₁·speed + k₂·speed·acceleration with per-class coefficients, times a CO₂ factor for its fuel. The coefficients are assumed, so this is an estimate.",
+    line: ({ co2Kg, hours }) =>
+      hours > 0 ? [`${decimal.format(co2Kg)} kg ÷ ${precise.format(hours)} h`, "kg/h"] : undefined,
+  },
+  ambulance: {
+    rule: "Entry-to-exit travel time of the most recent ambulance to finish its trip. Not averaged over a window.",
+    line: ({ ambulance }) => (ambulance === null ? undefined : ["latest completed trip", "s"]),
+  },
+};
+
+function Calculation({
+  id,
+  title,
+  open,
+  onClose,
+  children,
+}: {
+  id: string;
+  title: string;
+  open: boolean;
+  onClose: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <div className="metric-calculation" id={id} role="tooltip" data-open={open}>
+      <header>
+        <strong>{title}</strong>
+        {open && (
+          <button type="button" className="metric-calculation-close" onClick={onClose}>
+            <span aria-hidden="true">×</span>
+            <span className="sr-only">Close calculation</span>
+          </button>
+        )}
+      </header>
+      {children}
+    </div>
+  );
+}
+
+function MetricCalculation({
+  metric,
+  readout,
+  single,
+  open,
+  onClose,
+}: {
+  metric: (typeof metricDefinitions)[number];
+  readout: LiveReadout;
+  single: boolean;
+  open: boolean;
+  onClose: () => void;
+}) {
+  const { key, label, precision } = metric;
+  const formula = formulas[key];
+  const format = precision ? decimal : number;
+  const sides = single ? ([1] as const) : ([0, 1] as const);
+  return (
+    <Calculation
+      id={`metric-${key}-description`}
+      title={`How ${label.toLowerCase()} is calculated`}
+      open={open}
+      onClose={onClose}
+    >
+      <p className="metric-calculation-rule">{formula.rule}</p>
+      {key !== "ambulance" && (
+        <p className="metric-calculation-window">
+          Window · simulated {clock(readout.window.from)} → {clock(readout.window.to)}
+        </p>
+      )}
+      <ul>
+        {sides.map((side) => {
+          const value = readout.values[side][key];
+          const line = formula.line(readout.parts[side]);
+          return (
+            <li key={side} data-side={side}>
+              <span className="metric-calculation-side">{side === 0 ? "A" : "B"}</span>
+              {line && value !== null ? (
+                <span>
+                  {line[0]} = <strong>{format.format(value)}</strong> {line[1]}
+                </span>
+              ) : (
+                <span>No data in this window yet</span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      <p className="metric-calculation-note">
+        {single ? "" : "Change = (B − A) ÷ A. "}Simulation result.
+      </p>
+    </Calculation>
+  );
+}
+
 function Series({
   readout,
   metric,
   single,
 }: {
   readout: LiveReadout;
-  metric: (typeof metricDefinitions)[number]["key"];
+  metric: MetricKey;
   single: boolean;
 }) {
   let min = Infinity;
@@ -85,20 +218,83 @@ function Series({
   );
 }
 
+function InfoButton({
+  explained,
+  label,
+  help,
+  onHelp,
+}: {
+  explained: Explained;
+  label: string;
+  help: Explained | undefined;
+  onHelp: (next: Explained | undefined) => void;
+}) {
+  return (
+    <button
+      className="metric-info"
+      type="button"
+      aria-label={`How ${label} is calculated`}
+      aria-describedby={`metric-${explained}-description`}
+      aria-expanded={help === explained}
+      title="Show the calculation"
+      onClick={() => onHelp(help === explained ? undefined : explained)}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") onHelp(undefined);
+      }}
+    >
+      <span aria-hidden="true">ƒ</span>
+    </button>
+  );
+}
+
 export function MetricHud({ readout, single }: { readout: LiveReadout; single: boolean }) {
-  const [help, setHelp] = useState<(typeof metricDefinitions)[number]["key"]>();
-  const headline =
-    readout.peopleHours < 0 ? "People-hours added this hour" : "People-hours saved this hour";
+  const [help, setHelp] = useState<Explained>();
+  const saved = readout.peopleHours >= 0;
+  const headline = saved ? "People-hours saved this hour" : "People-hours added this hour";
   return (
     <section className="comparison-hud" aria-label="Live simulation results">
       {!single && (
         <div className="comparison-headline">
           <span>{headline}</span>
           <strong>{decimal.format(Math.abs(readout.peopleHours))}</strong>
+          <InfoButton
+            explained="headline"
+            label="people-hours saved"
+            help={help}
+            onHelp={setHelp}
+          />
+          <Calculation
+            id="metric-headline-description"
+            title="How people-hours saved is calculated"
+            open={help === "headline"}
+            onClose={() => setHelp(undefined)}
+          >
+            <p className="metric-calculation-rule">
+              Total person-delay under A minus total person-delay under B over the last simulated
+              hour, converted from person-seconds to person-hours. Both sides face identical
+              vehicles, so the difference comes from the signals.
+            </p>
+            <p className="metric-calculation-window">
+              Window · simulated {clock(readout.hour.from)} → {clock(readout.hour.to)}
+            </p>
+            <ul>
+              <li>
+                <span className="metric-calculation-side">=</span>
+                <span>
+                  ({number.format(readout.hour.left)} − {number.format(readout.hour.right)})
+                  person-s ÷ 3,600 = <strong>{decimal.format(readout.peopleHours)}</strong> h
+                </span>
+              </li>
+            </ul>
+            <p className="metric-calculation-note">
+              Negative means B added delay. Simulation result.
+            </p>
+          </Calculation>
         </div>
       )}
       <dl className="comparison-metrics">
-        {metricDefinitions.map(({ key, label, unit, precision, benefit, description }) => {
+        {metricDefinitions.map((definition, index) => {
+          const { key, label, unit, precision, benefit } = definition;
           const left = readout.values[0][key];
           const right = readout.values[1][key];
           const delta =
@@ -107,26 +303,22 @@ export function MetricHud({ readout, single }: { readout: LiveReadout; single: b
           const outcome = !change ? "even" : change * benefit > 0 ? "better" : "worse";
           const format = precision ? decimal : number;
           return (
-            <div className="comparison-metric" key={key}>
+            <div className="comparison-metric" key={key} data-anchor={index < 2 ? "start" : "end"}>
               <dt className="comparison-metric-label">
                 <span>{label}</span>
-                <button
-                  className="metric-info"
-                  type="button"
-                  aria-label={`About ${label.toLowerCase()}`}
-                  aria-describedby={`metric-${key}-description`}
-                  aria-expanded={help === key}
-                  onClick={() => setHelp(help === key ? undefined : key)}
-                  onBlur={() => setHelp(undefined)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Escape") setHelp(undefined);
-                  }}
-                >
-                  ?
-                </button>
-                <span className="metric-tooltip" id={`metric-${key}-description`} role="tooltip">
-                  {description} Simulation result.
-                </span>
+                <InfoButton
+                  explained={key}
+                  label={label.toLowerCase()}
+                  help={help}
+                  onHelp={setHelp}
+                />
+                <MetricCalculation
+                  metric={definition}
+                  readout={readout}
+                  single={single}
+                  open={help === key}
+                  onClose={() => setHelp(undefined)}
+                />
               </dt>
               <dd className="comparison-metric-values">
                 {!single && (
@@ -172,4 +364,3 @@ export function MetricHud({ readout, single }: { readout: LiveReadout; single: b
     </section>
   );
 }
-import { useState } from "react";

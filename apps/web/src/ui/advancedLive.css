@@ -10,8 +10,7 @@
   background: #05070dde;
 }
 
-.custom-demand-panel,
-.policy-inspector {
+.custom-demand-panel {
   position: absolute;
   z-index: 6;
   top: min(207px, 26%);
@@ -29,8 +28,7 @@
   box-shadow: 0 14px 32px #02040a9c;
   font-size: 12px;
 }
-.custom-demand-panel h2,
-.policy-inspector h2 {
+.custom-demand-panel h2 {
   margin: 0;
   font-size: 14px;
   font-weight: 620;
@@ -65,58 +63,11 @@
   color: var(--ui-text);
   font-weight: 620;
 }
-.custom-demand-actions,
-.policy-inspector header {
+.custom-demand-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-}
-.policy-inspector header .control-button {
-  min-height: 24px;
-  padding: 0 7px;
-}
-.policy-inspector .inspector-feature {
-  display: grid;
-  grid-template-columns: 85px 35px minmax(0, 1fr);
-  gap: 5px;
-  align-items: center;
-}
-.policy-inspector .observation-vector .inspector-feature {
-  grid-template-columns: minmax(0, 1.6fr) 28px minmax(0, 1fr);
-  padding-block: 2px;
-  font-size: 10px;
-}
-.policy-inspector :is(dl, ul, p) {
-  margin: 0;
-}
-.policy-inspector dl {
-  display: grid;
-  gap: 4px;
-}
-.inspector-feature dd {
-  margin: 0;
-  color: #a4efd5;
-  font-family: var(--mono);
-}
-.inspector-feature meter {
-  width: 100%;
-}
-.policy-inspector ul {
-  display: grid;
-  gap: 3px;
-  padding: 0;
-  list-style: none;
-}
-.policy-inspector li {
-  display: flex;
-  justify-content: space-between;
-  gap: 5px;
-  color: var(--ui-dim);
-  font: 500 10px var(--mono);
-}
-.policy-inspector li strong {
-  color: var(--ui-text);
 }
 .checkpoint-control {
   position: absolute;

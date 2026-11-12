@@ -5,7 +5,10 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./observation": "./src/policy/observation.ts"
+    "./observation": "./src/policy/observation.ts",
+    "./pressure": "./src/pressure.ts",
+    "./demand": "./src/demand.ts",
+    "./actuated": "./src/actuated.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json"

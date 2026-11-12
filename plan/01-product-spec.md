@@ -60,7 +60,7 @@ Five cards, each showing A and B values and the difference as a percentage, colo
 
 - Values are rolling over the last 5 simulated minutes, with a sparkline for the full run.
 - A sixth headline figure above the cards: **"People-hours saved this hour"**, the cumulative difference in total person-delay between A and B.
-- Every card has an info tooltip stating the definition and "simulation result".
+- Every card, and the people-hours headline, has an **ƒ** button. Hovering shows and clicking pins a popover with the rule in words, the measurement window in simulated time, and the window totals substituted into the formula for A and B (for example "1,02,751 person-s ÷ 1,445 people = 71.1 s"), ending with "simulation result".
 
 ### L3. Controllers — P0
 
@@ -144,9 +144,16 @@ Each event produces a toast, a marker in the 3D scene, and a tick on the metric 
 
 A slider over saved training checkpoints (for example generations 0, 5, 20, 60, final). Moving it swaps the policy on side B live. At generation 0 the controller equals max-pressure; the visitor sees it improve. A small chart beside the slider shows the training curve with the current checkpoint marked.
 
-### L11. Policy inspector — P2
+### L11. How it decides — P0
 
-A compact panel showing the selected junction's observation vector as bars and the network's output scores, updating live.
+A panel that walks through one junction's latest decision, opened from **How it decides** in the control dock (it flies the camera to that junction). It updates on every decision (every 5 simulated seconds) and names the time of the decision and the next one.
+
+1. **What the sensors report**: a junction sketch with each arm filled by near-zone occupancy and the current green lit, plus a table of near area, people, longest wait and exit occupancy per approach.
+2. **The controller's rule.** Fixed-time: the Webster timetable and the phase the clock requests. Actuated: the extension threshold against the current reading. Max-pressure and CHOWK: one card per phase with each term written out (waiting area as near and mid occupancy weighted by zone length, exit traffic as turning share × exit area, hold bonus) and the resulting pressure.
+3. **CHOWK only**: β × pressure plus the network output per phase, drawn as bars, with the 50-value input vector behind a disclosure.
+4. **Decision**: keep or switch, whether the learned correction changed max-pressure's choice, whether the 150 s starvation rule overrode it, the controller's own reason line, and a check that the browser's term-by-term recomputation equals the numbers the controller reported.
+
+A junction picker, an A/B side picker and a log of the last eight decisions complete the panel. The worker publishes the exact sensor reading each decision used; the recomputation is unit-tested against `scorePressure` and the live controllers.
 
 ### L13. Getting-started guide — P0
 
@@ -155,6 +162,14 @@ A compact panel showing the selected junction's observation vector as bars and t
 - "Skip" or `Esc` closes it at any step. Dismissal is remembered in local storage. A "?" button in the control dock reopens it.
 - Using the guide ends the tour, like any other interaction, and sets up the split view when a step needs it.
 - Automated browsers (`navigator.webdriver`) and capture mode do not get the guide. `?guide=on` forces it and `?guide=off` suppresses it.
+
+### L14. First-visit briefing — P0
+
+- On a first visit a briefing card covers the scene while it loads, with the live city visible behind it. Six chapters advance on their own (10–15 s each, with progress bars), pause while the pointer or focus is on the card, and respond to the arrow keys; Esc or "Skip intro" closes it.
+- Chapters: the problem (fixed timers on lane-free mixed traffic); why counting misleads (two queues drawn to scale from the simulator's vehicle sizes and assumed occupancies, with count, area and people); how CHOWK decides (sense, max-pressure, learned correction, choose); how it learned (the exported validation training curve); whether it works (mean delay per person with 95% intervals for every controller on the held-out seeds and the generated headline, including where CHOWK does not win); and how to read the live screen.
+- Every number in the briefing is computed from simulator constants, `training-curve.json` or `results/benchmark.json` (extracted at build time). No hand-written results.
+- When it closes, by the visitor or after the last chapter once the simulation is ready, the autoplay tour starts and a first-time guide (L13) opens at its second card. The tour does not run while the briefing is open.
+- "What am I looking at?" under the title reopens it. Dismissal is remembered in local storage. Automated browsers and capture mode skip it; `?intro=on` forces it and `?intro=off` suppresses it.
 
 ### L12. Audio — P2
 

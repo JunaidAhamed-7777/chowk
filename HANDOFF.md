@@ -67,3 +67,10 @@ npm run capture -- video
 - **Benchmark.** Every suite was re-run with the new simulator and policies. The README block, Results page and `docs/SUBMISSION.md` are generated from `results/benchmark.json`.
 - **Media is still out of date**, now also for the junction behaviour. Recapturing is deliberately left for last.
 
+## Explainability pass (13 Nov)
+
+- **Briefing** (`apps/web/src/ui/Briefing.tsx`, spec L14). First visits open a six-chapter card over the loading scene: the problem, why counts mislead, how CHOWK decides, how it learned, how it is judged, how to read the screen. It advances by itself and hands over to the tour. `/?intro=on` forces it; automated browsers skip it. Its benchmark rows and headline come from `results/benchmark.json` through the `__CHOWK_BRIEFING__` define in `apps/web/vite.config.ts`, so the 7 MB file is not shipped to the Live view.
+- **Metric formulas** (`apps/web/src/ui/MetricHud.tsx`). The ƒ button on each card and on the people-hours headline shows the rule and the live window totals; `LiveMetrics` now returns those totals as `parts`, `window` and `hour`.
+- **How it decides** (`apps/web/src/ui/DecisionPanel.tsx`, spec L11) replaced the policy inspector. The worker's `InspectedController` records the sense each decision used; `apps/web/src/sim/decisionMath.ts` restates `scorePressure` term by term and the panel shows a ✓ when it matches the controller's own output.
+- **Do not edit `packages/controllers/src` for UI needs.** It is part of the benchmark version hash, and any byte change makes the build refuse the published results. The web app imports `pressure`, `demand` and `actuated` through subpath exports in `packages/controllers/package.json`. Running `biome check --write` over a whole package can also reformat hashed files and policy JSON; scope it to the files you changed.
+- Media still predates this pass as well.

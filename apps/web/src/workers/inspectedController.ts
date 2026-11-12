@@ -5,13 +5,19 @@ import {
   type ObservationLayout,
 } from "@chowk/controllers/observation";
 import type { JunctionSense, Network, Scenario } from "@chowk/sim";
+import type { DecisionRecord } from "../sim/protocol";
 
 interface Reading {
-  layout: ObservationLayout;
+  layout?: ObservationLayout;
   vector: Float64Array;
   available: boolean;
+  decision?: DecisionRecord;
 }
 
+/**
+ * Wraps the live controller so the interface can show exactly what it saw at its last decision.
+ * Only reads inputs and outputs; the wrapped controller's behaviour is unchanged.
+ */
 export class InspectedController implements Controller {
   readonly id: Controller["id"];
   enabled = false;
@@ -23,28 +29,31 @@ export class InspectedController implements Controller {
 
   init(network: Network, scenario: Scenario): void {
     this.controller.init(network, scenario);
-    this.readings = this.id.startsWith("chowk")
-      ? network.junctions.map(({ id }) => ({
-          layout: layoutFor(network, id),
-          vector: new Float64Array(50),
-          available: false,
-        }))
-      : [];
+    const learned = this.id.startsWith("chowk");
+    this.readings = network.junctions.map(({ id }) => ({
+      layout: learned ? layoutFor(network, id) : undefined,
+      vector: new Float64Array(50),
+      available: false,
+    }));
   }
 
   act(junction: number, sense: JunctionSense, neighbours: NeighbourSense): number {
     const phase = this.controller.act(junction, sense, neighbours);
     const reading = this.readings[junction];
     if (this.enabled && reading) {
-      buildObservation(
-        reading.layout,
-        sense,
-        neighbours,
-        reading.vector,
-        this.id === "chowk-count",
-        this.id === "chowk-solo",
-      );
-      reading.available = true;
+      // The driver reads a fresh sense object for every decision, so keeping the reference is safe.
+      reading.decision = { time: neighbours.time, sense, requested: phase };
+      if (reading.layout) {
+        buildObservation(
+          reading.layout,
+          sense,
+          neighbours,
+          reading.vector,
+          this.id === "chowk-count",
+          this.id === "chowk-solo",
+        );
+        reading.available = true;
+      }
     }
     return phase;
   }
@@ -56,5 +65,9 @@ export class InspectedController implements Controller {
   observation(junction: number): number[] | undefined {
     const reading = this.readings[junction];
     return reading?.available ? Array.from(reading.vector) : undefined;
+  }
+
+  decision(junction: number): DecisionRecord | undefined {
+    return this.readings[junction]?.decision;
   }
 }

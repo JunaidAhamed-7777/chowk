@@ -27,7 +27,7 @@ export const guideSteps: GuideStep[] = [
     focus: "numbers",
     title: "Read the difference",
     body: () =>
-      "Each card shows both sides, A and B, over the last five simulated minutes. Lower delay and fewer stops are better. Every figure here is a simulation result.",
+      "Each card shows both sides, A and B, over the last five simulated minutes. Lower delay and fewer stops are better. Press ƒ on any card to see its formula with the live totals.",
   },
   {
     focus: "events",
@@ -39,7 +39,7 @@ export const guideSteps: GuideStep[] = [
     focus: "look",
     title: "Look closer",
     body: () =>
-      "J1 to J5 fly to a junction. Overlays show the road pressure the controller sees and the decisions it makes. Click any vehicle to ride along with it.",
+      "J1 to J5 fly to a junction. How it decides walks through that junction's latest decision, number by number. Overlays show road pressure; click any vehicle to ride along.",
   },
   {
     focus: "proof",

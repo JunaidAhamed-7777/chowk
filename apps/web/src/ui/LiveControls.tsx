@@ -118,7 +118,7 @@ export function LiveControls({
               disabled={!enabled}
               onClick={onInspect}
             >
-              Policy inspector
+              How it decides
             </button>
           </div>
         </details>

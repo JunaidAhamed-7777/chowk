@@ -135,6 +135,8 @@ Track B starts against a **mock snapshot source** (vehicles moving along the net
 | ☑ | 5.13 | 2D canvas fallback (P1) | `05` Fallbacks | 4.8 | Appears when WebGL2 is unavailable |
 | ☑ | 5.14 | Error handling: worker restart, context loss, tab hidden | `01` Global | 4.8 | No blank screens under induced failures |
 | ☑ | 5.15 | Sensor-failure event, custom scenario sliders, policy inspector, audio (P1–P2) | `01` | 5.4 | As specified |
+| ☑ | 5.16 | First-visit briefing: the problem, why counts mislead, how CHOWK decides, how it learned, how it is judged (P0) | `01` L14 | 5.7 | Plays unattended into the tour; every number comes from the simulator constants, the training curve or the published benchmark |
+| ☑ | 5.17 | Calculations on screen: ƒ formula popovers on every metric and the headline; "How it decides" panel with a browser recomputation check (P0) | `01` L2, L11 | 5.1, 5.15 | Substituted totals match the cards; the panel's recomputed pressure matches the controller's own numbers (unit and browser tests) |
 
 **Gate G3 after 5.7.**
 
@@ -229,3 +231,4 @@ Record spec changes here: date, what changed, why.
 - 12 Nov 2026 — Live view: loading card with real start-up steps, a skippable first-visit guide (spec L13), controller chips flanking the divider, a compact title block and one control dock. The loading poster, README stills, GIFs and demo video predate this layout and need `npm run capture` to match.
 - 13 Nov 2026 — Movements from the green approach now share the junction box, and turns carry a single-file stream spaced for the inside of the bend. Green discharge at J3 rose from about 0.25 to 0.41 vehicles per second. Benchmark re-run against the new simulator.
 - 13 Nov 2026 — Retrained CHOWK (`junction-v2`, generation 130) and the four ablations on the shared-box junction rules; every benchmark suite re-run. Media still predates both changes.
+- 13 Nov 2026 — Explainability pass. A first-visit briefing (spec L14) explains the problem and the method before the tour, using simulator constants, the training curve and the generated benchmark headline. Every metric card and the people-hours headline gain an ƒ popover with the formula and the live window totals (L2). The policy inspector became "How it decides" (L11): sensor readings, the max-pressure terms, CHOWK's learned correction, the choice, a log, and a check that the browser's recomputation equals the controller's numbers. P0 because the user asked that visitors can always see how the numbers are made. `packages/controllers/src` is unchanged so the benchmark hash still holds; the web app reads helpers through new package subpath exports.

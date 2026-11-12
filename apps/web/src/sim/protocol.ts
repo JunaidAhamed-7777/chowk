@@ -6,6 +6,13 @@ export interface ControllerChoice {
   policy?: PolicyWeights;
 }
 
+/** The sensor reading a controller acted on at its latest decision, and the phase it asked for. */
+export interface DecisionRecord {
+  time: number;
+  sense: JunctionSense;
+  requested: number;
+}
+
 export interface ToSimInit {
   type: "init";
   seed: number;
@@ -33,6 +40,7 @@ export interface FromSimFrame {
   sense?: JunctionSense[];
   explanations?: (Explanation | undefined)[];
   observations?: (number[] | undefined)[];
+  decisions?: (DecisionRecord | undefined)[];
 }
 
 export type FromSim = FromSimFrame | { type: "error"; message: string };

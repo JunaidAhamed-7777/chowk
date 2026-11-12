@@ -44,11 +44,32 @@ export default defineConfig(({ command }) => {
     console.warn(message);
   }
   const weights = resolve(root, primaryPolicyPath);
+  // The landing briefing needs one generated sentence and five rows, not the 7 MB results file.
+  const briefing = published && {
+    headline: published.headline,
+    measurementMinutes: published.meta.measurementSeconds / 60,
+    delay: published.summary
+      .filter(
+        (cell) =>
+          cell.suite === "B1" &&
+          cell.scenario === "morning-peak" &&
+          cell.metric === "delayPerPerson" &&
+          !cell.variant,
+      )
+      .map(({ controller, mean, ciLow, ciHigh, seedCount }) => ({
+        controller,
+        mean,
+        ciLow,
+        ciHigh,
+        seedCount,
+      })),
+  };
   return {
     plugins: [react(), tailwindcss()],
     worker: { format: "es" },
     define: {
       __CHOWK_SIM_VERSION__: JSON.stringify(simulatorVersion(root)),
+      __CHOWK_BRIEFING__: JSON.stringify(briefing ?? null),
       __CHOWK_POLICY_HASH__: JSON.stringify(
         existsSync(weights) ? sha256(readFileSync(weights)) : null,
       ),

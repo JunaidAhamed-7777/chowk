@@ -130,3 +130,73 @@ test("guides a first-time visitor through the comparison and remembers dismissal
   await page.keyboard.press("Escape");
   await expect(guide).toBeHidden();
 });
+
+test("briefs a first-time visitor on the problem and hands over to the live tour", async ({
+  page,
+}) => {
+  if (process.env.CI) {
+    await page.addInitScript(() => localStorage.setItem("chowk-quality", "low"));
+  }
+
+  // Automated browsers skip the briefing unless the URL asks for it.
+  await page.goto("/?intro=on&guide=off");
+  const briefing = page.getByRole("dialog", { name: "A junction full of people, run by a clock" });
+  await expect(briefing).toBeVisible();
+  for (const title of [
+    "Without lanes, a queue is an area, not a number",
+    "A classical rule, plus a learned nudge",
+    "Trained by trial in the same simulator",
+    "Judged on traffic it never saw",
+    "Everything you see is computed live",
+  ]) {
+    await page.getByRole("button", { name: "Next" }).click();
+    await expect(page.getByRole("heading", { name: title })).toBeVisible();
+    if (title === "Judged on traffic it never saw")
+      await expect(
+        page.getByText(/held-out seeds in simulated Indian mixed traffic/),
+      ).toBeVisible();
+  }
+  const enter = page.getByRole("button", { name: "Enter the live corridor" });
+  await expect(enter).toBeEnabled({ timeout: 60_000 });
+  await enter.click();
+  await expect(
+    page.getByRole("heading", { name: "Everything you see is computed live" }),
+  ).toBeHidden();
+  await expect(page.locator(".instrument")).toHaveAttribute("data-tour", "true");
+  expect(await page.evaluate(() => localStorage.getItem("chowk-briefing"))).toBe("done");
+
+  await page.getByRole("button", { name: /What am I looking at/ }).click();
+  await expect(
+    page.getByRole("heading", { name: "A junction full of people, run by a clock" }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(
+    page.getByRole("heading", { name: "A junction full of people, run by a clock" }),
+  ).toBeHidden();
+});
+
+test("shows the arithmetic behind live metrics and a junction's decision", async ({ page }) => {
+  if (process.env.CI) {
+    await page.addInitScript(() => localStorage.setItem("chowk-quality", "low"));
+  }
+
+  await page.goto("/?tour=off");
+  await expect(page.getByRole("button", { name: "Pause simulation" })).toBeEnabled({
+    timeout: 60_000,
+  });
+  await page.getByRole("button", { name: "How delay per person is calculated" }).click();
+  const formula = page.locator("#metric-delay-description");
+  await expect(formula).toBeVisible();
+  await expect(formula).toContainText(/person-s ÷ [\d,]+ people = [\d.]+ s/);
+
+  await page.getByRole("button", { name: "16 times speed" }).click();
+  await page.locator(".decision-button").click();
+  const panel = page.getByRole("complementary", { name: "How J3 decides" });
+  await expect(panel).toBeVisible();
+  await expect(panel.getByText("Max-pressure: which green relieves the most?")).toBeVisible({
+    timeout: 60_000,
+  });
+  await expect(panel.getByText(/matches the controller's own numbers/)).toBeVisible();
+  await panel.getByRole("button", { name: /^A · / }).click();
+  await expect(panel.getByText("Follow the timetable")).toBeVisible({ timeout: 30_000 });
+});
