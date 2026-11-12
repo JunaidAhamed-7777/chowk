@@ -221,7 +221,11 @@ for (let z = -640; z <= 670; z += 27) {
 
     if (cx > 855 && cx < 1695 && Math.abs(cz + 382) < 12 + depth / 2) continue;
     const nearRoad = frontage < 20;
-    const height = nearRoad ? 5.7 + unit(lot, 6) * 15 : 8 + unit(lot, 6) ** 2.8 * 60;
+    // Low frontage along the roads, rising to towers further back so the road stays visible.
+    const setback = Math.min(1, Math.max(0, (frontage - 20) / 110));
+    const height = nearRoad
+      ? 5.7 + unit(lot, 6) * 15
+      : 8 + unit(lot, 6) ** 2.8 * (22 + 38 * setback * setback);
     const color = buildingColors[Math.floor(unit(lot, 7) * buildingColors.length)] ?? "#252d3c";
     const building = box(cx, height / 2 - 0.42, cz, width, height, depth, color);
     buildings.push(building);

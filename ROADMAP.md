@@ -251,3 +251,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — How it decides shows the three inputs that moved CHOWK's learned correction most, by exact input × gradient, checked against the controller (spec L11, issue #13).
 - 13 Nov 2026 — Limits states that the turning model is conservative: discharge with turns, computed from the calibration, against Indo-HCM base saturation flows (issue #1).
 - 13 Nov 2026 — Rewind a minute: both workers restore a checkpoint clone and replay exactly (spec L17, issue #10).
+- 13 Nov 2026 — District massing rises with distance from the road so towers sit back, and the day mood has a light warm haze (issue #4).

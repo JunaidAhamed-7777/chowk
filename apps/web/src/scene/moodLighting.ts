@@ -58,8 +58,8 @@ function values(
 const targets: Record<Mood | "rain", MoodValues> = {
   day: values({
     sky: "#a9c8e6",
-    fog: "#c3d3e0",
-    fogDensity: 0.00038,
+    fog: "#d3cfc4",
+    fogDensity: 0.00055,
     hemiSky: "#e4efff",
     hemiGround: "#7a7064",
     hemi: 2.1,
