@@ -68,6 +68,10 @@ const aerialPosition = [520, 214, 236] as const;
 const driftReach = 260;
 const driftRate = 0.045;
 const aerialTarget = [925, 0, -6] as const;
+// The tour opens low over J3's western approach, then cranes up to the aerial view.
+const streetPosition = [738, 14, 30] as const;
+const streetTarget = [790, 1, -6] as const;
+const craneSpeed = 0.75;
 
 function CorridorCamera({
   selection,
@@ -91,6 +95,8 @@ function CorridorCamera({
     target: new Vector3(...aerialTarget),
   }));
   const transition = useRef(false);
+  const crane = useRef(false);
+  const previousSelection = useRef<CameraSelection>(selection);
   const followed = useRef<number | undefined>(undefined);
   // Until the visitor takes the camera, the aerial view travels slowly along the arterial.
   const drift = useRef({ active: false, time: 0, offset: 0 });
@@ -121,14 +127,23 @@ function CorridorCamera({
 
   useEffect(() => {
     const junction = junctions.find(({ id }) => id === selection);
+    crane.current = previousSelection.current === "street" && selection === "aerial";
+    previousSelection.current = selection;
     if (junction) {
       preset.position.set(junction.x - 69, 72, junction.z + 77);
       preset.target.set(junction.x + 4, 0.7, junction.z - 5);
+    } else if (selection === "street") {
+      preset.position.set(...streetPosition);
+      preset.target.set(...streetTarget);
     } else {
       preset.position.set(...aerialPosition);
       preset.target.set(...aerialTarget);
     }
-    drift.current = { active: !junction && !reducedMotion, time: 0, offset: 0 };
+    drift.current = {
+      active: selection === "aerial" && !reducedMotion,
+      time: 0,
+      offset: 0,
+    };
     transition.current = true;
     followed.current = vehicle?.id;
   }, [selection, preset, reducedMotion, vehicle]);
@@ -195,8 +210,9 @@ function CorridorCamera({
       perspective.updateProjectionMatrix();
     }
     if (transition.current) {
-      camera.position.lerp(preset.position, rate);
-      controls.target.lerp(preset.target, rate);
+      const step = crane.current && !reducedMotion ? 1 - Math.exp(-craneSpeed * delta) : rate;
+      camera.position.lerp(preset.position, step);
+      controls.target.lerp(preset.target, step);
       if (
         camera.position.distanceToSquared(preset.position) < 0.006 &&
         controls.target.distanceToSquared(preset.target) < 0.006

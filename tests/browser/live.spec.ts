@@ -240,3 +240,23 @@ test("explains every controller on its own page", async ({ page }) => {
     await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
   await expect(page.getByRole("img", { name: /Two identical signal cycles/ })).toBeVisible();
 });
+
+test("the tour opens the split comparison within five seconds and keeps the dock aside", async ({
+  page,
+}) => {
+  await page.goto("/?intro=off&guide=off");
+  const instrument = page.locator(".instrument");
+  await expect(instrument).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
+  await expect(instrument).toHaveAttribute("data-tour", "true");
+  const started = Date.now();
+  await expect(page.getByRole("slider", { name: "Comparison wipe" })).toBeVisible({
+    timeout: 5_000,
+  });
+  expect(Date.now() - started).toBeLessThan(5_000);
+  await expect(page.getByText("Click anywhere or press a key to take control")).toBeVisible();
+  await expect(page.locator(".instrument-controls")).toHaveCSS("opacity", "0");
+
+  await page.keyboard.press("Shift");
+  await expect(instrument).toHaveAttribute("data-tour", "false");
+  await expect(page.locator(".instrument-controls")).toHaveCSS("opacity", "1");
+});

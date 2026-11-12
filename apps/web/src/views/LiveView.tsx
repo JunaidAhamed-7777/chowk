@@ -306,6 +306,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
       if (
         typeof beat.camera === "number" ||
         beat.camera === "aerial" ||
+        beat.camera === "street" ||
         beat.camera === "ambulance"
       )
         setCamera(beat.camera);
@@ -646,7 +647,14 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               />
               {tour && caption && (
                 <div className="tour-caption">
-                  <span className="tour-caption-text">{caption}</span>
+                  <span className="tour-caption-text">
+                    {caption
+                      .replace("{left}", labelOf(controllers[0].id))
+                      .replace("{right}", labelOf(controllers[1].id))}
+                  </span>
+                  <span className="tour-caption-hint">
+                    Click anywhere or press a key to take control
+                  </span>
                 </div>
               )}
             </>

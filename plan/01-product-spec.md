@@ -132,14 +132,16 @@ Each event produces a toast, a marker in the 3D scene, and a tick on the metric 
 
 | Beat | Seconds | Camera | Action | Caption |
 |---|---|---|---|---|
-| 1 | 0–8 | Slow aerial push-in | Both sims flowing; wipe off-screen | "This is a city junction corridor, simulated live in your browser." |
-| 2 | 8–20 | Aerial hold | Wipe sweeps to centre; left jams, right flows; numbers diverge | "Left: fixed timers. Right: a controller that learned Indian traffic." |
-| 3 | 20–32 | Drop to a junction | Speed overlay on; two-wheelers filter to the front | "No lanes. Two-wheelers filter. A queue is an area, not a count." |
-| 4 | 32–44 | Junction hold | Pressure and Decision overlays on | "It sees road area and people, not just vehicles." |
-| 5 | 44–58 | Ambulance cam | Ambulance event fires; greens open ahead of it | "An ambulance gets a green corridor." |
-| 6 | 58–68 | Aerial | Surge event; right side absorbs it | "A sudden surge. Watch it adapt." |
-| 7 | 68–75 | Aerial pull-back | Headline figure enlarges | "People-hours saved, and you can re-run the proof yourself." |
+| 1 | 0–2.5 | Street, low over J3 | Wipe off-screen; 4× | "Morning rush at a chowk: two-wheelers, autos, buses and cars, with no lanes." |
+| 2 | 2.5–8 | Street, low over J3 | Wipe at centre; 4× | "Left: <left controller>. Right: <right controller>. Same traffic, same seed." |
+| 3 | 8–16 | Aerial | Wipe at centre; 4× | "A five-junction corridor, simulated live in your browser." |
+| 4 | 16–32 | Junction J3 | Wipe at centre; speed overlay; 4× | "Two-wheelers move through the gaps beside queues." |
+| 5 | 32–44 | Junction J3 | Wipe at centre; pressure overlay; 4× | "The pressure overlay shows how much road area traffic occupies." |
+| 6 | 44–58 | Ambulance cam | Wipe at centre; ambulance event; 16× | "Follow an ambulance through the corridor." |
+| 7 | 58–68 | Aerial | Wipe at centre; pressure overlay; surge event; 4× | "A surge triples demand on one approach for three simulated minutes." |
+| 8 | 68–75 | Aerial | Wipe at centre; 1× | "Compare person-delay, then reproduce the benchmark in Results." |
 
+- The camera cranes slowly from the street view to the aerial view at beat 3. During the tour the control dock is hidden and the readout shows three cards, with a "Click anywhere or press a key to take control" hint under the caption.
 - The tour is data, not code: a JSON timeline of camera keyframes, events, overlay switches and captions, so it can be tuned without touching logic.
 
 ### L10. "Watch it learn" — P1

@@ -46,6 +46,25 @@ function buildingMaterial() {
         vec3 p3 = fract(vec3(p.xyx) * .1031);
         p3 += dot(p3, p3.yzx + 33.33);
         return fract((p3.x + p3.y) * p3.z);
+      }
+      // Weathered limewash and distemper colours common on Indian street frontages.
+      vec3 facadePaint(float h) {
+        if (h < .16) return vec3(.95, .90, .80);
+        if (h < .28) return vec3(.90, .74, .48);
+        if (h < .37) return vec3(.82, .56, .44);
+        if (h < .46) return vec3(.68, .82, .74);
+        if (h < .55) return vec3(.64, .76, .86);
+        if (h < .64) return vec3(.93, .70, .62);
+        if (h < .74) return vec3(.95, .87, .60);
+        if (h < .80) return vec3(.78, .72, .84);
+        return vec3(.92, .92, .89);
+      }
+      vec3 shutterPaint(float h) {
+        if (h < .25) return vec3(.42, .45, .48);
+        if (h < .45) return vec3(.18, .38, .60);
+        if (h < .60) return vec3(.62, .22, .20);
+        if (h < .75) return vec3(.20, .46, .32);
+        return vec3(.70, .56, .22);
       }`,
       )
       .replace(
@@ -54,15 +73,24 @@ function buildingMaterial() {
       float side = 1.0 - step(.6, abs(facadeNormal.y));
       float along = mix(facadePoint.x, facadePoint.z, step(.6, abs(facadeNormal.x)));
       float buildingType = windowHash(buildingSeed * .037);
-      vec3 daylight = facadeTint * mix(.72, 1.12, windowHash(buildingSeed * .113));
+      vec3 paint = facadePaint(windowHash(buildingSeed * .071 + 3.7));
+      vec3 daylight = facadeTint * paint * mix(.98, 1.22, windowHash(buildingSeed * .113));
+      // Monsoon streaks below each window bay and a darker plinth.
+      float streak = windowHash(vec2(floor(along * .8), buildingSeed.x * .31));
+      daylight *= mix(1., mix(.82, 1., smoothstep(.0, 9., facadePoint.y)), side * step(.55, streak));
+      float street = side * (1.0 - step(3.8, facadePoint.y));
+      vec3 shutters = shutterPaint(windowHash(vec2(floor(along / 3.2), buildingSeed.y * .17)));
+      float shutterRib = .86 + .14 * step(.5, fract(facadePoint.y * 6.));
+      daylight = mix(daylight, shutters * shutterRib * facadeTint * 1.25, street * step(.6, facadePoint.y));
       diffuseColor.rgb = mix(diffuseColor.rgb, daylight, facadeMix);
+      diffuseColor.rgb *= mix(vec3(1.), mix(vec3(1.), paint * 1.08, .45), (1.0 - facadeMix) * side);
       vec2 grid = vec2(along / mix(2.3, 3.45, buildingType), facadePoint.y / mix(2.9, 3.65, buildingType));
       vec2 cell = floor(grid);
       vec2 uvWindow = fract(grid);
       float band = smoothstep(.20, .23, uvWindow.y) * (1.0 - smoothstep(.61, .68, uvWindow.y));
       float bay = smoothstep(.14, .18, uvWindow.x) * (1.0 - smoothstep(.75, .79, uvWindow.x));
       float mullion = smoothstep(.025, .075, abs(uvWindow.x - .49));
-      float glass = side * band * bay * mix(.46, 1., mullion);
+      float glass = side * band * bay * mix(.46, 1., mullion) * (1.0 - street);
       float randomWindow = windowHash(cell + buildingSeed * .68);
       float lit = step(mix(.79, .95, buildingType), randomWindow);
       float curb = smoothstep(.045, .09, abs(uvWindow.y - .9));

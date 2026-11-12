@@ -1039,7 +1039,7 @@ button:disabled {
   pointer-events: none;
 }
 .tour-caption-text {
-  max-width: 49ch;
+  max-width: 64ch;
   padding: 8px 13px;
   border: 1px solid #ffffff20;
   border-radius: 7px;
