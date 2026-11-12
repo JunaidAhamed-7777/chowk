@@ -192,6 +192,19 @@ Target simulator speed is at least 100x real time per core. One candidate evalua
 | Main | Overnight 13→14 Nov | Full run |
 | Second | Overnight 14→15 Nov | Re-run with whatever the first taught us; only replaces the main model if validation is better |
 
+### Runs completed
+
+| Run | Simulator | Population | Generations | Selected | Validation fitness |
+|---|---|---|---|---|---|
+| `main` | Junction rules before 13 Nov | 24 | 20 | 20 | 0.9957 |
+| `junction-v2` | Shared-box junctions (13 Nov) | 48 | 400 | 130 | 0.9816 |
+| `ablation-v2-count` | Shared-box junctions | 24 | 150 | 10 | 0.9996 |
+| `ablation-v2-pure` | Shared-box junctions | 24 | 150 | 5 | 1.0863 |
+| `ablation-v2-solo` | Shared-box junctions | 24 | 150 | 120 | 0.9794 |
+| `ablation-v2-vehicle` | Shared-box junctions | 24 | 150 | 120 | 0.9935 |
+
+All runs used σ = 0.005 and a learning rate of 0.001, annealed over the run, with two episodes per candidate. Validation fitness is mean delay relative to area max-pressure on the 20 validation seeds; below 1 is better. On the new simulator the earlier `main` policy scored 0.9914, so `junction-v2` replaced it. The ablations used half the population and fewer generations than `junction-v2`; the Results page notes that the variants use separate, shorter training runs.
+
 ### Failure handling
 
 - If after the main run validation fitness is not below 1.0, CHOWK has not improved on `mp-area`. Ship the best checkpoint anyway, report the true number, and shift the pitch to the simulator, the lane-free finding (area versus counts), the live demo and the reproducible benchmark. Do not hide or soften the result.

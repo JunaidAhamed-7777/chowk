@@ -58,3 +58,12 @@ npm run capture -- video
 - `apps/web/src/ui/liveLayout.css` holds the Live layout overrides and loads last.
 - **Media is out of date.** `apps/web/public/poster.webp`, the README stills and GIFs and the demo video show the previous layout. Run `npm run capture -- stills` and `npm run capture -- video`, then check the README. Until then the loading card hides the poster's old interface behind a blur.
 - Phone layout is not a target; do not spend time on it.
+
+## Junction rules and retrained policies (13 Nov)
+
+- **Junctions.** Every movement from the green approach now shares the box. Turns enter beside straight traffic unless their sweep would cross a vehicle next to them, and each turn path carries a single-file stream spaced for the inside of the bend. Green discharge at J3 rose from about 0.25 to 0.41 vehicles per second. Details are in `plan/02-simulator.md` under Junctions; the logic is in `packages/sim/src/junction-traffic.ts`.
+- **Turning is still the capacity limit.** The authored corners are tight (bend radius about 8 m on a 10.5 m carriageway), so kerb-side turners need long spacing. Wider corners would need changes to `corridor.json` and the generated road meshes.
+- **Policies.** CHOWK was retrained on the new rules (run `junction-v2`, population 48, 400 generations); generation 130 is published. The four ablations were retrained with population 24 for 150 generations each (`ablation-v2-*`). Runs live under `runs/`, which is not committed.
+- **Benchmark.** Every suite was re-run with the new simulator and policies. The README block, Results page and `docs/SUBMISSION.md` are generated from `results/benchmark.json`.
+- **Media is still out of date**, now also for the junction behaviour. Recapturing is deliberately left for last.
+
