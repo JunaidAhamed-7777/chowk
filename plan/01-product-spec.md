@@ -246,6 +246,8 @@ A plain list. At minimum:
 - The emissions figure is an estimate from a simple fuel model.
 - Deployment would require field calibration and safety validation that this project has not done.
 
+A second section, "Path to a real junction", sets out what a field trial would take (sensing, where a learned policy would sit beside existing adaptive control, compute, and the validation steps before any trial). It is labelled as a plan, cites every external fact and computes the parameter count from the controller package.
+
 ## Global behaviours
 
 - **Loading — P0:** a static poster frame of the city renders immediately as a background image. Over it, a loading card shows the brand mark and the real start-up steps (3D corridor, signal controllers, traffic warm-up), ticking each off as it completes, with a rotating one-line hint. It stays for at least about a second so it can be read, and fades out once the scene has faded in. Target: interactive within 3 s on broadband.

@@ -240,3 +240,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Tour opens on a low street camera over J3 and cranes up to the aerial view at 8 s; the split comparison arrives at 2.5 s at 4× speed (issues #3, #5). During the tour the control dock steps aside and the readout shrinks to three cards with a "take control" hint (#6). Facades take a per-building paint colour, monsoon streaks and painted shutters at street level, and the daytime ground is warmer (#4, partial: massing and haze still to do).
 - 13 Nov 2026 — Live time-space diagram for both simulations (spec L15, issue #11).
 - 13 Nov 2026 — Beat the AI: the visitor runs J3 against CHOWK for three simulated minutes (spec L16, issue #9).
+- 13 Nov 2026 — Limits adds "Path to a real junction", a cited plan for what a field trial would take (issue #16).

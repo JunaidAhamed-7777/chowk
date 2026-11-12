@@ -1120,3 +1120,11 @@ button:disabled {
     display: none;
   }
 }
+
+.information-subheading {
+  margin: 40px 0 8px;
+  font-size: 20px;
+}
+.information-list dd a {
+  color: var(--accent);
+}
