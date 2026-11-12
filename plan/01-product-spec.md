@@ -132,7 +132,7 @@ Each event produces a toast, a marker in the 3D scene, and a tick on the metric 
 
 | Beat | Seconds | Camera | Action | Caption |
 |---|---|---|---|---|
-| 1 | 0–2.5 | Street, low over J3 | Wipe off-screen; 4× | "Morning rush at a chowk: two-wheelers, autos, buses and cars, with no lanes." |
+| 1 | 0–2.5 | Street, low over J3 | Wipe off-screen; 4× | "Morning rush at a chowk: two-wheelers, autos, buses and cars, no lanes." |
 | 2 | 2.5–8 | Street, low over J3 | Wipe at centre; 4× | "Left: <left controller>. Right: <right controller>. Same traffic, same seed." |
 | 3 | 8–16 | Aerial | Wipe at centre; 4× | "A five-junction corridor, simulated live in your browser." |
 | 4 | 16–32 | Junction J3 | Wipe at centre; speed overlay; 4× | "Two-wheelers move through the gaps beside queues." |
