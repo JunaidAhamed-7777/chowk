@@ -263,6 +263,7 @@ function LightPools() {
         fragmentShader: `
       varying vec2 poolUV;
       uniform float poolLevel;
+      uniform float wetness;
       void main() {
         float radius = length(poolUV * 2. - 1.);
         float brightness = pow(1. - smoothstep(0., 1., radius), 2.3);

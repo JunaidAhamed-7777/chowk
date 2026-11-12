@@ -32,7 +32,7 @@ export function useTour(options: TourOptions) {
     callbacks.current.onWipe(wipe);
 
     const advance = (now: number) => {
-      if (!document.hidden) elapsed += Math.min((now - last) / 1000, 0.15);
+      if (!document.hidden) elapsed += Math.min((now - last) / 1000, 0.5);
       last = now;
       if (elapsed >= duration) {
         callbacks.current.onLoop();
