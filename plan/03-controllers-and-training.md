@@ -63,7 +63,7 @@ The same, with occupied road area in place of vehicle counts on both sides. This
 
 ### Emergency variants
 
-For the ambulance tests, each baseline also runs with a rule-based pre-emption: if an approach reports `emergency`, serve it. Reported as `mp-area+preempt` and so on, so CHOWK's learned behaviour is compared with the standard engineering answer, not with baselines that ignore the ambulance.
+For the ambulance tests, each baseline also runs with a rule-based pre-emption: if an approach reports `emergency`, serve it. Reported as `mp-area+preempt` and so on, so CHOWK's learned behaviour is compared with the standard engineering answer, not with baselines that ignore the ambulance. CHOWK also runs with the same rule as `chowk+preempt`, which is the variant a deployment would use.
 
 ## CHOWK — the learned controller
 

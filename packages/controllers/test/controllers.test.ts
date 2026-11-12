@@ -113,6 +113,18 @@ describe("classical controllers", () => {
     expect(controller.act(0, input, neighbours)).toBe(1);
   });
 
+  test("CHOWK with pre-emption serves an ambulance's approach", () => {
+    const controller = createController("chowk+preempt");
+    controller.init(corridor, scenario);
+    const input = sense(0);
+    input.approaches[3].emergency = 1;
+    const phase = corridor.junctions[0].phases.findIndex(({ approaches }) =>
+      approaches.includes(corridor.junctions[0].approaches[3]),
+    );
+    expect(controller.act(0, input, neighbours)).toBe(phase);
+    expect(controller.explain?.(0)?.reason).toBe("Serving an approaching ambulance");
+  });
+
   test("ambulance preemption selects its approach regardless of pressure", () => {
     const controller = createController("mp-area+preempt");
     controller.init(corridor, scenario);

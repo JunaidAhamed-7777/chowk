@@ -1,7 +1,7 @@
 import type { JunctionSense, Network, Scenario } from "@chowk/sim";
 import { expectedDemand, type TurnShare } from "./demand";
-import type { BaselineId, Controller, Explanation } from "./types";
 import tunedHysteresis from "./tuned-hysteresis.json";
+import type { BaselineId, Controller, Explanation } from "./types";
 
 export const AREA_HYSTERESIS = tunedHysteresis.area;
 export const COUNT_HYSTERESIS = tunedHysteresis.count;

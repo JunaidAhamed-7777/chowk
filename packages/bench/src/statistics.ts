@@ -97,6 +97,7 @@ const controllerOrder = [
   "actuated",
   "webster",
   "mp-area+preempt",
+  "chowk+preempt",
   "chowk-vehicle",
   "chowk-count",
   "chowk-pure",

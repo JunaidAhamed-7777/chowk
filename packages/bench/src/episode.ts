@@ -1,6 +1,6 @@
 import {
-  type ControllerId,
   ControllerDriver,
+  type ControllerId,
   createController,
   type PolicyWeights,
 } from "@chowk/controllers";

@@ -103,7 +103,7 @@ export function suiteRuns(suite: SuiteId, seeds: readonly number[] = heldOutSeed
       return identities(
         suite,
         ["morning-peak"],
-        ["webster", "mp-area", "mp-area+preempt", "chowk"],
+        ["webster", "mp-area", "mp-area+preempt", "chowk", "chowk+preempt"],
         seeds,
       );
   }
@@ -114,6 +114,7 @@ export function reproductionRuns(): RunIdentity[] {
 }
 
 export function policyFor(controller: string): string | undefined {
+  if (controller === "chowk+preempt") return "chowk";
   return controller === "chowk" || /^chowk-(?:vehicle|count|pure|solo)$/.test(controller)
     ? controller
     : undefined;

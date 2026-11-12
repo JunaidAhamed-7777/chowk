@@ -1,3 +1,5 @@
+export { rendererName } from "./engineering";
+export { type EpisodeOptions, runEpisode } from "./episode";
 export { headlineFor, primaryMetric, primaryScenario, signedPercent } from "./headline";
 export {
   controllerLabel,
@@ -14,6 +16,7 @@ export {
   percentile,
   summariseRuns,
 } from "./statistics";
+export { reproductionRuns, scenarioLabel } from "./suites";
 export type {
   BenchmarkFile,
   BenchmarkMeta,
@@ -25,6 +28,3 @@ export type {
   SummaryCell,
 } from "./types";
 export { compareRuns, runKey } from "./types";
-export { type EpisodeOptions, runEpisode } from "./episode";
-export { reproductionRuns, scenarioLabel } from "./suites";
-export { rendererName } from "./engineering";

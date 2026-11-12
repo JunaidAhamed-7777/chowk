@@ -3,7 +3,7 @@ import type { PolicyWeights } from "./policy/weights";
 
 export type BaselineId = "webster" | "actuated" | "mp-count" | "mp-area";
 export type LearnedId = "chowk" | "chowk-vehicle" | "chowk-count" | "chowk-pure" | "chowk-solo";
-export type ControllerId = BaselineId | LearnedId | `${BaselineId}+preempt`;
+export type ControllerId = BaselineId | LearnedId | `${BaselineId}+preempt` | "chowk+preempt";
 
 export interface ControllerOptions {
   policy?: PolicyWeights;

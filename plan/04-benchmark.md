@@ -77,7 +77,7 @@ All scenarios × {`webster`, `actuated`, `mp-count`, `mp-area`, `chowk`} × 20 s
 
 ### B6. Emergency response — P0
 
-`morning-peak` with one ambulance every 5 minutes, end to end along the arterial. Controllers: `webster`, `mp-area`, `mp-area+preempt`, `chowk`. Report ambulance travel time **and** delay per person for everyone else, so the cost of priority is visible.
+`morning-peak` with one ambulance every 5 minutes, end to end along the arterial. Controllers: `webster`, `mp-area`, `mp-area+preempt`, `chowk`, `chowk+preempt`. `chowk+preempt` wraps the published CHOWK policy in the same rule-based pre-emption as `mp-area+preempt`, so the comparison of priority rules is like for like. Report ambulance travel time **and** delay per person for everyone else, so the cost of priority is visible.
 
 ### B7. Fairness — P1
 

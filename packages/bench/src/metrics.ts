@@ -44,6 +44,8 @@ export function controllerLabel(id: string): string {
       return "Count max-pressure";
     case "mp-area":
       return "Area max-pressure";
+    case "chowk+preempt":
+      return "CHOWK with pre-emption";
     case "mp-area+preempt":
       return "Area max-pressure with pre-emption";
     case "chowk":

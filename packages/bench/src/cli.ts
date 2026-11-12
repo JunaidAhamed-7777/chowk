@@ -277,7 +277,7 @@ async function main(): Promise<void> {
   const jobs = [...queue.values()].map((identity, index) => ({
     index,
     identity,
-    options: { policy: policies.get(identity.controller)?.weights },
+    options: { policy: policies.get(policyFor(identity.controller) ?? "")?.weights },
   }));
   console.log(
     `Benchmark ${selected.join(", ")} · ${jobs.length} new episodes · ${concurrency} workers`,

@@ -79,6 +79,8 @@ export function createController(id: ControllerId, options: ControllerOptions = 
       return new Preemption(id, createController("mp-area", options));
     case "mp-count+preempt":
       return new Preemption(id, createController("mp-count", options));
+    case "chowk+preempt":
+      return new Preemption(id, createController("chowk", options));
     case "chowk":
     case "chowk-vehicle":
     case "chowk-count":
