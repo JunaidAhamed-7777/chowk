@@ -135,6 +135,16 @@ const linkRects = corridor.links.map((link) => {
     );
     lights.push(box(hx, 6.8, hz, 0.33, 0.15, 0.67, "#ffb057", yaw));
     pools.push({ x: poolX, z: poolZ, radius: width > 8 ? 14 : 10 });
+    // Overhead cables strung from pole to pole, as on most Indian arterials.
+    if (distance + pitch < length - 12) {
+      const [wx, wz] = center(distance + pitch / 2, -1.05);
+      for (const [height, drop] of [
+        [6.55, 0],
+        [6.25, 0.1],
+        [5.9, 0.22],
+      ] as const)
+        furniture.push(box(wx, height - drop, wz, pitch, 0.07, 0.07, "#1c2228", yaw));
+    }
   }
 
   for (let distance = 58; distance < length - 46; distance += 82) {
