@@ -83,3 +83,18 @@ npm run capture -- video
 - **Readiness marker** is now `data-ready` on `.instrument`; the old `.simulation-status` pill is gone. Capture and browser-budget scripts use the new selector.
 - **Menus** close on outside press through `apps/web/src/ui/useDismissableMenus.ts`.
 - The README stills, poster and video now differ even more from the app (daytime morning peak, new header). Recapture.
+
+## Capacity fix, retraining and new live features (13 Nov)
+
+Issues and their order of work are tracked on GitHub (pinned tracker issue). This pass worked through them in order.
+
+- **Capacity (issue #1).** Calibration used to discharge an all-through queue, which overstated capacity about threefold once 30% of traffic turns. Scenario load was also pinned to J3 while J1 ran at 1.22 of capacity in morning peak. Calibration now uses the default turning shares (`packages/scenarios/src/mixes.ts`), and load is quoted at the busiest junction. Off-peak delay per person fell from about 600 s to about 45 s. `npm run bench:diagnose -- <scenario> <controller> [seed] [load]` reports where delay accrues and green discharge per approach; validation seeds only.
+- **Turning is still conservative.** Limits now shows discharge with turns beside Indo-HCM base saturation flows; the simulator is well below them. Wider corners or parallel turn streams would raise it, at the cost of re-authoring `corridor.json` and the road meshes.
+- **Baselines.** Webster lengthens its cycle when minimum greens would push a phase past 0.9 degree of saturation. Max-pressure hysteresis was re-tuned on all 20 validation seeds (area 0.01, count 2).
+- **Training.** At σ 0.005 training was unstable on the new dynamics; `capacity-v2` used σ 0.001, learning rate 0.0002, population 64 and four episodes per candidate. Generation 220 is published (validation 0.939). Ablations `capacity-v2-*` use population 32 for 150 generations.
+- **Benchmark.** B1, B2 and B4–B7 were re-run; B6 now includes `chowk+preempt`. The headline is generated from `results/benchmark.json`.
+- **Live view.** The tour opens on a low street camera, the split screen arrives at 2.5 s, the dock steps aside during the tour, and the tour now includes a ride-along and a People beat. New: Beat the AI (`ui/BeatTheAI.tsx`, worker `manualOverride.ts`), Time-space (`ui/TimeSpacePanel.tsx`), rewind a minute (worker checkpoints), and input attribution in How it decides (`sim/attribution.ts`).
+- **Scene.** Facades take per-building paint, streaks and street-level shutters; monsoon roads look wet.
+- **Results and Limits.** Results gains "Check any comparison" with per-seed replay. Limits gains "Path to a real junction" (cited) and the turning-capacity note.
+- **Do not run `biome check --write` across packages.** It reformats hashed sources; scope it to the files you changed.
+- **Media is still out of date** and is deliberately left for last.

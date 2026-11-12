@@ -12,7 +12,7 @@ On an Indian arterial, two-wheelers filter through queues, auto-rickshaws share 
 
 Drag the divider to compare two controllers over the same demand. Block a lane, trigger a surge, or send an ambulance through both sides. The pressure overlay shows what the controller sees. CHOWK learns an adjustment to area-based max-pressure control using occupancy-weighted delay.
 
-On 20 held-out seeds in simulated Indian mixed traffic, CHOWK showed no clear difference in delay per person versus area max-pressure (−0.6%, 95% CI −1.5% to +0.0%), with 4.5% lower delay versus Webster fixed-time (95% CI −5.2% to −3.8%). Simulation result.
+On 20 held-out seeds in simulated Indian mixed traffic, CHOWK reduced delay per person by 4.6% versus area max-pressure (95% CI −7.5% to −1.7%), with 60.0% lower delay versus Webster fixed-time (95% CI −62.7% to −57.2%). Simulation result.
 
 The Results view reruns a published subset in browser workers and compares every metric and final state hash. All results are simulation results. The Method page documents the assumptions and validation. CHOWK builds on prior work on lane-free signal control. [Nandakumar, Banerjee and Vanajakshi](https://arxiv.org/abs/2509.21745) · [C-DAC CoSiCoSt-EnV](https://cdac.in/index.aspx?id=product_details&productId=CoSiCoStEnV%28CompositeSignalControlStrategyEnhancedVersion%29)
 
