@@ -263,3 +263,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Results runs the held-out grid live beside area max-pressure (spec R7, issue #21). The 3D Live view stays on the corridor; making it network-generic is a larger refactor.
 - 13 Nov 2026 — Dependency-free C export of the policy that reproduces the TypeScript outputs bit for bit on 250 recorded cases, checked in CI (issue #17).
 - 13 Nov 2026 — Four live-only story presets: stadium exit, festival procession, school closing and waterlogging (spec L4b, issue #19).
+- 13 Nov 2026 — Dock fits at 1024 px: photo mode is an icon button and the dock tightens below 1180 px; below 1024 px it scrolls sideways.

@@ -8,6 +8,7 @@ type IconName =
   | "layers"
   | "muted"
   | "pause"
+  | "photo"
   | "play"
   | "reset"
   | "sound";
@@ -32,6 +33,12 @@ const strokes: Record<IconName, ReactNode> = {
   ),
   muted: <path d="M3 8v4h3l4 3V5L6 8H3m10 0 4 4m0-4-4 4" />,
   pause: <path d="M8 5v10m4-10v10" />,
+  photo: (
+    <>
+      <path d="M3 7h3l1.5-2h5L14 7h3v8H3Z" />
+      <circle cx="10" cy="11" r="2.5" />
+    </>
+  ),
   play: <path d="m7 5 8 5-8 5V5Z" fill="currentColor" strokeWidth="1" />,
   reset: <path d="M4 9a6 6 0 1 1 1 5m-1-9v4h4" />,
   sound: <path d="M3 8v4h3l4 3V5L6 8H3m10-.5a3.5 3.5 0 0 1 0 5m2-7a6.5 6.5 0 0 1 0 9" />,

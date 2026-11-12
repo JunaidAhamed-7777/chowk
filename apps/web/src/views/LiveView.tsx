@@ -982,8 +982,10 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
                 setChallenge("off");
                 setPhoto(true);
               }}
+              aria-label="Photo mode"
+              title="Photo mode: hide the interface"
             >
-              Photo
+              <Icon name="photo" size={17} />
             </button>
             <button
               className="control-button tour-button"
