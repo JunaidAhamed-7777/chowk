@@ -445,6 +445,7 @@ export function NightCorridor({
         singleView={singleView}
         overlay={overlay}
         aerial={camera === "aerial"}
+        reducedMotion={reducedMotion}
       />
       <EventMarkers events={events} tick={tick} />
       <RoadPicker onPick={onRoadPick} />

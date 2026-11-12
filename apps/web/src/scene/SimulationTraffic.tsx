@@ -1,6 +1,7 @@
 import { useFrame } from "@react-three/fiber";
 import { type RefObject, useRef, useState } from "react";
 import type { SimHost, SnapshotStream } from "../sim/SimHost";
+import { AmbulanceCorridor } from "./AmbulanceCorridor";
 import { DecisionLabels } from "./DecisionLabels";
 import { MotionTrails } from "./MotionTrails";
 import { PressureZones } from "./PressureZones";
@@ -18,6 +19,7 @@ export function SimulationTraffic({
   singleView,
   overlay,
   aerial,
+  reducedMotion = false,
 }: {
   host: RefObject<SimHost | null>;
   paused: boolean;
@@ -27,6 +29,7 @@ export function SimulationTraffic({
   singleView: boolean;
   overlay: OverlayMode;
   aerial: boolean;
+  reducedMotion?: boolean;
 }) {
   const left = useRef<SnapshotStream>(null);
   const right = useRef<SnapshotStream>(null);
@@ -93,6 +96,18 @@ export function SimulationTraffic({
         enabled={overlay === "decision"}
         visible={singleView || wipe < 100}
         clip={clips[1]}
+      />
+      <AmbulanceCorridor
+        host={left}
+        visible={!singleView && wipe > 0}
+        clip={clips[0]}
+        reducedMotion={reducedMotion}
+      />
+      <AmbulanceCorridor
+        host={right}
+        visible={singleView || wipe < 100}
+        clip={clips[1]}
+        reducedMotion={reducedMotion}
       />
       <MotionTrails
         host={left}
