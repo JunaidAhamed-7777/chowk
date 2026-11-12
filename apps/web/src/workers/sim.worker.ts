@@ -12,6 +12,7 @@ import {
 import { makeLiveScenario, warmupSeconds } from "../sim/liveScenario";
 import type { ControllerChoice, FromSim, FromSimFrame, ToSim, ToSimInit } from "../sim/protocol";
 import { InspectedController } from "./inspectedController";
+import { ManualOverride } from "./manualOverride";
 
 let driver: ControllerDriver | undefined;
 let scenario: Scenario;
@@ -22,14 +23,20 @@ let pressure = false;
 let decision = false;
 let inspection = false;
 let inspected: InspectedController | undefined;
+let manual: ManualOverride | undefined;
+let manualJunction = -1;
+let manualPhase = -1;
 
 function controllerFor({ id, policy }: ControllerChoice) {
-  inspected = new InspectedController(
+  manual = new ManualOverride(
     createController(id, {
       policy,
       saturation: (link) => saturationFor(corridor, scenario, link),
     }),
   );
+  manual.junction = manualJunction;
+  manual.phase = manualPhase;
+  inspected = new InspectedController(manual);
   inspected.enabled = inspection;
   return inspected;
 }
@@ -79,6 +86,8 @@ function init({
   scenario: requestedScenario = makeLiveScenario(),
 }: ToSimInit) {
   scenario = requestedScenario;
+  manualJunction = -1;
+  manualPhase = -1;
   endTick = Math.floor(scenario.duration / DT);
   const sim = createSim({ network: corridor, scenario, seed, maxVehicles });
   driver = new ControllerDriver(sim, corridor, scenario, controllerFor(controller));
@@ -120,6 +129,23 @@ self.onmessage = ({ data }: MessageEvent<ToSim>) => {
           throw new Error("Event target must be after the current simulation tick.");
         events.push({ tick: data.atTick, event: data.event });
         break;
+      case "manual": {
+        const junction = corridor.junctions[data.junction];
+        if (data.junction !== -1 && !junction)
+          throw new Error("Unknown junction for manual control.");
+        if (data.phase >= 0 && !junction?.phases[data.phase])
+          throw new Error("Unknown phase for manual control.");
+        manualJunction = data.junction;
+        manualPhase = data.phase;
+        if (manual) {
+          manual.junction = manualJunction;
+          manual.phase = manualPhase;
+        }
+        // Ask now as well as at the next decision; the signal still honours minimum green.
+        if (driver && junction && data.phase >= 0)
+          driver.sim.requestPhase(data.junction, data.phase);
+        break;
+      }
       case "recycle":
         buffers.push(data.buffer);
         break;

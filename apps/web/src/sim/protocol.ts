@@ -27,6 +27,7 @@ export type ToSim =
   | { type: "setController"; controller: ControllerChoice }
   | { type: "setOverlayData"; pressure: boolean; decision: boolean; inspection: boolean }
   | { type: "event"; atTick: number; event: SimEvent }
+  | { type: "manual"; junction: number; phase: number }
   | { type: "recycle"; buffer: ArrayBuffer };
 
 export interface FromSimFrame {

@@ -183,6 +183,13 @@ A junction picker, an A/B side picker and a log of the last eight decisions comp
 - Each junction carries two thin bars for the arterial directions, green while that direction's phase is green and red otherwise, so platoons, queues and green waves read at a glance.
 - Sampling runs on the main thread from the snapshot stream into preallocated ring buffers; the canvas redraws four times a second. Opening it closes "How it decides", and Escape closes it.
 
+### L16. Beat the AI — P1
+
+- "Beat the AI" in the dock opens a panel. Starting a round restarts both simulations on the current seed with CHOWK on both sides, at 4×, with the camera on J3.
+- On the left the visitor runs J3: four buttons (or keys 1 to 4) request green for an approach. The request applies at once if minimum green allows and is held at every decision; maximum green, clearance and the starvation guard still apply. Every other junction stays with CHOWK on both sides, so only J3 differs.
+- The score is person-hours of delay since the round began on each side. After three simulated minutes the simulation pauses and a verdict names the winner and margin, with a note that one round on one seed is a game, not a benchmark.
+- The visitor's requests go through a wrapper in the web worker (`apps/web/src/workers/manualOverride.ts`); `packages/controllers/src` is unchanged.
+
 ### L12. Audio — removed
 
 The site has no sound and no mute control (removed at the user's request, 13 Nov).

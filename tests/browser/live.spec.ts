@@ -303,3 +303,28 @@ test("the time-space diagram plots both simulations along the corridor", async (
   await page.keyboard.press("Escape");
   await expect(panel).toBeHidden();
 });
+
+test("Beat the AI plays a round at J3 against CHOWK and reports a verdict", async ({ page }) => {
+  test.setTimeout(240_000);
+  await page.goto("/?tour=off");
+  await expect(page.locator(".instrument")).toHaveAttribute("data-ready", "true", {
+    timeout: 60_000,
+  });
+  await page.getByRole("button", { name: "Beat the AI" }).click();
+  const panel = page.getByRole("region", { name: "Beat the AI" });
+  await panel.getByRole("button", { name: "Start round" }).click();
+  await expect(panel.getByRole("group", { name: "Give green to" })).toBeVisible({
+    timeout: 60_000,
+  });
+  for (const key of ["2", "4", "1", "3"]) {
+    await page.keyboard.press(key);
+    await page.waitForTimeout(2_000);
+  }
+  await page.getByRole("button", { name: "16 times speed" }).click();
+  await expect(panel.getByRole("button", { name: "Play again" })).toBeVisible({
+    timeout: 150_000,
+  });
+  await expect(panel.getByText(/beat|draw/i).first()).toBeVisible();
+  await panel.getByRole("button", { name: "Leave Beat the AI" }).click();
+  await expect(panel).toBeHidden();
+});

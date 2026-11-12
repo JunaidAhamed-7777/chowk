@@ -45,6 +45,7 @@ import type { ControllerPair, MetricsPair, SimulationSide } from "../sim/SimHost
 import { clockTime, scenarioScenes } from "../sim/scenarioScene";
 import { useSimHost } from "../sim/useSimHost";
 import { useTour } from "../tour/useTour";
+import { BeatTheAI, CHALLENGE_JUNCTION, type ChallengeStage } from "../ui/BeatTheAI";
 import { Briefing, shouldOpenBriefing } from "../ui/Briefing";
 import { CheckpointControl } from "../ui/CheckpointControl";
 import { ComparisonWipe } from "../ui/ComparisonWipe";
@@ -136,6 +137,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
   const [editingDemand, setEditingDemand] = useState(false);
   const [inspecting, setInspecting] = useState(false);
   const [timeSpace, setTimeSpace] = useState(false);
+  const [challenge, setChallenge] = useState<ChallengeStage>("off");
   const [inspectedJunction, setInspectedJunction] = useState(2);
   const [picking, setPicking] = useState(false);
   const [events, setEvents] = useState<ActiveEvent[]>([]);
@@ -427,11 +429,41 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
     return false;
   }
 
+  const rival = controllerChoices.find(({ controller }) => controller.id === "chowk");
+
+  function startChallenge() {
+    const learned = rival?.controller;
+    if (!learned) return;
+    endTour();
+    setInspecting(false);
+    setTimeSpace(false);
+    setEditingDemand(false);
+    setControllers([learned, learned]);
+    setSpeed(4);
+    setPaused(false);
+    setSingleView(false);
+    setWipe(50);
+    setCamera(CHALLENGE_JUNCTION);
+    setVehicle(undefined);
+    retries.current = 0;
+    // Wait for the restarted pair, not the last frame of the previous run.
+    setReady(false);
+    setFrame(undefined);
+    setChallenge("starting");
+    setRevision((value) => value + 1);
+  }
+
+  const onChallengeStage = useCallback((next: ChallengeStage) => {
+    setChallenge(next);
+    if (next === "done") setPaused(true);
+  }, []);
+
   function openDecision(junction: number) {
     endTour();
     setEditingDemand(false);
     setInspectedJunction(junction);
     setTimeSpace(false);
+    setChallenge("off");
     setInspecting(true);
     setCamera(junction);
     setVehicle(undefined);
@@ -688,6 +720,22 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               onClose={() => setInspecting(false)}
             />
           )}
+          {challenge !== "off" && (
+            <BeatTheAI
+              host={host}
+              stage={challenge}
+              ready={ready}
+              tick={frame?.tick}
+              metrics={frame?.metrics}
+              rivalLabel={rival?.label ?? "CHOWK"}
+              onStart={startChallenge}
+              onStage={onChallengeStage}
+              onExit={() => {
+                setChallenge("off");
+                setPaused(false);
+              }}
+            />
+          )}
           {timeSpace && ready && (
             <TimeSpacePanel
               host={host}
@@ -863,6 +911,20 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               How it decides
             </button>
             <button
+              className="control-button challenge-button"
+              type="button"
+              disabled={disabled || !rival}
+              aria-pressed={challenge !== "off"}
+              onClick={() => {
+                endTour();
+                setInspecting(false);
+                setTimeSpace(false);
+                setChallenge(challenge === "off" ? "intro" : "off");
+              }}
+            >
+              Beat the AI
+            </button>
+            <button
               className="control-button time-space-button"
               type="button"
               disabled={disabled}
@@ -870,6 +932,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               onClick={() => {
                 endTour();
                 setInspecting(false);
+                setChallenge("off");
                 setTimeSpace(!timeSpace);
               }}
             >
