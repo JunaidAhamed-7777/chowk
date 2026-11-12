@@ -98,3 +98,11 @@ Issues and their order of work are tracked on GitHub (pinned tracker issue). Thi
 - **Results and Limits.** Results gains "Check any comparison" with per-seed replay. Limits gains "Path to a real junction" (cited) and the turning-capacity note.
 - **Do not run `biome check --write` across packages.** It reformats hashed sources; scope it to the files you changed.
 - **Media is still out of date** and is deliberately left for last.
+
+## Second feature pass (13 Nov)
+
+- **Live:** green chevrons ahead of ambulances (`scene/AmbulanceCorridor.tsx`), CHOWK with pre-emption in the controller menu, monsoon lightning, photo mode (camera icon in the dock), delay per vehicle beside per person in the delay popover, overhead cables, four live-only stories (`presets` in `sim/liveScenario.ts`), ghost lines after a rewind. The dock fits at 1024 px and scrolls below it.
+- **Results:** "A network CHOWK never saw" runs the held-out grid live in two workers (`benchmark/GridDemo.tsx`, `workers/grid.worker.ts`).
+- **C export:** `npm run policy:c` writes `exports/c`; CI regenerates it, fails on drift and runs the bit-for-bit check with `cc`.
+- **Brief:** `npm run submission:brief` writes `docs/CHOWK-brief.pdf` from the benchmark. Regenerate it with the submission draft after any benchmark run.
+- **Still open:** #22 (a full-day time-lapse would either take about 90 minutes at 16× or misrepresent demand), #23 (lazy-loading panels saves about 8 kB gzipped; left alone), #7 media.
