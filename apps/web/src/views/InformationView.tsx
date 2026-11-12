@@ -1,5 +1,6 @@
 import { POLICY_PARAMETER_COUNT } from "@chowk/controllers";
 import { lazy, Suspense } from "react";
+import calibration from "../../../../results/calibration.json";
 
 const ResultsView = lazy(() =>
   import("./ResultsView").then(({ ResultsView }) => ({ default: ResultsView })),
@@ -20,10 +21,34 @@ const titles = {
   "/limits": "Scope and limitations",
 };
 
-const limits = [
+const round100 = (value: number) =>
+  new Intl.NumberFormat("en-IN").format(Math.round(value / 100) * 100);
+const STRIP_WIDTH = 0.5;
+// Indo-HCM (2017) base saturation flow per metre of approach width, as quoted by
+// Patel and Dhamaniya (WCTR 2019), before adjustments for turns, buses and start-up.
+const indoHcmPerMetre = (width: number) =>
+  width < 7 ? 630 : width <= 10.5 ? 1140 - 60 * width : 500;
+const turning = calibration.rows
+  .filter(({ mix }) => mix === "mixed")
+  .map(({ strips, vehiclesPerSecond }) => {
+    const width = strips * STRIP_WIDTH;
+    return { width, simulated: vehiclesPerSecond * 3_600, base: indoHcmPerMetre(width) * width };
+  });
+const turningLimit = `With the default turning shares (30% of arterial and 50% of cross-street traffic turns), a standing mixed queue in the simulator discharges about ${turning.map(({ width, simulated }) => `${round100(simulated)} vehicles/h on ${width} m`).join(", ")}. Indo-HCM's base saturation flows for the same widths are ${turning.map(({ base }) => `${round100(base)}`).join(", ")} PCU/h before adjustment for turns and buses. Vehicles and PCU are not the same unit, but the gap suggests the simulator's turning model is conservative and real junctions of this size would serve more traffic.`;
+
+const limits: [string, React.ReactNode][] = [
   [
     "Modelled roads",
     "The corridor uses authored geometry and representative widths and spacing. A field study would need measurements from the streets it evaluates.",
+  ],
+  [
+    "Turning capacity",
+    <>
+      {turningLimit}{" "}
+      <a href="https://www.wctrs-society.com/wp-content/uploads/abstracts/mumbai/WCTR2019_Mumbai_263.pdf">
+        Indo-HCM (2017), quoted by Patel and Dhamaniya, WCTR 2019
+      </a>
+    </>,
   ],
   [
     "Simplified behaviour",

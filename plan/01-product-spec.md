@@ -252,6 +252,7 @@ A plain list. At minimum:
 - Sensing is assumed available as area occupancy; real detectors are imperfect, which the sensor-noise test only approximates.
 - The emissions figure is an estimate from a simple fuel model.
 - Deployment would require field calibration and safety validation that this project has not done.
+- Turning capacity: the measured discharge with turns, computed from `results/calibration.json`, beside Indo-HCM's base saturation flows for the same widths (computed from the published formula, cited), with the note that the turning model is conservative.
 
 A second section, "Path to a real junction", sets out what a field trial would take (sensing, where a learned policy would sit beside existing adaptive control, compute, and the validation steps before any trial). It is labelled as a plan, cites every external fact and computes the parameter count from the controller package.
 
