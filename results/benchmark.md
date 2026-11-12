@@ -94,6 +94,26 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 125.1 [113.4, 137.4] | 2.94 [2.82, 3.04] | 6092 [5850, 6316] | 250.0 [241.3, 258.3] |
 | Fixed-time (Webster) | 209.7 [192.7, 226.1] | 3.21 [3.10, 3.31] | 5571 [5336, 5787] | 264.1 [254.5, 273.2] |
 
+## B3 · festival
+
+| Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Bus-passenger delay (person·s) | Car-passenger delay (person·s) |
+|---|---:|---:|---:|---:|---:|---:|
+| CHOWK | 175.7 [155.5, 196.0] | 3.32 [3.15, 3.48] | 10702 [10406, 11006] | 365.0 [349.0, 381.2] | 746550 [624432, 876052] | 67417 [60320, 74880] |
+| CHOWK · vehicle objective | 185.1 [164.7, 206.9] | 3.36 [3.20, 3.53] | 10599 [10319, 10877] | 367.1 [351.0, 383.7] | 796694 [668226, 935366] | 69487 [61903, 77443] |
+| CHOWK · count observation | 202.1 [185.1, 219.1] | 3.14 [2.98, 3.30] | 10555 [10218, 10895] | 368.7 [353.6, 384.1] | 918005 [809602, 1030337] | 68024 [61278, 74640] |
+| CHOWK · pure policy | 408.1 [388.7, 427.4] | 4.31 [4.19, 4.43] | 9009 [8685, 9338] | 438.8 [423.1, 454.6] | 1781067 [1627419, 1941324] | 138989 [130463, 146520] |
+| CHOWK · isolated junction | 175.3 [157.4, 193.4] | 3.31 [3.16, 3.46] | 10598 [10261, 10940] | 364.1 [348.8, 379.5] | 742225 [630790, 857988] | 67626 [60821, 74406] |
+
+## B3 · morning-peak
+
+| Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Bus-passenger delay (person·s) | Car-passenger delay (person·s) |
+|---|---:|---:|---:|---:|---:|---:|
+| CHOWK | 84.0 [75.1, 93.3] | 2.40 [2.30, 2.51] | 6282 [6034, 6517] | 241.3 [233.1, 249.2] | 146136 [119085, 173863] | 44849 [40002, 49879] |
+| CHOWK · vehicle objective | 84.9 [76.1, 93.9] | 2.41 [2.31, 2.51] | 6266 [6027, 6486] | 241.0 [232.8, 249.0] | 150809 [122456, 180920] | 44096 [39996, 48195] |
+| CHOWK · count observation | 95.1 [87.5, 103.0] | 2.13 [2.02, 2.24] | 6225 [5980, 6452] | 241.2 [232.7, 249.3] | 199401 [171704, 228923] | 43148 [39103, 47273] |
+| CHOWK · pure policy | 367.7 [349.5, 386.2] | 3.74 [3.63, 3.85] | 4944 [4753, 5118] | 306.3 [296.0, 316.3] | 745010 [662670, 830756] | 159810 [149983, 169512] |
+| CHOWK · isolated junction | 84.6 [75.3, 94.6] | 2.40 [2.29, 2.50] | 6298 [6045, 6528] | 241.7 [233.4, 249.8] | 146945 [119642, 176061] | 44599 [39912, 49543] |
+
 ## B4 · morning-peak · buses-15
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
@@ -356,6 +376,6 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 ## Provenance
 
-Source commit 79fdb41d4431cd7dadeffc314904b60cefaa8ad2. Simulator fba6a65bb4770e565aab1613a387e1443bf78035f9eeac99ee5cf251eef4e8a7. Policy e0865c8b5170f33a5250ecc97a2dd4be400fde9ea5b2ba0326a8b1d01b753cfb.
+Source commit 938f596cd614530daa7290063edae0f36236cc5f. Simulator fba6a65bb4770e565aab1613a387e1443bf78035f9eeac99ee5cf251eef4e8a7. Policy e0865c8b5170f33a5250ecc97a2dd4be400fde9ea5b2ba0326a8b1d01b753cfb.
 
-The recorded episodes cover 1458.3 simulated hours and took 7.1 minutes of benchmark wall time across runs. Raw runs and configuration are in [benchmark.json](benchmark.json).
+The recorded episodes cover 1551.7 simulated hours and took 7.5 minutes of benchmark wall time across runs. Raw runs and configuration are in [benchmark.json](benchmark.json).
