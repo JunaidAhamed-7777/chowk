@@ -311,6 +311,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
         typeof beat.camera === "number" ||
         beat.camera === "aerial" ||
         beat.camera === "street" ||
+        beat.camera === "ride" ||
         beat.camera === "ambulance"
       )
         setCamera(beat.camera);

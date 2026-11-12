@@ -25,6 +25,14 @@
   },
   {
     "t": 16,
+    "camera": "ride",
+    "wipe": 50,
+    "overlay": "none",
+    "speed": 1,
+    "caption": "Ride along with a two-wheeler as it filters through traffic."
+  },
+  {
+    "t": 24,
     "camera": 2,
     "wipe": 50,
     "overlay": "speed",
