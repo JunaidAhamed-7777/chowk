@@ -82,7 +82,7 @@ These are not style preferences. Breaking one can lose the entry.
 
 12. **The demo works on first click**: no login, key, backend, permission prompt or required interaction. Autoplay tour by default.
 13. **Performance budgets are requirements** (`plan/09-quality.md`). Simulation never runs on the main thread. No allocation in the render loop.
-14. **The look is night.** Follow `plan/05-rendering.md`. If something looks unfinished, remove it rather than ship it.
+14. **The scene's time of day follows the scenario** (morning peak by day, evening peak at dusk, every other scenario at night, monsoon with rain). Follow `plan/05-rendering.md`. If something looks unfinished, remove it rather than ship it.
 15. **Screenshots and video come from the real app.**
 
 ## Decisions already made

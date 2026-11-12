@@ -11,7 +11,7 @@
   transition: opacity 350ms ease;
 }
 
-.instrument:not(:has(.simulation-status[data-ready="true"])) .scene-stage canvas {
+.instrument:not([data-ready="true"]) .scene-stage canvas {
   opacity: 0;
 }
 

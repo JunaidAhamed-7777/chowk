@@ -37,7 +37,7 @@ try {
           if (
             instrument?.dataset.tour !== "true" ||
             !document.querySelector(".tour-caption-text")?.textContent ||
-            !document.querySelector(".simulation-status[data-ready=true]") ||
+            !document.querySelector(".instrument[data-ready=true]") ||
             tick === 0 ||
             !gl ||
             gl.isContextLost() ||

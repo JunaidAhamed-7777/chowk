@@ -2,9 +2,9 @@ import type { MouseEvent } from "react";
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Quality, QualityMode } from "./scene/sceneSettings";
 import { qualityPresets } from "./scene/sceneSettings";
-import { setTrafficSoundEnabled } from "./sim/trafficAudio";
 import { Icon } from "./ui/Icon";
 import { LoadingScreen, liveLoadingSteps } from "./ui/LoadingScreen";
+import { useDismissableMenus } from "./ui/useDismissableMenus";
 import type { InformationRoute } from "./views/InformationView";
 import { InformationView } from "./views/InformationView";
 import "./styles.css";
@@ -14,6 +14,7 @@ const LiveView = lazy(() => import("./views/LiveView"));
 const repository = "https://github.com/JunaidAhamed-7777/chowk";
 const routes = [
   { path: "/", label: "Live" },
+  { path: "/controllers", label: "Controllers" },
   { path: "/results", label: "Results" },
   { path: "/method", label: "Method" },
   { path: "/limits", label: "Limits" },
@@ -43,10 +44,9 @@ export default function App() {
   const [automaticQuality, setAutomaticQuality] = useState<Quality>(() =>
     window.matchMedia("(max-width: 620px)").matches ? "low" : "medium",
   );
-  const [sound, setSound] = useState(false);
-  const [changingSound, setChangingSound] = useState(false);
   const focusOnNavigation = useRef(false);
   const quality = qualityMode === "auto" ? automaticQuality : qualityMode;
+  useDismissableMenus();
 
   useEffect(() => {
     const handleHistory = () => {
@@ -89,12 +89,6 @@ export default function App() {
     } catch {
       // The selected tier remains active for this session.
     }
-  }
-
-  async function toggleSound() {
-    setChangingSound(true);
-    setSound(await setTrafficSoundEnabled(!sound));
-    setChangingSound(false);
   }
 
   return (
@@ -149,19 +143,6 @@ export default function App() {
               </select>
               <Icon name="chevron" size={13} />
             </label>
-            {route === "/" && (
-              <button
-                className="control-button sound-toggle"
-                type="button"
-                aria-label="Simulation sound"
-                title={sound ? "Mute simulation sound" : "Enable simulation sound"}
-                aria-pressed={sound}
-                disabled={changingSound}
-                onClick={toggleSound}
-              >
-                <Icon name={sound ? "sound" : "muted"} />
-              </button>
-            )}
             <a className="repo-link" href={repository} target="_blank" rel="noreferrer">
               <Icon name="github" size={18} />
               GitHub
@@ -187,7 +168,6 @@ export default function App() {
                 quality={quality}
                 automatic={qualityMode === "auto"}
                 onQuality={setAutomaticQuality}
-                sound={sound}
               />
             </Suspense>
           </section>

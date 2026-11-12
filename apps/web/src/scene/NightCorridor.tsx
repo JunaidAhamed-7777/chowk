@@ -13,12 +13,23 @@ import {
   VignetteEffect,
 } from "postprocessing";
 import { type RefObject, useEffect, useRef, useState } from "react";
-import { HalfFloatType, NoToneMapping, PerspectiveCamera, Vector3 } from "three";
+import {
+  Color,
+  type DirectionalLight,
+  FogExp2,
+  HalfFloatType,
+  type HemisphereLight,
+  NoToneMapping,
+  PerspectiveCamera,
+  Vector3,
+} from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { ActiveEvent } from "../sim/liveEvents";
 import type { SimHost } from "../sim/SimHost";
+import type { Mood } from "../sim/scenarioScene";
 import { junctions } from "./corridorGeometry";
 import { EventMarkers, RoadPicker } from "./EventMarkers";
+import { blendMood, currentMood, moodTarget, snapMood } from "./moodLighting";
 import { SimulationTraffic } from "./SimulationTraffic";
 import { StaticDistrict } from "./StaticDistrict";
 import type {
@@ -49,6 +60,8 @@ interface SceneProps {
   quality: Quality;
   reducedMotion: boolean;
   speed: PlaybackSpeed;
+  mood: Mood;
+  rain: boolean;
 }
 
 const aerialPosition = [520, 214, 236] as const;
@@ -202,6 +215,53 @@ function CorridorCamera({
   return null;
 }
 
+function MoodController({
+  mood,
+  rain,
+  reducedMotion,
+}: {
+  mood: Mood;
+  rain: boolean;
+  reducedMotion: boolean;
+}) {
+  const scene = useThree((state) => state.scene);
+  const hemisphere = useRef<HemisphereLight>(null);
+  const sun = useRef<DirectionalLight>(null);
+  const [background] = useState(() => new Color());
+  const [fog] = useState(() => new FogExp2("#000", 0));
+  const first = useRef(true);
+  useEffect(() => {
+    scene.background = background;
+    scene.fog = fog;
+  }, [scene, background, fog]);
+  useFrame((_, delta) => {
+    const target = moodTarget(mood, rain);
+    if (first.current || reducedMotion) {
+      first.current = false;
+      snapMood(target);
+    } else blendMood(target, 1 - Math.exp(-2.2 * Math.min(delta, 0.1)));
+    background.copy(currentMood.sky);
+    fog.color.copy(currentMood.fog);
+    fog.density = currentMood.fogDensity;
+    if (hemisphere.current) {
+      hemisphere.current.color.copy(currentMood.hemiSky);
+      hemisphere.current.groundColor.copy(currentMood.hemiGround);
+      hemisphere.current.intensity = currentMood.hemi;
+    }
+    if (sun.current) {
+      sun.current.color.copy(currentMood.sun);
+      sun.current.intensity = currentMood.sunIntensity;
+      sun.current.position.set(currentMood.sunX, currentMood.sunY, currentMood.sunZ);
+    }
+  }, -2);
+  return (
+    <>
+      <hemisphereLight ref={hemisphere} />
+      <directionalLight ref={sun} />
+    </>
+  );
+}
+
 function ContextRecovery({ onContext }: { onContext: SceneProps["onContext"] }) {
   const canvas = useThree((state) => state.gl.domElement);
   useEffect(() => {
@@ -222,7 +282,11 @@ function ContextRecovery({ onContext }: { onContext: SceneProps["onContext"] }) 
 
 function PostProcessing({ quality }: { quality: Quality }) {
   const { camera, gl, scene, size, viewport } = useThree();
-  const ref = useRef<{ composer: EffectComposer; bloom: BloomEffect } | null>(null);
+  const ref = useRef<{
+    composer: EffectComposer;
+    bloom: BloomEffect;
+    vignette: VignetteEffect;
+  } | null>(null);
 
   useEffect(() => {
     const composer = new EffectComposer(gl, { frameBufferType: HalfFloatType, multisampling: 0 });
@@ -235,12 +299,13 @@ function PostProcessing({ quality }: { quality: Quality }) {
       radius: 0.76,
       levels: quality === "low" ? 4 : 6,
     });
+    const vignette = new VignetteEffect({ offset: 0.19, darkness: 0.5 });
     composer.addPass(new RenderPass(scene, camera));
     composer.addPass(
       new EffectPass(
         camera,
         bloom,
-        new VignetteEffect({ offset: 0.19, darkness: 0.5 }),
+        vignette,
         new ToneMappingEffect({ mode: ToneMappingMode.ACES_FILMIC }),
       ),
     );
@@ -248,7 +313,7 @@ function PostProcessing({ quality }: { quality: Quality }) {
       composer.addPass(
         new EffectPass(camera, quality === "high" ? new SMAAEffect() : new FXAAEffect()),
       );
-    ref.current = { composer, bloom };
+    ref.current = { composer, bloom, vignette };
     return () => {
       ref.current = null;
       composer.dispose();
@@ -264,6 +329,11 @@ function PostProcessing({ quality }: { quality: Quality }) {
   }, [quality, size.width, size.height, viewport.dpr]);
 
   useFrame((state, delta) => {
+    if (ref.current) {
+      ref.current.bloom.luminanceMaterial.threshold = currentMood.bloomThreshold;
+      ref.current.bloom.intensity = currentMood.bloomIntensity;
+      ref.current.vignette.darkness = currentMood.vignette;
+    }
     if (ref.current) ref.current.composer.render(delta);
     else state.gl.render(state.scene, state.camera);
   }, 1);
@@ -325,6 +395,8 @@ export function NightCorridor({
   quality,
   reducedMotion,
   speed,
+  mood,
+  rain,
 }: SceneProps) {
   const tier = qualityPresets[quality];
   return (
@@ -346,10 +418,7 @@ export function NightCorridor({
       aria-label="Oblique aerial view of the illuminated corridor"
       role="img"
     >
-      <color attach="background" args={["#0a0f1a"]} />
-      <fogExp2 attach="fog" args={["#111b2c", 0.00066]} />
-      <hemisphereLight args={["#a7c6f5", "#343149", 2.15]} />
-      <directionalLight position={[540, 450, -420]} color="#b1ccff" intensity={1.12} />
+      <MoodController mood={mood} rain={rain} reducedMotion={reducedMotion} />
       <StaticDistrict lowDetail={quality === "low"} />
       <SimulationTraffic
         host={host}

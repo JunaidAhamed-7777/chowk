@@ -99,10 +99,6 @@
   min-height: 1em;
   margin: 0;
 }
-.topbar-tools .sound-toggle {
-  min-height: 33px;
-  padding: 5px 8px;
-}
 .instrument-controls:has(.camera-menu[open]) {
   z-index: 5;
 }

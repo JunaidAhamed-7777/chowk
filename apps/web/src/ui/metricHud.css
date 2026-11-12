@@ -53,8 +53,6 @@
   gap: 6px;
   color: #a8b5c5;
   font: 550 10px / 1.25 var(--mono);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
 .metric-info {
   display: grid;
@@ -112,8 +110,6 @@
   gap: 8px;
   color: var(--accent);
   font: 600 10px / 1.3 var(--mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 .metric-calculation-close {
   padding: 0 5px;

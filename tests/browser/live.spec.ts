@@ -16,18 +16,19 @@ test("renders the night corridor and responds to playback, camera and navigation
   }
 
   await page.goto("/?tour=off");
-  await expect(page.getByRole("heading", { name: "The corridor after dark." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Morning peak" })).toBeVisible();
   const pause = page.getByRole("button", { name: "Pause simulation" });
   await expect(pause).toBeEnabled();
-  await expect(page.getByText("Live comparison", { exact: true })).toBeVisible();
+  await expect(page.locator(".instrument")).toHaveAttribute("data-ready", "true");
   await expect(page.getByText("Simulation result", { exact: true })).toBeVisible();
   const readout = (label: string) =>
     page.locator(".live-readouts div").filter({ hasText: label }).locator("dd");
-  const elapsed = readout("Simulated time");
   const count = readout("Vehicles on road");
   await expect(count).toHaveText(/[1-9][\d,]*/);
-  const initialTime = await elapsed.textContent();
-  await expect(elapsed).not.toHaveText(initialTime ?? "");
+  await expect(readout("Simulated time")).toHaveText(/^\d\d:\d\d$/);
+  const instrument = page.locator(".instrument");
+  const initialTick = await instrument.getAttribute("data-tick");
+  await expect(instrument).not.toHaveAttribute("data-tick", initialTick ?? "", { timeout: 60_000 });
   await pause.click();
   await expect(page.getByRole("button", { name: "Play simulation" })).toBeEnabled();
   const wipe = page.getByRole("slider", { name: "Comparison wipe" });
@@ -63,7 +64,6 @@ test("renders the night corridor and responds to playback, camera and navigation
   const junction = page.getByRole("button", { name: "Fly to junction J3" });
   await junction.press("Enter");
   await expect(junction).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByText("Junction J3", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Aerial view" }).click();
 
   const nav = page.getByRole("navigation", { name: "Main navigation" });
@@ -195,4 +195,48 @@ test("shows the arithmetic behind live metrics and a junction's decision", async
   await expect(panel.getByText(/matches the controller's own numbers/)).toBeVisible();
   await panel.getByRole("button", { name: /^A · / }).click();
   await expect(panel.getByText("Follow the timetable")).toBeVisible({ timeout: 30_000 });
+});
+
+test("scenarios set the scene description and clock, and menus close on an outside press", async ({
+  page,
+}) => {
+  if (process.env.CI) {
+    await page.addInitScript(() => localStorage.setItem("chowk-quality", "low"));
+  }
+  await page.goto("/?tour=off");
+  await expect(page.getByRole("button", { name: "Pause simulation" })).toBeEnabled({
+    timeout: 60_000,
+  });
+  const clock = page
+    .locator(".live-readouts div")
+    .filter({ hasText: "Simulated time" })
+    .locator("dd");
+  await expect(clock).toHaveText(/^08:\d\d$/);
+  await expect(page.locator(".live-when")).toContainText("Daytime");
+
+  await page.locator(".simulation-controls select").first().selectOption("monsoon");
+  await expect(page.getByRole("heading", { name: "Monsoon" })).toBeVisible();
+  await expect(page.locator(".live-when")).toContainText("raining");
+  await expect(clock).toHaveText(/^21:\d\d$/, { timeout: 60_000 });
+
+  const menu = page.locator("details.camera-menu");
+  await menu.locator("summary").click();
+  await expect(menu).toHaveAttribute("open", "");
+  await page.locator(".live-footer").click();
+  await expect(menu).not.toHaveAttribute("open", "");
+});
+
+test("explains every controller on its own page", async ({ page }) => {
+  await page.goto("/controllers");
+  await expect(page.getByRole("heading", { name: "How each controller decides" })).toBeVisible();
+  for (const name of [
+    "Fixed-time (Webster)",
+    "Actuated (gap-out)",
+    "Max-pressure (counts)",
+    "Max-pressure (area)",
+    "CHOWK",
+    "CHOWK-pure",
+  ])
+    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+  await expect(page.getByRole("img", { name: /Two identical signal cycles/ })).toBeVisible();
 });

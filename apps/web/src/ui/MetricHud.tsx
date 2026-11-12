@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { type LiveReadout, type MetricParts, metricDefinitions } from "../sim/LiveMetrics";
 import "./metricHud.css";
 
@@ -24,12 +24,6 @@ const unavailable = (
   </>
 );
 
-function clock(seconds: number) {
-  const time = Math.max(0, Math.floor(seconds));
-  return `${Math.floor(time / 60)
-    .toString()
-    .padStart(2, "0")}:${(time % 60).toString().padStart(2, "0")}`;
-}
 
 /** The rule behind each card, and this moment's window totals substituted into it. */
 const formulas: Record<
@@ -103,9 +97,11 @@ function MetricCalculation({
   single,
   open,
   onClose,
+  clock,
 }: {
   metric: (typeof metricDefinitions)[number];
   readout: LiveReadout;
+  clock: (elapsed: number) => string;
   single: boolean;
   open: boolean;
   onClose: () => void;
@@ -124,7 +120,7 @@ function MetricCalculation({
       <p className="metric-calculation-rule">{formula.rule}</p>
       {key !== "ambulance" && (
         <p className="metric-calculation-window">
-          Window · simulated {clock(readout.window.from)} → {clock(readout.window.to)}
+          Window: {clock(readout.window.from)} to {clock(readout.window.to)} simulated
         </p>
       )}
       <ul>
@@ -247,8 +243,25 @@ function InfoButton({
   );
 }
 
-export function MetricHud({ readout, single }: { readout: LiveReadout; single: boolean }) {
+export function MetricHud({
+  readout,
+  single,
+  clock,
+}: {
+  readout: LiveReadout;
+  single: boolean;
+  clock: (elapsed: number) => string;
+}) {
   const [help, setHelp] = useState<Explained>();
+  useEffect(() => {
+    if (!help) return;
+    const close = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (!target?.closest(".metric-calculation, .metric-info")) setHelp(undefined);
+    };
+    document.addEventListener("pointerdown", close, true);
+    return () => document.removeEventListener("pointerdown", close, true);
+  }, [help]);
   const saved = readout.peopleHours >= 0;
   const headline = saved ? "People-hours saved this hour" : "People-hours added this hour";
   return (
@@ -275,7 +288,7 @@ export function MetricHud({ readout, single }: { readout: LiveReadout; single: b
               vehicles, so the difference comes from the signals.
             </p>
             <p className="metric-calculation-window">
-              Window · simulated {clock(readout.hour.from)} → {clock(readout.hour.to)}
+              Window: {clock(readout.hour.from)} to {clock(readout.hour.to)} simulated
             </p>
             <ul>
               <li>
@@ -318,6 +331,7 @@ export function MetricHud({ readout, single }: { readout: LiveReadout; single: b
                   single={single}
                   open={help === key}
                   onClose={() => setHelp(undefined)}
+                  clock={clock}
                 />
               </dt>
               <dd className="comparison-metric-values">

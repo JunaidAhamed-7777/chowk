@@ -118,7 +118,7 @@ async function soak(browser, origin, details) {
     const errors = [];
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto(origin);
-    await page.locator(".simulation-status[data-ready=true]").waitFor({ timeout: 45000 });
+    await page.locator(".instrument[data-ready=true]").waitFor({ timeout: 45000 });
     const session = await context.newCDPSession(page);
     await session.send("HeapProfiler.enable");
     const samples = [];
@@ -213,7 +213,7 @@ function observeColdLoad() {
   }
   const sample = () => {
     const canvas = document.querySelector(".scene-stage canvas");
-    if (canvas && document.querySelector(".simulation-status[data-ready=true]")) {
+    if (canvas && document.querySelector(".instrument[data-ready=true]")) {
       const opacity = Number(getComputedStyle(canvas).opacity);
       if (opacity > 0.01 && timings.readyMs === null) timings.readyMs = performance.now();
       if (opacity >= 0.95) timings.fadeCompleteMs = performance.now();

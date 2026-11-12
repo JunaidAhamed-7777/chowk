@@ -1,3 +1,4 @@
+import { useFrame } from "@react-three/fiber";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   AdditiveBlending,
@@ -12,11 +13,15 @@ import {
 } from "three";
 import type { Box } from "./corridorGeometry";
 import { district } from "./corridorGeometry";
+import { currentMood, moodUniforms } from "./moodLighting";
 import { loadMeshAsset } from "./vehicleGeometries";
 
 function buildingMaterial() {
   const material = new MeshStandardMaterial({ roughness: 0.94, metalness: 0 });
   material.onBeforeCompile = (shader) => {
+    shader.uniforms.windowLevel = moodUniforms.windows;
+    shader.uniforms.facadeTint = moodUniforms.facadeTint;
+    shader.uniforms.facadeMix = moodUniforms.facadeMix;
     shader.vertexShader = shader.vertexShader
       .replace(
         "#include <common>",
@@ -34,6 +39,9 @@ function buildingMaterial() {
         "#include <common>",
         `#include <common>
       varying vec3 facadePoint; varying vec3 facadeNormal; varying vec2 buildingSeed;
+      uniform float windowLevel;
+      uniform vec3 facadeTint;
+      uniform float facadeMix;
       float windowHash(vec2 p) {
         vec3 p3 = fract(vec3(p.xyx) * .1031);
         p3 += dot(p3, p3.yzx + 33.33);
@@ -46,6 +54,8 @@ function buildingMaterial() {
       float side = 1.0 - step(.6, abs(facadeNormal.y));
       float along = mix(facadePoint.x, facadePoint.z, step(.6, abs(facadeNormal.x)));
       float buildingType = windowHash(buildingSeed * .037);
+      vec3 daylight = facadeTint * mix(.72, 1.12, windowHash(buildingSeed * .113));
+      diffuseColor.rgb = mix(diffuseColor.rgb, daylight, facadeMix);
       vec2 grid = vec2(along / mix(2.3, 3.45, buildingType), facadePoint.y / mix(2.9, 3.65, buildingType));
       vec2 cell = floor(grid);
       vec2 uvWindow = fract(grid);
@@ -67,7 +77,7 @@ function buildingMaterial() {
       vec3 cool = vec3(.33, .65, .91);
       vec3 windowLight = mix(warm, cool, step(.70, windowHash(cell + buildingSeed * .43)));
       float strength = mix(.16, .95, windowHash(cell + buildingSeed * .18));
-      totalEmissiveRadiance += glass * lit * strength * windowLight;`,
+      totalEmissiveRadiance += glass * lit * strength * windowLight * windowLevel;`,
       );
   };
   return material;
@@ -193,6 +203,7 @@ function LightPools() {
   const material = useMemo(
     () =>
       new ShaderMaterial({
+        uniforms: { poolLevel: moodUniforms.pools },
         transparent: true,
         depthWrite: false,
         blending: AdditiveBlending,
@@ -204,10 +215,11 @@ function LightPools() {
       }`,
         fragmentShader: `
       varying vec2 poolUV;
+      uniform float poolLevel;
       void main() {
         float radius = length(poolUV * 2. - 1.);
         float brightness = pow(1. - smoothstep(0., 1., radius), 2.3);
-        gl_FragColor = vec4(.38, .17, .051, brightness * .4);
+        gl_FragColor = vec4(.38, .17, .051, brightness * .4 * poolLevel);
       }`,
       }),
     [],
@@ -240,15 +252,28 @@ export function StaticDistrict({ lowDetail = false }: { lowDetail?: boolean }) {
       facade: buildingMaterial(),
       fixtures: new MeshStandardMaterial({ roughness: 0.85 }),
       emitters: new MeshBasicMaterial({ toneMapped: false }),
+      ground: new MeshStandardMaterial({ roughness: 1 }),
     }),
     [],
   );
+
+  useFrame(() => {
+    materials.facade.color.setScalar(currentMood.facade);
+    materials.asphalt.color.setScalar(currentMood.road);
+    materials.fixtures.color.setScalar(Math.min(currentMood.facade, 1.8));
+    materials.emitters.color.setScalar(currentMood.lamps);
+    materials.ground.color.copy(currentMood.ground);
+    moodUniforms.windows.value = currentMood.windows;
+    moodUniforms.facadeTint.value.copy(currentMood.facadeTint);
+    moodUniforms.facadeMix.value = currentMood.facadeMix;
+    moodUniforms.pools.value = currentMood.pools;
+  });
 
   return (
     <>
       <mesh rotation-x={-Math.PI / 2} position={[900, -0.52, 0]}>
         <planeGeometry args={[6400, 4600]} />
-        <meshStandardMaterial color="#0c121b" roughness={1} />
+        <primitive object={materials.ground} attach="material" />
       </mesh>
       <BoxBatch boxes={district.asphalt} material={materials.asphalt} />
       {lowDetail ? (

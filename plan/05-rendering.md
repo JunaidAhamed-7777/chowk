@@ -36,6 +36,19 @@ The "Spectacle" pillar. The 3D scene is the product: every pixel either shows si
 - Large numerals for the metric cards. Numbers ease towards new values rather than snapping.
 - Motion: 150–250 ms ease-out on interface elements. Nothing bounces.
 
+## Time of day by scenario
+
+The scenario sets the light (`apps/web/src/sim/scenarioScene.ts`, `apps/web/src/scene/moodLighting.ts`). Changing scenario blends sky, fog, sun, ambient light, building tint, window and street-lamp levels, light pools, bloom and vignette over about two seconds (instantly with reduced motion). All values live in one table in `moodLighting.ts`.
+
+| Scenario | Look | Clock at start |
+|---|---|---|
+| Morning peak | Daytime: pale sky, warm sun, concrete facades, lamps and windows off, little bloom | 08:30 |
+| Evening peak | Dusk: low amber sun from the west, some windows and lamps on | 18:00 |
+| Off-peak, festival, oversaturated, cars only, custom | Night, as described above | 20:00–23:00 |
+| Monsoon | Night with denser, cooler fog, wet-looking light pools, and a light rain layer over the view: faint slanted streaks and a few drops on the lens that fade in and out | 21:00 |
+
+The rain layer is a 2D canvas over the scene with pre-rendered drop sprites and no per-frame allocation; reduced motion keeps still drops only. The 2D fallback stays at night.
+
 ## Scene composition
 
 | Layer | Content | Technique |

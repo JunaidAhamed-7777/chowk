@@ -9,11 +9,12 @@ A single-page app with four views, switched by a top bar. The 3D scene stays mou
 | Route | View | Purpose |
 |---|---|---|
 | `/` | **Live** | The 3D city, controls, live numbers. Opens in autoplay. |
+| `/controllers` | **Controllers** | Each controller in plain words, with a diagram, what it looks at, how it decides, its strengths, its weak spot and its tested delay. |
 | `/results` | **Results** | Benchmark tables, charts, "Run it yourself". |
 | `/method` | **Method** | How it works, what is new and what is not, citations. |
 | `/limits` | **Limits** | What this does not show. Short and frank. |
 
-Top bar: logo and name on the left; view links; a GitHub link; a quality selector; a mute toggle.
+Top bar: logo and name on the left; view links; a GitHub link; a quality selector. The site has no sound.
 
 ## Live view
 
@@ -83,6 +84,7 @@ A dropdown that resets both simulations with a named demand pattern. See `04-ben
 - Festival surge
 - Monsoon (lower speeds, longer headways)
 - Cars only, lane-disciplined (the contrast case)
+- The top-left of the Live view shows the scenario: clock time, time of day, its name and a one-sentence description of its demand. The scene's lighting follows the scenario (see `05-rendering.md`), and "Simulated time" is a clock starting at the scenario's hour (morning peak 08:30, evening peak 18:00, the rest in the evening or night).
 - Custom: sliders for demand level and the vehicle mix — P1
 
 ### L5. Events ("Break it") — P0
@@ -120,7 +122,7 @@ Each event produces a toast, a marker in the 3D scene, and a tick on the metric 
 - Aerial (default): high oblique over the corridor.
 - Junction: click any junction to fly to it.
 - Ride along: click any vehicle to follow it at street level; defaults to a two-wheeler filtering through a queue.
-- Ambulance cam: follows the active emergency vehicle.
+- Ambulance cam: follows the active emergency vehicle from behind, like ride-along. If no ambulance is on the road, choosing it dispatches one to both sides.
 - Free orbit: drag to orbit, scroll to zoom, with limits so the visitor cannot get lost.
 
 ### L9. Autoplay tour — P0
@@ -172,9 +174,9 @@ A junction picker, an A/B side picker and a log of the last eight decisions comp
 - When the visitor closes it, the autoplay tour starts and a first-time guide (L13) opens at its second card. The tour does not run while the briefing is open.
 - "What am I looking at?" under the title reopens it. Dismissal is remembered in local storage. Automated browsers and capture mode skip it; `?intro=on` forces it and `?intro=off` suppresses it.
 
-### L12. Audio — P2
+### L12. Audio — removed
 
-Muted by default. A low city ambience and soft tones on signal changes; a siren for the ambulance. Never autoplay sound.
+The site has no sound and no mute control (removed at the user's request, 13 Nov).
 
 ## Results view
 
@@ -236,6 +238,7 @@ A plain list. At minimum:
 - **Reduced motion — P1:** honours the system setting; the tour uses cuts instead of camera glides.
 - **Keyboard — P1:** space to pause, `1`–`3` for speed, `o` to cycle overlays, `t` to restart the tour.
 - **Accessibility — P1:** all controls are real buttons with labels; colour is never the only signal in the metric cards (arrows and signs accompany it).
+- **Menus and popovers — P0:** drop-down menus (More, camera modes, Watch it learn) and metric popovers close on a press outside them, after choosing an action, and on Escape.
 - **Errors — P0:** if a worker crashes, the simulation restarts from the current seed and a toast says so. No blank screens.
 
 ## Copy rules

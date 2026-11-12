@@ -36,8 +36,6 @@
   margin: 0;
   color: var(--accent);
   font: 600 10px / 1.2 var(--mono);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 .decision-header h2 {
   margin: 4px 0 0;
@@ -108,7 +106,6 @@
   flex: none;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 10px var(--accent);
   animation: decision-pulse 1.6s ease-in-out infinite;
 }
 @keyframes decision-pulse {
@@ -182,7 +179,6 @@
 }
 [data-state="green"] .decision-sketch-lamp {
   fill: #2be38b;
-  filter: drop-shadow(0 0 3px #2be38b);
 }
 [data-state="next"] .decision-sketch-lamp {
   fill: none;
@@ -209,8 +205,6 @@
   color: var(--ui-dim);
   font-size: 9.5px;
   font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
 .decision-sense th[scope="row"],
 .decision-sense thead th:first-child {
@@ -250,8 +244,6 @@
 .decision-phase header span {
   color: var(--accent);
   font: 600 9.5px var(--mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 .decision-terms {
   display: grid;
@@ -471,7 +463,6 @@
   color: var(--accent);
   font: 600 9.5px / 1.6 var(--mono);
   font-style: normal;
-  text-transform: uppercase;
 }
 .decision-footer {
   margin: 0;

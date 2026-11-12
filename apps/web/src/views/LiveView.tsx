@@ -5,6 +5,7 @@ import {
   type Random,
   type SimEvent,
   SNAPSHOT_STRIDE,
+  VEHICLE_CLASSES,
 } from "@chowk/sim";
 import {
   Component,
@@ -16,6 +17,7 @@ import {
   useState,
 } from "react";
 import { NightCorridor } from "../scene/NightCorridor";
+import { RainOverlay } from "../scene/RainOverlay";
 import {
   type CameraSelection,
   type OverlayMode,
@@ -40,8 +42,8 @@ import { baselineChoices, hasPolicyAssets, loadControllerChoices } from "../sim/
 import { type LiveScenarioId, makeLiveScenario } from "../sim/liveScenario";
 import { readSession, sessionUrl } from "../sim/liveSession";
 import type { ControllerPair, MetricsPair, SimulationSide } from "../sim/SimHost";
+import { clockTime, scenarioScenes } from "../sim/scenarioScene";
 import { useSimHost } from "../sim/useSimHost";
-import { useTrafficAudio } from "../sim/useTrafficAudio";
 import { useTour } from "../tour/useTour";
 import { Briefing, shouldOpenBriefing } from "../ui/Briefing";
 import { CheckpointControl } from "../ui/CheckpointControl";
@@ -58,13 +60,13 @@ import "../ui/liveLayout.css";
 
 const stations = corridor.junctions.map(({ id }) => ({ id, name: `J${id + 1}` }));
 const formatCount = new Intl.NumberFormat("en-IN");
+const ambulanceClass = VEHICLE_CLASSES.findIndex(({ id }) => id === "ambulance");
 
 interface LiveViewProps {
   active: boolean;
   quality: Quality;
   automatic: boolean;
   onQuality: (quality: Quality) => void;
-  sound?: boolean;
 }
 
 interface LiveFrame {
@@ -106,27 +108,9 @@ function readReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-function formatTime(seconds: number) {
-  const time = Math.floor(seconds);
-  return `${Math.floor(time / 60)
-    .toString()
-    .padStart(2, "0")}:${(time % 60).toString().padStart(2, "0")}`;
-}
+const moodNames = { day: "Daytime", evening: "Evening", night: "Night" } as const;
 
-function cameraName(camera: CameraSelection) {
-  if (camera === "aerial") return "Aerial view";
-  if (camera === "ride") return "Ride along";
-  if (camera === "ambulance") return "Ambulance camera";
-  return `Junction J${camera + 1}`;
-}
-
-export default function LiveView({
-  active,
-  quality,
-  automatic,
-  onQuality,
-  sound = false,
-}: LiveViewProps) {
+export default function LiveView({ active, quality, automatic, onQuality }: LiveViewProps) {
   const [initial] = useState(readSession);
   const [camera, setCamera] = useState<CameraSelection>(initial.camera);
   const [vehicle, setVehicle] = useState<VehicleFollow>();
@@ -223,11 +207,6 @@ export default function LiveView({
       } else setFailure(message);
     },
   });
-  useTrafficAudio(
-    host,
-    frame?.tick,
-    active && sound && !paused && !contextLost && !initial.capture,
-  );
 
   useEffect(() => {
     if (!hasPolicyAssets) return;
@@ -429,6 +408,20 @@ export default function LiveView({
     setVehicle(undefined);
     setCamera(choice);
     if (typeof choice === "number") setInspectedJunction(choice);
+    if (choice === "ambulance" && !ambulanceOnRoad()) {
+      const random = eventRandom.current;
+      if (!random) return;
+      addEvent(makeEvent("ambulance", scenario, random));
+      setNotice("Ambulance dispatched to both sides. The camera follows it from behind.");
+    }
+  }
+
+  function ambulanceOnRoad() {
+    const sample = host.current?.streams[1].current;
+    if (!sample) return false;
+    for (let index = 0; index < sample.count * SNAPSHOT_STRIDE; index += SNAPSHOT_STRIDE)
+      if (sample.positions[index + 5] === ambulanceClass) return true;
+    return false;
   }
 
   function openDecision(junction: number) {
@@ -502,41 +495,33 @@ export default function LiveView({
   const labelOf = (id: string) =>
     controllerChoices.find(({ controller }) => controller.id === id)?.label ?? id;
   const metrics = frame?.metrics[1];
+  const scene = scenarioScenes[scenarioId];
 
   return (
     <div className="live-view">
       <div className="live-intro">
-        <div>
-          <p className="section-label">
-            <span className="section-tick" /> Urban traffic simulation
-          </p>
-          <h1 id="live-heading" tabIndex={-1}>
-            The corridor after dark<span>.</span>
-          </h1>
-        </div>
-        <div>
-          <p className="live-deck">
-            The same lane-free traffic under two signal controllers, simulated live in your browser.
-          </p>
-          <button className="briefing-open" type="button" onClick={() => setBriefing(true)}>
-            What am I looking at? <span aria-hidden="true">→</span>
-          </button>
-        </div>
+        <p className="live-when">
+          <span>{clockTime(scene, metrics?.elapsed ?? 0)}</span>
+          {moodNames[scene.mood]}
+          {scene.rain && ", raining"}
+        </p>
+        <h1 id="live-heading" tabIndex={-1}>
+          {scene.title}
+        </h1>
+        <p className="live-deck">{scene.description}</p>
+        <button className="briefing-open" type="button" onClick={() => setBriefing(true)}>
+          What am I looking at?
+        </button>
       </div>
 
       <section
         className="instrument"
         aria-label="Live corridor simulation"
         data-tick={frame?.tick}
+        data-ready={ready}
         data-tour={tour}
         data-overlay={overlay}
       >
-        <div className="instrument-bar">
-          <div className="simulation-status" data-ready={ready}>
-            <span /> Live comparison
-          </div>
-        </div>
-
         <div className="scene-stage" data-picking={picking}>
           {webglAvailable ? (
             <SceneBoundary key={graphicsRevision} onRetry={restoreGraphics} onFallback={fallback}>
@@ -559,6 +544,8 @@ export default function LiveView({
                 quality={liveQuality}
                 reducedMotion={reducedMotion || initial.capture}
                 speed={speed}
+                mood={scene.mood}
+                rain={scene.rain}
               />
             </SceneBoundary>
           ) : (
@@ -577,6 +564,10 @@ export default function LiveView({
               onRoadPick={pickRoad}
             />
           )}
+          <RainOverlay
+            active={active && scene.rain && webglAvailable}
+            reducedMotion={reducedMotion}
+          />
           {!failure && (
             <LoadingScreen done={ready} steps={liveLoadingSteps(true, policiesReady, ready)} />
           )}
@@ -609,7 +600,7 @@ export default function LiveView({
               <div className="comparison-labels">
                 {!singleView && (!tour || wipe > 0) && (
                   <label className="controller-chip">
-                    <span className="controller-side">A · Left</span>
+                    <span className="controller-side">A</span>
                     <select
                       aria-label="Left controller"
                       value={controllers[0].id}
@@ -624,7 +615,7 @@ export default function LiveView({
                   </label>
                 )}
                 <label className="controller-chip controller-chip-right">
-                  <span className="controller-side">{singleView ? "View" : "B · Right"}</span>
+                  <span className="controller-side">B</span>
                   <select
                     aria-label="Right controller"
                     value={controllers[1].id}
@@ -639,15 +630,12 @@ export default function LiveView({
                 </label>
               </div>
               {frame && (
-                <MetricHud readout={frame.readout} single={singleView || (tour && wipe === 0)} />
+                <MetricHud
+                  readout={frame.readout}
+                  single={singleView || (tour && wipe === 0)}
+                  clock={(elapsed) => clockTime(scene, elapsed)}
+                />
               )}
-              <div className="scene-caption">
-                <span className="scene-caption-line" />
-                <span>
-                  <strong>{cameraName(camera)}</strong>
-                  <small>{webglAvailable ? "Authored network" : "Top-down view"}</small>
-                </span>
-              </div>
               <CheckpointControl
                 policy={controllers[1].policy}
                 disabled={disabled}
@@ -908,7 +896,7 @@ export default function LiveView({
           <dl className="live-readouts">
             <div>
               <dt>Simulated time</dt>
-              <dd>{formatTime(metrics.elapsed)}</dd>
+              <dd>{clockTime(scene, metrics.elapsed)}</dd>
             </div>
             <div>
               <dt>Vehicles on road</dt>

@@ -140,7 +140,7 @@ async function pageFor(browser, tier, size = viewport) {
 }
 
 async function waitForScene(page) {
-  await page.locator(".simulation-status[data-ready=true]").waitFor({ timeout: 30_000 });
+  await page.locator(".instrument[data-ready=true]").waitFor({ timeout: 30_000 });
   await page.locator(".scene-stage canvas").waitFor();
   await page.evaluate(
     () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),

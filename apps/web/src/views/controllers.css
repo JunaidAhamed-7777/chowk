@@ -1,0 +1,129 @@
+.controllers-content {
+  display: grid;
+  gap: 28px;
+}
+.controllers-content > .information-intro {
+  margin-bottom: 0;
+}
+.controllers-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.controllers-index a {
+  padding: 6px 11px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: #c3ccd8;
+  font-size: 13px;
+  font-weight: 550;
+}
+.controllers-index a:hover {
+  border-color: #ffffff33;
+  color: var(--ui-text);
+}
+.controller-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(20px, 4vw, 56px);
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 90px;
+}
+.controller-section h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+.controller-short {
+  margin: 6px 0 0;
+  color: var(--ui-text);
+  font-size: 1rem;
+}
+.controller-text dl {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 0;
+}
+.controller-text dt {
+  color: var(--ui-dim);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.controller-text dd {
+  max-width: 62ch;
+  margin: 3px 0 0;
+  color: #bcc7d6;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.controller-result {
+  margin: 16px 0 0;
+  color: var(--ui-dim);
+  font-size: 0.86rem;
+}
+.controller-result strong {
+  color: var(--ui-text);
+  font-variant-numeric: tabular-nums;
+}
+.controller-diagram {
+  margin: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--night-1);
+}
+.controller-diagram svg {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  margin-inline: auto;
+  height: auto;
+}
+.controller-rules {
+  grid-template-columns: minmax(0, 1fr);
+}
+.diagram-label {
+  fill: #aeb9c7;
+  font:
+    500 11px "Inter Variable",
+    Inter,
+    sans-serif;
+}
+.diagram-strong {
+  fill: var(--ui-text);
+  font-weight: 650;
+}
+.diagram-axis {
+  fill: none;
+  stroke: #ffffff40;
+}
+.diagram-arrow {
+  stroke: #ffffff40;
+  stroke-dasharray: 2 3;
+}
+.diagram-dot {
+  fill: #ffc27a;
+}
+.diagram-dot-muted {
+  fill: #ffc27a55;
+}
+.diagram-road {
+  fill: #18202c;
+}
+.diagram-box {
+  fill: #222c3a;
+}
+.diagram-car {
+  fill: #ffc27a;
+}
+.diagram-bus {
+  fill: #7db7ff;
+}
+@media (width <= 860px) {
+  .controller-section {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

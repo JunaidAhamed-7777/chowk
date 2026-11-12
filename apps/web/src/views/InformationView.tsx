@@ -3,13 +3,17 @@ import { lazy, Suspense } from "react";
 const ResultsView = lazy(() =>
   import("./ResultsView").then(({ ResultsView }) => ({ default: ResultsView })),
 );
+const ControllersView = lazy(() =>
+  import("./ControllersView").then(({ ControllersView }) => ({ default: ControllersView })),
+);
 const MethodView = lazy(() =>
   import("./MethodView").then(({ MethodView }) => ({ default: MethodView })),
 );
 
-export type InformationRoute = "/results" | "/method" | "/limits";
+export type InformationRoute = "/controllers" | "/results" | "/method" | "/limits";
 
 const titles = {
+  "/controllers": "How each controller decides",
   "/results": "Benchmark results",
   "/method": "How CHOWK works",
   "/limits": "Scope and limitations",
@@ -49,7 +53,6 @@ const limits = [
 export function InformationView({ route }: { route: InformationRoute }) {
   return (
     <article className={route === "/results" ? "information information-results" : "information"}>
-      <p className="section-label">{route.slice(1)}</p>
       <h1 id="information-heading" tabIndex={-1}>
         {titles[route]}
       </h1>
@@ -58,7 +61,7 @@ export function InformationView({ route }: { route: InformationRoute }) {
           fallback={
             <div className="information-loading" role="status">
               <span className="information-spinner" aria-hidden="true" />
-              Loading {route === "/results" ? "the benchmark results" : "the method"}…
+              Loading {route === "/results" ? "the benchmark results" : "this page"}…
               <span className="information-skeleton" aria-hidden="true">
                 <span className="information-bar" />
                 <span className="information-bar" />
@@ -67,7 +70,13 @@ export function InformationView({ route }: { route: InformationRoute }) {
             </div>
           }
         >
-          {route === "/results" ? <ResultsView /> : <MethodView />}
+          {route === "/results" ? (
+            <ResultsView />
+          ) : route === "/controllers" ? (
+            <ControllersView />
+          ) : (
+            <MethodView />
+          )}
         </Suspense>
       ) : (
         <>

@@ -43,7 +43,7 @@ const liveState = `
   const gl = canvas?.getContext('webgl2');
   const debug = gl?.getExtension('WEBGL_debug_renderer_info');
   return {
-    ready: Boolean(document.querySelector('.simulation-status[data-ready=true]')),
+    ready: Boolean(document.querySelector('.instrument[data-ready=true]')),
     tour: instrument?.dataset.tour === 'true',
     tick: Number(instrument?.dataset.tick ?? 0),
     caption: document.querySelector('.tour-caption-text')?.textContent,

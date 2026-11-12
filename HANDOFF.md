@@ -74,3 +74,12 @@ npm run capture -- video
 - **How it decides** (`apps/web/src/ui/DecisionPanel.tsx`, spec L11) replaced the policy inspector. The worker's `InspectedController` records the sense each decision used; `apps/web/src/sim/decisionMath.ts` restates `scorePressure` term by term and the panel shows a ✓ when it matches the controller's own output.
 - **Do not edit `packages/controllers/src` for UI needs.** It is part of the benchmark version hash, and any byte change makes the build refuse the published results. The web app imports `pressure`, `demand` and `actuated` through subpath exports in `packages/controllers/package.json`. Running `biome check --write` over a whole package can also reformat hashed files and policy JSON; scope it to the files you changed.
 - Media still predates this pass as well.
+
+## Scenes, controllers page and cleanup (13 Nov)
+
+- **Time of day.** `apps/web/src/sim/scenarioScene.ts` maps each scenario to a title, a plain description, a mood (day, evening, night), rain and a start clock. `apps/web/src/scene/moodLighting.ts` holds every lighting value and blends between them; `StaticDistrict` and `NightCorridor` read the blended values each frame. `RainOverlay.tsx` draws the monsoon layer.
+- **Controllers page** at `/controllers` (`apps/web/src/views/ControllersView.tsx`). Tested delays and CHOWK's comparison with area max-pressure come from the build-time `__CHOWK_BRIEFING__` data.
+- **No sound.** `trafficAudio.ts`, `useTrafficAudio.ts` and the mute button are gone.
+- **Readiness marker** is now `data-ready` on `.instrument`; the old `.simulation-status` pill is gone. Capture and browser-budget scripts use the new selector.
+- **Menus** close on outside press through `apps/web/src/ui/useDismissableMenus.ts`.
+- The README stills, poster and video now differ even more from the app (daytime morning peak, new header). Recapture.
