@@ -66,11 +66,11 @@ const episodes: Episode[] = VALIDATION_SEEDS.slice(0, count).map((seed) => ({
 const saturation = corridor.links.map(({ id }) => saturationFor(corridor, scenario, id));
 const candidates = [
   { controller: "webster" as const, hysteresis: 0 },
-  ...[0, 0.0125, 0.025, 0.05, 0.1].map((hysteresis) => ({
+  ...[0, 0.005, 0.0075, 0.01, 0.0125, 0.015, 0.0175, 0.02, 0.025, 0.05, 0.1].map((hysteresis) => ({
     controller: "mp-area" as const,
     hysteresis,
   })),
-  ...[0, 1, 2, 4, 8].map((hysteresis) => ({
+  ...[0, 1, 1.5, 2, 2.5, 3, 4, 8].map((hysteresis) => ({
     controller: "mp-count" as const,
     hysteresis,
   })),

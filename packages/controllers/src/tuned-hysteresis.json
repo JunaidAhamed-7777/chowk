@@ -1,87 +1,171 @@
 {
-  "area": 0.0125,
-  "count": 1,
+  "area": 0.01,
+  "count": 2,
   "scenario": "morning-peak",
-  "warmup": 150,
-  "measured": 450,
-  "validationSeeds": [500000, 500001, 500002, 500003, 500004, 500005, 500006, 500007],
+  "warmup": 300,
+  "measured": 900,
+  "validationSeeds": [
+    500000,
+    500001,
+    500002,
+    500003,
+    500004,
+    500005,
+    500006,
+    500007,
+    500008,
+    500009,
+    500010,
+    500011,
+    500012,
+    500013,
+    500014,
+    500015,
+    500016,
+    500017,
+    500018,
+    500019
+  ],
   "candidates": [
     {
       "controller": "webster",
       "hysteresis": 0,
-      "delayPerPerson": 299.94773737246663,
-      "completed": 181.25,
-      "backlog": 154
+      "delayPerPerson": 151.17440176095104,
+      "completed": 408.05,
+      "backlog": 0
     },
     {
       "controller": "mp-area",
       "hysteresis": 0,
-      "delayPerPerson": 282.14448041030334,
-      "completed": 199.5,
-      "backlog": 149
+      "delayPerPerson": 81.40550266263168,
+      "completed": 435.4,
+      "backlog": 0
+    },
+    {
+      "controller": "mp-area",
+      "hysteresis": 0.005,
+      "delayPerPerson": 74.71271834371426,
+      "completed": 443.3,
+      "backlog": 0
+    },
+    {
+      "controller": "mp-area",
+      "hysteresis": 0.0075,
+      "delayPerPerson": 74.34397514635927,
+      "completed": 439.35,
+      "backlog": 0
+    },
+    {
+      "controller": "mp-area",
+      "hysteresis": 0.01,
+      "delayPerPerson": 74.30207126605485,
+      "completed": 442.3,
+      "backlog": 0
     },
     {
       "controller": "mp-area",
       "hysteresis": 0.0125,
-      "delayPerPerson": 280.8043798805701,
-      "completed": 205.125,
-      "backlog": 136
+      "delayPerPerson": 76.45655261821209,
+      "completed": 442.5,
+      "backlog": 0
+    },
+    {
+      "controller": "mp-area",
+      "hysteresis": 0.015,
+      "delayPerPerson": 74.96156552885861,
+      "completed": 447.65,
+      "backlog": 0
+    },
+    {
+      "controller": "mp-area",
+      "hysteresis": 0.0175,
+      "delayPerPerson": 82.32002738288273,
+      "completed": 444.25,
+      "backlog": 0
+    },
+    {
+      "controller": "mp-area",
+      "hysteresis": 0.02,
+      "delayPerPerson": 84.380167143893,
+      "completed": 444.45,
+      "backlog": 0
     },
     {
       "controller": "mp-area",
       "hysteresis": 0.025,
-      "delayPerPerson": 281.9024983367561,
-      "completed": 205.375,
-      "backlog": 141.75
+      "delayPerPerson": 92.24430920510115,
+      "completed": 444.5,
+      "backlog": 0
     },
     {
       "controller": "mp-area",
       "hysteresis": 0.05,
-      "delayPerPerson": 284.0197794427062,
-      "completed": 200.125,
-      "backlog": 128.75
+      "delayPerPerson": 148.7553257277989,
+      "completed": 424.8,
+      "backlog": 0
     },
     {
       "controller": "mp-area",
       "hysteresis": 0.1,
-      "delayPerPerson": 289.20162154527907,
-      "completed": 188.875,
-      "backlog": 149.375
+      "delayPerPerson": 227.84769333672875,
+      "completed": 382.2,
+      "backlog": 0
     },
     {
       "controller": "mp-count",
       "hysteresis": 0,
-      "delayPerPerson": 285.5279181210144,
-      "completed": 199.625,
-      "backlog": 151.875
+      "delayPerPerson": 96.28785659103843,
+      "completed": 440.05,
+      "backlog": 0
     },
     {
       "controller": "mp-count",
       "hysteresis": 1,
-      "delayPerPerson": 284.6851240519029,
-      "completed": 201.375,
-      "backlog": 139.375
+      "delayPerPerson": 94.21606956224464,
+      "completed": 441.15,
+      "backlog": 0
+    },
+    {
+      "controller": "mp-count",
+      "hysteresis": 1.5,
+      "delayPerPerson": 93.13971586718768,
+      "completed": 440.3,
+      "backlog": 0
     },
     {
       "controller": "mp-count",
       "hysteresis": 2,
-      "delayPerPerson": 287.0226482193535,
-      "completed": 201.75,
-      "backlog": 152.375
+      "delayPerPerson": 90.44311624119935,
+      "completed": 444.25,
+      "backlog": 0
+    },
+    {
+      "controller": "mp-count",
+      "hysteresis": 2.5,
+      "delayPerPerson": 93.14830634683179,
+      "completed": 445.35,
+      "backlog": 0
+    },
+    {
+      "controller": "mp-count",
+      "hysteresis": 3,
+      "delayPerPerson": 95.04659183451007,
+      "completed": 447.2,
+      "backlog": 0
     },
     {
       "controller": "mp-count",
       "hysteresis": 4,
-      "delayPerPerson": 285.77086566021416,
-      "completed": 200.125,
-      "backlog": 134.75
+      "delayPerPerson": 98.22291474477515,
+      "completed": 450.25,
+      "backlog": 0
     },
     {
       "controller": "mp-count",
       "hysteresis": 8,
-      "delayPerPerson": 287.70305451650546,
-      "completed": 200.125,
-      "backlog": 125
+      "delayPerPerson": 128.90138272631367,
+      "completed": 441.75,
+      "backlog": 0
     }
   ]
 }
