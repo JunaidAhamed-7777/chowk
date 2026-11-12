@@ -136,7 +136,8 @@ Each event produces a toast, a marker in the 3D scene, and a tick on the metric 
 | 2 | 2.5–8 | Street, low over J3 | Wipe at centre; 4× | "Left: <left controller>. Right: <right controller>. Same traffic, same seed." |
 | 3 | 8–16 | Aerial | Wipe at centre; 4× | "A five-junction corridor, simulated live in your browser." |
 | 4 | 16–32 | Junction J3 | Wipe at centre; speed overlay; 4× | "Two-wheelers move through the gaps beside queues." |
-| 5 | 32–44 | Junction J3 | Wipe at centre; pressure overlay; 4× | "The pressure overlay shows how much road area traffic occupies." |
+| 5 | 32–40 | Junction J3 | Wipe at centre; pressure overlay; 4× | "The pressure overlay shows how much road area traffic occupies." |
+| 5b | 40–44 | Junction J3 | Wipe at centre; people overlay; 4× | "Buses carry 40 people here. CHOWK minimises delay to people, not vehicles." |
 | 6 | 44–58 | Ambulance cam | Wipe at centre; ambulance event; 16× | "Follow an ambulance through the corridor." |
 | 7 | 58–68 | Aerial | Wipe at centre; pressure overlay; surge event; 4× | "A surge triples demand on one approach for three simulated minutes." |
 | 8 | 68–75 | Aerial | Wipe at centre; 1× | "Compare person-delay, then reproduce the benchmark in Results." |
