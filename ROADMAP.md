@@ -262,3 +262,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Generated one-page judge brief, `docs/CHOWK-brief.pdf`, linked from the README (issue #20).
 - 13 Nov 2026 — Results runs the held-out grid live beside area max-pressure (spec R7, issue #21). The 3D Live view stays on the corridor; making it network-generic is a larger refactor.
 - 13 Nov 2026 — Dependency-free C export of the policy that reproduces the TypeScript outputs bit for bit on 250 recorded cases, checked in CI (issue #17).
+- 13 Nov 2026 — Four live-only story presets: stadium exit, festival procession, school closing and waterlogging (spec L4b, issue #19).

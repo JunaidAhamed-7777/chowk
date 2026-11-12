@@ -7,6 +7,7 @@ import {
   type LiveScenarioId,
   liveSeed,
   parseCustomDemand,
+  presetCatalog,
 } from "./liveScenario";
 import type { ControllerPair } from "./SimHost";
 
@@ -26,7 +27,9 @@ export function readSession() {
   const scenario: LiveScenarioId =
     params.get("scenario") === "custom" && custom
       ? "custom"
-      : (scenarioCatalog.find(({ id }) => id === params.get("scenario"))?.id ?? "morning-peak");
+      : (scenarioCatalog.find(({ id }) => id === params.get("scenario"))?.id ??
+        presetCatalog.find(({ id }) => id === params.get("scenario"))?.id ??
+        "morning-peak");
   const overlay = overlays.find(({ id }) => id === params.get("overlay"))?.id ?? "none";
   const lookup = (side: string) =>
     baselineChoices.find(({ controller }) => controller.id === params.get(side))?.controller;

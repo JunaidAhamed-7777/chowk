@@ -87,6 +87,10 @@ A dropdown that resets both simulations with a named demand pattern. See `04-ben
 - The top-left of the Live view shows the scenario: clock time, time of day, its name and a one-sentence description of its demand. The scene's lighting follows the scenario (see `05-rendering.md`), and "Simulated time" is a clock starting at the scenario's hour (morning peak 08:30, evening peak 18:00, the rest in the evening or night).
 - Custom: sliders for demand level and the vehicle mix — P1
 
+### L4b. Stories — P2
+
+Four live-only presets in the scenario menu, built from the simulator's own events on calibrated scenarios and not part of the benchmark: Stadium exit (side-street surges at J3 at night), Festival procession (half the road blocked between J3 and J4 for ten minutes), School closing (afternoon, mostly two-wheelers and autos, side-street surges at J2 and J4) and Waterlogging (monsoon with most of one side blocked between J2 and J3 for the hour). Each has its own time of day and description in `scenarioScene.ts`.
+
 ### L5. Events ("Break it") — P0
 
 Buttons that inject a disruption into **both** simulations at the same simulated instant.

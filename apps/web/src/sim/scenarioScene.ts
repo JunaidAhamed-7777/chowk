@@ -71,6 +71,38 @@ export const scenarioScenes: Record<LiveScenarioId, ScenarioScene> = {
     rain: false,
     start: hours(23),
   },
+  "stadium-exit": {
+    title: "Stadium exit",
+    description:
+      "A match has just ended. Side streets at J3 send four and then two and a half times their usual traffic for several minutes into a quiet night corridor.",
+    mood: "night",
+    rain: false,
+    start: hours(22.5),
+  },
+  procession: {
+    title: "Festival procession",
+    description:
+      "Festival traffic, and a procession takes half the road between J3 and J4 for ten minutes.",
+    mood: "evening",
+    rain: false,
+    start: hours(19),
+  },
+  "school-closing": {
+    title: "School closing",
+    description:
+      "Mid-afternoon, mostly two-wheelers and autos. Side streets at J2 and J4 send three times their usual traffic as schools let out.",
+    mood: "day",
+    rain: false,
+    start: hours(15.5),
+  },
+  waterlogging: {
+    title: "Waterlogging",
+    description:
+      "Monsoon rain, and standing water closes most of one side of the road between J2 and J3 for the whole hour.",
+    mood: "night",
+    rain: true,
+    start: hours(21),
+  },
   custom: {
     title: "Custom demand",
     description: "Your own traffic level and vehicle mix, set in the Custom demand panel.",

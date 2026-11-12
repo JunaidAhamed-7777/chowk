@@ -2,6 +2,7 @@ import { scenarioCatalog } from "@chowk/scenarios";
 import { useState } from "react";
 import { type OverlayMode, overlays } from "../scene/sceneSettings";
 import type { LiveScenarioId } from "../sim/liveScenario";
+import { presetCatalog } from "../sim/liveScenario";
 import { maxLiveSeed, parseLiveSeed } from "../sim/liveSession";
 import { Icon } from "./Icon";
 
@@ -59,6 +60,13 @@ export function LiveControls({
               {label}
             </option>
           ))}
+          <optgroup label="Stories (live only)">
+            {presetCatalog.map(({ id, label }) => (
+              <option key={id} value={id}>
+                {label}
+              </option>
+            ))}
+          </optgroup>
           <option value="custom">Custom demand…</option>
         </select>
       </label>
