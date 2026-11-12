@@ -253,3 +253,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Rewind a minute: both workers restore a checkpoint clone and replay exactly (spec L17, issue #10).
 - 13 Nov 2026 — District massing rises with distance from the road so towers sit back, and the day mood has a light warm haze (issue #4).
 - 13 Nov 2026 — Live controller menu offers CHOWK with ambulance pre-emption, the B6 variant (issue #8).
+- 13 Nov 2026 — Retrained the four ablations on the capacity-fixed simulator (`capacity-v2-*`, population 32, 150 generations, σ 0.001). Without the max-pressure prior the pure policy scores 3.91 on validation.

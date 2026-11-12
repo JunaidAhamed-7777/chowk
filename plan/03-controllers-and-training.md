@@ -205,8 +205,12 @@ Target simulator speed is at least 100x real time per core. One candidate evalua
 | `ablation-v2-vehicle` | Shared-box junctions | 24 | 150 | 120 | 0.9935 |
 | `capacity-v1` | Capacity fix (12 Nov) | 48 | 20 of 250 (stopped) | — | 1.0698 at generation 20; unstable at σ = 0.005 |
 | `capacity-v2` | Capacity fix (12 Nov) | 64, 4 episodes per candidate | 300 | 220 | 0.9386 |
+| `capacity-v2-vehicle` | Capacity fix | 32, 4 episodes per candidate | 150 | 100 | 0.9453 |
+| `capacity-v2-count` | Capacity fix | 32, 4 episodes per candidate | 150 | 70 | 1.1090 |
+| `capacity-v2-pure` | Capacity fix | 32, 4 episodes per candidate | 150 | 20 | 3.9125 |
+| `capacity-v2-solo` | Capacity fix | 32, 4 episodes per candidate | 150 | 10 | 0.9793 |
 
-Runs up to `capacity-v1` used σ = 0.005 and a learning rate of 0.001, annealed over the run, with two episodes per candidate. After the capacity fix, queues are short and area-pressure differences small, so that noise swamped the max-pressure prior (validation worsened to 1.07 by generation 20). Following the failure rule below, `capacity-v2` used σ = 0.001, a learning rate of 0.0002 and four episodes per candidate. Validation fitness is mean delay relative to area max-pressure on the 20 validation seeds; below 1 is better. On the new simulator the earlier `main` policy scored 0.9914, so `junction-v2` replaced it. The ablations used half the population and fewer generations than `junction-v2`; the Results page notes that the variants use separate, shorter training runs.
+Runs up to `capacity-v1` used σ = 0.005 and a learning rate of 0.001, annealed over the run, with two episodes per candidate. After the capacity fix, queues are short and area-pressure differences small, so that noise swamped the max-pressure prior (validation worsened to 1.07 by generation 20). Following the failure rule below, `capacity-v2` used σ = 0.001, a learning rate of 0.0002 and four episodes per candidate. Validation fitness is mean delay relative to area max-pressure on the 20 validation seeds; below 1 is better. On the new simulator the earlier `main` policy scored 0.9914, so `junction-v2` replaced it. The ablations used half the population and fewer generations than the main run; the Results page notes that the variants use separate, shorter training runs.
 
 ### Failure handling
 
