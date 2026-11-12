@@ -137,6 +137,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
   const [editingDemand, setEditingDemand] = useState(false);
   const [inspecting, setInspecting] = useState(false);
   const [timeSpace, setTimeSpace] = useState(false);
+  const [photo, setPhoto] = useState(false);
   const [challenge, setChallenge] = useState<ChallengeStage>("off");
   const [inspectedJunction, setInspectedJunction] = useState(2);
   const [picking, setPicking] = useState(false);
@@ -458,6 +459,15 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
     setRevision((value) => value + 1);
   }
 
+  useEffect(() => {
+    if (!photo) return;
+    const leave = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPhoto(false);
+    };
+    window.addEventListener("keydown", leave);
+    return () => window.removeEventListener("keydown", leave);
+  }, [photo]);
+
   const onChallengeStage = useCallback((next: ChallengeStage) => {
     setChallenge(next);
     if (next === "done") setPaused(true);
@@ -539,7 +549,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
   const scene = scenarioScenes[scenarioId];
 
   return (
-    <div className="live-view">
+    <div className="live-view" data-photo={photo}>
       <div className="live-intro">
         <p className="live-when">
           <span>{clockTime(scene, metrics?.elapsed ?? 0)}</span>
@@ -748,6 +758,11 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               onClose={() => setTimeSpace(false)}
             />
           )}
+          {photo && (
+            <button type="button" className="photo-exit" onClick={() => setPhoto(false)}>
+              Exit photo mode
+            </button>
+          )}
           {notice && (
             <div className="live-notice" role="status">
               {notice}
@@ -955,6 +970,20 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               }}
             >
               Time-space
+            </button>
+            <button
+              className="control-button photo-button"
+              type="button"
+              disabled={disabled}
+              onClick={() => {
+                endTour();
+                setInspecting(false);
+                setTimeSpace(false);
+                setChallenge("off");
+                setPhoto(true);
+              }}
+            >
+              Photo
             </button>
             <button
               className="control-button tour-button"

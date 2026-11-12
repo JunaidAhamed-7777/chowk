@@ -256,3 +256,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Retrained the four ablations on the capacity-fixed simulator (`capacity-v2-*`, population 32, 150 generations, σ 0.001). Without the max-pressure prior the pure policy scores 3.91 on validation.
 - 13 Nov 2026 — Fixed the wet lamp-pool shader (an undeclared uniform had stopped the pools rendering). The tour clock credits up to 0.5 s per frame so slow software rendering keeps time; the tour browser test asserts the timeline opens the comparison by 5 s.
 - 13 Nov 2026 — Green chevrons stream along the road ahead of an ambulance on the arterial, per side (issue #8).
+- 13 Nov 2026 — Monsoon lightning and a photo mode that hides the interface (spec L18, issue #14).

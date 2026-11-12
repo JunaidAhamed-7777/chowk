@@ -49,6 +49,8 @@ The scenario sets the light (`apps/web/src/sim/scenarioScene.ts`, `apps/web/src/
 
 A `wet` mood value (0 dry, 1 monsoon) darkens the asphalt, adds puddles where the road grain is lowest, lowers road roughness to 0.55 (lower values blow out under the directional light) and stretches each street-lamp pool towards the camera like a reflection. Building facades take a per-building paint colour from a palette of weathered pastels, with streaks and painted shutters at street level; at night the paint shows faintly under the window light.
 
+In monsoon an occasional double lightning flash (every 11–26 s, none under reduced motion) briefly lights the sky, fog and hemisphere light. When an ambulance is on the arterial, green chevrons stream along the road ahead of it on each side of the wipe.
+
 The rain layer is a 2D canvas over the scene with pre-rendered drop sprites and no per-frame allocation; reduced motion keeps still drops only. The 2D fallback stays at night.
 
 ## Scene composition

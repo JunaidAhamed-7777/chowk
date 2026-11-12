@@ -246,6 +246,9 @@ function MoodController({
   const [background] = useState(() => new Color());
   const [fog] = useState(() => new FogExp2("#000", 0));
   const first = useRef(true);
+  // Monsoon lightning: an occasional double flash that lights the sky and the city.
+  const lightning = useRef({ clock: 0, next: 9, started: -10 });
+  const [flashColour] = useState(() => new Color("#c9d8ff"));
   useEffect(() => {
     scene.background = background;
     scene.fog = fog;
@@ -268,6 +271,26 @@ function MoodController({
       sun.current.color.copy(currentMood.sun);
       sun.current.intensity = currentMood.sunIntensity;
       sun.current.position.set(currentMood.sunX, currentMood.sunY, currentMood.sunZ);
+    }
+    const bolt = lightning.current;
+    bolt.clock += Math.min(delta, 0.1);
+    if (!rain || reducedMotion) return;
+    if (bolt.clock >= bolt.next) {
+      bolt.started = bolt.clock;
+      bolt.next = bolt.clock + 11 + Math.random() * 15;
+    }
+    const since = bolt.clock - bolt.started;
+    const flash =
+      since < 0 || since > 0.9
+        ? 0
+        : Math.exp(-since * 14) +
+          0.7 * Math.exp(-Math.max(0, since - 0.22) * 10) * (since > 0.22 ? 1 : 0);
+    if (flash <= 0.01) return;
+    background.lerp(flashColour, Math.min(0.55, flash * 0.5));
+    fog.color.lerp(flashColour, Math.min(0.4, flash * 0.35));
+    if (hemisphere.current) {
+      hemisphere.current.color.lerp(flashColour, Math.min(1, flash));
+      hemisphere.current.intensity += flash * 2.4;
     }
   }, -2);
   return (

@@ -472,3 +472,43 @@
     transition: none;
   }
 }
+
+/* Photo mode: only the scene and the comparison divider remain. */
+.live-view[data-photo="true"]
+  :is(
+    .live-intro,
+    .simulation-controls,
+    .instrument-controls,
+    .comparison-hud,
+    .comparison-labels,
+    .checkpoint-control,
+    .live-footer,
+    .tour-caption,
+    .live-notice
+  ) {
+  opacity: 0;
+  pointer-events: none;
+}
+.photo-exit {
+  position: absolute;
+  z-index: 7;
+  right: var(--gutter);
+  bottom: 18px;
+  padding: 6px 12px;
+  border: 1px solid #ffffff2a;
+  border-radius: 999px;
+  background: #05070dcc;
+  color: #c6d0dd;
+  font: inherit;
+  font-size: 12px;
+  opacity: 0.55;
+  cursor: pointer;
+}
+.photo-exit:hover,
+.photo-exit:focus-visible {
+  opacity: 1;
+}
+body:has(.live-view[data-photo="true"]) .topbar {
+  opacity: 0;
+  pointer-events: none;
+}
