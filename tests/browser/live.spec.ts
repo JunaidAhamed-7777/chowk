@@ -140,38 +140,34 @@ test("briefs a first-time visitor on the problem and hands over to the live tour
 
   // Automated browsers skip the briefing unless the URL asks for it.
   await page.goto("/?intro=on&guide=off");
-  const briefing = page.getByRole("dialog", { name: "A junction full of people, run by a clock" });
+  const briefing = page.getByRole("dialog", { name: "Traffic lights that ignore the traffic" });
   await expect(briefing).toBeVisible();
   for (const title of [
-    "Without lanes, a queue is an area, not a number",
-    "A classical rule, plus a learned nudge",
-    "Trained by trial in the same simulator",
-    "Judged on traffic it never saw",
-    "Everything you see is computed live",
+    "Why counting vehicles gets it wrong",
+    "How CHOWK picks which light turns green",
+    "How it learned",
+    "Does it beat the other lights?",
+    "How to read the live view",
   ]) {
     await page.getByRole("button", { name: "Next" }).click();
     await expect(page.getByRole("heading", { name: title })).toBeVisible();
-    if (title === "Judged on traffic it never saw")
-      await expect(
-        page.getByText(/held-out seeds in simulated Indian mixed traffic/),
-      ).toBeVisible();
+    if (title === "Does it beat the other lights?")
+      await expect(page.getByText(/vs Fixed-time \(Webster\):/)).toBeVisible();
   }
   const enter = page.getByRole("button", { name: "Enter the live corridor" });
   await expect(enter).toBeEnabled({ timeout: 60_000 });
   await enter.click();
-  await expect(
-    page.getByRole("heading", { name: "Everything you see is computed live" }),
-  ).toBeHidden();
+  await expect(page.getByRole("heading", { name: "How to read the live view" })).toBeHidden();
   await expect(page.locator(".instrument")).toHaveAttribute("data-tour", "true");
   expect(await page.evaluate(() => localStorage.getItem("chowk-briefing"))).toBe("done");
 
   await page.getByRole("button", { name: /What am I looking at/ }).click();
   await expect(
-    page.getByRole("heading", { name: "A junction full of people, run by a clock" }),
+    page.getByRole("heading", { name: "Traffic lights that ignore the traffic" }),
   ).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(
-    page.getByRole("heading", { name: "A junction full of people, run by a clock" }),
+    page.getByRole("heading", { name: "Traffic lights that ignore the traffic" }),
   ).toBeHidden();
 });
 

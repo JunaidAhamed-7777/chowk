@@ -59,22 +59,9 @@
 .briefing-progress [data-state="done"] i::after {
   transform: scaleX(1);
 }
-.briefing-progress [data-state="now"] i {
-  animation: briefing-timer linear both;
-}
 .briefing-progress [data-state="now"] i::after {
-  animation: inherit;
-  animation-name: briefing-fill;
-}
-@keyframes briefing-timer {
-  to {
-    opacity: 1;
-  }
-}
-@keyframes briefing-fill {
-  to {
-    transform: scaleX(1);
-  }
+  transform: scaleX(1);
+  opacity: 0.55;
 }
 .briefing-content {
   display: grid;
@@ -118,14 +105,32 @@
   line-height: 1.62;
   text-wrap: pretty;
 }
-.briefing-body .briefing-headline {
-  padding: 10px 13px;
-  border-left: 2px solid var(--accent);
-  border-radius: 0 9px 9px 0;
-  background: #3df2b40f;
+.briefing-results {
+  display: grid;
+  gap: 4px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
   color: var(--ui-text);
-  font-size: 13.5px;
-  line-height: 1.55;
+  font-size: 14.5px;
+}
+.briefing-results li::before {
+  margin-right: 8px;
+  color: var(--accent);
+  content: "•";
+}
+.briefing-exact {
+  margin-top: 12px;
+  color: var(--ui-dim);
+  font-size: 12.5px;
+}
+.briefing-exact summary {
+  cursor: pointer;
+}
+.briefing-body .briefing-exact p {
+  margin-top: 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
 }
 .briefing-visual {
   min-width: 0;

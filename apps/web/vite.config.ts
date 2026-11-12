@@ -63,6 +63,17 @@ export default defineConfig(({ command }) => {
         ciHigh,
         seedCount,
       })),
+
+    comparisons: published.comparisons
+      .filter(
+        (cell) =>
+          cell.suite === "B1" &&
+          cell.scenario === "morning-peak" &&
+          cell.metric === "delayPerPerson" &&
+          cell.a === "chowk" &&
+          !cell.variant,
+      )
+      .map(({ b, relDiff, clear }) => ({ baseline: b, relDiff, clear })),
   };
   return {
     plugins: [react(), tailwindcss()],

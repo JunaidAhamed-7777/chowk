@@ -142,21 +142,21 @@ function CountVersusArea() {
       a: small.count,
       b: heavy.count,
       unit: "",
-      note: "a count favours the left",
+      note: "by count, left looks bigger",
     },
     {
       label: "Road area",
       a: small.area,
       b: heavy.area,
       unit: "m²",
-      note: "CHOWK’s sensors read this",
+      note: "what CHOWK measures",
     },
     {
       label: "People",
       a: small.people,
       b: heavy.people,
       unit: "",
-      note: "CHOWK minimises their delay",
+      note: "who is actually waiting",
     },
   ];
   return (
@@ -205,20 +205,20 @@ function CountVersusArea() {
 function Pipeline() {
   const steps = [
     {
-      title: "Sense",
-      body: "Every 5 s, per approach: road area occupied near, mid and far from the stop line, people, the longest wait, and how full the exit roads are.",
+      title: "Measure",
+      body: "For each road into the junction: how much road the queue covers, how many people are in it, how long they have waited, and how full the road ahead is.",
     },
     {
-      title: "Max-pressure",
-      body: "Score each green by waiting traffic minus traffic already on the roads it feeds. A classical rule (Varaiya, 2013), here measured in road area.",
+      title: "Score with max-pressure",
+      body: "Score = size of the queue minus traffic already on the road ahead. A long queue heading into an empty road scores high. This is a standard rule.",
     },
     {
-      title: "Learned correction",
-      body: "A small network (50 → 64 → 64 → 4) reads the same sensors plus neighbouring signals and nudges each score up or down.",
+      title: "Adjust with a neural network",
+      body: "A small network looks at the same measurements, plus what the neighbouring lights are doing, and adds or subtracts a little from each score.",
     },
     {
-      title: "Choose",
-      body: "Serve the highest score. Minimum green, clearance and a 150 s no-starvation rule apply to every controller.",
+      title: "Pick",
+      body: "The road with the highest score gets green. Safety rules always apply: minimum green, yellow and all-red, and no road waits more than 150 s.",
     },
   ];
   return (
@@ -256,7 +256,7 @@ function TrainingSketch() {
       <svg className="briefing-art" viewBox="0 0 360 200" aria-hidden="true">
         <line x1="34" x2="344" y1={y(1)} y2={y(1)} className="art-baseline" />
         <text x="344" y={y(1) - 6} textAnchor="end" className="art-caption">
-          max-pressure = 1.00
+          same as max-pressure
         </text>
         <path d={path} className="art-curve" pathLength={1} />
         {best && (
@@ -268,21 +268,21 @@ function TrainingSketch() {
               textAnchor="middle"
               className="art-caption art-caption-strong"
             >
-              chosen: generation {best.generation}
+              kept: round {best.generation}
             </text>
           </g>
         )}
         <text x="34" y="192" className="art-caption">
-          generation 0
+          round 0
         </text>
         <text x="344" y="192" textAnchor="end" className="art-caption">
           {last}
         </text>
       </svg>
       <figcaption>
-        Validation delay relative to max-pressure; lower is better.
+        Delay compared with max-pressure: 1.00 means equal, lower is better.
         {best &&
-          ` The published checkpoint had ${oneDecimal.format(Math.abs(1 - best.fitness) * 100)}% ${best.fitness <= 1 ? "less" : "more"} delay than max-pressure on validation traffic.`}
+          ` The version we kept had ${oneDecimal.format(Math.abs(1 - best.fitness) * 100)}% ${best.fitness <= 1 ? "less" : "more"} delay than max-pressure on the traffic used to choose it.`}
       </figcaption>
     </figure>
   );
@@ -319,8 +319,8 @@ function ProofBars() {
         </li>
       </ul>
       <figcaption>
-        Mean delay per person in the morning peak over {rows[0].seedCount} held-out seeds; lines are
-        95% intervals. The axis does not start at zero. Simulation result.
+        Average delay per person in the morning rush, {rows[0].seedCount} traffic samples. Dot =
+        average, line = 95% range. The axis does not start at zero. Simulation result.
       </figcaption>
     </figure>
   );
@@ -330,11 +330,11 @@ function YourTurn() {
   const items = [
     [
       "A | B",
-      "The green line splits the screen: identical vehicles on both sides, different signals.",
+      "A green line splits the screen. Both sides have the same cars. Only the traffic lights differ.",
     ],
-    ["ƒ", "Every live number has an ƒ button that shows its formula with the current totals."],
-    ["◎", "How it decides opens any junction and recomputes its last decision in your browser."],
-    ["✓", "Results re-runs the published benchmark in your browser and checks it matches."],
+    ["ƒ", "Click ƒ next to any number to see how it was calculated."],
+    ["◎", "Click How it decides to see the maths behind a junction's last choice."],
+    ["✓", "Open Results to re-run the test in your own browser."],
   ];
   return (
     <ul className="briefing-legend">
@@ -353,116 +353,126 @@ interface Chapter {
   title: string;
   body: ReactNode;
   art: ReactNode;
-  seconds: number;
+}
+
+function plainResult(baseline: string) {
+  const result = __CHOWK_BRIEFING__?.comparisons.find((entry) => entry.baseline === baseline);
+  if (!result) return undefined;
+  const name = controllerNames[baseline] ?? baseline;
+  if (!result.clear) return `vs ${name}: no clear difference`;
+  const size = oneDecimal.format(Math.abs(result.relDiff) * 100);
+  return `vs ${name}: ${size}% ${result.relDiff < 0 ? "less" : "more"} delay`;
 }
 
 function chapters(): Chapter[] {
   const small = queueStats(smallQueue);
   const heavy = queueStats(heavyQueue);
+  const results = ["webster", "mp-count", "mp-area", "actuated"].flatMap(
+    (baseline) => plainResult(baseline) ?? [],
+  );
   return [
     {
       label: "The problem",
-      title: "A junction full of people, run by a clock",
+      title: "Traffic lights that ignore the traffic",
       body: (
         <>
           <p>
-            On Indian roads, two-wheelers, auto-rickshaws, cars and buses share the carriageway
-            without lanes, squeezing into any gap.
+            A fixed-time traffic light runs on a timer. Each road gets the same green every cycle.
           </p>
           <p>
-            A fixed-time signal gives each road its slot whether that road is jammed or empty. Green
-            spent on an empty road is waiting time for everyone else.
+            The timer does not look at the queues. So an empty road can get green while a long queue
+            waits at red.
+          </p>
+          <p>
+            Indian traffic makes this harder. Bikes, autos, cars and buses share the road with no
+            lanes.
           </p>
         </>
       ),
       art: <ClockJunction />,
-      seconds: 10,
     },
     {
-      label: "Why counting misleads",
-      title: "Without lanes, a queue is an area, not a number",
+      label: "Counting is not enough",
+      title: "Why counting vehicles gets it wrong",
       body: (
         <>
           <p>
-            A controller that counts vehicles sees the left queue as the longer one: {small.count}{" "}
-            against {heavy.count}.
+            Some smarter lights count the vehicles in each queue. By count, the left queue is
+            bigger: {small.count} vehicles against {heavy.count}.
           </p>
           <p>
-            Measure the road they cover and the people inside, using the simulator's sizes and
-            assumed occupancies, and the right matters about{" "}
-            {oneDecimal.format(heavy.people / small.people)} times as much. CHOWK senses area and
-            weighs delay by people.
+            But the right queue covers {whole.format(heavy.area / small.area)}× more road and holds
+            about {whole.format(heavy.people / small.people)}× more people.
           </p>
+          <p>So CHOWK measures road space and people, not the number of vehicles.</p>
         </>
       ),
       art: <CountVersusArea />,
-      seconds: 12,
     },
     {
-      label: "How CHOWK decides",
-      title: "A classical rule, plus a learned nudge",
+      label: "How CHOWK works",
+      title: "How CHOWK picks which light turns green",
       body: (
         <>
+          <p>Every 5 seconds, at every junction, CHOWK runs the four steps on the right.</p>
+          <p>Step 2 is a well-known rule called max-pressure. Step 3 is the part CHOWK learned.</p>
           <p>
-            Each junction decides every five simulated seconds. CHOWK starts from max-pressure, a
-            well-studied rule, and adds a correction from a small neural network.
-          </p>
-          <p>
-            The correction starts at exactly zero, so the untrained controller is max-pressure.
-            Training can only move it where that reduced delay.
+            Before training, step 3 adds nothing, so CHOWK starts out the same as max-pressure.
+            Training only changes it where that cuts delay.
           </p>
         </>
       ),
       art: <Pipeline />,
-      seconds: 13,
     },
     {
-      label: "How it learned",
-      title: "Trained by trial in the same simulator",
+      label: "Training",
+      title: "How it learned",
       body: (
         <>
           <p>
-            Evolution strategies tried many small random changes to the network’s weights, ran each
-            one through simulated traffic, and moved towards the changes that cut person-delay.
+            We made many small random changes to the network and ran each version in the simulator.
+            Changes that cut delay were kept. This method is called evolution strategies.
           </p>
           <p>
-            The checkpoint was chosen on separate validation traffic. The traffic used for the
-            published results was never used for training or choosing.
+            The chart shows each round of training. We kept the best round, judged on separate
+            traffic that was not used for training.
           </p>
         </>
       ),
       art: <TrainingSketch />,
-      seconds: 12,
     },
     {
-      label: "Does it work?",
-      title: "Judged on traffic it never saw",
+      label: "Results",
+      title: "Does it beat the other lights?",
       body: (
         <>
           <p>
-            Every controller faces identical held-out traffic. This sentence is generated from the
-            published benchmark, including where CHOWK does not win:
+            We tested every controller on the same traffic, which CHOWK had never seen. In the
+            morning rush, compared with each one, CHOWK had:
           </p>
-          <p className="briefing-headline">{__CHOWK_BRIEFING__?.headline}</p>
+          <ul className="briefing-results">
+            {results.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+          <details className="briefing-exact">
+            <summary>Exact published result</summary>
+            <p>{__CHOWK_BRIEFING__?.headline}</p>
+          </details>
         </>
       ),
       art: <ProofBars />,
-      seconds: 15,
     },
     {
-      label: "Your turn",
-      title: "Everything you see is computed live",
+      label: "Using this page",
+      title: "How to read the live view",
       body: (
         <>
-          <p>
-            The city behind this card is the real simulator and controller, running in your browser.
-            Nothing is a recording.
-          </p>
-          <p>Every number on screen can show you how it was calculated.</p>
+          <p>The city behind this card is the simulation, running in your browser right now.</p>
+          <p>Nothing is pre-recorded, and you can check every number.</p>
         </>
       ),
       art: <YourTurn />,
-      seconds: 12,
     },
   ];
 }
@@ -478,8 +488,6 @@ export function Briefing({
 }) {
   const [content] = useState(chapters);
   const [chapter, setChapter] = useState(0);
-  const [hold, setHold] = useState(false);
-  const [waiting, setWaiting] = useState(false);
   const primary = useRef<HTMLButtonElement>(null);
   const current = content[chapter];
   const last = chapter === content.length - 1;
@@ -490,20 +498,8 @@ export function Briefing({
   }
 
   function go(next: number) {
-    setWaiting(false);
     setChapter(Math.max(0, Math.min(content.length - 1, next)));
   }
-
-  function advance() {
-    if (!last) go(chapter + 1);
-    else if (ready) close();
-    else setWaiting(true);
-  }
-
-  // A visitor who reaches the end before the simulation is ready enters as soon as it is.
-  useEffect(() => {
-    if (waiting && ready) close();
-  });
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -523,18 +519,7 @@ export function Briefing({
   }, []);
 
   return (
-    <section
-      className="briefing"
-      role="dialog"
-      aria-modal="false"
-      aria-labelledby="briefing-title"
-      onPointerEnter={() => setHold(true)}
-      onPointerLeave={() => setHold(false)}
-      onFocus={() => setHold(true)}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setHold(false);
-      }}
-    >
+    <section className="briefing" role="dialog" aria-modal="false" aria-labelledby="briefing-title">
       <div className="briefing-card">
         <nav className="briefing-progress" aria-label="Briefing chapters">
           {content.map((entry, index) => (
@@ -546,16 +531,7 @@ export function Briefing({
               data-state={index < chapter ? "done" : index === chapter ? "now" : "next"}
               onClick={() => go(index)}
             >
-              <i
-                key={index === chapter ? `run-${chapter}` : "idle"}
-                style={{
-                  animationDuration: `${current.seconds}s`,
-                  animationPlayState: hold ? "paused" : "running",
-                }}
-                onAnimationEnd={(event) => {
-                  if (index === chapter && event.animationName === "briefing-timer") advance();
-                }}
-              />
+              <i />
             </button>
           ))}
         </nav>
@@ -577,9 +553,7 @@ export function Briefing({
             <i />
             {ready
               ? "Simulation running behind this card"
-              : waiting
-                ? "Opening as soon as the simulation is ready…"
-                : "Starting the simulation in your browser…"}
+              : "Starting the simulation in your browser…"}
           </span>
           <span className="briefing-actions">
             <button className="briefing-skip" type="button" onClick={close}>
@@ -614,9 +588,7 @@ export function Briefing({
             </button>
           </span>
         </footer>
-        <p className="briefing-hint">
-          {hold ? "Paused while you read · " : "Advances by itself · "}← → to move · Esc to skip
-        </p>
+        <p className="briefing-hint">← → to move · Esc to skip</p>
       </div>
     </section>
   );

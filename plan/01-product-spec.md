@@ -165,10 +165,11 @@ A junction picker, an A/B side picker and a log of the last eight decisions comp
 
 ### L14. First-visit briefing — P0
 
-- On a first visit a briefing card covers the scene while it loads, with the live city visible behind it. Six chapters advance on their own (10–15 s each, with progress bars), pause while the pointer or focus is on the card, and respond to the arrow keys; Esc or "Skip intro" closes it.
-- Chapters: the problem (fixed timers on lane-free mixed traffic); why counting misleads (two queues drawn to scale from the simulator's vehicle sizes and assumed occupancies, with count, area and people); how CHOWK decides (sense, max-pressure, learned correction, choose); how it learned (the exported validation training curve); whether it works (mean delay per person with 95% intervals for every controller on the held-out seeds and the generated headline, including where CHOWK does not win); and how to read the live screen.
+- On a first visit a briefing card covers the scene while it loads, with the live city visible behind it. The visitor moves through six chapters with Next and Back, the chapter bar or the arrow keys; it never advances by itself. Esc or "Skip intro" closes it.
+- Copy is plain: short sentences, everyday words ("traffic lights", "road ahead"), one idea per paragraph. Technical terms are named once and explained.
+- Chapters: the problem (fixed timers on lane-free mixed traffic); why counting misleads (two queues drawn to scale from the simulator's vehicle sizes and assumed occupancies, with count, area and people); how CHOWK decides (sense, max-pressure, learned correction, choose); how it learned (the exported validation training curve); whether it works (mean delay per person with 95% intervals for every controller on the held-out seeds and a plain list of CHOWK against each controller, with the generated headline behind a disclosure, including where CHOWK does not win); and how to read the live screen.
 - Every number in the briefing is computed from simulator constants, `training-curve.json` or `results/benchmark.json` (extracted at build time). No hand-written results.
-- When it closes, by the visitor or after the last chapter once the simulation is ready, the autoplay tour starts and a first-time guide (L13) opens at its second card. The tour does not run while the briefing is open.
+- When the visitor closes it, the autoplay tour starts and a first-time guide (L13) opens at its second card. The tour does not run while the briefing is open.
 - "What am I looking at?" under the title reopens it. Dismissal is remembered in local storage. Automated browsers and capture mode skip it; `?intro=on` forces it and `?intro=off` suppresses it.
 
 ### L12. Audio — P2
