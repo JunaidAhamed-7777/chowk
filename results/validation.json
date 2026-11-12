@@ -107,10 +107,10 @@
         "mix": "mixed",
         "strips": 21,
         "widthMetres": 10.5,
-        "vehiclesPerSecond": 1.55,
-        "areaPerSecond": 7.412074999999985,
+        "vehiclesPerSecond": 1.5575,
+        "areaPerSecond": 7.4220499999999845,
         "seeds": 20,
-        "splitHalfSpread": 0.11612903225806448
+        "splitHalfSpread": 0.11878009630818608
       },
       {
         "mix": "festival",
@@ -134,10 +134,10 @@
         "mix": "festival",
         "strips": 21,
         "widthMetres": 10.5,
-        "vehiclesPerSecond": 1.73125,
-        "areaPerSecond": 7.592199999999959,
+        "vehiclesPerSecond": 1.7375,
+        "areaPerSecond": 7.6522999999999595,
         "seeds": 20,
-        "splitHalfSpread": 0.03898916967509019
+        "splitHalfSpread": 0.06043165467625898
       },
       {
         "mix": "cars",
@@ -188,10 +188,10 @@
         "mix": "two-wheeler-heavy",
         "strips": 21,
         "widthMetres": 10.5,
-        "vehiclesPerSecond": 2.16375,
-        "areaPerSecond": 7.392724999999912,
+        "vehiclesPerSecond": 2.14375,
+        "areaPerSecond": 7.319162499999914,
         "seeds": 20,
-        "splitHalfSpread": 0.0242634315424609
+        "splitHalfSpread": 0.008163265306122483
       },
       {
         "mix": "bus-heavy",
@@ -215,10 +215,10 @@
         "mix": "bus-heavy",
         "strips": 21,
         "widthMetres": 10.5,
-        "vehiclesPerSecond": 1.2325,
-        "areaPerSecond": 8.481049999999993,
+        "vehiclesPerSecond": 1.23375,
+        "areaPerSecond": 8.482712499999993,
         "seeds": 20,
-        "splitHalfSpread": 0.02028397565922932
+        "splitHalfSpread": 0.022289766970618102
       }
     ],
     "mixComparison": [
@@ -234,8 +234,8 @@
       },
       {
         "widthMetres": 10.5,
-        "mixedToCarsVehicleRate": 1.7222222222222223,
-        "mixedToCarsAreaRate": 1.1534508247743356
+        "mixedToCarsVehicleRate": 1.7305555555555556,
+        "mixedToCarsAreaRate": 1.155003112356035
       }
     ],
     "passed": true
@@ -645,36 +645,36 @@
       "controller": "webster",
       "seed": 500000,
       "duration": 1200,
-      "vehicleTicks": 2770563,
+      "vehicleTicks": 2454320,
       "overlapTicks": 0,
       "conservationViolations": 0,
-      "backstops": 5,
-      "rate": 0.0000018046873505493287,
-      "passed": true
+      "backstops": 304,
+      "rate": 0.0001238632289188044,
+      "passed": false
     },
     {
       "id": "morning-peak",
       "controller": "mp-area",
       "seed": 500001,
       "duration": 1200,
-      "vehicleTicks": 3930950,
+      "vehicleTicks": 3469168,
       "overlapTicks": 0,
       "conservationViolations": 0,
-      "backstops": 4,
-      "rate": 0.000001017565728386268,
-      "passed": true
+      "backstops": 600,
+      "rate": 0.00017295213146206813,
+      "passed": false
     },
     {
       "id": "cars-only",
       "controller": "mp-count",
       "seed": 500002,
       "duration": 1200,
-      "vehicleTicks": 2041530,
+      "vehicleTicks": 1882401,
       "overlapTicks": 0,
       "conservationViolations": 0,
-      "backstops": 2,
-      "rate": 9.796574138023934e-7,
-      "passed": true
+      "backstops": 258,
+      "rate": 0.00013705900071238805,
+      "passed": false
     }
   ],
   "twinDemand": {
