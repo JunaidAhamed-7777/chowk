@@ -242,3 +242,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Beat the AI: the visitor runs J3 against CHOWK for three simulated minutes (spec L16, issue #9).
 - 13 Nov 2026 — Limits adds "Path to a real junction", a cited plan for what a field trial would take (issue #16).
 - 13 Nov 2026 — Results adds "Check any comparison": any published cell, two controllers and a metric, with per-seed paired differences, a bootstrap interval computed in the page and per-seed replay (spec R6, issue #18).
+- 13 Nov 2026 — Monsoon roads look wet: darker asphalt, puddles and lamp pools that streak towards the camera (issue #14, partial).

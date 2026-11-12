@@ -25,6 +25,8 @@ export interface MoodValues {
   pools: number;
   bloomThreshold: number;
   bloomIntensity: number;
+  /** How wet the road looks, 0 dry to 1 soaked. */
+  wet: number;
 }
 
 function values(
@@ -77,6 +79,7 @@ const targets: Record<Mood | "rain", MoodValues> = {
     pools: 0,
     bloomThreshold: 0.96,
     bloomIntensity: 0.3,
+    wet: 0,
   }),
   evening: values({
     sky: "#3d3242",
@@ -101,6 +104,7 @@ const targets: Record<Mood | "rain", MoodValues> = {
     pools: 0.6,
     bloomThreshold: 0.64,
     bloomIntensity: 0.7,
+    wet: 0,
   }),
   night: values({
     sky: "#0a0f1a",
@@ -125,6 +129,7 @@ const targets: Record<Mood | "rain", MoodValues> = {
     pools: 1,
     bloomThreshold: 0.54,
     bloomIntensity: 0.8,
+    wet: 0,
   }),
   rain: values({
     sky: "#0c121c",
@@ -149,6 +154,7 @@ const targets: Record<Mood | "rain", MoodValues> = {
     pools: 1.25,
     bloomThreshold: 0.5,
     bloomIntensity: 0.9,
+    wet: 1,
   }),
 };
 
@@ -169,6 +175,7 @@ const numberKeys = [
   "pools",
   "bloomThreshold",
   "bloomIntensity",
+  "wet",
 ] as const;
 
 function copy(target: MoodValues, source: MoodValues) {
@@ -200,6 +207,7 @@ export const currentMood: MoodValues = values({
   pools: 0,
   bloomThreshold: 0,
   bloomIntensity: 0,
+  wet: 0,
 });
 copy(currentMood, targets.night);
 
@@ -223,4 +231,5 @@ export const moodUniforms = {
   facadeTint: { value: new Color("#252d3c") },
   facadeMix: { value: 0 },
   pools: { value: 1 },
+  wet: { value: 0 },
 };

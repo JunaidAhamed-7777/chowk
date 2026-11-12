@@ -114,6 +114,7 @@ function buildingMaterial() {
 function roadMaterial() {
   const material = new MeshStandardMaterial({ roughness: 0.88, metalness: 0.13 });
   material.onBeforeCompile = (shader) => {
+    shader.uniforms.wetness = moodUniforms.wet;
     shader.vertexShader = shader.vertexShader
       .replace("#include <common>", "#include <common>\nvarying vec2 roadPoint;")
       .replace(
@@ -121,13 +122,24 @@ function roadMaterial() {
         "#include <begin_vertex>\nroadPoint = (instanceMatrix * vec4(position, 1.0)).xz;",
       );
     shader.fragmentShader = shader.fragmentShader
-      .replace("#include <common>", "#include <common>\nvarying vec2 roadPoint;")
+      .replace(
+        "#include <common>",
+        "#include <common>\nvarying vec2 roadPoint;\nuniform float wetness;",
+      )
       .replace(
         "#include <color_fragment>",
         `#include <color_fragment>
       vec2 grainPoint = floor(roadPoint * 12.);
       float grain = fract(52.9829189 * fract(dot(grainPoint, vec2(.06711056, .00583715))));
-      diffuseColor.rgb *= mix(.80, 1.22, grain);`,
+      diffuseColor.rgb *= mix(.80, 1.22, grain);
+      // Wet asphalt darkens, with puddles where the grain is lowest.
+      float puddle = smoothstep(.62, .18, grain) * wetness;
+      diffuseColor.rgb *= mix(1., .55, wetness) * mix(1., .7, puddle);`,
+      )
+      .replace(
+        "#include <roughnessmap_fragment>",
+        `#include <roughnessmap_fragment>
+      roughnessFactor = mix(roughnessFactor, .55, wetness);`,
       );
   };
   return material;
@@ -231,15 +243,22 @@ function LightPools() {
   const material = useMemo(
     () =>
       new ShaderMaterial({
-        uniforms: { poolLevel: moodUniforms.pools },
+        uniforms: { poolLevel: moodUniforms.pools, wetness: moodUniforms.wet },
         transparent: true,
         depthWrite: false,
         blending: AdditiveBlending,
         vertexShader: `
       varying vec2 poolUV;
+      uniform float wetness;
       void main() {
         poolUV = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.);
+        // On a wet road each pool streaks towards the viewer, like a reflection.
+        vec4 world = modelMatrix * instanceMatrix * vec4(position, 1.);
+        vec3 centre = (modelMatrix * instanceMatrix * vec4(0., 0., 0., 1.)).xyz;
+        vec2 towards = normalize(cameraPosition.xz - centre.xz + vec2(1e-4));
+        vec2 offset = world.xz - centre.xz;
+        world.xz += towards * dot(offset, towards) * 1.4 * wetness;
+        gl_Position = projectionMatrix * viewMatrix * world;
       }`,
         fragmentShader: `
       varying vec2 poolUV;
@@ -247,7 +266,7 @@ function LightPools() {
       void main() {
         float radius = length(poolUV * 2. - 1.);
         float brightness = pow(1. - smoothstep(0., 1., radius), 2.3);
-        gl_FragColor = vec4(.38, .17, .051, brightness * .4 * poolLevel);
+        gl_FragColor = vec4(.38, .17, .051, brightness * .4 * poolLevel * (1. + .35 * wetness));
       }`,
       }),
     [],
@@ -295,6 +314,7 @@ export function StaticDistrict({ lowDetail = false }: { lowDetail?: boolean }) {
     moodUniforms.facadeTint.value.copy(currentMood.facadeTint);
     moodUniforms.facadeMix.value = currentMood.facadeMix;
     moodUniforms.pools.value = currentMood.pools;
+    moodUniforms.wet.value = currentMood.wet;
   });
 
   return (
