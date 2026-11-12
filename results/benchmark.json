@@ -268205,5 +268205,116 @@
       "clear": true
     }
   ],
-  "headline": "On 20 held-out seeds in simulated Indian mixed traffic, CHOWK reduced delay per person by 4.6% versus area max-pressure (95% CI −7.5% to −1.7%), with 60.0% lower delay versus Webster fixed-time (95% CI −62.7% to −57.2%). Simulation result."
+  "headline": "On 20 held-out seeds in simulated Indian mixed traffic, CHOWK reduced delay per person by 4.6% versus area max-pressure (95% CI −7.5% to −1.7%), with 60.0% lower delay versus Webster fixed-time (95% CI −62.7% to −57.2%). Simulation result.",
+  "engineering": {
+    "hardware": {
+      "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+      "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "os": "win32 10.0.26300",
+      "runtime": "Node 26.8.1"
+    },
+    "simulator": [
+      {
+        "vehicles": 500,
+        "realtime": 1007.7132048219096,
+        "meanActive": 501.34375
+      },
+      {
+        "vehicles": 1500,
+        "realtime": 291.06962021478495,
+        "meanActive": 1504.25
+      },
+      {
+        "vehicles": 3000,
+        "realtime": 137.97964455293737,
+        "meanActive": 3044.6354166666665
+      }
+    ],
+    "rendering": [
+      {
+        "tier": "low",
+        "medianFps": 163.93442622952287,
+        "onePercentLowFps": 161.29032258062622,
+        "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      },
+      {
+        "tier": "medium",
+        "medianFps": 163.93442622952287,
+        "onePercentLowFps": 160.42780748661406,
+        "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      },
+      {
+        "tier": "high",
+        "medianFps": 163.93442622952287,
+        "onePercentLowFps": 158.5204755614223,
+        "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      }
+    ],
+    "load": {
+      "interactiveMs": 996.2000000029802,
+      "transferBytes": 893987,
+      "initialJavaScriptGzipBytes": 525814
+    },
+    "determinism": {
+      "Node": 295398839,
+      "Chromium": 295398839,
+      "WebKit": 295398839,
+      "Firefox": 295398839
+    },
+    "tests": {
+      "passed": 92,
+      "failed": 0
+    },
+    "policyMicroseconds": 6.19811,
+    "shapedLoads": [
+      {
+        "label": "Broadband",
+        "downloadMbps": 10,
+        "latencyMs": 40,
+        "samples": 3,
+        "posterMs": 312,
+        "interactiveMs": 1612.2000000029802
+      },
+      {
+        "label": "Slow connection",
+        "downloadMbps": 2,
+        "latencyMs": 150,
+        "samples": 3,
+        "posterMs": 1172,
+        "interactiveMs": 4942.60000000149
+      }
+    ],
+    "memory": {
+      "minutes": 10,
+      "firstBytes": 13960572,
+      "lastBytes": 14018080,
+      "plateauRangeBytes": 257368,
+      "workers": 2
+    },
+    "reproduction": [
+      {
+        "engine": "Chromium",
+        "version": "158.0.8127.18",
+        "wallSeconds": 2.5166115999999996,
+        "episodes": 9
+      },
+      {
+        "version": "159.0",
+        "environment": "WSL Ubuntu 6.18.33.2-microsoft-standard-WSL2",
+        "wallSeconds": 3.429828974,
+        "episodes": 9,
+        "engine": "Firefox"
+      },
+      {
+        "engine": "WebKit",
+        "version": "27.2",
+        "wallSeconds": 2.9582014,
+        "episodes": 9
+      }
+    ],
+    "models": {
+      "count": 34,
+      "bytes": 109972
+    }
+  }
 }

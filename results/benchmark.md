@@ -374,6 +374,38 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 274.5 [255.9, 293.1] · median 279.4 | 3.93 [3.83, 4.04] · median 3.92 | 7639 [7436, 7863] · median 7484 | 401.8 [390.7, 412.7] · median 404.9 | 375.8 [344.1, 411.1] · median 355.4 | 136.9 [130.1, 143.7] · median 141.0 | 65.8 [60.9, 70.5] · median 67.7 |
 | Fixed-time (Webster) | 386.1 [365.8, 406.7] · median 389.6 | 3.51 [3.39, 3.63] · median 3.50 | 6994 [6817, 7172] · median 6943 | 419.4 [409.6, 428.9] · median 416.9 | 587.8 [530.0, 644.5] · median 597.3 | 158.2 [145.2, 173.1] · median 147.0 | 86.1 [82.8, 89.1] · median 86.5 |
 
+## Engineering measurements
+
+Measured on AMD Ryzen 9 5900HX with Radeon Graphics · win32 10.0.26300 · Node 26.8.1.
+
+- The simulator ran at 1007.7× real time with about 501 vehicles, 291.1× real time with about 1,504 vehicles, 138.0× real time with about 3,045 vehicles.
+
+- Policy inference took 6.20 µs per decision.
+
+- Node, Chromium, WebKit, Firefox all reached state hash 119b6db7 after 10,000 ticks.
+
+- Rendering measurements were 163.9 fps median and 161.3 fps 1% low on low (AMD Radeon(TM) Graphics), 163.9 fps median and 160.4 fps 1% low on medium (AMD Radeon(TM) Graphics), 163.9 fps median and 158.5 fps 1% low on high (AMD Radeon(TM) Graphics).
+
+- A cold localhost load transferred 873.0 KiB and became interactive in 1.00 s.
+
+- Initial JavaScript was 525.8 kB compressed.
+
+- The 34 delivered GLB models totalled 107.4 KiB.
+
+- On Broadband (10 Mbps down, 40 ms latency), the poster painted in 0.31 s and Live became interactive in 1.61 s. Medians from 3 fresh Chrome contexts.
+
+- On Slow connection (2 Mbps down, 150 ms latency), the poster painted in 1.17 s and Live became interactive in 4.94 s. Medians from 3 fresh Chrome contexts.
+
+- During a 10-minute Live soak, sampled post-GC renderer V8 heap went from 13.31 to 13.37 MiB, with 0.25 MiB spread on the plateau and 2 dedicated workers.
+
+- Chromium reproduced all 9 benchmark episodes exactly in 2.52 s.
+
+- Firefox (WSL Ubuntu 6.18.33.2-microsoft-standard-WSL2) reproduced all 9 benchmark episodes exactly in 3.43 s.
+
+- WebKit reproduced all 9 benchmark episodes exactly in 2.96 s.
+
+- 92 tests passed and 0 failed.
+
 ## Provenance
 
 Source commit 938f596cd614530daa7290063edae0f36236cc5f. Simulator fba6a65bb4770e565aab1613a387e1443bf78035f9eeac99ee5cf251eef4e8a7. Policy e0865c8b5170f33a5250ecc97a2dd4be400fde9ea5b2ba0326a8b1d01b753cfb.

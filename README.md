@@ -28,6 +28,41 @@ On 20 held-out seeds in simulated Indian mixed traffic, CHOWK reduced delay per 
 
 ![Paired delay differences for mixed traffic and lane-disciplined cars](results/lane-free.svg)
 
+<details>
+<summary><strong>Engineering measurements</strong></summary>
+
+Measured on AMD Ryzen 9 5900HX with Radeon Graphics · win32 10.0.26300 · Node 26.8.1.
+
+- The simulator ran at 1007.7× real time with about 501 vehicles, 291.1× real time with about 1,504 vehicles, 138.0× real time with about 3,045 vehicles.
+
+- Policy inference took 6.20 µs per decision.
+
+- Node, Chromium, WebKit, Firefox all reached state hash 119b6db7 after 10,000 ticks.
+
+- Rendering measurements were 163.9 fps median and 161.3 fps 1% low on low (AMD Radeon(TM) Graphics), 163.9 fps median and 160.4 fps 1% low on medium (AMD Radeon(TM) Graphics), 163.9 fps median and 158.5 fps 1% low on high (AMD Radeon(TM) Graphics).
+
+- A cold localhost load transferred 873.0 KiB and became interactive in 1.00 s.
+
+- Initial JavaScript was 525.8 kB compressed.
+
+- The 34 delivered GLB models totalled 107.4 KiB.
+
+- On Broadband (10 Mbps down, 40 ms latency), the poster painted in 0.31 s and Live became interactive in 1.61 s. Medians from 3 fresh Chrome contexts.
+
+- On Slow connection (2 Mbps down, 150 ms latency), the poster painted in 1.17 s and Live became interactive in 4.94 s. Medians from 3 fresh Chrome contexts.
+
+- During a 10-minute Live soak, sampled post-GC renderer V8 heap went from 13.31 to 13.37 MiB, with 0.25 MiB spread on the plateau and 2 dedicated workers.
+
+- Chromium reproduced all 9 benchmark episodes exactly in 2.52 s.
+
+- Firefox (WSL Ubuntu 6.18.33.2-microsoft-standard-WSL2) reproduced all 9 benchmark episodes exactly in 3.43 s.
+
+- WebKit reproduced all 9 benchmark episodes exactly in 2.96 s.
+
+- 92 tests passed and 0 failed.
+
+</details>
+
 [Full benchmark and provenance](results/benchmark.md) · [Raw runs](results/benchmark.json)
 
 <!-- results:end -->
