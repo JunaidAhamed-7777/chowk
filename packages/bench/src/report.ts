@@ -220,7 +220,9 @@ export function writeReports(root: string, benchmark: BenchmarkFile): void {
       "![Paired delay differences for mixed traffic and lane-disciplined cars](results/lane-free.svg)",
     );
   if (engineering.length > 0)
-    results.push("### Engineering measurements", engineering.join("\n\n"));
+    results.push(
+      `<details>\n<summary><strong>Engineering measurements</strong></summary>\n\n${engineering.join("\n\n")}\n\n</details>`,
+    );
   results.push(
     "[Full benchmark and provenance](results/benchmark.md) · [Raw runs](results/benchmark.json)",
     endMarker,
