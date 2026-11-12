@@ -74,7 +74,11 @@ Two-wheelers filter through gaps while auto-rickshaws and buses share the same r
 - **Disrupt traffic.** Trigger a demand surge or click a road to place a stalled bus. The event starts at the same tick in both simulations. [Surge clip](assets/demo/surge.gif)
 - **Follow an ambulance.** Send it through both simulations and switch to the ambulance camera. [Ambulance clip](assets/demo/ambulance.gif)
 - **Inspect a signal.** Use Pressure to see occupied road area or Decision to see what each controller scored. Watch it learn swaps in a saved training checkpoint while the run continues. [Pressure clip](assets/demo/decisions.gif)
-- **Re-run the benchmark.** Choose **Run benchmark** in Results to check the published metrics and final state hashes in your browser. [Open Results](https://chowk-seven.vercel.app/results) · [Exact replay clip](assets/demo/reproduce.gif)
+- **Beat the AI.** Run junction J3 by hand against CHOWK for three simulated minutes on the same traffic, and see who leaves fewer person-hours of delay.
+- **Read the corridor like an engineer.** Time-space opens a live trajectory diagram for both simulations, with each junction's green for each direction.
+- **Rewind a minute.** Both simulations return to their state a minute ago and replay exactly, so you can change a controller or add an event and watch a different future.
+- **See why it chose.** How it decides lists the inputs that moved CHOWK's learned correction most, and checks that the browser's arithmetic matches the controller.
+- **Re-run the benchmark.** Choose **Run benchmark** in Results to check the published metrics and final state hashes in your browser, or pick any published comparison and replay a single seed. [Open Results](https://chowk-seven.vercel.app/results) · [Exact replay clip](assets/demo/reproduce.gif)
 
 ## How it works
 
@@ -107,7 +111,7 @@ For the desktop browser tests, run `npm exec -- playwright install chromium`, th
 
 ## Limits
 
-All performance comparisons are simulation results. The corridor geometry, driving parameters and detector behaviour use documented assumptions. The model omits pedestrians and parking, and the emissions estimate is illustrative. A field study would need measured demand, calibration and independent safety validation.
+All performance comparisons are simulation results. The corridor geometry, driving parameters and detector behaviour use documented assumptions. The model omits pedestrians and parking, and the emissions estimate is illustrative. Its turning model is conservative: junctions with turning traffic discharge well below Indo-HCM's base saturation flows for the same widths, as the Limits page shows. A field study would need measured demand, calibration and independent safety validation.
 
 ## Repository map
 
