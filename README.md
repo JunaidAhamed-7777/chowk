@@ -16,11 +16,11 @@
 
 ## Simulation results
 
-On 20 held-out seeds in simulated Indian mixed traffic, CHOWK showed no clear difference in delay per person versus area max-pressure (−0.1%, 95% CI −0.8% to +0.4%), with 4.0% lower delay versus Webster fixed-time (95% CI −4.8% to −3.2%). Simulation result.
+On 20 held-out seeds in simulated Indian mixed traffic, CHOWK showed no clear difference in delay per person versus area max-pressure (−0.6%, 95% CI −1.5% to +0.0%), with 4.5% lower delay versus Webster fixed-time (95% CI −5.2% to −3.8%). Simulation result.
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 774.4 [762.8, 786.2] | 3.76 [3.67, 3.84] | 7962 [7756, 8173] | 1006.5 [995.8, 1017.6] |
+| CHOWK | 770.5 [759.6, 782.5] | 3.75 [3.66, 3.84] | 7940 [7700, 8179] | 1004.5 [991.8, 1017.4] |
 | Area max-pressure | 775.5 [764.1, 787.0] | 3.73 [3.65, 3.82] | 7831 [7601, 8058] | 1009.3 [996.8, 1023.2] |
 | Count max-pressure | 785.9 [774.3, 797.9] | 3.90 [3.80, 4.01] | 7709 [7536, 7883] | 1034.6 [1023.0, 1045.7] |
 | Actuated | 759.1 [747.2, 772.0] | 3.52 [3.43, 3.61] | 8165 [7954, 8363] | 949.6 [936.2, 964.4] |

@@ -1,6 +1,6 @@
 # CHOWK benchmark
 
-On 20 held-out seeds in simulated Indian mixed traffic, CHOWK showed no clear difference in delay per person versus area max-pressure (−0.1%, 95% CI −0.8% to +0.4%), with 4.0% lower delay versus Webster fixed-time (95% CI −4.8% to −3.2%). Simulation result.
+On 20 held-out seeds in simulated Indian mixed traffic, CHOWK showed no clear difference in delay per person versus area max-pressure (−0.6%, 95% CI −1.5% to +0.0%), with 4.5% lower delay versus Webster fixed-time (95% CI −5.2% to −3.8%). Simulation result.
 
 Values are simulation results, shown as mean [95% bootstrap confidence interval].
 
@@ -8,7 +8,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 655.2 [647.6, 661.6] | 4.06 [3.99, 4.12] | 3763 [3714, 3807] | 893.1 [884.3, 902.4] |
+| CHOWK | 656.6 [648.9, 663.6] | 4.01 [3.92, 4.09] | 3761 [3727, 3796] | 887.1 [875.9, 899.5] |
 | Area max-pressure | 660.8 [652.5, 668.1] | 4.10 [4.03, 4.16] | 3708 [3673, 3743] | 899.8 [889.1, 911.3] |
 | Count max-pressure | 658.0 [650.3, 664.8] | 4.05 [3.97, 4.15] | 3732 [3701, 3761] | 898.4 [885.4, 912.0] |
 | Actuated | 636.5 [630.4, 641.8] | 3.43 [3.35, 3.50] | 3906 [3864, 3948] | 801.5 [789.7, 813.5] |
@@ -18,7 +18,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 754.4 [738.7, 770.1] | 4.03 [3.92, 4.13] | 7752 [7513, 7983] | 979.4 [960.9, 998.2] |
+| CHOWK | 748.5 [734.3, 762.2] | 3.99 [3.90, 4.08] | 7993 [7768, 8230] | 973.7 [957.8, 987.8] |
 | Area max-pressure | 753.3 [739.6, 766.6] | 4.03 [3.94, 4.12] | 7782 [7572, 8008] | 977.1 [961.9, 990.8] |
 | Count max-pressure | 762.7 [751.1, 774.3] | 4.03 [3.96, 4.11] | 7648 [7450, 7862] | 980.7 [965.3, 994.5] |
 | Actuated | 745.3 [729.0, 761.7] | 3.73 [3.64, 3.83] | 7953 [7719, 8198] | 919.1 [900.6, 937.2] |
@@ -28,7 +28,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 833.0 [821.6, 845.6] | 4.21 [4.12, 4.29] | 10460 [10173, 10745] | 1240.0 [1223.8, 1257.0] |
+| CHOWK | 828.3 [816.2, 840.9] | 4.09 [4.00, 4.18] | 10609 [10311, 10906] | 1226.2 [1207.9, 1244.3] |
 | Area max-pressure | 831.5 [819.2, 844.7] | 4.17 [4.07, 4.26] | 10535 [10230, 10812] | 1240.6 [1220.8, 1262.1] |
 | Count max-pressure | 844.7 [831.1, 859.4] | 4.10 [4.01, 4.20] | 10380 [10081, 10670] | 1252.0 [1232.3, 1271.3] |
 | Actuated | 825.2 [811.1, 840.4] | 3.99 [3.86, 4.12] | 10674 [10400, 10960] | 1199.1 [1179.6, 1219.1] |
@@ -38,7 +38,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 805.8 [795.0, 817.5] | 3.08 [3.02, 3.15] | 7066 [6841, 7280] | 985.2 [971.4, 999.3] |
+| CHOWK | 804.5 [793.3, 816.2] | 3.05 [2.97, 3.14] | 7097 [6897, 7304] | 985.7 [974.3, 998.5] |
 | Area max-pressure | 812.1 [800.1, 825.7] | 3.11 [3.02, 3.20] | 6911 [6690, 7116] | 988.9 [970.0, 1008.0] |
 | Count max-pressure | 813.9 [802.9, 826.6] | 3.08 [3.01, 3.16] | 6975 [6760, 7183] | 993.5 [981.3, 1006.3] |
 | Actuated | 796.7 [783.3, 811.2] | 2.99 [2.91, 3.07] | 7272 [7035, 7503] | 949.6 [934.3, 965.8] |
@@ -48,7 +48,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 774.4 [762.8, 786.2] | 3.76 [3.67, 3.84] | 7962 [7756, 8173] | 1006.5 [995.8, 1017.6] |
+| CHOWK | 770.5 [759.6, 782.5] | 3.75 [3.66, 3.84] | 7940 [7700, 8179] | 1004.5 [991.8, 1017.4] |
 | Area max-pressure | 775.5 [764.1, 787.0] | 3.73 [3.65, 3.82] | 7831 [7601, 8058] | 1009.3 [996.8, 1023.2] |
 | Count max-pressure | 785.9 [774.3, 797.9] | 3.90 [3.80, 4.01] | 7709 [7536, 7883] | 1034.6 [1023.0, 1045.7] |
 | Actuated | 759.1 [747.2, 772.0] | 3.52 [3.43, 3.61] | 8165 [7954, 8363] | 949.6 [936.2, 964.4] |
@@ -58,7 +58,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 608.9 [594.4, 622.9] | 5.01 [4.92, 5.09] | 8222 [8023, 8435] | 834.8 [822.8, 846.4] |
+| CHOWK | 606.9 [593.1, 619.6] | 4.91 [4.84, 4.98] | 8267 [8082, 8467] | 824.8 [814.9, 834.5] |
 | Area max-pressure | 616.3 [602.0, 630.2] | 5.08 [5.00, 5.16] | 8144 [7916, 8383] | 837.7 [827.3, 847.7] |
 | Count max-pressure | 624.3 [611.1, 637.2] | 5.09 [5.02, 5.16] | 8150 [7925, 8410] | 842.6 [829.6, 854.3] |
 | Actuated | 599.4 [585.3, 612.4] | 4.46 [4.39, 4.53] | 8517 [8349, 8697] | 779.1 [770.4, 787.5] |
@@ -68,7 +68,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 934.4 [923.8, 945.0] · median 933.2 | 3.46 [3.38, 3.54] · median 3.44 | 7375 [7145, 7616] · median 7413 | 1266.4 [1253.8, 1279.3] · median 1262.0 |
+| CHOWK | 930.2 [920.4, 940.1] · median 929.8 | 3.51 [3.42, 3.60] · median 3.50 | 7374 [7132, 7620] · median 7300 | 1264.1 [1248.6, 1278.8] · median 1275.6 |
 | Area max-pressure | 933.4 [923.7, 943.1] · median 932.2 | 3.48 [3.37, 3.59] · median 3.48 | 7311 [7053, 7592] · median 7127 | 1261.8 [1244.2, 1280.4] · median 1263.7 |
 | Count max-pressure | 938.8 [928.9, 948.8] · median 935.6 | 3.48 [3.40, 3.56] · median 3.45 | 7359 [7079, 7632] · median 7319 | 1269.1 [1253.2, 1284.9] · median 1265.0 |
 | Actuated | 919.4 [909.4, 930.2] · median 912.1 | 3.27 [3.16, 3.39] · median 3.23 | 7711 [7461, 7963] · median 7665 | 1200.4 [1182.3, 1219.0] · median 1188.2 |
@@ -78,7 +78,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 655.2 [647.6, 661.6] | 4.06 [3.99, 4.12] | 3763 [3714, 3807] | 893.1 [884.3, 902.4] |
+| CHOWK | 656.6 [648.9, 663.6] | 4.01 [3.92, 4.09] | 3761 [3727, 3796] | 887.1 [875.9, 899.5] |
 | Area max-pressure | 660.8 [652.5, 668.1] | 4.10 [4.03, 4.16] | 3708 [3673, 3743] | 899.8 [889.1, 911.3] |
 | Count max-pressure | 658.0 [650.3, 664.8] | 4.05 [3.97, 4.15] | 3732 [3701, 3761] | 898.4 [885.4, 912.0] |
 | Actuated | 636.5 [630.4, 641.8] | 3.43 [3.35, 3.50] | 3906 [3864, 3948] | 801.5 [789.7, 813.5] |
@@ -88,7 +88,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 774.4 [762.8, 786.2] | 3.76 [3.67, 3.84] | 7962 [7756, 8173] | 1006.5 [995.8, 1017.6] |
+| CHOWK | 770.5 [759.6, 782.5] | 3.75 [3.66, 3.84] | 7940 [7700, 8179] | 1004.5 [991.8, 1017.4] |
 | Area max-pressure | 775.5 [764.1, 787.0] | 3.73 [3.65, 3.82] | 7831 [7601, 8058] | 1009.3 [996.8, 1023.2] |
 | Count max-pressure | 785.9 [774.3, 797.9] | 3.90 [3.80, 4.01] | 7709 [7536, 7883] | 1034.6 [1023.0, 1045.7] |
 | Actuated | 759.1 [747.2, 772.0] | 3.52 [3.43, 3.61] | 8165 [7954, 8363] | 949.6 [936.2, 964.4] |
@@ -98,7 +98,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Bus-passenger delay (person·s) | Car-passenger delay (person·s) |
 |---|---:|---:|---:|---:|---:|---:|
-| CHOWK | 833.0 [821.6, 845.6] | 4.21 [4.12, 4.29] | 10460 [10173, 10745] | 1240.0 [1223.8, 1257.0] | 11283726 [10909988, 11665056] | 890602 [873412, 907857] |
+| CHOWK | 828.3 [816.2, 840.9] | 4.09 [4.00, 4.18] | 10609 [10311, 10906] | 1226.2 [1207.9, 1244.3] | 11218561 [10872809, 11565238] | 881844 [861621, 900948] |
 | CHOWK · vehicle objective | 837.4 [823.7, 852.1] | 4.14 [4.08, 4.20] | 10467 [10248, 10693] | 1236.4 [1223.0, 1250.4] | 11353354 [10945990, 11760614] | 890568 [872056, 908546] |
 | CHOWK · count observation | 847.0 [835.2, 860.0] | 4.16 [4.09, 4.23] | 10321 [9993, 10635] | 1253.8 [1237.0, 1269.4] | 11524709 [11168753, 11901450] | 896195 [876372, 915052] |
 | CHOWK · pure policy | 851.2 [836.6, 865.5] | 4.01 [3.91, 4.10] | 10492 [10236, 10764] | 1197.6 [1180.6, 1215.8] | 11574375 [11173039, 11957088] | 903613 [884023, 922634] |
@@ -108,7 +108,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Bus-passenger delay (person·s) | Car-passenger delay (person·s) |
 |---|---:|---:|---:|---:|---:|---:|
-| CHOWK | 774.4 [762.8, 786.2] | 3.76 [3.67, 3.84] | 7962 [7756, 8173] | 1006.5 [995.8, 1017.6] | 6350224 [6163905, 6521236] | 1378355 [1354215, 1403151] |
+| CHOWK | 770.5 [759.6, 782.5] | 3.75 [3.66, 3.84] | 7940 [7700, 8179] | 1004.5 [991.8, 1017.4] | 6334686 [6153440, 6512181] | 1374302 [1352315, 1397159] |
 | CHOWK · vehicle objective | 781.3 [769.2, 794.6] | 3.89 [3.82, 3.96] | 7681 [7500, 7848] | 1026.5 [1017.3, 1036.2] | 6425009 [6213085, 6627043] | 1385622 [1363411, 1407883] |
 | CHOWK · count observation | 781.5 [770.9, 793.5] | 3.79 [3.71, 3.86] | 7870 [7708, 8024] | 1028.0 [1013.6, 1042.7] | 6435878 [6248978, 6620603] | 1380956 [1360155, 1400958] |
 | CHOWK · pure policy | 804.0 [793.5, 815.6] | 3.45 [3.36, 3.53] | 7763 [7521, 7995] | 949.4 [935.5, 962.3] | 6625443 [6431423, 6813485] | 1419397 [1393155, 1444170] |
@@ -118,7 +118,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 745.8 [731.5, 759.8] | 4.21 [4.12, 4.30] | 13469 [13120, 13847] | 1065.3 [1050.5, 1079.5] |
+| CHOWK | 739.3 [726.4, 752.4] | 4.09 [3.99, 4.19] | 13643 [13293, 13999] | 1048.7 [1031.7, 1064.6] |
 | Area max-pressure | 751.6 [737.4, 765.6] | 4.17 [4.08, 4.26] | 13330 [12947, 13714] | 1059.6 [1041.1, 1077.9] |
 | Count max-pressure | 752.5 [737.2, 767.7] | 4.23 [4.14, 4.32] | 13324 [13053, 13592] | 1076.3 [1059.3, 1093.0] |
 | Actuated | 722.9 [709.9, 736.1] | 3.73 [3.64, 3.82] | 14290 [13941, 14610] | 971.5 [955.4, 985.8] |
@@ -128,7 +128,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 466.3 [448.6, 484.6] | 4.19 [4.12, 4.27] | 8065 [7871, 8252] | 601.9 [589.8, 614.1] |
+| CHOWK | 461.4 [440.4, 482.3] | 4.17 [4.07, 4.27] | 8174 [7974, 8386] | 598.4 [587.4, 609.8] |
 | Area max-pressure | 469.6 [450.3, 489.7] | 4.35 [4.26, 4.44] | 7955 [7780, 8122] | 607.1 [595.9, 618.4] |
 | Count max-pressure | 474.9 [456.3, 493.9] | 4.14 [4.03, 4.26] | 7973 [7749, 8195] | 602.9 [589.5, 616.9] |
 | Actuated | 474.1 [456.4, 492.3] | 3.95 [3.87, 4.04] | 8090 [7925, 8260] | 581.3 [571.8, 590.6] |
@@ -138,7 +138,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 565.9 [551.6, 580.7] | 4.25 [4.16, 4.35] | 7960 [7770, 8139] | 706.3 [695.7, 716.9] |
+| CHOWK | 563.5 [549.0, 578.5] | 4.19 [4.11, 4.28] | 7976 [7767, 8178] | 706.0 [696.7, 714.9] |
 | Area max-pressure | 570.2 [557.8, 583.0] | 4.35 [4.25, 4.44] | 7911 [7749, 8067] | 713.3 [703.8, 723.0] |
 | Count max-pressure | 578.2 [565.3, 591.4] | 4.26 [4.15, 4.36] | 7835 [7658, 8022] | 711.7 [701.7, 721.6] |
 | Actuated | 562.1 [547.0, 578.4] | 3.94 [3.83, 4.05] | 8102 [7907, 8293] | 671.4 [661.6, 682.0] |
@@ -148,7 +148,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 648.5 [633.7, 663.9] | 4.28 [4.17, 4.40] | 7887 [7742, 8030] | 817.1 [804.7, 829.3] |
+| CHOWK | 641.6 [625.2, 658.6] | 4.15 [4.01, 4.28] | 8121 [7896, 8341] | 808.4 [794.3, 822.2] |
 | Area max-pressure | 652.7 [638.2, 667.5] | 4.33 [4.23, 4.42] | 7794 [7567, 8022] | 819.0 [806.7, 830.9] |
 | Count max-pressure | 661.2 [646.7, 676.0] | 4.28 [4.18, 4.38] | 7838 [7681, 7999] | 822.2 [808.8, 836.4] |
 | Actuated | 638.9 [625.5, 653.7] | 3.85 [3.76, 3.95] | 8140 [7937, 8348] | 766.7 [755.1, 777.8] |
@@ -158,7 +158,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 706.2 [693.4, 719.7] | 4.05 [3.99, 4.12] | 7754 [7526, 7999] | 908.0 [897.7, 918.0] |
+| CHOWK | 701.2 [687.6, 716.1] | 4.03 [3.94, 4.12] | 7926 [7693, 8173] | 910.9 [897.9, 923.7] |
 | Area max-pressure | 710.2 [697.1, 724.2] | 4.12 [4.03, 4.21] | 7638 [7429, 7863] | 914.2 [903.5, 926.4] |
 | Count max-pressure | 716.4 [703.1, 730.9] | 4.07 [3.98, 4.16] | 7671 [7459, 7892] | 916.3 [902.8, 929.9] |
 | Actuated | 688.6 [677.3, 700.3] | 3.67 [3.57, 3.75] | 8220 [7993, 8448] | 847.1 [835.1, 858.7] |
@@ -168,7 +168,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 749.3 [735.0, 763.6] | 3.91 [3.83, 3.99] | 7836 [7579, 8097] | 970.6 [953.8, 985.8] |
+| CHOWK | 742.5 [729.0, 756.2] | 3.87 [3.78, 3.97] | 7967 [7730, 8203] | 967.5 [952.2, 982.9] |
 | Area max-pressure | 751.2 [737.0, 765.6] | 3.97 [3.86, 4.07] | 7785 [7480, 8108] | 979.1 [963.1, 993.6] |
 | Count max-pressure | 757.3 [742.6, 772.8] | 3.89 [3.81, 3.99] | 7705 [7454, 7942] | 988.5 [969.3, 1008.8] |
 | Actuated | 739.2 [726.0, 752.7] | 3.56 [3.47, 3.66] | 8025 [7746, 8297] | 914.9 [900.5, 930.1] |
@@ -178,7 +178,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 792.3 [781.1, 802.9] | 3.72 [3.63, 3.81] | 7932 [7657, 8203] | 1047.4 [1034.5, 1059.7] |
+| CHOWK | 786.4 [775.9, 796.8] | 3.63 [3.53, 3.74] | 8088 [7871, 8319] | 1039.4 [1027.3, 1052.3] |
 | Area max-pressure | 794.9 [783.1, 805.9] | 3.69 [3.58, 3.80] | 7873 [7612, 8115] | 1045.1 [1030.7, 1059.8] |
 | Count max-pressure | 798.8 [787.6, 809.9] | 3.74 [3.66, 3.84] | 7805 [7538, 8050] | 1061.9 [1045.8, 1079.6] |
 | Actuated | 778.8 [765.5, 792.1] | 3.46 [3.35, 3.56] | 8261 [8026, 8479] | 984.3 [968.4, 1000.9] |
@@ -188,7 +188,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 825.9 [812.5, 840.5] | 3.57 [3.50, 3.65] | 7725 [7489, 7962] | 1117.3 [1103.5, 1130.0] |
+| CHOWK | 821.4 [809.0, 834.0] | 3.50 [3.38, 3.60] | 7946 [7650, 8257] | 1098.7 [1076.3, 1120.0] |
 | Area max-pressure | 830.9 [817.1, 845.5] | 3.60 [3.50, 3.70] | 7689 [7405, 7978] | 1111.9 [1095.8, 1128.2] |
 | Count max-pressure | 835.0 [821.3, 849.4] | 3.63 [3.54, 3.72] | 7648 [7405, 7902] | 1124.1 [1107.4, 1141.5] |
 | Actuated | 809.3 [796.8, 822.0] | 3.35 [3.26, 3.45] | 8124 [7837, 8420] | 1040.3 [1022.9, 1057.5] |
@@ -198,7 +198,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 849.3 [837.0, 860.8] | 3.48 [3.37, 3.58] | 7478 [7246, 7721] | 1182.9 [1162.8, 1202.2] |
+| CHOWK | 841.4 [829.1, 853.6] | 3.42 [3.35, 3.50] | 7814 [7586, 8052] | 1160.9 [1143.4, 1178.9] |
 | Area max-pressure | 847.8 [837.1, 857.9] | 3.40 [3.30, 3.50] | 7656 [7389, 7908] | 1173.0 [1159.7, 1186.1] |
 | Count max-pressure | 855.1 [843.9, 865.9] | 3.42 [3.35, 3.49] | 7461 [7201, 7729] | 1192.0 [1176.1, 1207.0] |
 | Actuated | 836.2 [825.7, 846.4] | 3.27 [3.18, 3.35] | 7861 [7598, 8122] | 1119.4 [1104.1, 1136.6] |
@@ -208,7 +208,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 804.8 [793.7, 816.1] | 3.59 [3.51, 3.68] | 7081 [6796, 7380] | 1113.4 [1098.0, 1129.0] |
+| CHOWK | 802.1 [791.1, 814.0] | 3.54 [3.48, 3.61] | 7189 [6907, 7452] | 1111.4 [1099.5, 1123.7] |
 | Area max-pressure | 809.8 [798.3, 821.0] | 3.64 [3.55, 3.72] | 6966 [6747, 7209] | 1119.8 [1108.2, 1131.7] |
 | Count max-pressure | 812.5 [802.6, 822.3] | 3.58 [3.49, 3.67] | 7083 [6822, 7359] | 1119.9 [1104.8, 1133.2] |
 | Actuated | 803.7 [793.0, 813.9] | 3.48 [3.39, 3.57] | 7096 [6875, 7323] | 1079.9 [1059.8, 1100.0] |
@@ -218,7 +218,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 735.7 [726.1, 746.7] | 2.98 [2.93, 3.04] | 7030 [6800, 7261] | 866.2 [853.1, 879.0] |
+| CHOWK | 729.5 [720.9, 739.1] | 3.00 [2.94, 3.06] | 7161 [6943, 7384] | 863.6 [853.2, 874.5] |
 | Area max-pressure | 737.3 [729.2, 746.8] | 2.98 [2.92, 3.04] | 7039 [6777, 7309] | 868.9 [856.6, 881.6] |
 | Count max-pressure | 740.1 [731.1, 749.8] | 2.97 [2.93, 3.02] | 7067 [6877, 7257] | 860.6 [849.1, 872.3] |
 | Actuated | 693.3 [684.1, 702.9] | 2.57 [2.51, 2.63] | 7603 [7340, 7881] | 775.5 [763.0, 787.4] |
@@ -228,7 +228,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 782.2 [769.9, 794.7] | 3.69 [3.63, 3.76] | 7730 [7515, 7952] | 1010.5 [999.6, 1021.5] |
+| CHOWK | 778.8 [767.0, 791.5] | 3.71 [3.63, 3.79] | 7686 [7466, 7912] | 1009.3 [997.4, 1021.4] |
 | Area max-pressure | 784.5 [773.1, 796.1] | 3.71 [3.63, 3.79] | 7548 [7329, 7762] | 1014.1 [1003.0, 1026.0] |
 | Count max-pressure | 791.1 [779.0, 803.7] | 3.82 [3.73, 3.91] | 7579 [7421, 7744] | 1037.0 [1026.2, 1048.1] |
 | Actuated | 770.4 [757.9, 784.0] | 3.47 [3.40, 3.54] | 7893 [7692, 8116] | 956.7 [943.7, 970.6] |
@@ -238,7 +238,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 774.4 [762.8, 786.2] | 3.76 [3.67, 3.84] | 7962 [7756, 8173] | 1006.5 [995.8, 1017.6] |
+| CHOWK | 770.5 [759.6, 782.5] | 3.75 [3.66, 3.84] | 7940 [7700, 8179] | 1004.5 [991.8, 1017.4] |
 | Area max-pressure | 775.5 [764.1, 787.0] | 3.73 [3.65, 3.82] | 7831 [7601, 8058] | 1009.3 [996.8, 1023.2] |
 | Count max-pressure | 785.9 [774.3, 797.9] | 3.90 [3.80, 4.01] | 7709 [7536, 7883] | 1034.6 [1023.0, 1045.7] |
 | Actuated | 759.1 [747.2, 772.0] | 3.52 [3.43, 3.61] | 8165 [7954, 8363] | 949.6 [936.2, 964.4] |
@@ -248,7 +248,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 775.8 [765.0, 787.1] | 3.74 [3.62, 3.85] | 7907 [7673, 8144] | 999.0 [982.1, 1016.0] |
+| CHOWK | 771.8 [760.5, 783.5] | 3.75 [3.65, 3.85] | 7906 [7634, 8158] | 1005.7 [993.0, 1018.7] |
 | Area max-pressure | 782.2 [771.0, 793.6] | 3.84 [3.74, 3.93] | 7663 [7463, 7852] | 1012.1 [997.5, 1026.9] |
 | Count max-pressure | 788.8 [777.5, 801.0] | 3.78 [3.68, 3.88] | 7669 [7513, 7844] | 1022.6 [1007.2, 1038.3] |
 | Actuated | 761.9 [749.9, 774.4] | 3.51 [3.45, 3.57] | 8200 [7955, 8443] | 953.5 [940.6, 965.1] |
@@ -258,7 +258,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 778.3 [766.6, 791.0] | 3.76 [3.66, 3.86] | 7848 [7636, 8061] | 1003.1 [988.6, 1017.6] |
+| CHOWK | 771.2 [761.8, 781.3] | 3.62 [3.53, 3.71] | 8065 [7824, 8310] | 987.6 [972.8, 1003.6] |
 | Area max-pressure | 781.4 [770.8, 792.5] | 3.73 [3.65, 3.82] | 7765 [7564, 7976] | 1000.7 [987.6, 1014.5] |
 | Count max-pressure | 787.1 [775.9, 798.6] | 3.78 [3.71, 3.84] | 7665 [7437, 7902] | 1012.6 [999.4, 1025.0] |
 | Actuated | 765.3 [753.6, 778.2] | 3.54 [3.47, 3.62] | 8051 [7838, 8268] | 948.2 [937.6, 958.7] |
@@ -268,7 +268,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 777.5 [765.7, 789.7] | 3.66 [3.56, 3.75] | 7793 [7604, 7978] | 990.4 [974.5, 1005.8] |
+| CHOWK | 773.4 [761.3, 786.3] | 3.69 [3.61, 3.78] | 7860 [7684, 8034] | 990.4 [979.8, 1001.8] |
 | Area max-pressure | 782.4 [771.1, 794.0] | 3.69 [3.62, 3.77] | 7686 [7488, 7873] | 988.1 [976.1, 999.4] |
 | Count max-pressure | 789.0 [777.9, 801.2] | 3.77 [3.68, 3.87] | 7582 [7409, 7750] | 1004.8 [992.3, 1017.6] |
 | Actuated | 765.9 [754.9, 778.0] | 3.43 [3.36, 3.51] | 8076 [7809, 8327] | 943.2 [930.8, 955.4] |
@@ -278,7 +278,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 777.7 [766.1, 789.7] | 3.73 [3.66, 3.81] | 7916 [7743, 8087] | 1011.7 [998.6, 1025.1] |
+| CHOWK | 771.2 [759.6, 783.6] | 3.75 [3.66, 3.83] | 7988 [7728, 8255] | 1007.1 [993.8, 1020.4] |
 | Area max-pressure | 778.6 [767.7, 790.1] | 3.72 [3.64, 3.80] | 7829 [7613, 8042] | 1011.4 [998.9, 1024.2] |
 | Count max-pressure | 787.4 [776.7, 799.1] | 3.84 [3.77, 3.92] | 7765 [7597, 7922] | 1032.3 [1020.7, 1044.5] |
 | Actuated | 760.6 [749.1, 773.3] | 3.51 [3.43, 3.58] | 8206 [8028, 8395] | 950.0 [936.3, 964.7] |
@@ -288,7 +288,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 775.3 [763.0, 788.0] | 3.76 [3.70, 3.83] | 7944 [7723, 8168] | 1012.3 [1001.4, 1023.3] |
+| CHOWK | 770.4 [758.8, 782.9] | 3.72 [3.61, 3.82] | 7984 [7717, 8234] | 1009.0 [994.3, 1024.4] |
 | Area max-pressure | 775.8 [764.3, 787.5] | 3.73 [3.65, 3.81] | 7890 [7662, 8113] | 1009.9 [996.2, 1023.4] |
 | Count max-pressure | 786.6 [775.2, 798.3] | 3.72 [3.67, 3.77] | 7786 [7574, 7997] | 1031.7 [1019.6, 1044.2] |
 | Actuated | 759.8 [747.8, 773.1] | 3.48 [3.41, 3.55] | 8244 [8028, 8464] | 948.2 [936.9, 960.3] |
@@ -298,7 +298,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Ambulance travel time (s) | Ambulances completed |
 |---|---:|---:|---:|---:|---:|---:|
-| CHOWK | 777.4 [766.1, 789.6] | 3.76 [3.68, 3.83] | 7831 [7655, 8005] | 1015.5 [1001.8, 1028.9] | 1060.3 [838.2, 1299.3] | 0.3 [0.1, 0.6] |
+| CHOWK | 770.8 [759.0, 782.9] | 3.74 [3.66, 3.81] | 8003 [7769, 8240] | 1012.1 [997.0, 1026.7] | 1177.7 [989.7, 1376.4] | 0.5 [0.3, 0.7] |
 | Area max-pressure | 775.5 [762.7, 788.1] | 3.79 [3.70, 3.87] | 7910 [7705, 8131] | 1018.9 [1005.8, 1031.2] | 1121.8 [935.4, 1299.6] | 0.4 [0.2, 0.6] |
 | Fixed-time (Webster) | 807.7 [796.1, 819.9] | 2.80 [2.73, 2.86] | 7668 [7478, 7854] | 902.7 [888.0, 916.5] | 1271.6 [1089.2, 1452.4] | 0.5 [0.3, 0.7] |
 | Area max-pressure with pre-emption | 775.6 [762.6, 788.6] | 3.75 [3.67, 3.83] | 7933 [7737, 8134] | 1015.8 [1002.0, 1029.1] | 1063.8 [837.9, 1296.0] | 0.6 [0.3, 0.8] |
@@ -307,7 +307,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| CHOWK | 655.2 [647.6, 661.6] | 4.06 [3.99, 4.12] | 3763 [3714, 3807] | 893.1 [884.3, 902.4] | 344.4 [311.7, 384.7] | 189.9 [183.0, 197.8] | 99.0 [98.6, 99.4] |
+| CHOWK | 656.6 [648.9, 663.6] | 4.01 [3.92, 4.09] | 3761 [3727, 3796] | 887.1 [875.9, 899.5] | 331.8 [310.7, 354.7] | 190.1 [182.5, 200.3] | 99.5 [99.2, 99.7] |
 | Area max-pressure | 660.8 [652.5, 668.1] | 4.10 [4.03, 4.16] | 3708 [3673, 3743] | 899.8 [889.1, 911.3] | 381.2 [344.1, 426.2] | 195.0 [186.8, 204.3] | 99.3 [98.7, 99.7] |
 | Count max-pressure | 658.0 [650.3, 664.8] | 4.05 [3.97, 4.15] | 3732 [3701, 3761] | 898.4 [885.4, 912.0] | 393.8 [349.0, 446.2] | 193.3 [185.1, 203.1] | 99.7 [99.5, 99.9] |
 | Actuated | 636.5 [630.4, 641.8] | 3.43 [3.35, 3.50] | 3906 [3864, 3948] | 801.5 [789.7, 813.5] | 424.4 [381.3, 471.5] | 184.3 [176.1, 193.1] | 97.3 [96.4, 98.2] |
@@ -317,7 +317,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| CHOWK | 754.4 [738.7, 770.1] | 4.03 [3.92, 4.13] | 7752 [7513, 7983] | 979.4 [960.9, 998.2] | 1062.3 [944.4, 1177.5] | 520.2 [455.0, 589.4] | 99.8 [99.7, 99.9] |
+| CHOWK | 748.5 [734.3, 762.2] | 3.99 [3.90, 4.08] | 7993 [7768, 8230] | 973.7 [957.8, 987.8] | 975.6 [866.9, 1090.6] | 491.5 [434.7, 556.9] | 99.8 [99.6, 99.9] |
 | Area max-pressure | 753.3 [739.6, 766.6] | 4.03 [3.94, 4.12] | 7782 [7572, 8008] | 977.1 [961.9, 990.8] | 955.6 [885.5, 1026.9] | 467.9 [425.1, 516.5] | 99.6 [99.3, 99.9] |
 | Count max-pressure | 762.7 [751.1, 774.3] | 4.03 [3.96, 4.11] | 7648 [7450, 7862] | 980.7 [965.3, 994.5] | 968.5 [863.8, 1082.2] | 482.1 [429.0, 539.1] | 99.9 [99.8, 100.0] |
 | Actuated | 745.3 [729.0, 761.7] | 3.73 [3.64, 3.83] | 7953 [7719, 8198] | 919.1 [900.6, 937.2] | 999.5 [874.0, 1136.0] | 515.0 [455.5, 580.9] | 99.3 [98.9, 99.6] |
@@ -327,7 +327,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| CHOWK | 833.0 [821.6, 845.6] | 4.21 [4.12, 4.29] | 10460 [10173, 10745] | 1240.0 [1223.8, 1257.0] | 1106.8 [1012.4, 1207.9] | 612.3 [555.5, 673.2] | 100.0 [100.0, 100.0] |
+| CHOWK | 828.3 [816.2, 840.9] | 4.09 [4.00, 4.18] | 10609 [10311, 10906] | 1226.2 [1207.9, 1244.3] | 1131.2 [1013.9, 1243.1] | 612.8 [553.5, 674.0] | 100.0 [100.0, 100.0] |
 | Area max-pressure | 831.5 [819.2, 844.7] | 4.17 [4.07, 4.26] | 10535 [10230, 10812] | 1240.6 [1220.8, 1262.1] | 1062.4 [983.2, 1144.8] | 580.3 [536.3, 623.9] | 100.0 [100.0, 100.0] |
 | Count max-pressure | 844.7 [831.1, 859.4] | 4.10 [4.01, 4.20] | 10380 [10081, 10670] | 1252.0 [1232.3, 1271.3] | 1113.4 [1008.4, 1228.7] | 609.1 [534.6, 701.3] | 100.0 [100.0, 100.0] |
 | Actuated | 825.2 [811.1, 840.4] | 3.99 [3.86, 4.12] | 10674 [10400, 10960] | 1199.1 [1179.6, 1219.1] | 1089.7 [975.3, 1203.5] | 636.5 [558.2, 719.3] | 100.0 [99.9, 100.0] |
@@ -337,7 +337,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| CHOWK | 805.8 [795.0, 817.5] | 3.08 [3.02, 3.15] | 7066 [6841, 7280] | 985.2 [971.4, 999.3] | 1008.6 [888.5, 1138.0] | 541.8 [476.9, 619.6] | 99.9 [99.7, 100.0] |
+| CHOWK | 804.5 [793.3, 816.2] | 3.05 [2.97, 3.14] | 7097 [6897, 7304] | 985.7 [974.3, 998.5] | 1018.5 [890.2, 1149.6] | 569.8 [497.6, 645.7] | 99.9 [99.8, 100.0] |
 | Area max-pressure | 812.1 [800.1, 825.7] | 3.11 [3.02, 3.20] | 6911 [6690, 7116] | 988.9 [970.0, 1008.0] | 1142.1 [1012.6, 1265.7] | 632.7 [557.1, 711.5] | 100.0 [99.9, 100.0] |
 | Count max-pressure | 813.9 [802.9, 826.6] | 3.08 [3.01, 3.16] | 6975 [6760, 7183] | 993.5 [981.3, 1006.3] | 1041.5 [940.6, 1148.5] | 553.9 [492.4, 622.6] | 99.9 [99.8, 100.0] |
 | Actuated | 796.7 [783.3, 811.2] | 2.99 [2.91, 3.07] | 7272 [7035, 7503] | 949.6 [934.3, 965.8] | 1148.0 [1036.0, 1264.4] | 611.6 [532.6, 696.8] | 99.8 [99.6, 100.0] |
@@ -347,7 +347,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| CHOWK | 774.4 [762.8, 786.2] | 3.76 [3.67, 3.84] | 7962 [7756, 8173] | 1006.5 [995.8, 1017.6] | 889.3 [791.4, 998.9] | 474.8 [417.9, 543.7] | 99.8 [99.6, 99.9] |
+| CHOWK | 770.5 [759.6, 782.5] | 3.75 [3.66, 3.84] | 7940 [7700, 8179] | 1004.5 [991.8, 1017.4] | 1101.6 [960.8, 1251.0] | 613.8 [521.3, 715.1] | 99.9 [99.8, 100.0] |
 | Area max-pressure | 775.5 [764.1, 787.0] | 3.73 [3.65, 3.82] | 7831 [7601, 8058] | 1009.3 [996.8, 1023.2] | 952.5 [811.0, 1105.7] | 516.5 [426.7, 622.5] | 99.7 [99.4, 100.0] |
 | Count max-pressure | 785.9 [774.3, 797.9] | 3.90 [3.80, 4.01] | 7709 [7536, 7883] | 1034.6 [1023.0, 1045.7] | 1105.0 [989.0, 1222.7] | 572.7 [498.6, 654.4] | 100.0 [99.9, 100.0] |
 | Actuated | 759.1 [747.2, 772.0] | 3.52 [3.43, 3.61] | 8165 [7954, 8363] | 949.6 [936.2, 964.4] | 1021.7 [899.6, 1138.9] | 513.0 [437.5, 589.0] | 99.3 [98.7, 99.8] |
@@ -357,7 +357,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| CHOWK | 608.9 [594.4, 622.9] | 5.01 [4.92, 5.09] | 8222 [8023, 8435] | 834.8 [822.8, 846.4] | 615.3 [552.6, 680.6] | 300.5 [277.5, 325.0] | 99.4 [99.0, 99.7] |
+| CHOWK | 606.9 [593.1, 619.6] | 4.91 [4.84, 4.98] | 8267 [8082, 8467] | 824.8 [814.9, 834.5] | 526.8 [456.8, 619.8] | 272.8 [244.0, 317.4] | 99.5 [99.2, 99.7] |
 | Area max-pressure | 616.3 [602.0, 630.2] | 5.08 [5.00, 5.16] | 8144 [7916, 8383] | 837.7 [827.3, 847.7] | 565.1 [514.0, 619.0] | 290.4 [271.3, 310.9] | 99.4 [99.1, 99.6] |
 | Count max-pressure | 624.3 [611.1, 637.2] | 5.09 [5.02, 5.16] | 8150 [7925, 8410] | 842.6 [829.6, 854.3] | 529.9 [475.2, 590.1] | 276.5 [254.2, 301.8] | 99.7 [99.3, 99.9] |
 | Actuated | 599.4 [585.3, 612.4] | 4.46 [4.39, 4.53] | 8517 [8349, 8697] | 779.1 [770.4, 787.5] | 603.0 [550.8, 657.0] | 294.3 [271.6, 318.1] | 98.2 [97.5, 98.7] |
@@ -367,7 +367,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| CHOWK | 934.4 [923.8, 945.0] · median 933.2 | 3.46 [3.38, 3.54] · median 3.44 | 7375 [7145, 7616] · median 7413 | 1266.4 [1253.8, 1279.3] · median 1262.0 | 1271.1 [1147.3, 1392.8] · median 1230.0 | 768.5 [686.7, 852.3] · median 743.5 | 99.9 [99.8, 100.0] · median 100.0 |
+| CHOWK | 930.2 [920.4, 940.1] · median 929.8 | 3.51 [3.42, 3.60] · median 3.50 | 7374 [7132, 7620] · median 7300 | 1264.1 [1248.6, 1278.8] · median 1275.6 | 1331.0 [1240.4, 1422.5] · median 1291.5 | 783.1 [714.1, 854.2] · median 783.8 | 100.0 [99.9, 100.0] · median 100.0 |
 | Area max-pressure | 933.4 [923.7, 943.1] · median 932.2 | 3.48 [3.37, 3.59] · median 3.48 | 7311 [7053, 7592] · median 7127 | 1261.8 [1244.2, 1280.4] · median 1263.7 | 1202.2 [1097.5, 1310.1] · median 1216.3 | 703.0 [619.3, 788.0] · median 696.4 | 100.0 [100.0, 100.0] · median 100.0 |
 | Count max-pressure | 938.8 [928.9, 948.8] · median 935.6 | 3.48 [3.40, 3.56] · median 3.45 | 7359 [7079, 7632] · median 7319 | 1269.1 [1253.2, 1284.9] · median 1265.0 | 1218.9 [1114.5, 1326.5] · median 1128.0 | 713.1 [620.2, 814.4] · median 660.5 | 99.9 [99.8, 100.0] · median 100.0 |
 | Actuated | 919.4 [909.4, 930.2] · median 912.1 | 3.27 [3.16, 3.39] · median 3.23 | 7711 [7461, 7963] · median 7665 | 1200.4 [1182.3, 1219.0] · median 1188.2 | 1232.4 [1120.2, 1342.8] · median 1250.9 | 733.0 [665.1, 803.1] · median 716.6 | 100.0 [100.0, 100.0] · median 100.0 |
@@ -407,6 +407,6 @@ Measured on AMD Ryzen 9 5900HX with Radeon Graphics · win32 10.0.26300 · Node 
 
 ## Provenance
 
-Source commit ef3b1d0c44fbecdfd46de9806717e211ad55247b. Simulator 39970318cfbb42b2a5a20e06d35ad9a583fb23f3ad0a2f62049f991eb359271a. Policy 4b5f73013bb17d9211ae42110bfe5db2ae371b73fea73b6857ea6bed1d122275.
+Source commit 42f045b5eb1365db651c76f7f8ee000b94b80527. Simulator 39970318cfbb42b2a5a20e06d35ad9a583fb23f3ad0a2f62049f991eb359271a. Policy b0876309f33101736786199ecd27cd5a2cbb5d82fb40b3d5fc3064f94943c93a.
 
-The recorded episodes cover 1540.0 simulated hours and took 68.9 minutes of benchmark wall time across runs. Raw runs and configuration are in [benchmark.json](benchmark.json).
+The recorded episodes cover 1540.0 simulated hours and took 67.0 minutes of benchmark wall time across runs. Raw runs and configuration are in [benchmark.json](benchmark.json).
