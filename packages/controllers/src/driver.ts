@@ -1,4 +1,4 @@
-import { type createSim, DT, type JunctionSense, type Network, type Scenario } from "@chowk/sim";
+import { DT, type JunctionSense, type Network, type Scenario, type createSim } from "@chowk/sim";
 import type { Controller, Explanation, NeighbourApproach, NeighbourSense } from "./types";
 
 export const DECISION_TICKS = 20;
