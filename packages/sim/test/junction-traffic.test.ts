@@ -26,11 +26,14 @@ function fixedTime(demand: readonly Arrival[], duration: number) {
     }
     sim.step();
     for (const junction of corridor.junctions) {
-      let active = 0;
+      // Movements from one approach may share the box; two approaches never may.
+      const approaches = new Set<number>();
       for (const connector of corridor.connectors) {
-        if (connector.junction === junction.id && sim.vehicles.counts[connector.id] > 0) active++;
+        if (connector.junction === junction.id && sim.vehicles.counts[connector.id] > 0)
+          approaches.add(connector.fromLink);
       }
-      if (active > 1) throw new Error(`Conflicting occupancy at J${junction.id + 1}, tick ${tick}`);
+      if (approaches.size > 1)
+        throw new Error(`Conflicting occupancy at J${junction.id + 1}, tick ${tick}`);
     }
   }
   return sim;

@@ -227,3 +227,4 @@ Record spec changes here: date, what changed, why.
 
 - 12 Nov 2026 — Record the actual autoplay sequence, a placed lane closure, the completed browser replay and a checkpoint swap for the captioned submission video. Capture aerial and pressure stills at a paused seed.
 - 12 Nov 2026 — Live view: loading card with real start-up steps, a skippable first-visit guide (spec L13), controller chips flanking the divider, a compact title block and one control dock. The loading poster, README stills, GIFs and demo video predate this layout and need `npm run capture` to match.
+- 13 Nov 2026 — Movements from the green approach now share the junction box, and turns carry a single-file stream spaced for the inside of the bend. Green discharge at J3 rose from about 0.25 to 0.41 vehicles per second. Benchmark re-run against the new simulator.
