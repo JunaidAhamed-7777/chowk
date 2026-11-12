@@ -16,49 +16,17 @@
 
 ## Simulation results
 
-On 20 held-out seeds in simulated Indian mixed traffic, CHOWK showed no clear difference in delay per person versus area max-pressure (−0.6%, 95% CI −1.5% to +0.0%), with 4.5% lower delay versus Webster fixed-time (95% CI −5.2% to −3.8%). Simulation result.
+On 20 held-out seeds in simulated Indian mixed traffic, CHOWK reduced delay per person by 4.6% versus area max-pressure (95% CI −7.5% to −1.7%), with 60.0% lower delay versus Webster fixed-time (95% CI −62.7% to −57.2%). Simulation result.
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
-| CHOWK | 770.5 [759.6, 782.5] | 3.75 [3.66, 3.84] | 7940 [7700, 8179] | 1004.5 [991.8, 1017.4] |
-| Area max-pressure | 775.5 [764.1, 787.0] | 3.73 [3.65, 3.82] | 7831 [7601, 8058] | 1009.3 [996.8, 1023.2] |
-| Count max-pressure | 785.9 [774.3, 797.9] | 3.90 [3.80, 4.01] | 7709 [7536, 7883] | 1034.6 [1023.0, 1045.7] |
-| Actuated | 759.1 [747.2, 772.0] | 3.52 [3.43, 3.61] | 8165 [7954, 8363] | 949.6 [936.2, 964.4] |
-| Fixed-time (Webster) | 806.8 [794.6, 819.7] | 2.80 [2.74, 2.85] | 7768 [7571, 7967] | 901.0 [886.9, 914.3] |
+| CHOWK | 84.0 [75.1, 93.3] | 2.40 [2.30, 2.51] | 6282 [6034, 6517] | 241.3 [233.1, 249.2] |
+| Area max-pressure | 88.0 [79.2, 97.3] | 2.43 [2.33, 2.53] | 6285 [6028, 6518] | 242.8 [234.5, 250.8] |
+| Count max-pressure | 99.8 [91.8, 107.8] | 2.15 [2.04, 2.27] | 6244 [5982, 6484] | 242.4 [233.9, 250.6] |
+| Actuated | 125.1 [113.4, 137.4] | 2.94 [2.82, 3.04] | 6092 [5850, 6316] | 250.0 [241.3, 258.3] |
+| Fixed-time (Webster) | 209.7 [192.7, 226.1] | 3.21 [3.10, 3.31] | 5571 [5336, 5787] | 264.1 [254.5, 273.2] |
 
 ![Paired delay differences for mixed traffic and lane-disciplined cars](results/lane-free.svg)
-
-### Engineering measurements
-
-Measured on AMD Ryzen 9 5900HX with Radeon Graphics · win32 10.0.26300 · Node 26.8.1.
-
-- The simulator ran at 1220.1× real time with about 502 vehicles, 327.4× real time with about 1,515 vehicles, 142.3× real time with about 3,045 vehicles.
-
-- Policy inference took 6.61 µs per decision.
-
-- Node, Chromium, WebKit, Firefox all reached state hash 577aee27 after 10,000 ticks.
-
-- Rendering measurements were 163.9 fps median and 161.3 fps 1% low on low (AMD Radeon(TM) Graphics), 163.9 fps median and 161.1 fps 1% low on medium (AMD Radeon(TM) Graphics), 163.9 fps median and 161.1 fps 1% low on high (AMD Radeon RX 6600M).
-
-- A cold localhost load transferred 831.7 KiB and became interactive in 0.97 s.
-
-- Initial JavaScript was 494.2 kB compressed.
-
-- The 34 delivered GLB models totalled 107.4 KiB.
-
-- On Broadband (10 Mbps down, 40 ms latency), the poster painted in 0.30 s and Live became interactive in 1.43 s. Medians from 3 fresh Chrome contexts.
-
-- On Slow connection (2 Mbps down, 150 ms latency), the poster painted in 1.09 s and Live became interactive in 4.75 s. Medians from 3 fresh Chrome contexts.
-
-- During a 10-minute Live soak, sampled post-GC renderer V8 heap went from 12.89 to 12.99 MiB, with 0.39 MiB spread on the plateau and 2 dedicated workers.
-
-- Chromium reproduced all 9 benchmark episodes exactly in 30.59 s.
-
-- Firefox (WSL Ubuntu 6.18.33.2-microsoft-standard-WSL2) reproduced all 9 benchmark episodes exactly in 42.65 s.
-
-- WebKit reproduced all 9 benchmark episodes exactly in 26.62 s.
-
-- 81 tests passed and 0 failed.
 
 [Full benchmark and provenance](results/benchmark.md) · [Raw runs](results/benchmark.json)
 
