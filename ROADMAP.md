@@ -244,3 +244,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Results adds "Check any comparison": any published cell, two controllers and a metric, with per-seed paired differences, a bootstrap interval computed in the page and per-seed replay (spec R6, issue #18).
 - 13 Nov 2026 — Monsoon roads look wet: darker asphalt, puddles and lamp pools that streak towards the camera (issue #14, partial).
 - 13 Nov 2026 — Tour rides along with a two-wheeler for eight seconds before the junction beats (issue #15).
+- 13 Nov 2026 — How it decides shows the three inputs that moved CHOWK's learned correction most, by exact input × gradient, checked against the controller (spec L11, issue #13).

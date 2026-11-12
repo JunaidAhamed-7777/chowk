@@ -161,6 +161,8 @@ A panel that walks through one junction's latest decision, opened from **How it 
 
 A junction picker, an A/B side picker and a log of the last eight decisions complete the panel. The worker publishes the exact sensor reading each decision used; the recomputation is unit-tested against `scorePressure` and the live controllers.
 
+For CHOWK, the panel also lists the three inputs that moved the learned correction for the chosen phase most, by input × gradient through the active part of the network (`apps/web/src/sim/attribution.ts`), with a ✓ when the browser's restated network reproduces the controller's own output. Because the network is ReLU, the 50 parts plus the bias path add up exactly to the output.
+
 ### L13. Getting-started guide — P0
 
 - Shown to first-time visitors once the scene is ready, as a card beside the scene. It never blocks the scene or the autoplay tour; a visitor who ignores it still sees the tour.

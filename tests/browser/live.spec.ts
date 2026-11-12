@@ -193,6 +193,8 @@ test("shows the arithmetic behind live metrics and a junction's decision", async
     timeout: 60_000,
   });
   await expect(panel.getByText(/matches the controller's own numbers/)).toBeVisible();
+  await expect(panel.getByText(/What moved the correction for/)).toBeVisible({ timeout: 30_000 });
+  await expect(panel.getByText("✓ matches the controller")).toBeVisible();
   await panel.getByRole("button", { name: /^A · / }).click();
   await expect(panel.getByText("Follow the timetable")).toBeVisible({ timeout: 30_000 });
 });

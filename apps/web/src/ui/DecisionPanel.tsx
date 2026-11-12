@@ -1,7 +1,10 @@
 import type { Explanation } from "@chowk/controllers";
+import { decodePolicy } from "@chowk/controllers";
+import { layoutFor } from "@chowk/controllers/observation";
 import { bestPhase } from "@chowk/controllers/pressure";
 import { corridor, DT, type Scenario } from "@chowk/sim";
 import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
+import { attribute } from "../sim/attribution";
 import {
   ACTUATED_EXTEND_THRESHOLD,
   approachDirections,
@@ -346,6 +349,24 @@ export function DecisionPanel({
   });
   const applied = guard ? starved : requested;
   const finalPhase = applied >= 0 ? applied : requested;
+  const vector = useMemo(
+    () => (controller.policy ? decodePolicy(controller.policy) : undefined),
+    [controller.policy],
+  );
+  const drivers = useMemo(() => {
+    if (!vector || !observation || !sense || !learned || model.kind !== "learned") return undefined;
+    const choice = scoreChoice ?? sense.phase;
+    const layout = layoutFor(corridor, junction);
+    const relative =
+      (layout.directionOfPhase[choice] + 4 - layout.directionOfPhase[sense.phase]) % 4;
+    const result = attribute(vector, observation, relative);
+    const matches = result.outputs[relative] === learned[choice];
+    const ranked = Array.from(result.contributions, (value, index) => ({ value, index }))
+      .filter(({ value }) => value !== 0)
+      .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
+      .slice(0, 3);
+    return { choice, ranked, matches, bias: result.biasPath, output: result.outputs[relative] };
+  }, [vector, observation, sense, learned, model.kind, scoreChoice, junction]);
   const flipped =
     model.kind === "learned" &&
     priorChoice !== undefined &&
@@ -554,6 +575,39 @@ export function DecisionPanel({
                 <i className="legend-prior" /> β × pressure <i className="legend-up" /> learned
                 boost <i className="legend-down" /> learned penalty
               </p>
+              {drivers && (
+                <div className="decision-drivers">
+                  <p>
+                    What moved the correction for <strong>{labels[drivers.choice]}</strong> (
+                    {drivers.output < 0 ? "−" : "+"}
+                    {fixed3.format(Math.abs(drivers.output))}){" "}
+                    {drivers.matches && (
+                      <span
+                        className="decision-check"
+                        title="The browser's restatement of the network gives the controller's own output"
+                      >
+                        ✓ matches the controller
+                      </span>
+                    )}
+                  </p>
+                  <ol>
+                    {drivers.ranked.map(({ value, index }) => (
+                      <li key={index} data-negative={value < 0}>
+                        <span>{observationLabels[index].label}</span>
+                        <b>
+                          {value < 0 ? "−" : "+"}
+                          {fixed3.format(Math.abs(value))}
+                        </b>
+                      </li>
+                    ))}
+                  </ol>
+                  <p className="decision-legend">
+                    Input × gradient through the active part of the network. All 50 parts plus a
+                    bias term of {drivers.bias < 0 ? "−" : "+"}
+                    {fixed3.format(Math.abs(drivers.bias))} add up exactly to the output.
+                  </p>
+                </div>
+              )}
               {observation && (
                 <details className="decision-vector">
                   <summary>The 50 numbers the network read</summary>
