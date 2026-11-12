@@ -33,6 +33,7 @@
     "bench:smoke": "node scripts/run-node.mjs bench smoke",
     "capture": "npm run build && node scripts/capture.mjs",
     "submission:prepare": "node scripts/prepare-submission.mjs",
+    "submission:brief": "node scripts/prepare-brief.mjs",
     "assets:placeholders": "python assets/blender/placeholders.py",
     "assets:vehicles": "blender --background --python assets/blender/vehicles.py",
     "assets:district": "blender --background --python assets/blender/district.py",

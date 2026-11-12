@@ -259,3 +259,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Monsoon lightning and a photo mode that hides the interface (spec L18, issue #14).
 - 13 Nov 2026 — The delay formula popover also shows delay per vehicle for the same window, so the effect of weighting by people is visible (spec L2, issue #12).
 - 13 Nov 2026 — Overhead cables strung between street-lamp poles (issue #4).
+- 13 Nov 2026 — Generated one-page judge brief, `docs/CHOWK-brief.pdf`, linked from the README (issue #20).

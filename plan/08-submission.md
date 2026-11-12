@@ -133,3 +133,7 @@ All captured from the app through the scripted capture route, at fixed seeds.
 - [x] Verify every published statistic and citation against its source.
 - [ ] The user submits on Unstop and opens the links from the submitted entry.
 - [ ] Tag the submitted commit.
+
+## One-page brief
+
+`npm run submission:brief` writes `docs/CHOWK-brief.pdf` from `results/benchmark.json`: pitch, generated headline and morning-peak table, approach, how to check the proof, honest limits and links. Regenerate it after every benchmark run.

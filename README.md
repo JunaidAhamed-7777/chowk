@@ -8,7 +8,7 @@
 
 [![CI](https://github.com/JunaidAhamed-7777/chowk/actions/workflows/ci.yml/badge.svg)](https://github.com/JunaidAhamed-7777/chowk/actions/workflows/ci.yml) [![Tests](https://img.shields.io/badge/tests-Vitest%20%2B%20Playwright-2b5763)](#run-locally) [![MIT licence](https://img.shields.io/badge/licence-MIT-34d399)](LICENSE)
 
-[Download the captioned 90-second demo](https://github.com/JunaidAhamed-7777/chowk/raw/refs/heads/main/assets/demo/chowk-demo.mp4) · [WebVTT captions](assets/demo/captions.vtt)
+[One-page brief (PDF)](docs/CHOWK-brief.pdf) · [Download the captioned 90-second demo](https://github.com/JunaidAhamed-7777/chowk/raw/refs/heads/main/assets/demo/chowk-demo.mp4) · [WebVTT captions](assets/demo/captions.vtt)
 
 *Chowk* is Hindi for a junction. CHOWK pairs a playable night-time arterial with a benchmark you can reproduce in the browser. It is an INNOVEX 2026 entry for PS04, Smart Cities & Sustainability.
 
