@@ -176,6 +176,12 @@ A junction picker, an A/B side picker and a log of the last eight decisions comp
 - When the visitor closes it, the autoplay tour starts and a first-time guide (L13) opens at its second card. The tour does not run while the briefing is open.
 - "What am I looking at?" under the title reopens it. Dismissal is remembered in local storage. Automated browsers and capture mode skip it; `?intro=on` forces it and `?intro=off` suppresses it.
 
+### L15. Time-space diagram — P1
+
+- "Time-space" in the dock opens a panel with one diagram per simulation: time on the horizontal axis (the last five simulated minutes), position along the arterial on the vertical axis, one dot per vehicle per simulated second, eastbound and westbound in different colours.
+- Each junction carries two thin bars for the arterial directions, green while that direction's phase is green and red otherwise, so platoons, queues and green waves read at a glance.
+- Sampling runs on the main thread from the snapshot stream into preallocated ring buffers; the canvas redraws four times a second. Opening it closes "How it decides", and Escape closes it.
+
 ### L12. Audio — removed
 
 The site has no sound and no mute control (removed at the user's request, 13 Nov).

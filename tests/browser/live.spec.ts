@@ -260,3 +260,46 @@ test("the tour opens the split comparison within five seconds and keeps the dock
   await expect(instrument).toHaveAttribute("data-tour", "false");
   await expect(page.locator(".instrument-controls")).toHaveCSS("opacity", "1");
 });
+
+test("the time-space diagram plots both simulations along the corridor", async ({ page }) => {
+  await page.goto("/?tour=off");
+  await expect(page.locator(".instrument")).toHaveAttribute("data-ready", "true", {
+    timeout: 60_000,
+  });
+  await page.getByRole("button", { name: "4 times speed" }).click();
+  await page.getByRole("button", { name: "Time-space" }).click();
+  const panel = page.getByRole("region", { name: "Time-space diagram" });
+  await expect(panel).toBeVisible();
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() =>
+          [...document.querySelectorAll<HTMLCanvasElement>(".time-space-canvas canvas")].map(
+            (canvas) => {
+              const data = canvas
+                .getContext("2d")
+                ?.getImageData(0, 0, canvas.width, canvas.height).data;
+              let painted = 0;
+              for (let index = 3; data && index < data.length; index += 4)
+                if (data[index] > 0) painted++;
+              return painted;
+            },
+          ),
+        ),
+      { timeout: 30_000 },
+    )
+    .toEqual([expect.any(Number), expect.any(Number)]);
+  const painted = await page.evaluate(() =>
+    [...document.querySelectorAll<HTMLCanvasElement>(".time-space-canvas canvas")].every(
+      (canvas) => {
+        const data = canvas.getContext("2d")?.getImageData(0, 0, canvas.width, canvas.height).data;
+        let count = 0;
+        for (let index = 3; data && index < data.length; index += 4) if (data[index] > 0) count++;
+        return count > 500;
+      },
+    ),
+  );
+  expect(painted).toBe(true);
+  await page.keyboard.press("Escape");
+  await expect(panel).toBeHidden();
+});

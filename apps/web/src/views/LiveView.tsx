@@ -55,6 +55,7 @@ import { LiveControls } from "../ui/LiveControls";
 import { LoadingScreen, liveLoadingSteps } from "../ui/LoadingScreen";
 import { MetricHud } from "../ui/MetricHud";
 import { guideSteps, Onboarding, rememberGuideSeen, shouldOpenGuide } from "../ui/Onboarding";
+import { TimeSpacePanel } from "../ui/TimeSpacePanel";
 import "../ui/advancedLive.css";
 import "../ui/liveLayout.css";
 
@@ -134,6 +135,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
   const [custom, setCustom] = useState(initial.custom);
   const [editingDemand, setEditingDemand] = useState(false);
   const [inspecting, setInspecting] = useState(false);
+  const [timeSpace, setTimeSpace] = useState(false);
   const [inspectedJunction, setInspectedJunction] = useState(2);
   const [picking, setPicking] = useState(false);
   const [events, setEvents] = useState<ActiveEvent[]>([]);
@@ -429,6 +431,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
     endTour();
     setEditingDemand(false);
     setInspectedJunction(junction);
+    setTimeSpace(false);
     setInspecting(true);
     setCamera(junction);
     setVehicle(undefined);
@@ -685,6 +688,13 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               onClose={() => setInspecting(false)}
             />
           )}
+          {timeSpace && ready && (
+            <TimeSpacePanel
+              host={host}
+              labels={[labelOf(controllers[0].id), labelOf(controllers[1].id)]}
+              onClose={() => setTimeSpace(false)}
+            />
+          )}
           {notice && (
             <div className="live-notice" role="status">
               {notice}
@@ -851,6 +861,19 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               }
             >
               How it decides
+            </button>
+            <button
+              className="control-button time-space-button"
+              type="button"
+              disabled={disabled}
+              aria-pressed={timeSpace}
+              onClick={() => {
+                endTour();
+                setInspecting(false);
+                setTimeSpace(!timeSpace);
+              }}
+            >
+              Time-space
             </button>
             <button
               className="control-button tour-button"
