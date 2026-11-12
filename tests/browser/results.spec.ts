@@ -25,6 +25,20 @@ test("the comparison explorer computes paired differences and replays a seed", a
   });
 });
 
+test("the held-out grid runs live beside area max-pressure", async ({ page }) => {
+  test.skip(!publication, "No publication to run");
+  test.setTimeout(120_000);
+  await page.goto("/results");
+  const section = page.getByRole("region", { name: "A network CHOWK never saw" });
+  await section.getByRole("button", { name: "Run the held-out grid" }).click();
+  await expect(section.getByText(/s per person/).first()).toBeVisible({ timeout: 60_000 });
+  await expect(section.getByText(/^[1-9]\d* of 30 simulated minutes/)).toBeVisible({
+    timeout: 60_000,
+  });
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  await section.getByRole("button", { name: "Stop" }).click();
+});
+
 test("Results shows published data or an honest pending state", async ({ page }) => {
   await page.goto("/results");
   await expect(page.getByRole("heading", { name: "Benchmark results", level: 1 })).toBeVisible();

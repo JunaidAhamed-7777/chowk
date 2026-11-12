@@ -260,3 +260,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — The delay formula popover also shows delay per vehicle for the same window, so the effect of weighting by people is visible (spec L2, issue #12).
 - 13 Nov 2026 — Overhead cables strung between street-lamp poles (issue #4).
 - 13 Nov 2026 — Generated one-page judge brief, `docs/CHOWK-brief.pdf`, linked from the README (issue #20).
+- 13 Nov 2026 — Results runs the held-out grid live beside area max-pressure (spec R7, issue #21). The 3D Live view stays on the corridor; making it network-generic is a larger refactor.

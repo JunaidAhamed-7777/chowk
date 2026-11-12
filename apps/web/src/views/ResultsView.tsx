@@ -21,6 +21,7 @@ import {
   SensorNoiseChart,
 } from "../benchmark/BenchmarkCharts";
 import { BenchmarkReproduction } from "../benchmark/BenchmarkReproduction";
+import { GridDemo } from "../benchmark/GridDemo";
 import { SkepticExplorer } from "../benchmark/SkepticExplorer";
 import { TrainingCurveChart } from "../benchmark/TrainingCurveChart";
 import "../benchmark/results.css";
@@ -472,6 +473,18 @@ export function ResultsView() {
       <AdditionalResults benchmark={benchmark} />
       <TrainingCurveChart />
       {engineering && <Engineering measurements={engineering} />}
+      <section className="results-panel" aria-labelledby="grid-heading">
+        <div className="results-section-heading">
+          <div>
+            <h2 id="grid-heading">A network CHOWK never saw</h2>
+            <p>
+              The same policy on a four-junction grid that was never used for training or checkpoint
+              choice, run live in two browser workers beside area max-pressure.
+            </p>
+          </div>
+        </div>
+        <GridDemo benchmark={benchmark} />
+      </section>
       <section className="results-panel" aria-labelledby="skeptic-heading">
         <div className="results-section-heading">
           <div>

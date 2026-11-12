@@ -238,6 +238,10 @@ The git commit, date, seed list and total simulated time behind the published nu
 
 Pick any published cell (suite, scenario, variant), controllers A and B, and a metric. The page computes the paired relative difference on every held-out seed from the raw runs, plots one dot per seed with the mean and a 95% bootstrap interval, says on how many seeds A was better, and lists every seed. Replay re-runs both runs for a seed in a browser worker and checks metrics and final state hashes against the publication. The interval uses its own resample, so its last digit can differ from the published table.
 
+### R7. A network CHOWK never saw — P1
+
+A top-down panel runs the held-out grid live in two browser workers, area max-pressure beside CHOWK, on one seed at 8× for 30 simulated minutes, with each side's delay per person. Roads are drawn from the network definition and vehicles from snapshots. The generated B4 held-out-grid comparison is stated beside it, with "no clear difference" when its interval includes zero, and the panel says one seed is an illustration.
+
 ## Method view — P0
 
 Short, illustrated, scannable. Sections:
