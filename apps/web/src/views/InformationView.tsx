@@ -110,7 +110,7 @@ const pathSteps: { title: string; body: React.ReactNode }[] = [
   },
   {
     title: "Compute",
-    body: `The policy is a hand-written network of ${parameters} parameters using only addition, multiplication and maximum. It needs no GPU or runtime library; the measured time per decision is on the Results page.`,
+    body: `The policy is a hand-written network of ${parameters} parameters using only addition, multiplication and maximum. It needs no GPU or runtime library; the measured time per decision is on the Results page. A generated, dependency-free C version reproduces its outputs bit for bit, checked in CI (exports/c in the repository).`,
   },
   {
     title: "Before any trial",

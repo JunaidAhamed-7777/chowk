@@ -32,6 +32,12 @@ jobs:
       - run: npm run bench:smoke
       - run: npm run sim:bench -- --check
       - run: npm run assets:check
+      - name: Check the C export of the policy matches TypeScript bit for bit
+        run: |
+          npm run policy:c
+          git diff --exit-code exports/c
+          cc -std=c99 -ffp-contract=off -O2 -Wall exports/c/check.c -o chowk-check
+          ./chowk-check
       - run: npm run build
       - run: npm exec -- playwright install --with-deps chromium
       - if: ${{ inputs.browser_matrix }}

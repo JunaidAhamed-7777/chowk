@@ -18,6 +18,7 @@ const commands = {
   bench: { cli: "packages/bench/src/cli.ts", "cli-worker": "packages/bench/src/cli-worker.ts" },
   calibrate: { cli: "packages/scenarios/tools/calibrate.ts" },
   diagnose: { cli: "packages/bench/tools/diagnose-capacity.ts" },
+  "policy-c": { cli: "packages/controllers/tools/export-c.ts" },
   "sim-bench": { cli: "packages/sim/tools/bench.ts" },
   "sim-validate": { cli: "packages/sim/tools/validate.ts" },
 };

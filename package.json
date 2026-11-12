@@ -28,6 +28,7 @@
     "bench:all": "node scripts/run-node.mjs bench all",
     "bench:calibrate": "node scripts/run-node.mjs calibrate",
     "bench:diagnose": "node scripts/run-node.mjs diagnose",
+    "policy:c": "node scripts/run-node.mjs policy-c",
     "bench:summarise": "node scripts/run-node.mjs bench summarise",
     "bench:readme": "node scripts/run-node.mjs bench readme",
     "bench:smoke": "node scripts/run-node.mjs bench smoke",

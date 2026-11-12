@@ -228,6 +228,10 @@ Each is a separate, shorter training run, reported in `04-benchmark.md`. Priorit
 | `chowk-pure` | No prior (`β = 0`), random initialisation | What the residual design buys | P1 |
 | `chowk-solo` | No neighbour features | Whether corridor coordination is learned | P2 |
 
+## C export
+
+`npm run policy:c` writes `exports/c/chowk_policy.h` (weights and a forward pass in the same order and precision as the TypeScript inference) and `chowk_cases.h` (validation-seed observations and random inputs with expected outputs as IEEE-754 bit patterns). `exports/c/check.c` compares every output; CI regenerates the export, fails on any difference from the committed files, and runs the check.
+
 ## Explanation, for the Decision overlay
 
 `explain()` returns:
