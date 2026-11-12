@@ -252,3 +252,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Limits states that the turning model is conservative: discharge with turns, computed from the calibration, against Indo-HCM base saturation flows (issue #1).
 - 13 Nov 2026 — Rewind a minute: both workers restore a checkpoint clone and replay exactly (spec L17, issue #10).
 - 13 Nov 2026 — District massing rises with distance from the road so towers sit back, and the day mood has a light warm haze (issue #4).
+- 13 Nov 2026 — Live controller menu offers CHOWK with ambulance pre-emption, the B6 variant (issue #8).

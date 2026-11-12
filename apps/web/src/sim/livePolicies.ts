@@ -48,6 +48,11 @@ export async function loadControllerChoices(signal: AbortSignal) {
       controller: { id: "chowk", policy: learned },
       label: learned.meta.generation === 0 ? "CHOWK (generation 0)" : "CHOWK",
     });
+  if (learned && learned.meta.generation !== 0)
+    choices.push({
+      controller: { id: "chowk+preempt", policy: learned },
+      label: "CHOWK with ambulance pre-emption",
+    });
   if (pure) choices.push({ controller: { id: "chowk-pure", policy: pure }, label: "CHOWK-pure" });
   return choices;
 }
