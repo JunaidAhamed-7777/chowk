@@ -27,7 +27,7 @@ export const guideSteps: GuideStep[] = [
     focus: "numbers",
     title: "Read the difference",
     body: () =>
-      "Each card shows both sides, A and B, over the last five simulated minutes. Lower delay and fewer stops are better. Press ƒ on any card to see its formula with the live totals.",
+      "Each card shows both sides, A and B, over the last five simulated minutes. Lower delay and fewer stops are better. Hover over or tap any card to open a larger graph with its formula and the live totals.",
   },
   {
     focus: "events",

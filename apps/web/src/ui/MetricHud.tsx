@@ -1,4 +1,12 @@
-import { type ReactNode, useEffect, useState } from "react";
+import {
+  type ReactNode,
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { type LiveReadout, type MetricParts, metricDefinitions } from "../sim/LiveMetrics";
 import "./metricHud.css";
 
@@ -16,7 +24,9 @@ const relative = new Intl.NumberFormat("en-IN", {
   signDisplay: "exceptZero",
 });
 const width = 160;
-const height = 21;
+const sizes = { small: 21, large: 72 } as const;
+// A short pause before a hovered card opens, so sweeping the pointer across the column is calm.
+const hoverDelayMs = 140;
 const unavailable = (
   <>
     <span aria-hidden="true">—</span>
@@ -65,26 +75,38 @@ function Calculation({
   id,
   title,
   open,
+  pinned,
   onClose,
+  chart,
   children,
 }: {
   id: string;
   title: string;
   open: boolean;
+  pinned: boolean;
   onClose: () => void;
+  chart?: ReactNode;
   children: ReactNode;
 }) {
   return (
     <div className="metric-calculation" id={id} role="tooltip" data-open={open}>
       <header>
         <strong>{title}</strong>
-        {open && (
-          <button type="button" className="metric-calculation-close" onClick={onClose}>
+        {pinned && (
+          <button
+            type="button"
+            className="metric-calculation-close"
+            onClick={(event) => {
+              event.stopPropagation();
+              onClose();
+            }}
+          >
             <span aria-hidden="true">×</span>
             <span className="sr-only">Close calculation</span>
           </button>
         )}
       </header>
+      {chart}
       {children}
     </div>
   );
@@ -95,6 +117,7 @@ function MetricCalculation({
   readout,
   single,
   open,
+  pinned,
   onClose,
   clock,
 }: {
@@ -103,6 +126,7 @@ function MetricCalculation({
   clock: (elapsed: number) => string;
   single: boolean;
   open: boolean;
+  pinned: boolean;
   onClose: () => void;
 }) {
   const { key, label, precision } = metric;
@@ -114,7 +138,20 @@ function MetricCalculation({
       id={`metric-${key}-description`}
       title={`How ${label.toLowerCase()} is calculated`}
       open={open}
+      pinned={pinned}
       onClose={onClose}
+      chart={
+        <figure className="metric-chart">
+          <Series readout={readout} metric={key} single={single} size="large" />
+          <figcaption>
+            {!single && <span className="metric-chart-left">A</span>}
+            <span className="metric-chart-right">B</span>
+            <span className="metric-chart-span">
+              {clock(readout.history[0]?.time ?? 0)} to {clock(readout.elapsed)} simulated
+            </span>
+          </figcaption>
+        </figure>
+      }
     >
       <p className="metric-calculation-rule">{formula.rule}</p>
       {key !== "ambulance" && (
@@ -178,11 +215,14 @@ function Series({
   readout,
   metric,
   single,
+  size = "small",
 }: {
   readout: LiveReadout;
   metric: MetricKey;
   single: boolean;
+  size?: keyof typeof sizes;
 }) {
+  const height = sizes[size];
   let min = Infinity;
   let max = -Infinity;
   for (const { values } of [...readout.history, ...readout.ghost]) {
@@ -198,7 +238,7 @@ function Series({
   const range = Math.max(max - min, 0.01);
   return (
     <svg
-      className="metric-series"
+      className={`metric-series metric-series-${size}`}
       viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="none"
       aria-hidden="true"
@@ -258,35 +298,6 @@ function Series({
   );
 }
 
-function InfoButton({
-  explained,
-  label,
-  help,
-  onHelp,
-}: {
-  explained: Explained;
-  label: string;
-  help: Explained | undefined;
-  onHelp: (next: Explained | undefined) => void;
-}) {
-  return (
-    <button
-      className="metric-info"
-      type="button"
-      aria-label={`How ${label} is calculated`}
-      aria-describedby={`metric-${explained}-description`}
-      aria-expanded={help === explained}
-      title="Show the calculation"
-      onClick={() => onHelp(help === explained ? undefined : explained)}
-      onKeyDown={(event) => {
-        if (event.key === "Escape") onHelp(undefined);
-      }}
-    >
-      <span aria-hidden="true">ƒ</span>
-    </button>
-  );
-}
-
 export function MetricHud({
   readout,
   single,
@@ -296,35 +307,115 @@ export function MetricHud({
   single: boolean;
   clock: (elapsed: number) => string;
 }) {
-  const [help, setHelp] = useState<Explained>();
+  const [hovered, setHovered] = useState<Explained>();
+  const [focused, setFocused] = useState<Explained>();
+  const [pinned, setPinned] = useState<Explained>();
+  const timer = useRef<number | undefined>(undefined);
+  const hud = useRef<HTMLElement>(null);
+  const open = pinned ?? focused ?? hovered;
+
+  const enter = useCallback((card: Explained, pointer: string) => {
+    if (pointer !== "mouse") return;
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setHovered(card), hoverDelayMs);
+  }, []);
+  const leave = useCallback((card: Explained, pointer: string) => {
+    if (pointer !== "mouse") return;
+    window.clearTimeout(timer.current);
+    setHovered((current) => (current === card ? undefined : current));
+  }, []);
+  const toggle = useCallback((card: Explained) => {
+    window.clearTimeout(timer.current);
+    setPinned((current) => (current === card ? undefined : card));
+  }, []);
+  const close = useCallback(() => {
+    window.clearTimeout(timer.current);
+    setPinned(undefined);
+    setHovered(undefined);
+  }, []);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+
   useEffect(() => {
-    if (!help) return;
-    const close = (event: PointerEvent) => {
+    if (!open) return;
+    const outside = (event: PointerEvent) => {
       const target = event.target as Element | null;
-      if (!target?.closest(".metric-calculation, .metric-info")) setHelp(undefined);
+      if (!target?.closest(".comparison-hud [data-card]")) close();
     };
-    document.addEventListener("pointerdown", close, true);
-    return () => document.removeEventListener("pointerdown", close, true);
-  }, [help]);
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
+    };
+    document.addEventListener("pointerdown", outside, true);
+    window.addEventListener("keydown", onEscape);
+    return () => {
+      document.removeEventListener("pointerdown", outside, true);
+      window.removeEventListener("keydown", onEscape);
+    };
+  }, [open, close]);
+
+  // Beside the column, an open panel starts level with its card but never runs below the column
+  // into the control dock: it slides up just far enough instead. Live values can change its
+  // height, so it is measured again with every readout.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: readout changes the panel's height.
+  useLayoutEffect(() => {
+    const column = hud.current;
+    if (!column) return;
+    for (const panel of column.querySelectorAll<HTMLElement>(".metric-calculation")) {
+      panel.style.removeProperty("--detail-shift");
+    }
+    if (!open) return;
+    const card = column.querySelector<HTMLElement>(`[data-card="${open}"]`);
+    const panel = card?.querySelector<HTMLElement>(".metric-calculation");
+    if (
+      !card ||
+      !panel ||
+      getComputedStyle(panel).getPropertyValue("--detail-clamp").trim() !== "1"
+    )
+      return;
+    const limit = column.getBoundingClientRect().bottom;
+    const overflow = card.getBoundingClientRect().top + panel.offsetHeight - limit;
+    if (overflow > 0) panel.style.setProperty("--detail-shift", `${-Math.ceil(overflow)}px`);
+  }, [open, readout]);
+
+  const cardProps = (card: Explained) => ({
+    "data-card": card,
+    "data-open": open === card,
+    onPointerEnter: (event: ReactPointerEvent) => enter(card, event.pointerType),
+    onPointerLeave: (event: ReactPointerEvent) => leave(card, event.pointerType),
+    onClick: () => toggle(card),
+  });
+  // Pointer users hover or tap a card. Keyboard and screen-reader users reach the same panel
+  // through this visually hidden button.
+  const opener = (card: Explained, label: string) => (
+    <button
+      type="button"
+      className="sr-only"
+      aria-label={`How ${label} is calculated`}
+      aria-expanded={open === card}
+      aria-controls={`metric-${card}-description`}
+      onFocus={() => setFocused(card)}
+      onBlur={() => setFocused((current) => (current === card ? undefined : current))}
+      onClick={(event) => {
+        event.stopPropagation();
+        toggle(card);
+      }}
+    />
+  );
+
   const saved = readout.peopleHours >= 0;
   const headline = saved ? "People-hours saved this hour" : "People-hours added this hour";
   return (
-    <section className="comparison-hud" aria-label="Live simulation results">
+    <section className="comparison-hud" aria-label="Live simulation results" ref={hud}>
       {!single && (
-        <div className="comparison-headline">
+        <div className="comparison-headline" {...cardProps("headline")}>
           <span>{headline}</span>
           <strong>{decimal.format(Math.abs(readout.peopleHours))}</strong>
-          <InfoButton
-            explained="headline"
-            label="people-hours saved"
-            help={help}
-            onHelp={setHelp}
-          />
+          {opener("headline", "people-hours saved")}
           <Calculation
             id="metric-headline-description"
             title="How people-hours saved is calculated"
-            open={help === "headline"}
-            onClose={() => setHelp(undefined)}
+            open={open === "headline"}
+            pinned={pinned === "headline"}
+            onClose={close}
           >
             <p className="metric-calculation-rule">
               Total person-delay under A minus total person-delay under B over the last simulated
@@ -360,23 +451,15 @@ export function MetricHud({
           const outcome = !change ? "even" : change * benefit > 0 ? "better" : "worse";
           const format = precision ? decimal : number;
           return (
-            <div className="comparison-metric" key={key} data-anchor={index < 2 ? "start" : "end"}>
+            <div
+              className="comparison-metric"
+              key={key}
+              data-anchor={index < 2 ? "start" : "end"}
+              {...cardProps(key)}
+            >
               <dt className="comparison-metric-label">
                 <span>{label}</span>
-                <InfoButton
-                  explained={key}
-                  label={label.toLowerCase()}
-                  help={help}
-                  onHelp={setHelp}
-                />
-                <MetricCalculation
-                  metric={definition}
-                  readout={readout}
-                  single={single}
-                  open={help === key}
-                  onClose={() => setHelp(undefined)}
-                  clock={clock}
-                />
+                {opener(key, label.toLowerCase())}
               </dt>
               <dd className="comparison-metric-values">
                 {!single && (
@@ -400,7 +483,6 @@ export function MetricHud({
                 {unit && <small>{unit}</small>}
               </dd>
               <dd className="comparison-metric-trend">
-                <Series readout={readout} metric={key} single={single} />
                 {!single && (
                   <span className={`metric-change metric-change-${outcome}`}>
                     <span className="sr-only">Right versus left: </span>
@@ -414,6 +496,20 @@ export function MetricHud({
                     )}
                   </span>
                 )}
+              </dd>
+              <dd className="comparison-metric-series" aria-hidden="true">
+                <Series readout={readout} metric={key} single={single} />
+              </dd>
+              <dd className="comparison-metric-detail">
+                <MetricCalculation
+                  metric={definition}
+                  readout={readout}
+                  single={single}
+                  open={open === key}
+                  pinned={pinned === key}
+                  onClose={close}
+                  clock={clock}
+                />
               </dd>
             </div>
           );

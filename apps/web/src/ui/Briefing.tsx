@@ -332,7 +332,7 @@ function YourTurn() {
       "A | B",
       "A green line splits the screen. Both sides have the same cars. Only the traffic lights differ.",
     ],
-    ["ƒ", "Click ƒ next to any number to see how it was calculated."],
+    ["ƒ", "Hover over or tap any number to see how it was calculated."],
     ["◎", "Click How it decides to see the maths behind a junction's last choice."],
     ["✓", "Open Results to re-run the test in your own browser."],
   ];

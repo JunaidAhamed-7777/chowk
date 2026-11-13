@@ -181,10 +181,19 @@ test("shows the arithmetic behind live metrics and a junction's decision", async
   await expect(page.getByRole("button", { name: "Pause simulation" })).toBeEnabled({
     timeout: 60_000,
   });
-  await page.getByRole("button", { name: "How delay per person is calculated" }).click();
+  // Hovering a card opens its panel; tapping pins it open.
+  const card = page.locator('[data-card="delay"]');
   const formula = page.locator("#metric-delay-description");
+  await card.hover();
   await expect(formula).toBeVisible();
   await expect(formula).toContainText(/person-s ÷ [\d,]+ people = [\d.]+ s/);
+  await expect(formula.locator(".metric-series-large")).toBeVisible();
+  await page.mouse.move(700, 120);
+  await expect(formula).toBeHidden();
+  await card.click();
+  await expect(formula).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(formula).toBeHidden();
 
   await page.getByRole("button", { name: "16 times speed" }).click();
   await page.locator(".decision-button").click();
