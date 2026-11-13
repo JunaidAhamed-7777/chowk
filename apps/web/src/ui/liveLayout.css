@@ -121,12 +121,6 @@
 .comparison-headline {
   border-radius: 0 7px 7px 0;
 }
-.guide-button {
-  min-width: 34px;
-  justify-content: center;
-  padding-inline: 0;
-  font-weight: 650;
-}
 
 /* Captions and notices clear the taller readout stack. */
 .tour-caption {
@@ -524,10 +518,6 @@ body:has(.live-view[data-photo="true"]) .topbar {
     padding-inline: 8px;
     font-size: 12px;
   }
-  .instrument-controls .view-buttons .control-button {
-    padding-inline: 6px;
-    font-size: 11.5px;
-  }
   .instrument-controls .station {
     width: 30px;
   }
@@ -539,7 +529,7 @@ body:has(.live-view[data-photo="true"]) .topbar {
     padding-inline: 10px;
   }
 }
-@media (max-width: 1023px) and (min-width: 621px) {
+@media (max-width: 799px) and (min-width: 621px) {
   .instrument-controls {
     overflow-x: auto;
     scrollbar-width: thin;

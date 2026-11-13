@@ -493,10 +493,6 @@ button:disabled {
   border-color: var(--accent);
   background: var(--accent);
 }
-.aerial-button {
-  justify-self: end;
-  white-space: nowrap;
-}
 .live-footer {
   display: flex;
   justify-content: space-between;
@@ -1085,11 +1081,6 @@ button:disabled {
   }
   .instrument-controls .view-buttons {
     gap: 3px;
-  }
-  .instrument-controls .view-buttons .control-button {
-    padding-inline: 5px;
-    font-size: 11px;
-    white-space: nowrap;
   }
 }
 

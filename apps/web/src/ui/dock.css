@@ -1,0 +1,144 @@
+/* Icon buttons in the control dock, each with a card that rises above it on hover or keyboard
+   focus. The card names the tool and says what it does, so the dock itself stays quiet. */
+.dock-button {
+  position: relative;
+  width: 36px;
+  min-width: 36px;
+  padding: 0;
+}
+.instrument-controls .view-buttons .control-button.dock-button {
+  padding: 0;
+}
+.dock-button > svg {
+  flex: none;
+}
+.dock-divider {
+  flex: none;
+  width: 1px;
+  height: 20px;
+  margin-inline: 3px;
+  background: #ffffff1c;
+}
+
+.dock-tip {
+  position: absolute;
+  z-index: 2;
+  bottom: calc(100% + 11px);
+  left: 50%;
+  display: grid;
+  gap: 3px;
+  width: max-content;
+  max-width: 220px;
+  padding: 8px 11px 9px;
+  border: 1px solid #ffffff1f;
+  border-radius: 8px;
+  background: #070b14f5;
+  box-shadow: 0 12px 30px #02040acc;
+  color: #a3b1c2;
+  font-size: 11.5px;
+  font-weight: 450;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  translate: -50% 4px;
+  pointer-events: none;
+  transition:
+    opacity 120ms ease-out,
+    translate 120ms ease-out,
+    visibility 0s linear 120ms;
+}
+.dock-tip strong {
+  color: var(--ui-text);
+  font-size: 12px;
+  font-weight: 620;
+}
+.dock-tip::after {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border: solid #ffffff1f;
+  border-width: 0 1px 1px 0;
+  background: #070b14;
+  content: "";
+  translate: -50% -4px;
+  rotate: 45deg;
+}
+[data-tip-align="end"] > .dock-tip {
+  right: -1px;
+  left: auto;
+  translate: 0 4px;
+}
+[data-tip-align="end"] > .dock-tip::after {
+  right: 13px;
+  left: auto;
+  translate: 0 -4px;
+}
+
+@media (hover: hover) {
+  .dock-button:hover > .dock-tip {
+    opacity: 1;
+    visibility: visible;
+    translate: -50% 0;
+    transition-delay: 220ms;
+  }
+  .dock-button[data-tip-align="end"]:hover > .dock-tip {
+    translate: 0 0;
+  }
+}
+.dock-button:focus-visible > .dock-tip {
+  opacity: 1;
+  visibility: visible;
+  translate: -50% 0;
+  transition-delay: 0s;
+}
+.dock-button[data-tip-align="end"]:focus-visible > .dock-tip {
+  translate: 0 0;
+}
+/* An open menu covers the same spot, so its button's card stands down. */
+.camera-menu[open] > summary.dock-button > .dock-tip {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* The scenario bar sits directly above the dock; lift the dock while a card is showing. */
+.instrument-controls:has(.view-buttons :is(:hover, :focus-visible)) {
+  z-index: 5;
+}
+
+/* Nine buttons fit a 320 px phone row only without the dividers. */
+@media (max-width: 620px) {
+  .instrument .instrument-controls .view-buttons {
+    gap: 2px;
+  }
+  .instrument-controls .view-buttons .control-button.dock-button {
+    width: 32px;
+    min-width: 32px;
+  }
+  .dock-divider {
+    display: none;
+  }
+}
+
+/* Between phone and laptop widths the dock scrolls sideways, and a scrolling box clips anything
+   that rises above it; the buttons keep their accessible names there. */
+@media (max-width: 799px) and (min-width: 621px) {
+  .dock-tip {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock-tip {
+    transition: none;
+  }
+}
+@media (forced-colors: active) {
+  .dock-tip {
+    border-color: CanvasText;
+  }
+}

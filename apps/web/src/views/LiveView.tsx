@@ -12,6 +12,7 @@ import {
   type ReactNode,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -51,6 +52,7 @@ import { CheckpointControl } from "../ui/CheckpointControl";
 import { ComparisonWipe } from "../ui/ComparisonWipe";
 import { CustomDemand } from "../ui/CustomDemand";
 import { DecisionPanel } from "../ui/DecisionPanel";
+import { DockButton, DockTip } from "../ui/DockButton";
 import { Icon } from "../ui/Icon";
 import { LiveControls } from "../ui/LiveControls";
 import { LoadingScreen, liveLoadingSteps } from "../ui/LoadingScreen";
@@ -131,6 +133,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
   const [policiesReady, setPoliciesReady] = useState(!hasPolicyAssets);
   const [wipe, setWipe] = useState(initial.tour ? 0 : 50);
   const [singleView, setSingleView] = useState(false);
+  const cameraTipId = useId();
   const [seed, setSeed] = useState(initial.seed);
   const [scenarioId, setScenarioId] = useState<LiveScenarioId>(initial.scenario);
   const [custom, setCustom] = useState(initial.custom);
@@ -436,6 +439,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
   }
 
   const rival = controllerChoices.find(({ controller }) => controller.id === "chowk");
+  const rivalName = rival?.label ?? "CHOWK";
 
   function startChallenge() {
     const learned = rival?.controller;
@@ -742,7 +746,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               ready={ready}
               tick={frame?.tick}
               metrics={frame?.metrics}
-              rivalLabel={rival?.label ?? "CHOWK"}
+              rivalLabel={rivalName}
               onStart={startChallenge}
               onStage={onChallengeStage}
               onExit={() => {
@@ -884,21 +888,29 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
           </fieldset>
 
           <div className="view-buttons">
-            <button
-              className="control-button"
-              type="button"
+            <DockButton
+              icon="split"
+              label="Single view"
+              hint="Hide the split and show only side B across the whole screen."
               disabled={disabled}
               aria-pressed={singleView}
               onClick={() => {
                 endTour();
                 setSingleView(!singleView);
               }}
-            >
-              Single view
-            </button>
+            />
             <details className="event-menu camera-menu">
-              <summary className="control-button" aria-label="Camera modes">
-                <Icon name="camera" />
+              <summary
+                className="control-button dock-button"
+                aria-label="Camera modes"
+                aria-describedby={cameraTipId}
+              >
+                <Icon name="video" size={18} />
+                <DockTip
+                  id={cameraTipId}
+                  label="Camera modes"
+                  hint="Ride along with a vehicle or follow an ambulance."
+                />
               </summary>
               <div>
                 <button
@@ -921,18 +933,20 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
                 </button>
               </div>
             </details>
-            <button
-              className="control-button aerial-button"
-              type="button"
+            <DockButton
+              icon="aerial"
+              label="Aerial view"
+              hint="Fly up to the overhead view of the whole network."
               disabled={disabled}
               aria-pressed={camera === "aerial"}
               onClick={() => chooseCamera("aerial")}
-            >
-              Aerial view
-            </button>
-            <button
-              className="control-button decision-button"
-              type="button"
+            />
+            <span className="dock-divider" aria-hidden="true" />
+            <DockButton
+              icon="decision"
+              label="How it decides"
+              hint="Walk through a junction's latest signal decision, number by number."
+              className="decision-button"
               disabled={disabled}
               aria-pressed={inspecting}
               onClick={() =>
@@ -940,12 +954,11 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
                   ? setInspecting(false)
                   : openDecision(typeof camera === "number" ? camera : inspectedJunction)
               }
-            >
-              How it decides
-            </button>
-            <button
-              className="control-button challenge-button"
-              type="button"
+            />
+            <DockButton
+              icon="gamepad"
+              label="Beat the AI"
+              hint={`Run junction J${CHALLENGE_JUNCTION + 1}'s signals yourself and try to beat ${rivalName}.`}
               disabled={disabled || !rival}
               aria-pressed={challenge !== "off"}
               onClick={() => {
@@ -954,12 +967,11 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
                 setTimeSpace(false);
                 setChallenge(challenge === "off" ? "intro" : "off");
               }}
-            >
-              Beat the AI
-            </button>
-            <button
-              className="control-button time-space-button"
-              type="button"
+            />
+            <DockButton
+              icon="timeSpace"
+              label="Time-space diagram"
+              hint="Plot every vehicle on the main road over the last five minutes."
               disabled={disabled}
               aria-pressed={timeSpace}
               onClick={() => {
@@ -968,12 +980,12 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
                 setChallenge("off");
                 setTimeSpace(!timeSpace);
               }}
-            >
-              Time-space
-            </button>
-            <button
-              className="control-button photo-button"
-              type="button"
+            />
+            <span className="dock-divider" aria-hidden="true" />
+            <DockButton
+              icon="photo"
+              label="Photo mode"
+              hint="Hide the interface for a clean screenshot. Esc brings it back."
               disabled={disabled}
               onClick={() => {
                 endTour();
@@ -982,31 +994,25 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
                 setChallenge("off");
                 setPhoto(true);
               }}
-              aria-label="Photo mode"
-              title="Photo mode: hide the interface"
-            >
-              <Icon name="photo" size={17} />
-            </button>
-            <button
-              className="control-button tour-button"
-              type="button"
+            />
+            <DockButton
+              icon="route"
+              label="Tour"
+              hint="Replay the guided camera tour from the start."
+              tipAlign="end"
               disabled={disabled}
               aria-pressed={tour}
               onClick={startTour}
-            >
-              Tour
-            </button>
-            <button
-              className="control-button guide-button"
-              type="button"
+            />
+            <DockButton
+              icon="help"
+              label="Getting started guide"
+              hint="A short walk through what is on screen and how to use it."
+              tipAlign="end"
               disabled={disabled}
               aria-pressed={guide !== null}
-              aria-label="Open the getting started guide"
-              title="Getting started guide"
               onClick={() => (guide === null ? showGuide(0) : closeGuide())}
-            >
-              ?
-            </button>
+            />
           </div>
         </div>
       </section>

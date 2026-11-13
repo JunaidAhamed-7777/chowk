@@ -126,7 +126,7 @@ test("guides a first-time visitor through the comparison and remembers dismissal
   await expect(guide).toBeHidden();
   expect(await page.evaluate(() => localStorage.getItem("chowk-guide"))).toBe("done");
 
-  await page.getByRole("button", { name: "Open the getting started guide" }).click();
+  await page.getByRole("button", { name: "Getting started guide" }).click();
   await expect(guide).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(guide).toBeHidden();

@@ -39,6 +39,8 @@ Top bar: logo and name on the left; view links; a GitHub link; a quality selecto
 
 On narrow screens the metric cards collapse to a single swipeable row and the control groups move into a bottom sheet.
 
+The view and tool controls at the right of the dock (single view, cameras, aerial view, How it decides, Beat the AI, time-space, photo, tour, guide) are icon buttons in three groups. Hovering or keyboard-focusing one raises a card above it with the tool's name and one line on what it does; the name is also the button's accessible name. Between 621 and 799 px wide the dock scrolls sideways and the cards are not shown.
+
 ### L1. Split-screen twin simulation — P0
 
 - Two simulations run side by side from the **same seed and the same demand**, one per controller. Vehicles are spawned identically; only signal decisions differ.
@@ -171,7 +173,7 @@ For CHOWK, the panel also lists the three inputs that moved the learned correcti
 
 - Shown to first-time visitors once the scene is ready, as a card beside the scene. It never blocks the scene or the autoplay tour; a visitor who ignores it still sees the tour.
 - Six steps: what CHOWK is; one street under two controllers; reading the metric cards; events; junctions, overlays and ride-along; Results. Each step after the first rings the controls it describes.
-- "Skip" or `Esc` closes it at any step. Dismissal is remembered in local storage. A "?" button in the control dock reopens it.
+- "Skip" or `Esc` closes it at any step. Dismissal is remembered in local storage. A help (?) icon in the control dock reopens it.
 - Using the guide ends the tour, like any other interaction, and sets up the split view when a step needs it.
 - Automated browsers (`navigator.webdriver`) and capture mode do not get the guide. `?guide=on` forces it and `?guide=off` suppresses it.
 
