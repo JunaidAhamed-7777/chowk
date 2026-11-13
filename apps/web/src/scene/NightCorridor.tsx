@@ -27,6 +27,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { ActiveEvent } from "../sim/liveEvents";
 import type { SimHost } from "../sim/SimHost";
 import type { Mood } from "../sim/scenarioScene";
+import { ChallengeMarkers } from "./ChallengeMarkers";
 import { junctions } from "./corridorGeometry";
 import { EventMarkers, RoadPicker } from "./EventMarkers";
 import { blendMood, currentMood, moodTarget, snapMood } from "./moodLighting";
@@ -62,6 +63,10 @@ interface SceneProps {
   speed: PlaybackSpeed;
   mood: Mood;
   rain: boolean;
+  /** Written every frame: the camera's compass bearing, for panels that turn with the view. */
+  heading: RefObject<number>;
+  /** The junction a visitor is running in Beat the AI, if a round is on. */
+  challengeJunction: number | undefined;
 }
 
 const aerialPosition = [520, 214, 236] as const;
@@ -80,6 +85,7 @@ function CorridorCamera({
   vehicle,
   paused,
   speed,
+  heading,
 }: {
   selection: CameraSelection;
   reducedMotion: boolean;
@@ -87,6 +93,7 @@ function CorridorCamera({
   vehicle: VehicleFollow | undefined;
   paused: boolean;
   speed: PlaybackSpeed;
+  heading: RefObject<number>;
 }) {
   const { camera, gl } = useThree();
   const orbit = useRef<OrbitControls | null>(null);
@@ -152,6 +159,10 @@ function CorridorCamera({
   useFrame((_, delta) => {
     const controls = orbit.current;
     if (!controls) return;
+    // Bearing of the view clockwise from north (-z), so screen-up maps to this compass heading.
+    const lookX = controls.target.x - camera.position.x;
+    const lookZ = controls.target.z - camera.position.z;
+    if (lookX * lookX + lookZ * lookZ > 1e-4) heading.current = Math.atan2(lookX, -lookZ);
     const following = selection === "ride" || selection === "ambulance";
     const rate = reducedMotion ? 1 : 1 - Math.exp(-4.9 * delta);
     const perspective = camera instanceof PerspectiveCamera ? camera : null;
@@ -440,6 +451,8 @@ export function NightCorridor({
   speed,
   mood,
   rain,
+  heading,
+  challengeJunction,
 }: SceneProps) {
   const tier = qualityPresets[quality];
   return (
@@ -482,7 +495,11 @@ export function NightCorridor({
         vehicle={vehicle}
         paused={paused}
         speed={speed}
+        heading={heading}
       />
+      {challengeJunction !== undefined && (
+        <ChallengeMarkers host={host} junction={challengeJunction} />
+      )}
       <ContextRecovery onContext={onContext} />
       <QualityProbe automatic={automatic} ready={ready} quality={quality} onQuality={onQuality} />
       <PostProcessing quality={quality} />

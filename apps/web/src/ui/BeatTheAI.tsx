@@ -1,6 +1,6 @@
+import { DIRECTION_NAMES, layoutFor } from "@chowk/controllers/observation";
 import { corridor, DT, type Metrics } from "@chowk/sim";
-import { type RefObject, useEffect, useRef, useState } from "react";
-import { approachDirections } from "../sim/decisionMath";
+import { type CSSProperties, type RefObject, useEffect, useRef, useState } from "react";
 import type { SimHost } from "../sim/SimHost";
 import "./beatTheAI.css";
 
@@ -9,10 +9,23 @@ export const ROUND_SECONDS = 180;
 export type ChallengeStage = "off" | "intro" | "starting" | "playing" | "done";
 
 const junction = corridor.junctions[CHALLENGE_JUNCTION];
-const directions = approachDirections(corridor, CHALLENGE_JUNCTION);
-const phaseNames = junction.phases.map(
-  ({ approaches }) => directions[junction.approaches.indexOf(approaches[0])],
-);
+const layout = layoutFor(corridor, CHALLENGE_JUNCTION);
+// One arm per approach, clockwise from north; each arm is the phase that serves it.
+const arms = DIRECTION_NAMES.flatMap((name, direction) => {
+  const approach = layout.approaches[direction];
+  if (approach < 0) return [];
+  const road = corridor.links[junction.approaches[approach]];
+  return [
+    {
+      name,
+      direction,
+      phase: layout.phaseAtDirection[direction],
+      // Wider arms for roads with more strips, so the arterial reads as the main road.
+      width: Math.min(40, Math.max(18, road.strips * 3)),
+    },
+  ];
+});
+const boxSize = Math.max(...arms.map(({ width }) => width));
 const hours = new Intl.NumberFormat("en-IN", {
   minimumFractionDigits: 1,
   maximumFractionDigits: 1,
@@ -34,6 +47,7 @@ export function BeatTheAI({
   tick,
   metrics,
   rivalLabel,
+  heading,
   onStart,
   onStage,
   onExit,
@@ -44,6 +58,8 @@ export function BeatTheAI({
   tick: number | undefined;
   metrics: readonly [Metrics, Metrics] | undefined;
   rivalLabel: string;
+  /** The camera's compass bearing in radians; absent when the map is drawn north-up. */
+  heading: RefObject<number> | undefined;
   onStart: () => void;
   onStage: (stage: ChallengeStage) => void;
   onExit: () => void;
@@ -51,8 +67,35 @@ export function BeatTheAI({
   const round = useRef<Round | undefined>(undefined);
   const [requested, setRequested] = useState(-1);
   const signal = host.current?.streams[0].current?.signals;
-  const greenPhase =
-    signal?.[2 * CHALLENGE_JUNCTION + 1] === 0 ? signal[2 * CHALLENGE_JUNCTION] : -1;
+  const currentPhase = signal?.[2 * CHALLENGE_JUNCTION] ?? -1;
+  const signalState = signal?.[2 * CHALLENGE_JUNCTION + 1] ?? 2;
+  const lampOf = (phase: number) =>
+    phase !== currentPhase || signalState === 2 ? "red" : signalState === 0 ? "green" : "amber";
+  const dial = useRef<HTMLDivElement>(null);
+  const playing = stage === "starting" || stage === "playing";
+
+  // The dial turns so that its top is the way the camera faces. It follows the camera every
+  // animation frame without going through React, and only writes when the bearing moves.
+  useEffect(() => {
+    const element = dial.current;
+    if (!playing || !element) return;
+    if (!heading) {
+      element.style.setProperty("--turn", "0deg");
+      return;
+    }
+    let frame = 0;
+    let shown = Number.NaN;
+    const follow = () => {
+      const bearing = heading.current;
+      if (!(Math.abs(bearing - shown) < 0.003)) {
+        shown = bearing;
+        element.style.setProperty("--turn", `${((-bearing * 180) / Math.PI).toFixed(2)}deg`);
+      }
+      frame = requestAnimationFrame(follow);
+    };
+    follow();
+    return () => cancelAnimationFrame(frame);
+  }, [playing, heading]);
 
   useEffect(() => {
     if (stage !== "starting" || !ready || tick === undefined || !metrics) return;
@@ -121,22 +164,59 @@ export function BeatTheAI({
       {(stage === "starting" || stage === "playing") && (
         <>
           <fieldset className="challenge-phases" aria-label="Give green to">
-            {phaseNames.map((name, phase) => (
-              <button
-                key={name}
-                type="button"
-                className="challenge-phase"
-                data-green={greenPhase === phase}
-                aria-pressed={requested === phase}
-                disabled={stage !== "playing"}
-                onClick={() => {
-                  host.current?.setManual(0, CHALLENGE_JUNCTION, phase);
-                  setRequested(phase);
-                }}
-              >
-                <kbd>{phase + 1}</kbd> {name}
-              </button>
-            ))}
+            <div className="challenge-dial" ref={dial}>
+              <svg className="challenge-roads" viewBox="-100 -100 200 200" aria-hidden="true">
+                <g className="challenge-map">
+                  {arms.map(({ name, direction, phase, width }) => {
+                    const lamp = lampOf(phase);
+                    return (
+                      <g key={name} transform={`rotate(${direction * 90})`} data-lamp={lamp}>
+                        <rect x={-width / 2} y={-100} width={width} height={100} />
+                        <path className="challenge-centre" d={`M0 -96V${-boxSize / 2 - 4}`} />
+                        <path className="challenge-flow" d={`M${width / 4 - 3.5} -66h7l-3.5 6Z`} />
+                        <circle cx={width / 4} cy={-boxSize / 2 - 7} r="4.2" />
+                      </g>
+                    );
+                  })}
+                  <rect
+                    className="challenge-box"
+                    x={-boxSize / 2}
+                    y={-boxSize / 2}
+                    width={boxSize}
+                    height={boxSize}
+                    rx="3"
+                  />
+                </g>
+              </svg>
+              <span className="challenge-compass" aria-hidden="true">
+                <svg viewBox="-10 -10 20 20" aria-hidden="true">
+                  <path d="M0 -8 4 5 0 2.5-4 5Z" />
+                </svg>
+                N
+              </span>
+              {arms.map(({ name, direction, phase }) => (
+                <button
+                  key={name}
+                  type="button"
+                  className="challenge-arm"
+                  style={{ "--arm": `${direction * 90}deg` } as CSSProperties}
+                  data-lamp={lampOf(phase)}
+                  aria-pressed={requested === phase}
+                  aria-label={`${phase + 1}: ${name} approach`}
+                  disabled={stage !== "playing"}
+                  onClick={() => {
+                    host.current?.setManual(0, CHALLENGE_JUNCTION, phase);
+                    setRequested(phase);
+                  }}
+                >
+                  {phase + 1}
+                </button>
+              ))}
+            </div>
+            <p className="challenge-dial-note">
+              Up is the way the camera faces. The numbers match the markers over J
+              {CHALLENGE_JUNCTION + 1}; click one or press its key.
+            </p>
           </fieldset>
           <dl className="challenge-score">
             <div>

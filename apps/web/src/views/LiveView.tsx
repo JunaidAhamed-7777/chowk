@@ -134,6 +134,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
   const [wipe, setWipe] = useState(initial.tour ? 0 : 50);
   const [singleView, setSingleView] = useState(false);
   const cameraTipId = useId();
+  const cameraHeading = useRef(0);
   const [seed, setSeed] = useState(initial.seed);
   const [scenarioId, setScenarioId] = useState<LiveScenarioId>(initial.scenario);
   const [custom, setCustom] = useState(initial.custom);
@@ -601,6 +602,12 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
                 speed={speed}
                 mood={scene.mood}
                 rain={scene.rain}
+                heading={cameraHeading}
+                challengeJunction={
+                  challenge === "starting" || challenge === "playing"
+                    ? CHALLENGE_JUNCTION
+                    : undefined
+                }
               />
             </SceneBoundary>
           ) : (
@@ -747,6 +754,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               tick={frame?.tick}
               metrics={frame?.metrics}
               rivalLabel={rivalName}
+              heading={webglAvailable ? cameraHeading : undefined}
               onStart={startChallenge}
               onStage={onChallengeStage}
               onExit={() => {

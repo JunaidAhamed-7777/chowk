@@ -45,48 +45,134 @@
   justify-self: start;
 }
 .challenge-phases {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
   margin: 0;
   padding: 0;
   border: 0;
+}
+
+/* A junction map that turns with the camera. The roads rotate by --turn; the number buttons
+   orbit with them but stay upright. */
+.challenge-dial {
+  --turn: 0deg;
+  --reach: 80px;
+  position: relative;
+  width: 216px;
+  height: 216px;
+}
+.challenge-roads {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.challenge-map {
+  transform: rotate(var(--turn));
+}
+.challenge-map rect {
+  fill: #1a2230;
+}
+.challenge-map .challenge-box {
+  fill: #222c3c;
+}
+.challenge-centre {
+  fill: none;
+  stroke: #ffffff40;
+  stroke-width: 1.2;
+  stroke-dasharray: 5 5;
+}
+.challenge-flow {
+  fill: #ffffff47;
+}
+.challenge-map circle {
+  fill: #ff4d4d;
+}
+.challenge-map [data-lamp="green"] circle {
+  fill: #2be38b;
+  filter: drop-shadow(0 0 4px #2be38b);
+}
+.challenge-map [data-lamp="amber"] circle {
+  fill: #ffb347;
+}
+.challenge-map [data-lamp="green"] > rect {
+  fill: #18332b;
+}
+
+.challenge-arm {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-.challenge-phase {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px;
-  border: 1px solid #ffffff22;
-  border-radius: 10px;
-  background: #ffffff08;
-  color: inherit;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-.challenge-phase[aria-pressed="true"] {
-  border-color: #3df2b4aa;
-  background: #3df2b414;
-}
-.challenge-phase[data-green="true"]::after {
-  content: "";
-  width: 9px;
-  height: 9px;
-  margin-left: auto;
-  border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 10px #34d399;
-}
-.challenge-phase kbd {
-  display: inline-grid;
   place-items: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
-  background: #ffffff14;
-  font-family: var(--mono);
-  font-size: 11px;
+  width: 42px;
+  height: 42px;
+  margin: -21px 0 0 -21px;
+  padding: 0;
+  border: 2px solid #c9d6e4;
+  border-radius: 50%;
+  background: #05070de8;
+  color: #f4f7fb;
+  font: 700 18px / 1 var(--mono);
+  cursor: pointer;
+  transform: rotate(calc(var(--arm) + var(--turn))) translateY(calc(-1 * var(--reach)))
+    rotate(calc(-1 * (var(--arm) + var(--turn))));
+  transition:
+    background 150ms ease-out,
+    border-color 150ms ease-out,
+    box-shadow 150ms ease-out;
+}
+.challenge-arm:hover:enabled {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px #3df2b42e;
+}
+.challenge-arm[aria-pressed="true"] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px #3df2b440;
+}
+.challenge-arm[data-lamp="green"] {
+  border-color: #2be38b;
+  background: #2be38b;
+  color: #04120d;
+  box-shadow: 0 0 16px #2be38b8c;
+}
+.challenge-arm[data-lamp="amber"] {
+  border-color: #ffb347;
+  background: #ffb347;
+  color: #1d1203;
+}
+.challenge-arm:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+.challenge-compass {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 30px;
+  color: #c4cfdc;
+  font: 700 11px / 1 var(--mono);
+}
+.challenge-compass svg {
+  width: 22px;
+  height: 22px;
+  transform: rotate(var(--turn));
+}
+.challenge-compass path {
+  fill: currentColor;
+}
+.challenge-panel .challenge-dial-note {
+  color: #9fb0c3;
+  font-size: 11.5px;
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .challenge-arm {
+    transition: none;
+  }
 }
 .challenge-score {
   display: grid;

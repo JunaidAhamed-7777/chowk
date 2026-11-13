@@ -267,3 +267,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — After a rewind the metric sparklines keep the original timeline as dashed ghost lines (spec L17, issue #10).
 - 13 Nov 2026 — Recaptured the README stills, clips, poster and captioned demo for the current tour (issue #7). The follow cameras now ease in simulated time, so the ambulance camera stays behind the ambulance at 16×, and the ambulance camera no longer starts from the ride-along vehicle.
 - 13 Nov 2026 — The dock's view and tool buttons are icons with a hover card that names each tool and says what it does, so the dock reads less cluttered; it now scrolls sideways only below 800 px.
+- 13 Nov 2026 — Beat the AI replaces the North/East/South/West buttons with a J3 map that turns with the camera, plus numbered markers over each approach in the scene, so the keys match the roads from any angle (spec L16).
