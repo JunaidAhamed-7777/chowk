@@ -114,6 +114,7 @@ function readReducedMotion() {
 }
 
 const moodNames = { day: "Daytime", evening: "Evening", night: "Night" } as const;
+const lockedInRound = "Locked while a Beat the AI round is running";
 
 export default function LiveView({ active, quality, automatic, onQuality }: LiveViewProps) {
   const [initial] = useState(readSession);
@@ -191,6 +192,12 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
     inspection: inspecting,
     onReady: setReady,
     onRestart: () => {
+      // A restart (a quality drop to Low, a new scenario or seed) wipes the worker's manual
+      // control and the round's baseline, so a round in progress starts again on the new run.
+      if (challenge === "playing") {
+        setChallenge("starting");
+        setNotice("The simulations restarted, so your Beat the AI round starts again.");
+      }
       setReady(false);
       setFrame(undefined);
       setFailure("");
@@ -442,6 +449,8 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
 
   const rival = controllerChoices.find(({ controller }) => controller.id === "chowk");
   const rivalName = rival?.label ?? "CHOWK";
+  // While a round runs, both controllers and the clock belong to the game.
+  const roundLive = challenge === "starting" || challenge === "playing";
 
   function startChallenge() {
     const learned = rival?.controller;
@@ -667,6 +676,8 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
                     <select
                       aria-label="Left controller"
                       value={controllers[0].id}
+                      disabled={roundLive}
+                      title={roundLive ? lockedInRound : undefined}
                       onChange={(event) => selectController(0, event.target.value)}
                     >
                       {controllerChoices.map(({ controller, label }) => (
@@ -682,6 +693,8 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
                   <select
                     aria-label="Right controller"
                     value={controllers[1].id}
+                    disabled={roundLive}
+                    title={roundLive ? lockedInRound : undefined}
                     onChange={(event) => selectController(1, event.target.value)}
                   >
                     {controllerChoices.map(({ controller, label }) => (
@@ -701,7 +714,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
               )}
               <CheckpointControl
                 policy={controllers[1].policy}
-                disabled={disabled}
+                disabled={disabled || roundLive}
                 onPolicy={(policy) => {
                   endTour();
                   setControllers((previous) => [previous[0], { id: "chowk", policy }]);
@@ -850,13 +863,17 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
             <button
               className="control-button rewind-button"
               type="button"
-              disabled={disabled}
+              disabled={disabled || roundLive}
               onClick={() => {
                 endTour();
                 host.current?.rewind(60);
               }}
               aria-label="Rewind one minute"
-              title="Return both simulations to their state a minute ago; they replay exactly"
+              title={
+                roundLive
+                  ? lockedInRound
+                  : "Return both simulations to their state a minute ago; they replay exactly"
+              }
             >
               −1 min
             </button>

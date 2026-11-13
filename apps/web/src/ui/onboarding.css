@@ -102,7 +102,9 @@
   font-weight: 640;
 }
 .guide-next:hover:enabled {
+  border-color: #6ff6c8;
   background: #6ff6c8;
+  color: #04120d;
 }
 
 /* The control a step talks about gets a pulsing ring. */

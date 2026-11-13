@@ -475,7 +475,9 @@
   font-weight: 650;
 }
 .briefing-next:hover:enabled {
+  border-color: #6ff6c8;
   background: #6ff6c8;
+  color: #04120d;
 }
 .briefing-hint {
   margin: 8px 0 0;
