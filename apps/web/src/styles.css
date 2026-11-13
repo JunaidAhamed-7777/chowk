@@ -2,6 +2,8 @@
 @import "tailwindcss";
 
 :root {
+  /* The sticky header's height; anything else that sticks sits below it. */
+  --header-height: 66px;
   font-family: "Inter Variable", Inter, "Segoe UI", sans-serif;
   color: #e8edf5;
   color-scheme: dark;
@@ -105,7 +107,7 @@ button:disabled {
   background: #090d15;
 }
 html {
-  scroll-padding-top: 84px;
+  scroll-padding-top: calc(var(--header-height) + 18px);
 }
 .topbar-inner {
   display: grid;

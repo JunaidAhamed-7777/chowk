@@ -20,7 +20,7 @@
 }
 .controllers-index {
   position: sticky;
-  top: 24px;
+  top: calc(var(--header-height) + 24px);
   z-index: 2;
   margin-top: 20px;
 }
