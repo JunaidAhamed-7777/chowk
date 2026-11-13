@@ -586,15 +586,6 @@ function TrainingScale() {
           <span>training episodes</span>
           <em>each a {episodeMinutes}-minute simulation of the corridor</em>
         </div>
-        <div>
-          <ScaleNumber
-            run={run}
-            value={totals.wallSeconds / 60}
-            format={(value) => `${whole.format(Math.round(value))} min`}
-          />
-          <span>of computing</span>
-          <em>the simulator runs far faster than real time, with episodes in parallel</em>
-        </div>
       </div>
       <p className="training-scale-note">
         Across {totals.generations} generations, plus {whole.format(totals.validationEpisodes)}{" "}
