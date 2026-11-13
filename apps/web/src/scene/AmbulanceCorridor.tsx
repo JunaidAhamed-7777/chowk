@@ -11,26 +11,26 @@ const ARTERIAL_HALF_WIDTH = 12;
 const RIBBON_WIDTH = 3.2;
 
 /**
- * Chevrons streaming along the road ahead of an ambulance on the arterial, so a viewer can
- * follow the route it needs cleared. Drawn per side and clipped to that side of the wipe.
+ * Faint, static chevrons painted on the road ahead of an ambulance on the arterial, so a viewer
+ * can follow the route it needs cleared. The pattern is anchored to the road rather than the
+ * vehicle, so the marks stay put as the ambulance drives over them. Drawn per side and clipped
+ * to that side of the wipe.
  */
 export function AmbulanceCorridor({
   host,
   visible,
   clip,
-  reducedMotion,
 }: {
   host: RefObject<SnapshotStream | null>;
   visible: boolean;
   clip: WipeClip;
-  reducedMotion: boolean;
 }) {
   const mesh = useRef<Mesh>(null);
   const material = useMemo(
     () =>
       clipMaterial(
         new ShaderMaterial({
-          uniforms: { time: { value: 0 }, length: { value: 1 } },
+          uniforms: { origin: { value: 0 }, length: { value: 1 } },
           transparent: true,
           depthWrite: false,
           blending: AdditiveBlending,
@@ -42,16 +42,16 @@ export function AmbulanceCorridor({
         }`,
           fragmentShader: `
         varying vec2 ribbonUV;
-        uniform float time;
+        uniform float origin;
         uniform float length;
         void main() {
           float along = ribbonUV.x * length;
           float across = abs(ribbonUV.y - .5) * 2.;
-          float chevron = fract((along - across * 2.2) / 7. - time * 1.4);
-          float mark = smoothstep(.0, .12, chevron) * (1. - smoothstep(.32, .44, chevron));
-          float fade = (1. - smoothstep(0., 1., ribbonUV.x)) * smoothstep(0., .02, ribbonUV.x);
-          float edge = 1. - smoothstep(.75, 1., across);
-          gl_FragColor = vec4(vec3(.2, .95, .62) * (mark * .9 + .12), (mark * .75 + .1) * fade * edge);
+          float chevron = fract((origin + along - across * 1.8) / 10.);
+          float mark = smoothstep(.0, .04, chevron) * (1. - smoothstep(.1, .14, chevron));
+          float fade = (1. - smoothstep(.3, 1., ribbonUV.x)) * smoothstep(0., 6., along);
+          float edge = 1. - smoothstep(.7, .95, across);
+          gl_FragColor = vec4(vec3(.35, .85, .62) * mark, mark * .32 * fade * edge);
         }`,
         }),
         clip,
@@ -60,7 +60,7 @@ export function AmbulanceCorridor({
   );
   useEffect(() => () => material.dispose(), [material]);
 
-  useFrame((_, delta) => {
+  useFrame(() => {
     const target = mesh.current;
     if (!target) return;
     const snapshot = host.current?.current;
@@ -80,7 +80,7 @@ export function AmbulanceCorridor({
       target.rotation.set(-Math.PI / 2, 0, dx > 0 ? 0 : Math.PI);
       target.scale.set(length, RIBBON_WIDTH, 1);
       material.uniforms.length.value = length;
-      if (!reducedMotion) material.uniforms.time.value += delta;
+      material.uniforms.origin.value = dx > 0 ? x : -x;
       target.visible = true;
       return;
     }

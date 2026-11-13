@@ -19,7 +19,6 @@ export function SimulationTraffic({
   singleView,
   overlay,
   aerial,
-  reducedMotion = false,
 }: {
   host: RefObject<SimHost | null>;
   paused: boolean;
@@ -29,7 +28,6 @@ export function SimulationTraffic({
   singleView: boolean;
   overlay: OverlayMode;
   aerial: boolean;
-  reducedMotion?: boolean;
 }) {
   const left = useRef<SnapshotStream>(null);
   const right = useRef<SnapshotStream>(null);
@@ -101,13 +99,11 @@ export function SimulationTraffic({
         host={left}
         visible={!singleView && wipe > 0}
         clip={clips[0]}
-        reducedMotion={reducedMotion}
       />
       <AmbulanceCorridor
         host={right}
         visible={singleView || wipe < 100}
         clip={clips[1]}
-        reducedMotion={reducedMotion}
       />
       <MotionTrails
         host={left}
