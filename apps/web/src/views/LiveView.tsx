@@ -61,6 +61,7 @@ import { guideSteps, Onboarding, rememberGuideSeen, shouldOpenGuide } from "../u
 import { TimeSpacePanel } from "../ui/TimeSpacePanel";
 import "../ui/advancedLive.css";
 import "../ui/liveLayout.css";
+import "../ui/readoutRail.css";
 
 const stations = corridor.junctions.map(({ id }) => ({ id, name: `J${id + 1}` }));
 const formatCount = new Intl.NumberFormat("en-IN");

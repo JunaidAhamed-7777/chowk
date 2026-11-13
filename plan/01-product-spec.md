@@ -24,20 +24,22 @@ Top bar: logo and name on the left; view links; a GitHub link; a quality selecto
 +--------------------------------------------------------------+
 | CHOWK   Live  Results  Method  Limits        GitHub  ⚙   |
 +--------------------------------------------------------------+
-|                                                              |
-|   [ left controller label ]      |     [ right controller ]  |
+| Scenario title    [ left controller ] | [ right controller ]   |
 |                                  |                           |
-|                3D SCENE  (full bleed, wipe handle at centre)  |
-|                                  |                           |
-|  +----------- metric cards (left vs right) -----------+       |
-|  | Delay/person | Stops | Throughput | CO2 | Ambulance |      |
-|  +----------------------------------------------------+       |
+| +-------------+                  |                           |
+| | People-hours|   3D SCENE  (full bleed, wipe handle at centre) |
+| | Delay       |                  |                           |
+| | Stops       |                  |                           |
+| | Throughput  |                  |                           |
+| | CO2         |                  |                           |
+| | Ambulance   |                  |                           |
+| +-------------+                  |                           |
 | [Scenario ▾] [Events: Surge | Block lane | Ambulance | ...]   |
-| [⏸ 1x 4x 16x]  [Overlay ▾]  [Camera ▾]  [Seed 1042 ⟳] [Tour] |
+| [⏸ 1x 4x 16x]  [J1 … J5]  [view and tool icons]              |
 +--------------------------------------------------------------+
 ```
 
-On narrow screens the metric cards collapse to a single swipeable row and the control groups move into a bottom sheet.
+From 900 px wide the metric cards stand as a column on the left, between the title block and the dock, so the bottom of the scene holds only the dock. Their formula cards open beside the column, the getting-started guide sits on the right so it never covers them, and the panels on the right run down to the dock. On screens shorter than 820 px each card drops its sparkline and moves its change up beside its label; below 760 px the scenario line under the title is hidden to make room. Below 900 px the cards stay as a row along the bottom, and on phones that row scrolls sideways.
 
 The view and tool controls at the right of the dock (single view, cameras, aerial view, How it decides, Beat the AI, time-space, photo, tour, guide) are icon buttons in three groups. Hovering or keyboard-focusing one raises a card above it with the tool's name and one line on what it does; the name is also the button's accessible name. Between 621 and 799 px wide the dock scrolls sideways and the cards are not shown.
 
@@ -149,7 +151,7 @@ Each event produces a toast, a marker in the 3D scene, and a tick on the metric 
 | 7 | 58–68 | Aerial | Wipe at centre; pressure overlay; surge event; 4× | "A surge triples demand on one approach for three simulated minutes." |
 | 8 | 68–75 | Aerial | Wipe at centre; 1× | "Compare person-delay, then reproduce the benchmark in Results." |
 
-- The camera cranes slowly from the street view to the aerial view at beat 3. During the tour the control dock is hidden and the readout shows three cards, with a "Click anywhere or press a key to take control" hint under the caption.
+- The camera cranes slowly from the street view to the aerial view at beat 3. During the tour the control dock is hidden and the readout shows three cards (in the left column on wide screens), with a "Click anywhere or press a key to take control" hint under the caption.
 - The tour is data, not code: a JSON timeline of camera keyframes, events, overlay switches and captions, so it can be tuned without touching logic.
 
 ### L10. "Watch it learn" — P1

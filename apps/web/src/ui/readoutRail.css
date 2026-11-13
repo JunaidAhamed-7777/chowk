@@ -1,0 +1,145 @@
+/*
+ * On wide screens the live readout leaves the bottom of the scene and stands as a column on the
+ * left, between the title block and the control dock, so the bottom holds only the dock. Phones
+ * and narrow tablets keep the swipeable row along the bottom. Loaded after liveLayout.css.
+ */
+@media (min-width: 900px) {
+  .live-view {
+    --rail-width: clamp(246px, 18vw, 266px);
+  }
+  .comparison-hud {
+    bottom: var(--hud-bottom);
+    left: var(--gutter);
+    width: var(--rail-width);
+    gap: 6px;
+    translate: none;
+  }
+  .comparison-headline {
+    justify-self: stretch;
+    justify-content: space-between;
+  }
+  .comparison-metrics,
+  .instrument[data-tour="true"] .comparison-hud .comparison-metrics {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    width: auto;
+    justify-self: stretch;
+  }
+  .instrument[data-tour="true"] .comparison-hud .comparison-headline {
+    justify-self: stretch;
+  }
+  .comparison-metric {
+    padding: 8px 11px 7px;
+  }
+  .comparison-metric-values {
+    gap: 9px;
+    font-size: 20px;
+  }
+
+  /* Formula cards open beside the column instead of over the scene above it. */
+  .comparison-hud .comparison-metric .metric-calculation,
+  .comparison-hud .comparison-headline .metric-calculation {
+    top: -1px;
+    right: auto;
+    bottom: auto;
+    left: calc(100% + 10px);
+  }
+  .comparison-hud .comparison-metric:nth-child(n + 4) .metric-calculation {
+    top: auto;
+    bottom: -1px;
+  }
+
+  /* Panels on the right and notices no longer need to clear a readout row. */
+  .decision-panel,
+  .time-space-panel {
+    bottom: calc(var(--hud-bottom) + 12px);
+  }
+  .live-notice,
+  .share-notice {
+    bottom: calc(var(--hud-bottom) + 12px);
+  }
+  .tour-caption {
+    bottom: calc(var(--hud-bottom) + 14px);
+  }
+
+  /* The guide moves to the right so it never covers the readout it describes. */
+  .guide {
+    top: 136px;
+    right: var(--gutter);
+    left: auto;
+  }
+}
+
+/* During the tour the dock steps aside, but the footer stays: keep the column above it. */
+@media (min-width: 900px) {
+  .live-view:has(.instrument[data-tour="true"]) {
+    --hud-bottom: 44px;
+  }
+}
+
+/* Short laptop screens, and the tour (which hides sparklines): each change moves up beside its
+   label so a card is two lines. */
+@media (min-width: 900px) {
+  .instrument[data-tour="true"] .comparison-hud .comparison-metric {
+    display: grid;
+    grid-template-areas:
+      "label trend"
+      "values values";
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 8px;
+  }
+  .instrument[data-tour="true"] .comparison-hud .comparison-metric-label {
+    grid-area: label;
+  }
+  .instrument[data-tour="true"] .comparison-hud .comparison-metric-values {
+    grid-area: values;
+  }
+  .instrument[data-tour="true"] .comparison-hud .comparison-metric-trend {
+    grid-area: trend;
+    min-height: 0;
+  }
+  .instrument[data-tour="true"] .comparison-hud .comparison-metric:nth-child(n + 4) {
+    display: none;
+  }
+}
+@media (min-width: 900px) and (max-height: 820px) {
+  .comparison-hud,
+  .comparison-metrics {
+    gap: 5px;
+  }
+  .comparison-metric {
+    display: grid;
+    grid-template-areas:
+      "label trend"
+      "values values";
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 8px;
+    padding: 6px 10px;
+  }
+  .comparison-metric-label {
+    grid-area: label;
+    justify-content: flex-start;
+  }
+  .comparison-metric-values {
+    grid-area: values;
+    margin: 3px 0 0;
+    font-size: 18px;
+  }
+  .comparison-metric-trend {
+    grid-area: trend;
+    min-height: 0;
+    margin: 0;
+  }
+  .comparison-hud .metric-series {
+    display: none;
+  }
+}
+
+/* Very short screens: the scenario line gives way to the column; the title stays. */
+@media (min-width: 900px) and (max-height: 760px) {
+  .live-intro .live-deck {
+    display: none;
+  }
+}
