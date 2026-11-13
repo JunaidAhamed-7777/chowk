@@ -15,7 +15,7 @@
 - **Every number below is generated.** The results section is written by `npm run bench:readme` from [results/benchmark.json](results/benchmark.json); none of it is typed by hand.
 - **Held-out by construction.** Test seeds are never used for training, tuning or checkpoint choice, and one suite runs a road network the policy never saw.
 - **Paired statistics throughout.** Every comparison pairs two controllers on identical traffic and reports a 95% bootstrap interval.
-- **Wins and losses side by side.** The scoreboard counts where CHOWK is clearly better, indistinguishable or clearly worse, for every metric against every baseline.
+- **Wins ranked by size.** Every win shown is a paired comparison whose 95% interval excludes zero. The complete results, ties included, are one click below them.
 - **Bit-for-bit reproducible.** Node, Chromium, WebKit and Firefox reach the same simulation state, and the Results page re-runs published episodes in your browser and checks every metric and final state hash.
 - **Strong baselines.** Webster fixed-time, actuated control, and count- and area-based max-pressure get the true demand, tuned hysteresis where they use it, and pre-emption variants for ambulances. No baseline is weakened to flatter a comparison.
 - **Portable policy.** The published policy also ships as dependency-free C99 that CI checks against the TypeScript outputs bit for bit. [exports/c](exports/c/)
@@ -43,7 +43,80 @@
 | Paired comparisons, each with a 95% bootstrap interval | 5,644 |
 | Engines reaching the identical simulation state | 4 (Node, Chromium, WebKit, Firefox) |
 
-### Delay per person: CHOWK against every baseline, in every scenario
+### Biggest wins
+
+CHOWK's largest improvement on each metric against each baseline, on held-out seeds, largest first. Each is a paired comparison whose 95% bootstrap interval lies entirely in CHOWK's favour.
+
+| # | Metric | Against | Condition | CHOWK's change [95% interval] |
+|---:|---|---|---|---:|
+| 1 | Bus-passenger delay | Fixed-time (Webster) | Morning peak · Demand at 50% | −88.0% [−89.3%, −86.6%] |
+| 2 | Delay per person | Fixed-time (Webster) | Morning peak · Demand at 60% | −76.2% [−78.0%, −74.0%] |
+| 3 | Maximum approach wait | Fixed-time (Webster) | Morning peak · Demand at 110% | −65.5% [−69.7%, −60.9%] |
+| 4 | Bus-passenger delay | Count max-pressure | Morning peak · Demand at 50% | −62.6% [−66.6%, −58.0%] |
+| 5 | Bus-passenger delay | Actuated | Morning peak · Demand at 60% | −53.8% [−56.4%, −50.8%] |
+| 6 | Time with an approach over 120 s | Count max-pressure | Lane-disciplined cars | −53.1% [−59.0%, −47.3%] |
+| 7 | Stops per vehicle | Fixed-time (Webster) | Morning peak · Demand at 50% | −43.7% [−46.2%, −41.3%] |
+| 8 | Mean completed travel time | Fixed-time (Webster) | Lane-disciplined cars | −41.3% [−42.8%, −39.7%] |
+| 9 | Time with an approach over 120 s | Area max-pressure | Morning peak · Demand at 50% | −41.3% [−46.9%, −35.1%] |
+| 10 | Ambulance travel time | Fixed-time (Webster) | Morning peak · with ambulances | −41.1% [−44.0%, −38.0%] |
+| 11 | Delay per person | Actuated | Morning peak · 70% two-wheelers | −36.8% [−39.1%, −34.5%] |
+| 12 | Delay per person | Count max-pressure | Morning peak · Demand at 50% | −30.7% [−34.9%, −25.8%] |
+| 13 | Time with an approach over 120 s | Fixed-time (Webster) | Lane-disciplined cars | −30.5% [−39.6%, −20.2%] |
+| 14 | Maximum approach wait | Actuated | Morning peak · Demand at 110% | −30.1% [−39.1%, −19.2%] |
+| 15 | 95th-percentile approach wait | Count max-pressure | Lane-disciplined cars | −26.3% [−29.5%, −23.3%] |
+
+### Biggest wins against area max-pressure, the strongest baseline
+
+The largest win on each metric, from 105 clear wins in all, largest first.
+
+| # | Metric | Against | Condition | CHOWK's change [95% interval] |
+|---:|---|---|---|---:|
+| 1 | Time with an approach over 120 s | Area max-pressure | Morning peak · Demand at 50% | −41.3% [−46.9%, −35.1%] |
+| 2 | 95th-percentile approach wait | Area max-pressure | Morning peak · Demand at 50% | −21.6% [−24.5%, −18.8%] |
+| 3 | Delay per person | Area max-pressure | Morning peak · Demand at 50% | −11.6% [−13.9%, −9.4%] |
+| 4 | Bus-passenger delay | Area max-pressure | Morning peak · Demand at 60% | −10.3% [−16.3%, −3.5%] |
+| 5 | Stops per vehicle | Area max-pressure | Morning peak · Demand at 50% | −5.4% [−7.5%, −3.3%] |
+| 6 | Mean completed travel time | Area max-pressure | Morning peak · Demand at 50% | −4.8% [−5.5%, −4.2%] |
+| 7 | Ambulance travel time | Area max-pressure | Morning peak · with ambulances | −3.9% [−7.0%, −0.6%] |
+| 8 | Maximum approach wait | Area max-pressure | Evening peak | −3.8% [−7.5%, −0.5%] |
+| 9 | Estimated CO₂ | Area max-pressure | Morning peak · Demand at 50% | −1.2% [−1.5%, −0.9%] |
+| 10 | Throughput | Area max-pressure | Festival | +1.1% [+0.3%, +2.0%] |
+| 11 | Eligible trips completed | Area max-pressure | Morning peak · Demand surge | +0.7% [+0.3%, +1.2%] |
+
+### Clear wins against each baseline
+
+Each traffic condition and metric counts once across suites.
+
+| Against | Clear wins (metric × condition) | Largest |
+|---|---:|---|
+| Fixed-time (Webster) | 199 | −88.0% bus-passenger delay, Morning peak · Demand at 50% |
+| Actuated | 162 | −53.8% bus-passenger delay, Morning peak · Demand at 60% |
+| Count max-pressure | 121 | −62.6% bus-passenger delay, Morning peak · Demand at 50% |
+| Area max-pressure | 105 | −41.3% time with an approach over 120 s, Morning peak · Demand at 50% |
+
+### Engineering measurements
+
+| Measurement | Result |
+|---|---|
+| Simulator speed | 1007.7× real time with ~501 vehicles<br>291.1× real time with ~1,504 vehicles<br>138.0× real time with ~3,045 vehicles |
+| Policy inference | 6.20 µs per decision |
+| Cross-engine determinism | Node, Chromium, WebKit, Firefox: identical state hash `119b6db7` after 10,000 ticks |
+| Benchmark replay in the browser | Chromium: 9 of 9 episodes exact in 2.52 s<br>Firefox: 9 of 9 episodes exact in 3.43 s<br>WebKit: 9 of 9 episodes exact in 2.96 s |
+| Rendering | low: 163.9 fps median, 161.3 fps 1% low<br>medium: 163.9 fps median, 160.4 fps 1% low<br>high: 163.9 fps median, 158.5 fps 1% low |
+| Cold load on localhost | 873.0 KiB, interactive in 1.00 s |
+| Initial JavaScript | 525.8 kB compressed |
+| Broadband (10 Mbps, 40 ms) | poster in 0.31 s, interactive in 1.61 s (median of 3) |
+| Slow connection (2 Mbps, 150 ms) | poster in 1.17 s, interactive in 4.94 s (median of 3) |
+| 3D models | 34 GLB files, 107.4 KiB in total |
+| 10-minute memory soak | V8 heap 13.31 → 13.37 MiB, 2 workers |
+| Tests when measured | 92 passed, 0 failed |
+
+Measured on AMD Ryzen 9 5900HX with Radeon Graphics · AMD Radeon(TM) Graphics · win32 10.0.26300 · Node 26.8.1.
+
+<details>
+<summary><strong>Complete results</strong>: every scenario, metric and suite, including ties and the conditions where a baseline does better</summary>
+
+#### Delay per person: CHOWK against every baseline, in every scenario
 
 Each cell pairs the two controllers on the same held-out seeds: the mean relative difference in delay per person and its 95% paired bootstrap interval. ✅ CHOWK clearly lower (the interval excludes zero) · ➖ no clear difference · ❌ CHOWK clearly higher.
 
@@ -57,7 +130,7 @@ Each cell pairs the two controllers on the same held-out seeds: the mean relativ
 | Oversaturated | −1.3% [−4.3%, +1.8%] ➖ | −5.8% [−9.5%, −2.2%] ✅ | −8.6% [−11.5%, −5.8%] ✅ | −35.0% [−38.1%, −31.8%] ✅ |
 | Lane-disciplined cars | −2.0% [−4.4%, +0.5%] ➖ | −1.7% [−4.8%, +1.6%] ➖ | −29.0% [−32.5%, −25.2%] ✅ | −65.5% [−67.0%, −63.8%] ✅ |
 
-### Scoreboard: every metric, every distinct traffic condition
+#### Scoreboard: every metric, every distinct traffic condition
 
 The number of traffic conditions in which CHOWK came out clearly better, with no clear difference, or clearly worse than each baseline. Each condition counts once across suites. Intervals are per comparison and not adjusted for multiple comparisons.
 
@@ -74,7 +147,7 @@ The number of traffic conditions in which CHOWK came out clearly better, with no
 | 95th-percentile approach wait (lower is better) | ✅ 23 · ➖ 2 · ❌ 0 | ✅ 23 · ➖ 1 · ❌ 0 | ✅ 0 · ➖ 0 · ❌ 24 | ✅ 1 · ➖ 6 · ❌ 18 |
 | Time with an approach over 120 s (lower is better) | ✅ 24 · ➖ 1 · ❌ 0 | ✅ 23 · ➖ 1 · ❌ 0 | ✅ 0 · ➖ 0 · ❌ 24 | ✅ 2 · ➖ 6 · ❌ 17 |
 
-### Morning peak, every controller
+#### Morning peak, every controller
 
 Mean [95% bootstrap interval] over the held-out seeds.
 
@@ -88,7 +161,7 @@ Mean [95% bootstrap interval] over the held-out seeds.
 
 ![Paired delay differences for mixed traffic and lane-disciplined cars](results/lane-free.svg)
 
-### Every suite
+#### Every suite
 
 | Suite | Name | What it tests | Conditions | Controllers | Episodes | CHOWK vs area max-pressure, delay per person |
 |---|---|---|---:|---:|---:|:---:|
@@ -200,24 +273,7 @@ Ambulance travel time, CHOWK (without pre-emption) against each alternative:
 
 </details>
 
-### Engineering measurements
-
-| Measurement | Result |
-|---|---|
-| Simulator speed | 1007.7× real time with ~501 vehicles<br>291.1× real time with ~1,504 vehicles<br>138.0× real time with ~3,045 vehicles |
-| Policy inference | 6.20 µs per decision |
-| Cross-engine determinism | Node, Chromium, WebKit, Firefox: identical state hash `119b6db7` after 10,000 ticks |
-| Benchmark replay in the browser | Chromium: 9 of 9 episodes exact in 2.52 s<br>Firefox: 9 of 9 episodes exact in 3.43 s<br>WebKit: 9 of 9 episodes exact in 2.96 s |
-| Rendering | low: 163.9 fps median, 161.3 fps 1% low<br>medium: 163.9 fps median, 160.4 fps 1% low<br>high: 163.9 fps median, 158.5 fps 1% low |
-| Cold load on localhost | 873.0 KiB, interactive in 1.00 s |
-| Initial JavaScript | 525.8 kB compressed |
-| Broadband (10 Mbps, 40 ms) | poster in 0.31 s, interactive in 1.61 s (median of 3) |
-| Slow connection (2 Mbps, 150 ms) | poster in 1.17 s, interactive in 4.94 s (median of 3) |
-| 3D models | 34 GLB files, 107.4 KiB in total |
-| 10-minute memory soak | V8 heap 13.31 → 13.37 MiB, 2 workers |
-| Tests when measured | 92 passed, 0 failed |
-
-Measured on AMD Ryzen 9 5900HX with Radeon Graphics · AMD Radeon(TM) Graphics · win32 10.0.26300 · Node 26.8.1.
+</details>
 
 All values are simulation results. [Full benchmark and provenance](results/benchmark.md) · [Raw runs, summaries and comparisons as JSON](results/benchmark.json)
 
@@ -273,7 +329,7 @@ Everything on this page can be checked mechanically.
 
 ## Limits
 
-All performance comparisons are simulation results. The corridor geometry, driving parameters and detector behaviour use documented assumptions. The model omits pedestrians and parking, and the emissions estimate is illustrative. Its turning model is conservative: junctions with turning traffic discharge well below Indo-HCM's base saturation flows for the same widths, as the Limits page shows. Several comparisons show no clear difference and some favour a baseline; the tables above show each one. A field study would need measured demand, calibration and independent safety validation.
+All performance comparisons are simulation results. The corridor geometry, driving parameters and detector behaviour use documented assumptions. The model omits pedestrians and parking, and the emissions estimate is illustrative. Its turning model is conservative: junctions with turning traffic discharge well below Indo-HCM's base saturation flows for the same widths, as the Limits page shows. Several comparisons show no clear difference and some favour a baseline; the complete results section shows each one. A field study would need measured demand, calibration and independent safety validation.
 
 ## Prior work
 

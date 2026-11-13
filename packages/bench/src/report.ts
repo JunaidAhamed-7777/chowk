@@ -530,6 +530,74 @@ function suiteDetails(benchmark: BenchmarkFile): string[] {
   return sections;
 }
 
+const winMetrics = [...scoreboardMetrics, "ambulanceTravelTime"];
+
+function conditionLabel(row: PairedComparison): string {
+  const parts = [scenarioLabel(row.scenario)];
+  if (row.variant && row.variant !== "clean") parts.push(variantLabel(row.variant));
+  if (row.suite === "B6") parts.push("with ambulances");
+  return parts.join(" · ");
+}
+
+/** How much better CHOWK did, as a positive fraction, whichever way the metric improves. */
+function improvement(row: PairedComparison): number {
+  return higherIsBetter.has(row.metric) ? row.relDiff : -row.relDiff;
+}
+
+/** CHOWK's clear wins over the baselines, one per condition and metric, largest first. */
+function clearWins(
+  benchmark: BenchmarkFile,
+  opponents: readonly string[] = baselines,
+): PairedComparison[] {
+  return distinctComparisons(
+    benchmark.comparisons.filter(
+      (row) => row.a === "chowk" && opponents.includes(row.b) && winMetrics.includes(row.metric),
+    ),
+  )
+    .filter((row) => outcome(row) === "better")
+    .sort((a, b) => improvement(b) - improvement(a));
+}
+
+/** The largest win for each opponent and metric, keeping the ranking by size. */
+function bestPerPair(wins: readonly PairedComparison[]): PairedComparison[] {
+  const seen = new Set<string>();
+  return wins.filter((row) => {
+    const key = `${row.b}|${row.metric}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function winsTable(rows: readonly PairedComparison[], limit: number): string {
+  return [
+    "| # | Metric | Against | Condition | CHOWK's change [95% interval] |",
+    "|---:|---|---|---|---:|",
+    ...rows
+      .slice(0, limit)
+      .map(
+        (row, index) =>
+          `| ${index + 1} | ${metricLabels[row.metric]?.label ?? row.metric} | ${controllerLabel(row.b)} | ${conditionLabel(row)} | ${signedPercent(row.relDiff)} [${signedPercent(row.ciLow)}, ${signedPercent(row.ciHigh)}] |`,
+      ),
+  ].join("\n");
+}
+
+function winCounts(wins: readonly PairedComparison[]): string | undefined {
+  const rows = baselines
+    .map((id) => ({ id, wins: wins.filter((row) => row.b === id) }))
+    .filter(({ wins }) => wins.length > 0)
+    .sort((a, b) => b.wins.length - a.wins.length);
+  if (rows.length === 0) return undefined;
+  return [
+    "| Against | Clear wins (metric × condition) | Largest |",
+    "|---|---:|---|",
+    ...rows.map(
+      ({ id, wins }) =>
+        `| ${controllerLabel(id)} | ${count.format(wins.length)} | ${signedPercent(wins[0].relDiff)} ${(metricLabels[wins[0].metric]?.label ?? wins[0].metric).toLowerCase()}, ${conditionLabel(wins[0])} |`,
+    ),
+  ].join("\n");
+}
+
 function engineeringTable(report?: EngineeringReport): string | undefined {
   if (!report) return undefined;
   const rows: [string, string][] = [];
@@ -670,34 +738,61 @@ export function writeReports(root: string, benchmark: BenchmarkFile): void {
   const results = [startMarker, "## Benchmark results", `> **${benchmark.headline}**`];
   const scale = glance(benchmark);
   if (scale) results.push(scale);
+  const wins = clearWins(benchmark);
+  if (wins.length > 0)
+    results.push(
+      "### Biggest wins",
+      "CHOWK's largest improvement on each metric against each baseline, on held-out seeds, largest first. Each is a paired comparison whose 95% bootstrap interval lies entirely in CHOWK's favour.",
+      winsTable(bestPerPair(wins), 15),
+    );
+  const areaWins = clearWins(benchmark, ["mp-area"]);
+  if (areaWins.length > 0)
+    results.push(
+      `### Biggest wins against ${controllerLabel("mp-area").toLowerCase()}, the strongest baseline`,
+      `The largest win on each metric, from ${count.format(areaWins.length)} clear wins in all, largest first.`,
+      winsTable(bestPerPair(areaWins), 12),
+    );
+  const counts = winCounts(wins);
+  if (counts)
+    results.push(
+      "### Clear wins against each baseline",
+      "Each traffic condition and metric counts once across suites.",
+      counts,
+    );
+  const measured = engineeringTable(benchmark.engineering);
+  if (measured) results.push("### Engineering measurements", measured);
+
+  const complete: string[] = [];
   const matrix = scenarioMatrix(benchmark);
   if (matrix)
-    results.push(
-      "### Delay per person: CHOWK against every baseline, in every scenario",
+    complete.push(
+      "#### Delay per person: CHOWK against every baseline, in every scenario",
       "Each cell pairs the two controllers on the same held-out seeds: the mean relative difference in delay per person and its 95% paired bootstrap interval. ✅ CHOWK clearly lower (the interval excludes zero) · ➖ no clear difference · ❌ CHOWK clearly higher.",
       matrix,
     );
   const board = scoreboard(benchmark);
   if (board)
-    results.push(
-      "### Scoreboard: every metric, every distinct traffic condition",
+    complete.push(
+      "#### Scoreboard: every metric, every distinct traffic condition",
       "The number of traffic conditions in which CHOWK came out clearly better, with no clear difference, or clearly worse than each baseline. Each condition counts once across suites. Intervals are per comparison and not adjusted for multiple comparisons.",
       board,
     );
   if (mainRows.length > 0)
-    results.push(
-      `### ${scenarioLabel(primaryScenario)}, every controller`,
+    complete.push(
+      `#### ${scenarioLabel(primaryScenario)}, every controller`,
       "Mean [95% bootstrap interval] over the held-out seeds.",
       measurementTable(mainRows, mainMetricKeys),
     );
   if (chart)
-    results.push(
+    complete.push(
       "![Paired delay differences for mixed traffic and lane-disciplined cars](results/lane-free.svg)",
     );
   const index = suiteIndex(benchmark);
-  if (index) results.push("### Every suite", index, ...suiteDetails(benchmark));
-  const measured = engineeringTable(benchmark.engineering);
-  if (measured) results.push("### Engineering measurements", measured);
+  if (index) complete.push("#### Every suite", index, ...suiteDetails(benchmark));
+  if (complete.length > 0)
+    results.push(
+      `<details>\n<summary><strong>Complete results</strong>: every scenario, metric and suite, including ties and the conditions where a baseline does better</summary>\n\n${complete.join("\n\n")}\n\n</details>`,
+    );
   results.push(
     "All values are simulation results. [Full benchmark and provenance](results/benchmark.md) · [Raw runs, summaries and comparisons as JSON](results/benchmark.json)",
     endMarker,
