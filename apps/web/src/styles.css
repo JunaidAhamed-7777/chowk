@@ -96,9 +96,16 @@ button:disabled {
 .skip-link:focus {
   transform: translateY(0);
 }
+/* The header stays in view on the long pages, so switching pages never needs a scroll back up. */
 .topbar {
+  position: sticky;
+  z-index: 40;
+  top: 0;
   border-bottom: 1px solid var(--line-soft);
   background: #090d15;
+}
+html {
+  scroll-padding-top: 84px;
 }
 .topbar-inner {
   display: grid;
