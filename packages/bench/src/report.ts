@@ -598,6 +598,98 @@ function winCounts(wins: readonly PairedComparison[]): string | undefined {
   ].join("\n");
 }
 
+/**
+ * A small summary of the publication for the app's explainer page, written beside the README so
+ * the page shows the same generated numbers without loading the raw runs.
+ */
+export function highlightsFor(benchmark: BenchmarkFile) {
+  const { runs, comparisons, summary, meta } = benchmark;
+  const episodes = distinctEpisodes(runs);
+  const seeds = [...new Set(runs.map(({ seed }) => seed))].sort((a, b) => a - b);
+  const engines = Object.entries(benchmark.engineering?.determinism ?? {});
+  const identical = engines.length > 1 && new Set(engines.map(([, hash]) => hash)).size === 1;
+  const mainCells = summary.filter(
+    ({ suite, metric, variant }) => suite === "B1" && metric === primaryMetric && !variant,
+  );
+  const mainPairs = comparisons.filter(
+    ({ suite, a, metric, variant }) =>
+      suite === "B1" && a === "chowk" && metric === primaryMetric && !variant,
+  );
+  const wins = clearWins(benchmark);
+  const toWin = (row: PairedComparison) => ({
+    metric: row.metric,
+    metricLabel: metricLabels[row.metric]?.label ?? row.metric,
+    baseline: row.b,
+    baselineLabel: controllerLabel(row.b),
+    condition: conditionLabel(row),
+    relDiff: row.relDiff,
+    ciLow: row.ciLow,
+    ciHigh: row.ciHigh,
+  });
+  return {
+    headline: benchmark.headline,
+    scale: {
+      episodes: episodes.length,
+      simulatedHours: Math.round(meta.simulatedSeconds / 3_600),
+      vehicles: episodes.reduce((sum, run) => sum + (run.metrics.generated ?? 0), 0),
+      people: Math.round(
+        episodes.reduce((sum, run) => sum + (run.metrics.generatedPeople ?? 0), 0),
+      ),
+      suites: new Set(runs.map(({ suite }) => suite)).size,
+      conditions: new Set(runs.map(conditionKey)).size,
+      controllers: new Set(runs.map(({ controller }) => controller)).size,
+      seeds: seeds.length,
+      firstSeed: seeds[0] ?? 0,
+      comparisons: distinctComparisons(comparisons).length,
+      engines: identical ? engines.map(([engine]) => engine) : [],
+    },
+    scenarios: scenarioOrder(mainCells.map(({ scenario }) => scenario)).map((scenario) => ({
+      id: scenario,
+      label: scenarioLabel(scenario),
+      delay: mainCells
+        .filter((cell) => cell.scenario === scenario)
+        .sort((a, b) => a.mean - b.mean)
+        .map(({ controller, mean, ciLow, ciHigh }) => ({
+          controller,
+          label: controllerLabel(controller),
+          mean,
+          ciLow,
+          ciHigh,
+        })),
+      versus: baselines.flatMap((baseline) => {
+        const row = mainPairs.find((pair) => pair.scenario === scenario && pair.b === baseline);
+        return row
+          ? [
+              {
+                baseline,
+                label: controllerLabel(baseline),
+                relDiff: row.relDiff,
+                ciLow: row.ciLow,
+                ciHigh: row.ciHigh,
+                clear: row.clear,
+              },
+            ]
+          : [];
+      }),
+    })),
+    wins: baselines
+      .map((baseline) => {
+        const against = wins.filter((row) => row.b === baseline);
+        return {
+          baseline,
+          label: controllerLabel(baseline),
+          count: against.length,
+          best: against[0] ? toWin(against[0]) : null,
+        };
+      })
+      .filter(({ count }) => count > 0),
+    biggest: bestPerPair(wins).slice(0, 8).map(toWin),
+    policyMicroseconds: benchmark.engineering?.policyMicroseconds ?? null,
+  };
+}
+
+export type Highlights = ReturnType<typeof highlightsFor>;
+
 function engineeringTable(report?: EngineeringReport): string | undefined {
   if (!report) return undefined;
   const rows: [string, string][] = [];
@@ -729,6 +821,10 @@ export function writeReports(root: string, benchmark: BenchmarkFile): void {
     `The recorded episodes cover ${(benchmark.meta.simulatedSeconds / 3_600).toFixed(1)} simulated hours and took ${(benchmark.meta.wallSeconds / 60).toFixed(1)} minutes of benchmark wall time across runs. Raw runs and configuration are in [benchmark.json](benchmark.json).`,
   );
   writeFileSync(resolve(reportDirectory, "benchmark.md"), `${report.join("\n\n")}\n`);
+  writeFileSync(
+    resolve(reportDirectory, "highlights.json"),
+    `${JSON.stringify(highlightsFor(benchmark), null, 2)}\n`,
+  );
 
   const chart = laneChart(benchmark);
   if (chart) writeFileSync(resolve(reportDirectory, "lane-free.svg"), chart);

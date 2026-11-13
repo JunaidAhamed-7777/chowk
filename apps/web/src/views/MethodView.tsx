@@ -1,10 +1,14 @@
-import { useId } from "react";
-import calibration from "../../../../results/calibration.json";
+import { type ReactNode, useEffect, useId, useState } from "react";
 import architecture from "../../../../assets/architecture.svg?url";
-import { TrainingCurveChart } from "../benchmark/TrainingCurveChart";
+import calibration from "../../../../results/calibration.json";
+import { FixSection } from "./method/FixSection";
+import { ProblemSection } from "./method/ProblemSection";
+import { ProofSection } from "./method/ProofSection";
+import { LearnedSection, WorksSection } from "./method/WorksSection";
 import { FilteringReplay, ValidationPlots } from "./ValidationPlots";
 import "../benchmark/results.css";
 import "./method.css";
+import "./method/explainer.css";
 
 const references = [
   {
@@ -183,127 +187,187 @@ function SaturationFigure() {
   );
 }
 
+const chapters = [
+  { id: "problem", number: "01", label: "The problem" },
+  { id: "fix", number: "02", label: "How CHOWK fixes it" },
+  { id: "decision", number: "03", label: "How a decision works" },
+  { id: "learned", number: "04", label: "How it learned" },
+  { id: "proof", number: "05", label: "Proof you can check" },
+  { id: "details", number: "06", label: "Under the hood" },
+] as const;
+
+/** A chapter bar under the site header that follows the reader down the page. */
+function ChapterNav() {
+  const [current, setCurrent] = useState<string>(chapters[0].id);
+  useEffect(() => {
+    if (!("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting);
+        if (visible.length > 0) setCurrent(visible[visible.length - 1].target.id);
+      },
+      { rootMargin: "-30% 0px -60% 0px" },
+    );
+    for (const { id } of chapters) {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    }
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <nav className="explainer-chapters" aria-label="Chapters">
+      {chapters.map(({ id, number, label }) => (
+        <a key={id} href={`#${id}`} aria-current={current === id ? "location" : undefined}>
+          <span>{number}</span>
+          {label}
+        </a>
+      ))}
+    </nav>
+  );
+}
+
+function Chapter({
+  id,
+  number,
+  title,
+  kicker,
+  children,
+}: {
+  id: string;
+  number: string;
+  title: string;
+  kicker: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="explainer-chapter" id={id} aria-labelledby={`${id}-heading`}>
+      <header>
+        <span className="explainer-number">{number}</span>
+        <p className="explainer-kicker">{kicker}</p>
+        <h2 id={`${id}-heading`}>{title}</h2>
+      </header>
+      {children}
+    </section>
+  );
+}
+
 export function MethodView() {
   return (
-    <div className="method-content">
-      <p className="information-intro">
-        CHOWK studies how signal control changes delay when people in two-wheelers, autos, cars and
-        buses share road width.
+    <div className="method-content explainer">
+      <p className="information-intro explainer-intro">
+        Indian junctions do not queue in lanes. CHOWK is a traffic-signal controller that measures
+        the road the way this traffic uses it, and learned in simulation to cut the delay people
+        feel. Here is the problem, the fix, and exactly how it works.
       </p>
+      <ChapterNav />
 
-      <section className="method-section" aria-labelledby="method-road-heading">
-        <h2 id="method-road-heading">A queue occupies road space</h2>
-        <p>
-          A bus and a two-wheeler each add one vehicle to a queue count. They occupy different
-          amounts of road and carry different numbers of people. TomTom estimates that Bengaluru
-          drivers lost 168 hours in rush-hour traffic in 2025.{" "}
-          <a href="https://www.tomtom.com/traffic-index/city/bengaluru/">TomTom Traffic Index</a>
-        </p>
-        <RoadSpaceFigure />
-      </section>
+      <Chapter
+        id="problem"
+        number="01"
+        kicker="The problem"
+        title="Signals that count vehicles cannot see Indian traffic"
+      >
+        <ProblemSection />
+      </Chapter>
 
-      <section className="method-section" aria-labelledby="method-sim-heading">
-        <h2 id="method-sim-heading">Simulating shared width</h2>
-        <p>
-          Roads are divided into narrow strips. Vehicles follow the nearest obstacle across their
-          occupied strips and may move laterally when there is enough space. A two-wheeler can
-          filter past a stopped car because it can fit in space a wider vehicle cannot use.
-        </p>
-        <p>
-          Signal phases serve one approach at a time. The simulator enforces yellow and all-red
-          clearances, keeps conflicting movements out of the junction box, and tracks vehicles
-          waiting at the entry as well as vehicles on the road.
-        </p>
-        <FilteringReplay />
-      </section>
+      <Chapter
+        id="fix"
+        number="02"
+        kicker="The fix"
+        title="CHOWK measures space and people, and it shows"
+      >
+        <FixSection />
+      </Chapter>
 
-      <section className="method-section" aria-labelledby="method-control-heading">
-        <h2 id="method-control-heading">Signal decisions</h2>
-        <ol className="method-flow">
-          <li>
-            <strong>Observe</strong>
-            <span>Road area, people, waiting time, exit occupancy and neighbouring releases.</span>
-          </li>
-          <li>
-            <strong>Score</strong>
-            <span>
-              Area max-pressure scores the approaches. A small ReLU network adds a learned
-              adjustment.
-            </span>
-          </li>
-          <li>
-            <strong>Serve</strong>
-            <span>
-              The driver masks invalid phases and applies minimum green and starvation rules.
-            </span>
-          </li>
-        </ol>
-        <p>
-          The same policy weights are shared across junctions. The Decision overlay shows the two
-          score components and estimates the influence of each approach by temporarily zeroing its
-          features.
-        </p>
-      </section>
+      <Chapter
+        id="decision"
+        number="03"
+        kicker="How it works"
+        title="One decision, four steps, every five seconds"
+      >
+        <WorksSection />
+      </Chapter>
 
-      <section className="method-section" aria-labelledby="method-train-heading">
-        <h2 id="method-train-heading">Training and selection</h2>
-        <p>
-          Evolution strategies evaluate paired weight perturbations on the same simulated demand.
-          Training varies load, vehicle mix, traffic direction, weather, sensing and scripted
-          events. The objective counts delay by occupancy and penalizes ambulance delay and
-          prolonged waiting.
-        </p>
-        <p>
-          Generation zero follows area max-pressure. Validation demand selects the exported
-          checkpoint. Held-out demand seeds are reserved for evaluation and browser reproduction.
-        </p>
-        <TrainingCurveChart />
-      </section>
+      <Chapter
+        id="learned"
+        number="04"
+        kicker="How it learned"
+        title="Trained on simulated traffic, chosen on traffic it never trained on"
+      >
+        <LearnedSection />
+      </Chapter>
 
-      <section className="method-section" aria-labelledby="method-eval-heading">
-        <h2 id="method-eval-heading">How comparisons work</h2>
-        <p>
-          Controllers run with identical seeded arrivals. The primary endpoint is delay per person
-          in morning-peak mixed traffic versus area max-pressure. Results use paired bootstrap
-          intervals. Secondary comparisons are exploratory and use unadjusted intervals.
-        </p>
-        <figure className="method-figure">
-          <img
-            src={architecture}
-            alt="The shared simulator supplies training, Live workers, and benchmark runners. Validation selects the exported policy used in both Live and the benchmark."
-          />
-          <figcaption>
-            Training, Live and reproduction share the same simulator and controller driver.
-          </figcaption>
-        </figure>
-      </section>
+      <Chapter id="proof" number="05" kicker="Proof" title="A fair test you can check yourself">
+        <ProofSection />
+      </Chapter>
 
-      <section className="method-section" aria-labelledby="method-validation-heading">
-        <h2 id="method-validation-heading">Simulator checks</h2>
-        <p>
-          Tests check vehicle conservation, junction exclusivity, filtering, rectangle overlap and
-          repeatability. The calibration runs measure discharge for each approach width and vehicle
-          mix, which sets the scale of scenario demand.
-        </p>
-        <SaturationFigure />
-        <ValidationPlots />
-      </section>
+      <Chapter
+        id="details"
+        number="06"
+        kicker="Under the hood"
+        title="The simulator, its checks and the prior work"
+      >
+        <section className="method-section" aria-labelledby="method-sim-heading">
+          <h3 id="method-sim-heading">Simulating shared width</h3>
+          <p>
+            Roads are divided into narrow strips. Vehicles follow the nearest obstacle across their
+            occupied strips and may move laterally when there is enough space. A two-wheeler can
+            filter past a stopped car because it can fit in space a wider vehicle cannot use.
+          </p>
+          <p>
+            Signal phases serve one approach at a time. The simulator enforces yellow and all-red
+            clearances, keeps conflicting movements out of the junction box, and tracks vehicles
+            waiting at the entry as well as vehicles on the road.
+          </p>
+          <RoadSpaceFigure />
+          <FilteringReplay />
+        </section>
 
-      <section className="method-section" aria-labelledby="method-prior-heading">
-        <h2 id="method-prior-heading">Prior work and project contribution</h2>
-        <p>
-          CHOWK combines a deterministic browser simulator for mixed traffic, a shared corridor
-          policy with person-weighted delay, a side-by-side scene with live disturbances, and
-          benchmark reproduction in the browser.
-        </p>
-        <ul className="method-references">
-          {references.map(({ title, url, detail }) => (
-            <li key={url}>
-              {detail} <a href={url}>{title}</a>
-            </li>
-          ))}
-        </ul>
-      </section>
+        <section className="method-section" aria-labelledby="method-eval-heading">
+          <h3 id="method-eval-heading">How comparisons work</h3>
+          <p>
+            Controllers run with identical seeded arrivals. The primary endpoint is delay per person
+            in morning-peak mixed traffic versus area max-pressure. Results use paired bootstrap
+            intervals. Secondary comparisons are exploratory and use unadjusted intervals.
+          </p>
+          <figure className="method-figure">
+            <img
+              src={architecture}
+              alt="The shared simulator supplies training, Live workers, and benchmark runners. Validation selects the exported policy used in both Live and the benchmark."
+            />
+            <figcaption>
+              Training, Live and reproduction share the same simulator and controller driver.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section className="method-section" aria-labelledby="method-validation-heading">
+          <h3 id="method-validation-heading">Simulator checks</h3>
+          <p>
+            Tests check vehicle conservation, junction exclusivity, filtering, rectangle overlap and
+            repeatability. The calibration runs measure discharge for each approach width and
+            vehicle mix, which sets the scale of scenario demand.
+          </p>
+          <SaturationFigure />
+          <ValidationPlots />
+        </section>
+
+        <section className="method-section" aria-labelledby="method-prior-heading">
+          <h3 id="method-prior-heading">Prior work and project contribution</h3>
+          <p>
+            CHOWK combines a deterministic browser simulator for mixed traffic, a shared corridor
+            policy with person-weighted delay, a side-by-side scene with live disturbances, and
+            benchmark reproduction in the browser.
+          </p>
+          <ul className="method-references">
+            {references.map(({ title, url, detail }) => (
+              <li key={url}>
+                {detail} <a href={url}>{title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </Chapter>
     </div>
   );
 }

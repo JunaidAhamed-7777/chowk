@@ -23,6 +23,25 @@ test("Method shows measured checks and a keyboard-scrubbable filtering replay", 
   );
 });
 
+test("Method explains the problem with a sandbox and walks through a decision", async ({
+  page,
+}) => {
+  await page.goto("/method");
+  await expect(page.getByRole("navigation", { name: "Chapters" })).toBeVisible();
+  const verdict = page.locator(".sandbox-verdict");
+  await page.getByRole("button", { name: "One bus vs a swarm" }).click();
+  await page.getByRole("button", { name: "A vehicle-counting signal" }).click();
+  await expect(verdict).toContainText("serves Approach B");
+  await page.getByRole("button", { name: "CHOWK", exact: true }).click();
+  await expect(verdict).toContainText("CHOWK sees Approach A");
+  await page.getByRole("button", { name: "One more bus" }).last().click();
+  await page.getByRole("button", { name: "One more bus" }).last().click();
+  await expect(verdict).toContainText("CHOWK sees Approach B");
+  const steps = page.getByRole("tablist", { name: "One decision, step by step" });
+  await steps.getByRole("tab", { name: /Switch safely/ }).click();
+  await expect(page.getByText("All-red while the box clears")).toBeVisible();
+});
+
 test("Limits describes the model and requirements for field use", async ({ page }) => {
   await page.goto("/limits");
   await expect(

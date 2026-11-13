@@ -132,7 +132,9 @@ export function InformationView({ route }: { route: InformationRoute }) {
           ? "information information-results"
           : route === "/controllers"
             ? "information information-controllers"
-            : "information"
+            : route === "/method"
+              ? "information information-method"
+              : "information"
       }
     >
       <h1 id="information-heading" tabIndex={-1}>

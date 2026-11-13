@@ -1,0 +1,693 @@
+{
+  "headline": "On 20 held-out seeds in simulated Indian mixed traffic, CHOWK reduced delay per person by 4.6% versus area max-pressure (95% CI −7.5% to −1.7%), with 60.0% lower delay versus Webster fixed-time (95% CI −62.7% to −57.2%). Simulation result.",
+  "scale": {
+    "episodes": 2660,
+    "simulatedHours": 1552,
+    "vehicles": 2558321,
+    "people": 9290288,
+    "suites": 7,
+    "conditions": 25,
+    "controllers": 11,
+    "seeds": 20,
+    "firstSeed": 1000000,
+    "comparisons": 5644,
+    "engines": [
+      "Node",
+      "Chromium",
+      "WebKit",
+      "Firefox"
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "morning-peak",
+      "label": "Morning peak",
+      "delay": [
+        {
+          "controller": "chowk",
+          "label": "CHOWK",
+          "mean": 83.98812716591388,
+          "ciLow": 75.0899348659511,
+          "ciHigh": 93.258741379341
+        },
+        {
+          "controller": "mp-area",
+          "label": "Area max-pressure",
+          "mean": 88.00434239036149,
+          "ciLow": 79.19974208709392,
+          "ciHigh": 97.31794355680884
+        },
+        {
+          "controller": "mp-count",
+          "label": "Count max-pressure",
+          "mean": 99.76915699716189,
+          "ciLow": 91.81735807385617,
+          "ciHigh": 107.80185827283752
+        },
+        {
+          "controller": "actuated",
+          "label": "Actuated",
+          "mean": 125.1321605925018,
+          "ciLow": 113.40181393944933,
+          "ciHigh": 137.38292853495233
+        },
+        {
+          "controller": "webster",
+          "label": "Fixed-time (Webster)",
+          "mean": 209.74907474916336,
+          "ciLow": 192.72445732905692,
+          "ciHigh": 226.06535419728078
+        }
+      ],
+      "versus": [
+        {
+          "baseline": "mp-area",
+          "label": "Area max-pressure",
+          "relDiff": -0.04563655741705164,
+          "ciLow": -0.07520684939689479,
+          "ciHigh": -0.01719593250828512,
+          "clear": true
+        },
+        {
+          "baseline": "mp-count",
+          "label": "Count max-pressure",
+          "relDiff": -0.15817543523693317,
+          "ciLow": -0.20764461329592637,
+          "ciHigh": -0.11140050466932333,
+          "clear": true
+        },
+        {
+          "baseline": "actuated",
+          "label": "Actuated",
+          "relDiff": -0.32880462729781523,
+          "ciLow": -0.3653723844799689,
+          "ciHigh": -0.29204196311452624,
+          "clear": true
+        },
+        {
+          "baseline": "webster",
+          "label": "Fixed-time (Webster)",
+          "relDiff": -0.5995780803021211,
+          "ciLow": -0.6265140975033322,
+          "ciHigh": -0.5720344700295684,
+          "clear": true
+        }
+      ]
+    },
+    {
+      "id": "evening-peak",
+      "label": "Evening peak",
+      "delay": [
+        {
+          "controller": "chowk",
+          "label": "CHOWK",
+          "mean": 102.05170704604696,
+          "ciLow": 93.22352750957225,
+          "ciHigh": 110.89726937554961
+        },
+        {
+          "controller": "mp-area",
+          "label": "Area max-pressure",
+          "mean": 104.28376116821293,
+          "ciLow": 95.34481172789535,
+          "ciHigh": 113.37018908055457
+        },
+        {
+          "controller": "mp-count",
+          "label": "Count max-pressure",
+          "mean": 116.49617405821148,
+          "ciLow": 108.0466358227266,
+          "ciHigh": 124.85420906547095
+        },
+        {
+          "controller": "actuated",
+          "label": "Actuated",
+          "mean": 144.89324150907473,
+          "ciLow": 136.70386404459126,
+          "ciHigh": 153.4986358851486
+        },
+        {
+          "controller": "webster",
+          "label": "Fixed-time (Webster)",
+          "mean": 210.416136757073,
+          "ciLow": 198.57196609532917,
+          "ciHigh": 222.48395410711586
+        }
+      ],
+      "versus": [
+        {
+          "baseline": "mp-area",
+          "label": "Area max-pressure",
+          "relDiff": -0.021403659564652736,
+          "ciLow": -0.05102337781603809,
+          "ciHigh": 0.013911947095245797,
+          "clear": false
+        },
+        {
+          "baseline": "mp-count",
+          "label": "Count max-pressure",
+          "relDiff": -0.12399091325477203,
+          "ciLow": -0.16225007062073848,
+          "ciHigh": -0.08424916033076649,
+          "clear": true
+        },
+        {
+          "baseline": "actuated",
+          "label": "Actuated",
+          "relDiff": -0.29567655479875915,
+          "ciLow": -0.33626812822563373,
+          "ciHigh": -0.25456620198991364,
+          "clear": true
+        },
+        {
+          "baseline": "webster",
+          "label": "Fixed-time (Webster)",
+          "relDiff": -0.5150005668820619,
+          "ciLow": -0.5441908397652939,
+          "ciHigh": -0.48419920188095844,
+          "clear": true
+        }
+      ]
+    },
+    {
+      "id": "off-peak",
+      "label": "Off-peak",
+      "delay": [
+        {
+          "controller": "chowk",
+          "label": "CHOWK",
+          "mean": 43.29205607489127,
+          "ciLow": 42.02114282558179,
+          "ciHigh": 44.58736475065896
+        },
+        {
+          "controller": "mp-area",
+          "label": "Area max-pressure",
+          "mean": 45.62158604020019,
+          "ciLow": 44.276819363667514,
+          "ciHigh": 47.0341379761224
+        },
+        {
+          "controller": "mp-count",
+          "label": "Count max-pressure",
+          "mean": 61.61148817901822,
+          "ciLow": 58.570685725975764,
+          "ciHigh": 64.56905744542375
+        },
+        {
+          "controller": "actuated",
+          "label": "Actuated",
+          "mean": 64.23901134906482,
+          "ciLow": 62.08640313423283,
+          "ciHigh": 66.31144481913651
+        },
+        {
+          "controller": "webster",
+          "label": "Fixed-time (Webster)",
+          "mean": 176.10595167098637,
+          "ciLow": 160.83492319325222,
+          "ciHigh": 191.28123790101384
+        }
+      ],
+      "versus": [
+        {
+          "baseline": "mp-area",
+          "label": "Area max-pressure",
+          "relDiff": -0.05106201181292161,
+          "ciLow": -0.07378012738995827,
+          "ciHigh": -0.02540881819088299,
+          "clear": true
+        },
+        {
+          "baseline": "mp-count",
+          "label": "Count max-pressure",
+          "relDiff": -0.2973379258572369,
+          "ciLow": -0.32633879388768927,
+          "ciHigh": -0.26480644583248364,
+          "clear": true
+        },
+        {
+          "baseline": "actuated",
+          "label": "Actuated",
+          "relDiff": -0.3260784192389115,
+          "ciLow": -0.3451530046851576,
+          "ciHigh": -0.30528642088667296,
+          "clear": true
+        },
+        {
+          "baseline": "webster",
+          "label": "Fixed-time (Webster)",
+          "relDiff": -0.7541703976264665,
+          "ciLow": -0.7722914302746716,
+          "ciHigh": -0.7337930647299757,
+          "clear": true
+        }
+      ]
+    },
+    {
+      "id": "festival",
+      "label": "Festival",
+      "delay": [
+        {
+          "controller": "chowk",
+          "label": "CHOWK",
+          "mean": 175.67057534304013,
+          "ciLow": 155.4685535868393,
+          "ciHigh": 196.04141107810293
+        },
+        {
+          "controller": "mp-area",
+          "label": "Area max-pressure",
+          "mean": 178.80916666247867,
+          "ciLow": 159.51140131119658,
+          "ciHigh": 198.0009515644044
+        },
+        {
+          "controller": "actuated",
+          "label": "Actuated",
+          "mean": 191.5355110002094,
+          "ciLow": 175.43955295642095,
+          "ciHigh": 207.40978086226522
+        },
+        {
+          "controller": "mp-count",
+          "label": "Count max-pressure",
+          "mean": 204.02522895050421,
+          "ciLow": 186.1628471005352,
+          "ciHigh": 222.31105192790858
+        },
+        {
+          "controller": "webster",
+          "label": "Fixed-time (Webster)",
+          "mean": 258.73878139629716,
+          "ciLow": 238.94431948152493,
+          "ciHigh": 278.0581375592086
+        }
+      ],
+      "versus": [
+        {
+          "baseline": "mp-area",
+          "label": "Area max-pressure",
+          "relDiff": -0.01755274283763635,
+          "ciLow": -0.052494091803653976,
+          "ciHigh": 0.016265431360407215,
+          "clear": false
+        },
+        {
+          "baseline": "mp-count",
+          "label": "Count max-pressure",
+          "relDiff": -0.1389762126640859,
+          "ciLow": -0.17707776498005565,
+          "ciHigh": -0.10220333662681498,
+          "clear": true
+        },
+        {
+          "baseline": "actuated",
+          "label": "Actuated",
+          "relDiff": -0.08283025729443944,
+          "ciLow": -0.1293497034055459,
+          "ciHigh": -0.03983489162687631,
+          "clear": true
+        },
+        {
+          "baseline": "webster",
+          "label": "Fixed-time (Webster)",
+          "relDiff": -0.32105046489349287,
+          "ciLow": -0.3610038570073731,
+          "ciHigh": -0.28031446456474357,
+          "clear": true
+        }
+      ]
+    },
+    {
+      "id": "monsoon",
+      "label": "Monsoon",
+      "delay": [
+        {
+          "controller": "mp-area",
+          "label": "Area max-pressure",
+          "mean": 120.45020085933459,
+          "ciLow": 106.57756562598499,
+          "ciHigh": 134.814800550127
+        },
+        {
+          "controller": "chowk",
+          "label": "CHOWK",
+          "mean": 121.27051591151272,
+          "ciLow": 107.5055137593484,
+          "ciHigh": 135.06101972992323
+        },
+        {
+          "controller": "mp-count",
+          "label": "Count max-pressure",
+          "mean": 138.69095884095415,
+          "ciLow": 126.62860605248605,
+          "ciHigh": 150.69147555166285
+        },
+        {
+          "controller": "actuated",
+          "label": "Actuated",
+          "mean": 159.08571312632225,
+          "ciLow": 144.75522525698523,
+          "ciHigh": 173.79754278212545
+        },
+        {
+          "controller": "webster",
+          "label": "Fixed-time (Webster)",
+          "mean": 264.66643103282803,
+          "ciLow": 246.89104063786166,
+          "ciHigh": 281.94876113311483
+        }
+      ],
+      "versus": [
+        {
+          "baseline": "mp-area",
+          "label": "Area max-pressure",
+          "relDiff": 0.00681040833743494,
+          "ciLow": -0.03453280063361643,
+          "ciHigh": 0.048406218403925894,
+          "clear": false
+        },
+        {
+          "baseline": "mp-count",
+          "label": "Count max-pressure",
+          "relDiff": -0.1256061900142935,
+          "ciLow": -0.17757568375611774,
+          "ciHigh": -0.07273197914027428,
+          "clear": true
+        },
+        {
+          "baseline": "actuated",
+          "label": "Actuated",
+          "relDiff": -0.23770328882256275,
+          "ciLow": -0.2810208964462416,
+          "ciHigh": -0.20011792342606718,
+          "clear": true
+        },
+        {
+          "baseline": "webster",
+          "label": "Fixed-time (Webster)",
+          "relDiff": -0.5417986503302685,
+          "ciLow": -0.5770514028280097,
+          "ciHigh": -0.5088729524060869,
+          "clear": true
+        }
+      ]
+    },
+    {
+      "id": "oversaturated",
+      "label": "Oversaturated",
+      "delay": [
+        {
+          "controller": "chowk",
+          "label": "CHOWK",
+          "mean": 251.0156243072222,
+          "ciLow": 233.03059659627309,
+          "ciHigh": 268.74684184238373
+        },
+        {
+          "controller": "mp-area",
+          "label": "Area max-pressure",
+          "mean": 254.21559320899323,
+          "ciLow": 238.86689277889658,
+          "ciHigh": 269.49620852921623
+        },
+        {
+          "controller": "mp-count",
+          "label": "Count max-pressure",
+          "mean": 266.471210633984,
+          "ciLow": 248.87178834963095,
+          "ciHigh": 283.51504084951347
+        },
+        {
+          "controller": "actuated",
+          "label": "Actuated",
+          "mean": 274.5214870271267,
+          "ciLow": 255.87191566994485,
+          "ciHigh": 293.124432585632
+        },
+        {
+          "controller": "webster",
+          "label": "Fixed-time (Webster)",
+          "mean": 386.1185817802644,
+          "ciLow": 365.8442461275638,
+          "ciHigh": 406.6774288545005
+        }
+      ],
+      "versus": [
+        {
+          "baseline": "mp-area",
+          "label": "Area max-pressure",
+          "relDiff": -0.012587618490972377,
+          "ciLow": -0.04266743164104281,
+          "ciHigh": 0.018440587496226606,
+          "clear": false
+        },
+        {
+          "baseline": "mp-count",
+          "label": "Count max-pressure",
+          "relDiff": -0.05800096111692575,
+          "ciLow": -0.09526648860435104,
+          "ciHigh": -0.022064252400058156,
+          "clear": true
+        },
+        {
+          "baseline": "actuated",
+          "label": "Actuated",
+          "relDiff": -0.08562485572425078,
+          "ciLow": -0.1147730386996558,
+          "ciHigh": -0.058012722827446586,
+          "clear": true
+        },
+        {
+          "baseline": "webster",
+          "label": "Fixed-time (Webster)",
+          "relDiff": -0.3499001701760308,
+          "ciLow": -0.38144907481765006,
+          "ciHigh": -0.31831712257611133,
+          "clear": true
+        }
+      ]
+    },
+    {
+      "id": "cars-only",
+      "label": "Lane-disciplined cars",
+      "delay": [
+        {
+          "controller": "chowk",
+          "label": "CHOWK",
+          "mean": 78.69922086153949,
+          "ciLow": 75.02474677340854,
+          "ciHigh": 82.51253019120303
+        },
+        {
+          "controller": "mp-count",
+          "label": "Count max-pressure",
+          "mean": 80.0551971579429,
+          "ciLow": 75.26614448043894,
+          "ciHigh": 85.14277653876738
+        },
+        {
+          "controller": "mp-area",
+          "label": "Area max-pressure",
+          "mean": 80.32052907105403,
+          "ciLow": 76.45136205385016,
+          "ciHigh": 84.19950143859849
+        },
+        {
+          "controller": "actuated",
+          "label": "Actuated",
+          "mean": 110.79229341273602,
+          "ciLow": 101.49675264103789,
+          "ciHigh": 120.73114366697702
+        },
+        {
+          "controller": "webster",
+          "label": "Fixed-time (Webster)",
+          "mean": 228.00337853812093,
+          "ciLow": 211.07619222194228,
+          "ciHigh": 244.83720141644284
+        }
+      ],
+      "versus": [
+        {
+          "baseline": "mp-area",
+          "label": "Area max-pressure",
+          "relDiff": -0.020185477215672598,
+          "ciLow": -0.04381981852449547,
+          "ciHigh": 0.0052810453088626965,
+          "clear": false
+        },
+        {
+          "baseline": "mp-count",
+          "label": "Count max-pressure",
+          "relDiff": -0.01693801707499605,
+          "ciLow": -0.04822221621546264,
+          "ciHigh": 0.015614477187861143,
+          "clear": false
+        },
+        {
+          "baseline": "actuated",
+          "label": "Actuated",
+          "relDiff": -0.28966881687013885,
+          "ciLow": -0.3254758677305441,
+          "ciHigh": -0.25191573573273046,
+          "clear": true
+        },
+        {
+          "baseline": "webster",
+          "label": "Fixed-time (Webster)",
+          "relDiff": -0.6548330934123355,
+          "ciLow": -0.6704042328473395,
+          "ciHigh": -0.6378661179192588,
+          "clear": true
+        }
+      ]
+    }
+  ],
+  "wins": [
+    {
+      "baseline": "mp-area",
+      "label": "Area max-pressure",
+      "count": 105,
+      "best": {
+        "metric": "starvationShare",
+        "metricLabel": "Time with an approach over 120 s",
+        "baseline": "mp-area",
+        "baselineLabel": "Area max-pressure",
+        "condition": "Morning peak · Demand at 50%",
+        "relDiff": -0.4131689602446482,
+        "ciLow": -0.46910675182562933,
+        "ciHigh": -0.35147735577345346
+      }
+    },
+    {
+      "baseline": "mp-count",
+      "label": "Count max-pressure",
+      "count": 121,
+      "best": {
+        "metric": "busPassengerDelay",
+        "metricLabel": "Bus-passenger delay",
+        "baseline": "mp-count",
+        "baselineLabel": "Count max-pressure",
+        "condition": "Morning peak · Demand at 50%",
+        "relDiff": -0.6261270753912859,
+        "ciLow": -0.6662227836370098,
+        "ciHigh": -0.5803112288061093
+      }
+    },
+    {
+      "baseline": "actuated",
+      "label": "Actuated",
+      "count": 162,
+      "best": {
+        "metric": "busPassengerDelay",
+        "metricLabel": "Bus-passenger delay",
+        "baseline": "actuated",
+        "baselineLabel": "Actuated",
+        "condition": "Morning peak · Demand at 60%",
+        "relDiff": -0.5377366479159685,
+        "ciLow": -0.5640975010874849,
+        "ciHigh": -0.508341764415008
+      }
+    },
+    {
+      "baseline": "webster",
+      "label": "Fixed-time (Webster)",
+      "count": 199,
+      "best": {
+        "metric": "busPassengerDelay",
+        "metricLabel": "Bus-passenger delay",
+        "baseline": "webster",
+        "baselineLabel": "Fixed-time (Webster)",
+        "condition": "Morning peak · Demand at 50%",
+        "relDiff": -0.8797509116455713,
+        "ciLow": -0.8934752392775412,
+        "ciHigh": -0.8655127067704009
+      }
+    }
+  ],
+  "biggest": [
+    {
+      "metric": "busPassengerDelay",
+      "metricLabel": "Bus-passenger delay",
+      "baseline": "webster",
+      "baselineLabel": "Fixed-time (Webster)",
+      "condition": "Morning peak · Demand at 50%",
+      "relDiff": -0.8797509116455713,
+      "ciLow": -0.8934752392775412,
+      "ciHigh": -0.8655127067704009
+    },
+    {
+      "metric": "delayPerPerson",
+      "metricLabel": "Delay per person",
+      "baseline": "webster",
+      "baselineLabel": "Fixed-time (Webster)",
+      "condition": "Morning peak · Demand at 60%",
+      "relDiff": -0.7615243547268724,
+      "ciLow": -0.7801133378229465,
+      "ciHigh": -0.7404598891511999
+    },
+    {
+      "metric": "maximumApproachWait",
+      "metricLabel": "Maximum approach wait",
+      "baseline": "webster",
+      "baselineLabel": "Fixed-time (Webster)",
+      "condition": "Morning peak · Demand at 110%",
+      "relDiff": -0.6552069819554193,
+      "ciLow": -0.6967795403698221,
+      "ciHigh": -0.6093554056333514
+    },
+    {
+      "metric": "busPassengerDelay",
+      "metricLabel": "Bus-passenger delay",
+      "baseline": "mp-count",
+      "baselineLabel": "Count max-pressure",
+      "condition": "Morning peak · Demand at 50%",
+      "relDiff": -0.6261270753912859,
+      "ciLow": -0.6662227836370098,
+      "ciHigh": -0.5803112288061093
+    },
+    {
+      "metric": "busPassengerDelay",
+      "metricLabel": "Bus-passenger delay",
+      "baseline": "actuated",
+      "baselineLabel": "Actuated",
+      "condition": "Morning peak · Demand at 60%",
+      "relDiff": -0.5377366479159685,
+      "ciLow": -0.5640975010874849,
+      "ciHigh": -0.508341764415008
+    },
+    {
+      "metric": "starvationShare",
+      "metricLabel": "Time with an approach over 120 s",
+      "baseline": "mp-count",
+      "baselineLabel": "Count max-pressure",
+      "condition": "Lane-disciplined cars",
+      "relDiff": -0.5310389893269439,
+      "ciLow": -0.5898010524842677,
+      "ciHigh": -0.4730392483492351
+    },
+    {
+      "metric": "stopsPerVehicle",
+      "metricLabel": "Stops per vehicle",
+      "baseline": "webster",
+      "baselineLabel": "Fixed-time (Webster)",
+      "condition": "Morning peak · Demand at 50%",
+      "relDiff": -0.4369119196906115,
+      "ciLow": -0.46179289448775857,
+      "ciHigh": -0.4126181652397697
+    },
+    {
+      "metric": "meanTravelTime",
+      "metricLabel": "Mean completed travel time",
+      "baseline": "webster",
+      "baselineLabel": "Fixed-time (Webster)",
+      "condition": "Lane-disciplined cars",
+      "relDiff": -0.413445845688702,
+      "ciLow": -0.4284353675776236,
+      "ciHigh": -0.3967194245357162
+    }
+  ],
+  "policyMicroseconds": 6.19811
+}
