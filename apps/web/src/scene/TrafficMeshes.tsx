@@ -19,7 +19,15 @@ import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { fadeMs, type SnapshotStream } from "../sim/SimHost";
 import { district } from "./corridorGeometry";
 import { createGlow, type Glow } from "./glow";
-import type { OverlayMode, PlaybackSpeed } from "./sceneSettings";
+import { createMarkers } from "./overlayMarkers";
+import {
+  type OverlayMode,
+  type PlaybackSpeed,
+  peopleColors,
+  peopleMetresPerRootPerson,
+  speedBand,
+  speedBands,
+} from "./sceneSettings";
 import { useVehicleGeometries } from "./vehicleGeometries";
 import { clipMaterial, type WipeClip } from "./wipeClip";
 
@@ -53,8 +61,14 @@ const beaconRed = new Color(6, 0.2, 0.15);
 const beaconBlue = new Color(0.2, 0.5, 6);
 const ambulanceClass = 5;
 const busClass = 4;
-const speeds = ["#fc4947", "#ffac52", "#81e389", "#35efbb"].map((color) => new Color(color));
 const occupancyColor = new Color("#9decca");
+const bandColors = speedBands.map(({ color }) => new Color(color));
+const waitingColor = new Color(peopleColors.waiting);
+const movingColor = new Color(peopleColors.moving);
+// Overlay markers float above the tallest roof, and keep at least this many pixels per metre.
+const markerHeight = 5.2;
+const speedMarkerMetres = 3.4;
+const markerMinPixelsPerMetre = 2.2;
 const overlayFadeSeconds = 0.3;
 
 function fadeOverlay(current: number, enabled: boolean, change: number) {
@@ -190,8 +204,7 @@ function drawVehicle(
   const palette = paints[cls];
   const occupancy = VEHICLE_CLASSES[cls].occupancy;
   color.copy(palette[id % palette.length]);
-  if (speedTint > 0)
-    color.lerp(speeds[velocity < 0.5 ? 0 : velocity < 3 ? 1 : velocity < 7 ? 2 : 3], speedTint);
+  if (speedTint > 0) color.lerp(bandColors[speedBand(velocity)], speedTint);
   if (peopleTint > 0 && occupancy > 8) color.lerp(occupancyColor, peopleTint);
   mesh.setColorAt(instance, color);
 
@@ -308,6 +321,11 @@ export function TrafficMeshes({
     clipMaterial(glow.points.material, clip);
     return glow;
   });
+  const [markers] = useState(() => {
+    const layer = createMarkers(capacity, markerMinPixelsPerMetre);
+    clipMaterial(layer.points.material, clip);
+    return layer;
+  });
   const [signalHalo] = useState(() => {
     const glow = createGlow(district.signalMounts.length, 3.4, 4.5);
     clipMaterial(glow.points.material, clip);
@@ -330,10 +348,11 @@ export function TrafficMeshes({
       beam.geometry.dispose();
       beam.material.dispose();
       vehicleGlow.dispose();
+      markers.dispose();
       signalHalo.dispose();
       for (const material of lampMaterials) material.dispose();
     },
-    [fallback, beam, finishes, vehicleGlow, signalHalo, lampMaterials],
+    [fallback, beam, finishes, vehicleGlow, markers, signalHalo, lampMaterials],
   );
 
   useLayoutEffect(() => {
@@ -420,6 +439,11 @@ export function TrafficMeshes({
     counts.fill(0);
     const points = current.positions;
     let drawn = 0;
+    // Speed and People each draw a marker above every vehicle; while one fades into the other,
+    // the stronger one decides what the markers show.
+    const markerOpacity = Math.max(speedTint, peopleTint);
+    const showSpeed = speedTint >= peopleTint;
+    let marked = 0;
     for (let offset = 0; offset < current.count * SNAPSHOT_STRIDE; offset += SNAPSHOT_STRIDE) {
       const cls = points[offset + 5];
       const mesh = bodies.current[cls];
@@ -466,6 +490,29 @@ export function TrafficMeshes({
         peopleTint,
         color,
       );
+      if (markerOpacity > 0) {
+        const occupancy = VEHICLE_CLASSES[cls].occupancy;
+        const metres = showSpeed
+          ? speedMarkerMetres
+          : peopleMetresPerRootPerson * Math.sqrt(occupancy);
+        if (metres > 0) {
+          const velocity = points[offset + 4];
+          const tone = showSpeed
+            ? bandColors[speedBand(velocity)]
+            : velocity < speedBands[0].upTo
+              ? waitingColor
+              : movingColor;
+          const base = marked * 3;
+          markers.positions[base] = x;
+          markers.positions[base + 1] = markerHeight;
+          markers.positions[base + 2] = z;
+          markers.tints[base] = tone.r;
+          markers.tints[base + 1] = tone.g;
+          markers.tints[base + 2] = tone.b;
+          markers.sizes[marked] = metres * fade;
+          marked++;
+        }
+      }
     }
     const departures = currentHost.departures;
     for (let index = 0; index < departures.length && drawn < capacity; index += 1) {
@@ -511,6 +558,7 @@ export function TrafficMeshes({
     uploadTransforms(tail, drawn * 2);
     if (beamMesh) uploadTransforms(beamMesh, drawn);
     vehicleGlow.commit(drawn * 2, pixelsPerUnit);
+    markers.commit(marked, pixelsPerUnit, markerOpacity);
     if (tail.instanceColor) upload(tail.instanceColor, drawn * 6);
 
     if (lastSignalTick.current === current.tick) return;
@@ -582,6 +630,7 @@ export function TrafficMeshes({
         />
       )}
       <primitive object={vehicleGlow.points} />
+      <primitive object={markers.points} />
       <primitive object={signalHalo.points} />
     </group>
   );

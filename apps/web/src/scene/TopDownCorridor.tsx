@@ -3,7 +3,15 @@ import { type RefObject, useEffect, useRef } from "react";
 import { type ActiveEvent, eventPoint } from "../sim/liveEvents";
 import { fadeMs, type SimHost, type SnapshotStream } from "../sim/SimHost";
 import { district } from "./corridorGeometry";
-import type { CameraSelection, OverlayMode, VehicleFollow } from "./sceneSettings";
+import {
+  type CameraSelection,
+  type OverlayMode,
+  peopleColors,
+  peopleMetresPerRootPerson,
+  speedBand,
+  speedBands,
+  type VehicleFollow,
+} from "./sceneSettings";
 
 const colours = ["#72ccbe", "#c8ac68", "#bcc9df", "#7c9bd2", "#c398cf", "#82b3ff"];
 const states = ["#47efbd", "#ffbd66", "#ff6575"];
@@ -104,20 +112,22 @@ function drawTraffic(
     context.globalAlpha = fade;
     context.fillStyle =
       options.overlay === "speed"
-        ? stopped
-          ? "#ff5b63"
-          : positions[index + 4] > 5
-            ? "#68e4a4"
-            : "#ffb557"
-        : options.overlay === "people" && occupancy > 8
-          ? "#a0ffdd"
-          : colours[cls];
+        ? speedBands[speedBand(positions[index + 4])].color
+        : colours[cls];
     context.fillRect(-length / 2, -width / 2, length, Math.max(width, 1.4 / scale));
     const lamp = Math.max(0.35, 0.6 / scale);
     context.fillStyle = cls === 5 ? "#8fbdff" : "#fff1d7";
     context.fillRect(length / 2, -lamp / 2, lamp, lamp);
     context.fillStyle = stopped ? "#ff6575" : "#b94652";
     context.fillRect(-length / 2 - lamp, -lamp / 2, lamp, lamp);
+    if (options.overlay === "people" && occupancy > 0) {
+      // The same marker as the 3D view: area grows with the people on board.
+      context.beginPath();
+      context.arc(0, 0, (peopleMetresPerRootPerson * Math.sqrt(occupancy)) / 2, 0, Math.PI * 2);
+      context.globalAlpha = fade * 0.85;
+      context.fillStyle = stopped ? peopleColors.waiting : peopleColors.moving;
+      context.fill();
+    }
     context.restore();
   }
 

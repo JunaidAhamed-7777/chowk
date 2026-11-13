@@ -58,6 +58,7 @@ import { LiveControls } from "../ui/LiveControls";
 import { LoadingScreen, liveLoadingSteps } from "../ui/LoadingScreen";
 import { MetricHud } from "../ui/MetricHud";
 import { guideSteps, Onboarding, rememberGuideSeen, shouldOpenGuide } from "../ui/Onboarding";
+import { OverlayLegend } from "../ui/OverlayLegend";
 import { TimeSpacePanel } from "../ui/TimeSpacePanel";
 import "../ui/advancedLive.css";
 import "../ui/liveLayout.css";
@@ -712,6 +713,7 @@ export default function LiveView({ active, quality, automatic, onQuality }: Live
                   clock={(elapsed) => clockTime(scene, elapsed)}
                 />
               )}
+              {ready && <OverlayLegend overlay={overlay} />}
               <CheckpointControl
                 policy={controllers[1].policy}
                 disabled={disabled || roundLive}

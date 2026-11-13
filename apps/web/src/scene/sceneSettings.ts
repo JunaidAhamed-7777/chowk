@@ -9,6 +9,24 @@ export interface VehicleFollow {
   side: SimulationSide;
 }
 export type OverlayMode = "none" | "pressure" | "decision" | "speed" | "people";
+
+/** Speed overlay bands in m/s, shared by the 3D scene, the 2D view and the legend. */
+export const speedBands = [
+  { upTo: 0.5, label: "Stopped", color: "#ff4d57" },
+  { upTo: 3, label: "Crawling", color: "#ffad42" },
+  { upTo: 7, label: "Moving", color: "#d9f25c" },
+  { upTo: Number.POSITIVE_INFINITY, label: "Flowing", color: "#2ee8b6" },
+] as const;
+
+export function speedBand(metresPerSecond: number): number {
+  let band = 0;
+  while (metresPerSecond >= speedBands[band].upTo) band++;
+  return band;
+}
+
+/** People overlay: a marker's diameter grows with the square root of the people on board. */
+export const peopleColors = { waiting: "#ff5d6c", moving: "#ffd166" } as const;
+export const peopleMetresPerRootPerson = 2.3;
 export const overlays: readonly { id: OverlayMode; label: string }[] = [
   { id: "none", label: "Clear view" },
   { id: "pressure", label: "Pressure" },

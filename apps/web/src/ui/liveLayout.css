@@ -431,9 +431,7 @@
   translate: 0 24px;
   pointer-events: none;
 }
-.instrument[data-tour="true"] .comparison-metric:nth-child(n + 4),
-.instrument[data-tour="true"] .metric-series,
-.instrument[data-tour="true"] .metric-info {
+.instrument[data-tour="true"] .comparison-metric:nth-child(n + 4) {
   display: none;
 }
 .instrument[data-tour="true"] .comparison-metrics {
@@ -476,6 +474,7 @@
     .comparison-hud,
     .comparison-labels,
     .checkpoint-control,
+    .overlay-legend,
     .live-footer,
     .tour-caption,
     .live-notice

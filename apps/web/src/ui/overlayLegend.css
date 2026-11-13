@@ -1,0 +1,68 @@
+/* The key to the Speed and People overlays, under Watch it learn in the top-right corner. */
+.overlay-legend {
+  position: absolute;
+  z-index: 3;
+  top: 170px;
+  right: var(--gutter);
+  display: grid;
+  gap: 7px;
+  min-width: 190px;
+  padding: 10px 12px 11px;
+  border: 1px solid #ffffff1f;
+  border-radius: 10px;
+  background: #0a0f1ae6;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 30px #02040a99;
+  color: var(--ui-text);
+  font-size: 12px;
+  animation: overlay-legend-in 260ms ease-out both;
+}
+.overlay-legend strong {
+  font-size: 12.5px;
+  font-weight: 640;
+}
+.overlay-legend ul {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.overlay-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.overlay-legend li span {
+  margin-inline-start: auto;
+  color: var(--ui-dim);
+  font: 500 10.5px var(--mono);
+}
+.overlay-legend i {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #05070d;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #ffffff2e;
+}
+.overlay-legend .overlay-legend-dot {
+  background: #c9d3df;
+}
+@keyframes overlay-legend-in {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+}
+@media (max-width: 620px) {
+  .overlay-legend {
+    top: 238px;
+    min-width: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .overlay-legend {
+    animation: none;
+  }
+}
