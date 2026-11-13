@@ -4,7 +4,7 @@ Run headless:
     blender --background --python assets/blender/vehicles.py
 
 Blender axes while modelling: +X right, +Y forward (the headlight end), +Z up.
-The export converts to glTF axes (+Y up, -Z forward) as plan/06-assets.md requires.
+The export converts to glTF axes (+Y up, -Z forward), which the asset pipeline and the app expect.
 
 Vertex colours are a material mask read by the vehicle shader:
     (0, 0, 0)          body paint, tinted per vehicle
