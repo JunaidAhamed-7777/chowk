@@ -10,51 +10,6 @@
   font-size: 18px;
 }
 
-/* Chapter bar: sticks under the site header. */
-.explainer-chapters {
-  position: sticky;
-  z-index: 20;
-  top: var(--header-height);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0 calc(var(--gutter) * -0.5) 10px;
-  padding: 10px calc(var(--gutter) * 0.5);
-  border-bottom: 1px solid var(--line);
-  background: #05070df2;
-  backdrop-filter: blur(14px);
-}
-.explainer-chapters a {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 12px;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  color: var(--ui-dim);
-  font-size: 13px;
-  font-weight: 560;
-  transition:
-    color 160ms ease-out,
-    background 160ms ease-out,
-    border-color 160ms ease-out;
-}
-.explainer-chapters a span {
-  color: #5d6b7e;
-  font: 600 11px var(--mono);
-}
-.explainer-chapters a:hover {
-  color: var(--ui-text);
-}
-.explainer-chapters a[aria-current] {
-  border-color: #3df2b455;
-  background: #3df2b414;
-  color: var(--ui-text);
-}
-.explainer-chapters a[aria-current] span {
-  color: var(--accent);
-}
-
 .explainer-chapter {
   padding: 64px 0 24px;
   border-top: 1px solid var(--line);

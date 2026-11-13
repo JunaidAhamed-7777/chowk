@@ -215,7 +215,7 @@ function ChapterNav() {
     return () => observer.disconnect();
   }, []);
   return (
-    <nav className="explainer-chapters" aria-label="Chapters">
+    <nav className="chapter-bar" aria-label="Chapters">
       {chapters.map(({ id, number, label }) => (
         <a key={id} href={`#${id}`} aria-current={current === id ? "location" : undefined}>
           <span>{number}</span>

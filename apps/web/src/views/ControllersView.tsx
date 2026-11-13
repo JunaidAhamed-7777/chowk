@@ -406,24 +406,20 @@ export function ControllersView() {
   const current = useCurrentSection();
   return (
     <div className="controllers-layout">
-      <nav className="controllers-index" aria-label="Controllers on this page">
-        <p className="controllers-index-title">On this page</p>
-        <ol>
-          {sections.map(({ id, name }) => (
-            <li key={id}>
-              <a href={`#${id}`} aria-current={current === id ? "location" : undefined}>
-                {name}
-              </a>
-            </li>
-          ))}
-        </ol>
+      <p className="information-intro">
+        Six ways to run the same traffic lights. Each one is a rule for one question, asked every 5
+        seconds at every junction: which road gets green next? On the Live page you can put any two
+        side by side.
+      </p>
+      <nav className="chapter-bar" aria-label="Controllers on this page">
+        {sections.map(({ id, name }, index) => (
+          <a key={id} href={`#${id}`} aria-current={current === id ? "location" : undefined}>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {name}
+          </a>
+        ))}
       </nav>
       <div className="controllers-content">
-        <p className="information-intro">
-          Six ways to run the same traffic lights. Each one is a rule for one question, asked every
-          5 seconds at every junction: which road gets green next? On the Live page you can put any
-          two side by side.
-        </p>
         {methods.map((method) => (
           <section key={method.id} id={method.id} className="controller-section">
             <div className="controller-text">
