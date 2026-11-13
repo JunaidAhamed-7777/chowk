@@ -39,6 +39,32 @@ test("the held-out grid runs live beside area max-pressure", async ({ page }) =>
   await section.getByRole("button", { name: "Stop" }).click();
 });
 
+test("the held-out grid advances on a 144 Hz display", async ({ page }) => {
+  test.skip(!publication, "No publication to run");
+  test.setTimeout(120_000);
+  // Animation frames exactly 1/144 s apart. Rounding each frame's ticks on its own gave zero
+  // ticks per frame at this rate, and the grid never left minute 0.
+  await page.addInitScript(() => {
+    const interval = 1000 / 144;
+    let start: number | undefined;
+    let frames = 0;
+    window.requestAnimationFrame = (callback) =>
+      window.setTimeout(() => {
+        start ??= performance.now();
+        frames++;
+        callback(start + frames * interval);
+      }, interval);
+    window.cancelAnimationFrame = (id) => window.clearTimeout(id);
+  });
+  await page.goto("/results");
+  const section = page.getByRole("region", { name: "A network CHOWK never saw" });
+  await section.getByRole("button", { name: "Run the held-out grid" }).click();
+  await expect(section.getByText(/^[1-9]\d* of 30 simulated minutes/)).toBeVisible({
+    timeout: 60_000,
+  });
+  await section.getByRole("button", { name: "Stop" }).click();
+});
+
 test("Results shows published data or an honest pending state", async ({ page }) => {
   await page.goto("/results");
   await expect(page.getByRole("heading", { name: "Benchmark results", level: 1 })).toBeVisible();

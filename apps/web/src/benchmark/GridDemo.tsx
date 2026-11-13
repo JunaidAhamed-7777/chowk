@@ -10,6 +10,9 @@ import type { GridFromWorker, GridToWorker } from "./gridProtocol";
 const SEED = 1042;
 const SPEED = 8;
 const MAX_TICKS = Math.round(1_800 / DT);
+// How far the wanted simulated time may run ahead of the workers before it is dropped, so a
+// slow machine runs the grid slower instead of in ever larger jumps.
+const MAX_LEAD_SECONDS = 2;
 const delayFormat = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 1,
   minimumFractionDigits: 1,
@@ -109,6 +112,9 @@ export function GridDemo({ benchmark }: { benchmark: BenchmarkFile }) {
     let request = 0;
     const sides: Side[] = [];
     let tick = 0;
+    // Simulated seconds wanted so far. Fractions of a tick carry over between frames: rounding
+    // each frame on its own gave zero ticks per frame on 120 Hz and faster displays.
+    let wanted = 0;
     let last = performance.now();
     let lastReadout = 0;
     void loadPolicy(new AbortController().signal, benchmark.meta.policyHash)
@@ -139,18 +145,21 @@ export function GridDemo({ benchmark }: { benchmark: BenchmarkFile }) {
         const frame = (now: number) => {
           if (cancelled) return;
           const ready = sides.every((side) => !side.pending);
-          if (ready && tick < MAX_TICKS) {
-            tick = Math.min(
-              MAX_TICKS,
-              tick + Math.round(((Math.min(now - last, 100) / 1000) * SPEED) / DT),
-            );
+          wanted = Math.min(
+            MAX_TICKS * DT,
+            tick * DT + MAX_LEAD_SECONDS,
+            wanted + (Math.min(now - last, 100) / 1000) * SPEED,
+          );
+          last = now;
+          const target = Math.floor(wanted / DT + 1e-9);
+          if (ready && target > tick) {
+            tick = target;
             for (const side of sides) {
               side.pending = true;
               const message: GridToWorker = { type: "advance", tick };
               side.worker.postMessage(message);
             }
           }
-          last = now;
           sides.forEach((side, index) => {
             const canvas = canvases.current[index];
             if (canvas) draw(canvas, side.frame);
