@@ -145,7 +145,8 @@ function CorridorCamera({
       offset: 0,
     };
     transition.current = true;
-    followed.current = vehicle?.id;
+    // Only the ride camera starts from a chosen vehicle; the ambulance camera finds its own.
+    followed.current = selection === "ride" ? vehicle?.id : undefined;
   }, [selection, preset, reducedMotion, vehicle]);
 
   useFrame((_, delta) => {
@@ -193,8 +194,11 @@ function CorridorCamera({
         const sideways = 1.8;
         preset.position.set(x - behind * dx + sideways * dz, 1.4, z - behind * dz - sideways * dx);
         preset.target.set(x + 24 * dx, 1.1, z + 24 * dz);
-        camera.position.lerp(preset.position, rate);
-        controls.target.lerp(preset.target, rate);
+        // Easing in simulated time keeps the camera close behind at 16×, where a fixed
+        // wall-clock rate would trail the vehicle by tens of metres.
+        const follow = reducedMotion ? 1 : 1 - Math.exp(-4.9 * Math.max(1, speed) * delta);
+        camera.position.lerp(preset.position, follow);
+        controls.target.lerp(preset.target, follow);
         if (perspective && Math.abs(perspective.fov - 70) > 0.05) {
           perspective.fov += (70 - perspective.fov) * rate;
           perspective.updateProjectionMatrix();

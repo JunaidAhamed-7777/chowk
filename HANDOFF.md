@@ -106,3 +106,11 @@ Issues and their order of work are tracked on GitHub (pinned tracker issue). Thi
 - **C export:** `npm run policy:c` writes `exports/c`; CI regenerates it, fails on drift and runs the bit-for-bit check with `cc`.
 - **Brief:** `npm run submission:brief` writes `docs/CHOWK-brief.pdf` from the benchmark. Regenerate it with the submission draft after any benchmark run.
 - **Still open:** #22 (a full-day time-lapse would either take about 90 minutes at 16× or misrepresent demand), #23 (lazy-loading panels saves about 8 kB gzipped; left alone), #7 media.
+
+## Media recapture (13 Nov)
+
+- Recaptured `assets/demo/` (hero, wipe, surge, ambulance, decisions and reproduce GIFs; corridor, pressure, filtering and results stills; the 90-second captioned demo) and `apps/web/public/poster.webp` with `npm run capture -- stills`, `npm run capture -- video` and `node scripts/capture.mjs edit`.
+- The tour now opens on the street camera, so `captions.vtt` and the clip offsets in `scripts/capture.mjs` were retimed. The hero GIF is the ride-along.
+- The tour's first ~3 s play under the loading screen. MediaRecorder starts about 2 s before the script's clock, so the cut start (`tourStart` in `runs/capture/demo-timing.json`) was set by hand to 3.25 s, where the scene first appears in the source. Check this frame after any re-record.
+- Stills now wait for the loading screen to leave; the previous poster and pressure stills had caught it.
+- Fixed two camera bugs found in the footage: the ambulance camera reused the ride-along vehicle id, and the follow easing ran in wall-clock time, so at 16× the camera trailed the ambulance by tens of metres.

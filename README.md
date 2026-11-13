@@ -1,6 +1,6 @@
 # CHOWK
 
-![Two live controllers sharing the CHOWK corridor at night](assets/demo/hero.gif)
+![Riding with a two-wheeler through morning traffic, with two live controllers either side of the divider](assets/demo/hero.gif)
 
 **A learned signal controller for lane-free Indian traffic, running live in the browser.**
 

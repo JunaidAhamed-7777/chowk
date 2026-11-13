@@ -1,24 +1,30 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:07.000
-CHOWK simulates mixed traffic along a five-junction Indian arterial.
+00:00:00.000 --> 00:00:04.400
+CHOWK simulates mixed, lane-free traffic on a five-junction Indian arterial.
 
-00:00:07.200 --> 00:00:17.500
-The divider compares fixed timers and CHOWK on identical demand.
+00:00:04.500 --> 00:00:11.600
+The divider compares two controllers on identical demand and the same seed.
 
-00:00:18.000 --> 00:00:28.000
-Two-wheelers filter through gaps beside stopped traffic.
+00:00:11.800 --> 00:00:18.800
+The camera rides with a two-wheeler as it filters through gaps.
 
-00:00:28.600 --> 00:00:38.500
+00:00:19.000 --> 00:00:26.000
+At a junction, the speed overlay shows who moves beside stopped queues.
+
+00:00:26.200 --> 00:00:33.200
 The pressure overlay shows how much of each approach is occupied.
 
-00:00:39.000 --> 00:00:51.500
+00:00:33.400 --> 00:00:36.800
+CHOWK minimises delay to people, so a full bus counts for more than a car.
+
+00:00:37.000 --> 00:00:49.500
 Both simulations receive an ambulance at the same tick.
 
-00:00:52.000 --> 00:01:01.000
+00:00:49.700 --> 00:00:58.500
 A demand surge tests how the controllers respond to a busier approach.
 
-00:01:01.000 --> 00:01:04.900
+00:00:58.700 --> 00:01:04.900
 Place a stalled bus to close part of the same road on both sides.
 
 00:01:05.000 --> 00:01:14.000

@@ -265,3 +265,4 @@ Record spec changes here: date, what changed, why.
 - 13 Nov 2026 — Four live-only story presets: stadium exit, festival procession, school closing and waterlogging (spec L4b, issue #19).
 - 13 Nov 2026 — Dock fits at 1024 px: photo mode is an icon button and the dock tightens below 1180 px; below 1024 px it scrolls sideways.
 - 13 Nov 2026 — After a rewind the metric sparklines keep the original timeline as dashed ghost lines (spec L17, issue #10).
+- 13 Nov 2026 — Recaptured the README stills, clips, poster and captioned demo for the current tour (issue #7). The follow cameras now ease in simulated time, so the ambulance camera stays behind the ambulance at 16×, and the ambulance camera no longer starts from the ride-along vehicle.

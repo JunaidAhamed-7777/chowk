@@ -68,7 +68,9 @@ function burnInCaptions() {
     .map((cue) => {
       const [timing, ...lines] = cue.split(/\r?\n/);
       const [start, end] = timing.split(" --> ");
-      const position = start >= "00:01:27.000" ? 737 : 235;
+      // The title card and the Results page have text near the top, so those cues sit lower.
+      const position =
+        start >= "00:01:27.000" ? 737 : start >= "00:01:05.000" && start < "00:01:22.000" ? 1010 : 235;
       return `Dialogue: 0,${time(start)},${time(end)},Caption,,0,0,0,,{\\an8\\pos(960,${position})}${lines.join("\\N")}`;
     });
   const header = `[Script Info]
@@ -91,11 +93,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 function clips() {
   const demo = join(media, "chowk-demo.mp4");
   const scenes = [
-    ["hero", 6.4, 4.25, 800],
-    ["wipe", 6.8, 3.8, 520],
-    ["surge", 52.5, 3.8, 520],
-    ["ambulance", 41, 3.8, 520],
-    ["decisions", 30.5, 3.8, 520],
+    ["hero", 12.4, 4.25, 800],
+    ["wipe", 4.8, 3.8, 520],
+    ["surge", 51, 3.8, 520],
+    ["ambulance", 40, 3.8, 520],
+    ["decisions", 27, 3.8, 520],
     ["reproduce", 77.5, 4, 520],
   ];
   for (const [name, start, duration, width] of scenes) {
@@ -116,7 +118,7 @@ function clips() {
   if (statSync(join(media, "hero.gif")).size > 8_000_000) throw new Error("Hero GIF exceeds 8 MB");
   ffmpeg([
     "-ss",
-    "21",
+    "15",
     "-i",
     demo,
     "-frames:v",
@@ -142,6 +144,7 @@ async function pageFor(browser, tier, size = viewport) {
 async function waitForScene(page) {
   await page.locator(".instrument[data-ready=true]").waitFor({ timeout: 30_000 });
   await page.locator(".scene-stage canvas").waitFor();
+  await page.locator(".loading-screen").waitFor({ state: "detached", timeout: 30_000 });
   await page.evaluate(
     () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
   );
@@ -247,11 +250,14 @@ async function video(browser) {
     const start = performance.now();
     const elapsed = () => (performance.now() - start) / 1000;
     await page.keyboard.press("t");
-    await page.getByText("A five-junction corridor, simulated live in your browser.").waitFor();
+    await page.getByText(/^Morning rush at a chowk/).waitFor();
     tourStart = elapsed();
     await page.getByText("Compare person-delay, then reproduce the benchmark in Results.").waitFor({
       timeout: 90_000,
     });
+    await page.waitForTimeout(1500);
+    // Any key hands control back and reveals the dock that the cinematic tour hides.
+    await page.keyboard.press("Shift");
     await page.getByRole("button", { name: "Block a lane", exact: true }).click();
     await page.mouse.click(1102, 506);
     await page.getByText("Lane block scheduled for both simulations.").waitFor();
