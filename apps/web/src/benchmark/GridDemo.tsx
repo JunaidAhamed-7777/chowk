@@ -3,6 +3,7 @@ import { controllerLabel, signedPercent } from "@chowk/bench";
 import { DT, holdoutNetwork, SNAPSHOT_STRIDE } from "@chowk/sim";
 import { useEffect, useRef, useState } from "react";
 import type { ControllerChoice } from "../sim/protocol";
+import { Icon } from "../ui/Icon";
 import { loadPolicy } from "./BenchmarkReproduction";
 import type { GridFromWorker, GridToWorker } from "./gridProtocol";
 
@@ -183,7 +184,7 @@ export function GridDemo({ benchmark }: { benchmark: BenchmarkFile }) {
   const minutes = Math.floor(readout[2] / 60);
   return (
     <div className="grid-demo">
-      <div className="grid-demo-stage">
+      <div className={running ? "grid-demo-stage" : "grid-demo-stage grid-demo-stage-idle"}>
         {(["mp-area", "chowk"] as const).map((id, index) => (
           <figure key={id}>
             <figcaption>
@@ -201,11 +202,31 @@ export function GridDemo({ benchmark }: { benchmark: BenchmarkFile }) {
             />
           </figure>
         ))}
+        {!running && (
+          <div className="grid-demo-start">
+            <button
+              type="button"
+              className="control-button grid-demo-run grid-demo-run-idle"
+              onClick={() => setRunning(true)}
+            >
+              <Icon name="play" />
+              Run the held-out grid
+            </button>
+            <span>Area max-pressure and CHOWK, side by side, live in your browser</span>
+          </div>
+        )}
       </div>
       <div className="grid-demo-bar">
-        <button type="button" className="control-button" onClick={() => setRunning(!running)}>
-          {running ? "Stop" : "Run the held-out grid"}
-        </button>
+        {running && (
+          <button
+            type="button"
+            className="control-button grid-demo-run"
+            onClick={() => setRunning(false)}
+          >
+            <Icon name="pause" />
+            Stop
+          </button>
+        )}
         {running && (
           <span>
             {minutes} of 30 simulated minutes at {SPEED}× · seed {SEED} · blue moving, red stopped,

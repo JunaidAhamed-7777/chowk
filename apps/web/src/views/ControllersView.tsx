@@ -1,5 +1,5 @@
 import { VEHICLE_CLASSES } from "@chowk/sim";
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import "./controllers.css";
 
 const seconds = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
@@ -366,82 +366,126 @@ const methods: Method[] = [
   },
 ];
 
+const sections = [
+  ...methods.map(({ id, name }) => ({ id, name })),
+  { id: "rules", name: "Shared rules" },
+];
+
+/** The section nearest the top of the viewport, so the index can show where the reader is. */
+function useCurrentSection() {
+  const [current, setCurrent] = useState(sections[0].id);
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      let found = sections[0].id;
+      for (const { id } of sections) {
+        const element = document.getElementById(id);
+        if (element && element.getBoundingClientRect().top <= window.innerHeight * 0.35) found = id;
+      }
+      const bottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      setCurrent(bottom ? sections[sections.length - 1].id : found);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, []);
+  return current;
+}
+
 export function ControllersView() {
+  const current = useCurrentSection();
   return (
-    <div className="controllers-content">
-      <p className="information-intro">
-        Six ways to run the same traffic lights. Each one is a rule for one question, asked every 5
-        seconds at every junction: which road gets green next? On the Live page you can put any two
-        side by side.
-      </p>
+    <div className="controllers-layout">
       <nav className="controllers-index" aria-label="Controllers on this page">
-        {methods.map(({ id, name }) => (
-          <a key={id} href={`#${id}`}>
-            {name}
-          </a>
-        ))}
+        <p className="controllers-index-title">On this page</p>
+        <ol>
+          {sections.map(({ id, name }) => (
+            <li key={id}>
+              <a href={`#${id}`} aria-current={current === id ? "location" : undefined}>
+                {name}
+              </a>
+            </li>
+          ))}
+        </ol>
       </nav>
-      {methods.map((method) => (
-        <section key={method.id} id={method.id} className="controller-section">
+      <div className="controllers-content">
+        <p className="information-intro">
+          Six ways to run the same traffic lights. Each one is a rule for one question, asked every
+          5 seconds at every junction: which road gets green next? On the Live page you can put any
+          two side by side.
+        </p>
+        {methods.map((method) => (
+          <section key={method.id} id={method.id} className="controller-section">
+            <div className="controller-text">
+              <h2>{method.name}</h2>
+              <p className="controller-short">{method.short}</p>
+              <dl>
+                <div>
+                  <dt>What it looks at</dt>
+                  <dd>{method.looksAt}</dd>
+                </div>
+                <div>
+                  <dt>How it decides</dt>
+                  <dd>{method.decides}</dd>
+                </div>
+                <div>
+                  <dt>Good at</dt>
+                  <dd>{method.good}</dd>
+                </div>
+                <div>
+                  <dt>Weak spot</dt>
+                  <dd>{method.weak}</dd>
+                </div>
+              </dl>
+              {method.result && (
+                <p className="controller-result">
+                  Average delay per person in testing (morning peak):{" "}
+                  <strong>{method.result}</strong>. Simulation result.
+                </p>
+              )}
+            </div>
+            <figure className="controller-diagram">{method.diagram}</figure>
+          </section>
+        ))}
+        <section id="rules" className="controller-section controller-rules">
           <div className="controller-text">
-            <h2>{method.name}</h2>
-            <p className="controller-short">{method.short}</p>
+            <h2>Rules every controller follows</h2>
             <dl>
               <div>
-                <dt>What it looks at</dt>
-                <dd>{method.looksAt}</dd>
+                <dt>Safe changes</dt>
+                <dd>
+                  Every change of green goes through yellow and all-red, and each green lasts at
+                  least a minimum time. The simulated signal enforces this for all six.
+                </dd>
               </div>
               <div>
-                <dt>How it decides</dt>
-                <dd>{method.decides}</dd>
+                <dt>Nobody waits forever</dt>
+                <dd>
+                  If any road has waited more than 150 seconds, it is served next. This applies to
+                  every controller that reacts to traffic.
+                </dd>
               </div>
               <div>
-                <dt>Good at</dt>
-                <dd>{method.good}</dd>
-              </div>
-              <div>
-                <dt>Weak spot</dt>
-                <dd>{method.weak}</dd>
+                <dt>Same traffic</dt>
+                <dd>
+                  In every comparison, both controllers face exactly the same vehicles arriving at
+                  exactly the same moments.
+                </dd>
               </div>
             </dl>
-            {method.result && (
-              <p className="controller-result">
-                Average delay per person in testing (morning peak): <strong>{method.result}</strong>
-                . Simulation result.
-              </p>
-            )}
           </div>
-          <figure className="controller-diagram">{method.diagram}</figure>
         </section>
-      ))}
-      <section className="controller-section controller-rules">
-        <div className="controller-text">
-          <h2>Rules every controller follows</h2>
-          <dl>
-            <div>
-              <dt>Safe changes</dt>
-              <dd>
-                Every change of green goes through yellow and all-red, and each green lasts at least
-                a minimum time. The simulated signal enforces this for all six.
-              </dd>
-            </div>
-            <div>
-              <dt>Nobody waits forever</dt>
-              <dd>
-                If any road has waited more than 150 seconds, it is served next. This applies to
-                every controller that reacts to traffic.
-              </dd>
-            </div>
-            <div>
-              <dt>Same traffic</dt>
-              <dd>
-                In every comparison, both controllers face exactly the same vehicles arriving at
-                exactly the same moments.
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

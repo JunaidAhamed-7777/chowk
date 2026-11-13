@@ -96,7 +96,8 @@ function SaturationFigure() {
     Math.ceil(Math.max(...rates.map(({ vehiclesPerSecond }) => vehiclesPerSecond)) * 5) / 5;
   const scale = (value: number) => 147 + (528 * value) / maximum;
   const widths = [...new Set(rates.map(({ strips }) => strips))].sort((a, b) => a - b);
-  const height = widths.length * 74 + 33;
+  const top = 22;
+  const height = top + widths.length * 74 + 52;
   return (
     <figure className="results-chart">
       <figcaption>Saturation flow across approach widths</figcaption>
@@ -129,17 +130,17 @@ function SaturationFigure() {
                 className="chart-grid"
                 x1={scale(fraction * maximum)}
                 x2={scale(fraction * maximum)}
-                y1="4"
-                y2={height - 24}
+                y1={top}
+                y2={height - 45}
               />
-              <text x={scale(fraction * maximum)} y={height - 7} textAnchor="middle">
+              <text x={scale(fraction * maximum)} y={height - 27} textAnchor="middle">
                 {(fraction * maximum).toFixed(2)}
               </text>
             </g>
           ))}
           {widths.map((width, group) => (
             <g key={width}>
-              <text className="chart-scenario" x="8" y={group * 74 + 32}>
+              <text className="chart-scenario" x="8" y={top + group * 74 + 32}>
                 {width / 2} m approach
               </text>
               {(["mixed", "festival", "cars"] as const).map((mix, index) => {
@@ -150,7 +151,7 @@ function SaturationFigure() {
                   <rect
                     key={mix}
                     x={scale(0)}
-                    y={group * 74 + 9 + 17 * index}
+                    y={top + group * 74 + 9 + 17 * index}
                     width={scale(rate.vehiclesPerSecond) - scale(0)}
                     height="10"
                     rx="3"
@@ -165,8 +166,16 @@ function SaturationFigure() {
               })}
             </g>
           ))}
-          <text x="735" y={height - 7} textAnchor="end">
-            veh/s
+          <text className="chart-axis-title" x="8" y="12">
+            Approach width
+          </text>
+          <text
+            className="chart-axis-title"
+            x={scale(maximum / 2)}
+            y={height - 6}
+            textAnchor="middle"
+          >
+            Saturation flow (vehicles per second)
           </text>
         </svg>
       </div>

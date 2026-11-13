@@ -6,7 +6,9 @@ const ResultsView = lazy(() =>
   import("./ResultsView").then(({ ResultsView }) => ({ default: ResultsView })),
 );
 const ControllersView = lazy(() =>
-  import("./ControllersView").then(({ ControllersView }) => ({ default: ControllersView })),
+  import("./ControllersView").then(({ ControllersView }) => ({
+    default: ControllersView,
+  })),
 );
 const MethodView = lazy(() =>
   import("./MethodView").then(({ MethodView }) => ({ default: MethodView })),
@@ -32,7 +34,11 @@ const turning = calibration.rows
   .filter(({ mix }) => mix === "mixed")
   .map(({ strips, vehiclesPerSecond }) => {
     const width = strips * STRIP_WIDTH;
-    return { width, simulated: vehiclesPerSecond * 3_600, base: indoHcmPerMetre(width) * width };
+    return {
+      width,
+      simulated: vehiclesPerSecond * 3_600,
+      base: indoHcmPerMetre(width) * width,
+    };
   });
 const turningLimit = `With the default turning shares (30% of arterial and 50% of cross-street traffic turns), a standing mixed queue in the simulator discharges about ${turning.map(({ width, simulated }) => `${round100(simulated)} vehicles/h on ${width} m`).join(", ")}. Indo-HCM's base saturation flows for the same widths are ${turning.map(({ base }) => `${round100(base)}`).join(", ")} PCU/h before adjustment for turns and buses. Vehicles and PCU are not the same unit, but the gap suggests the simulator's turning model is conservative and real junctions of this size would serve more traffic.`;
 
@@ -120,7 +126,15 @@ const pathSteps: { title: string; body: React.ReactNode }[] = [
 
 export function InformationView({ route }: { route: InformationRoute }) {
   return (
-    <article className={route === "/results" ? "information information-results" : "information"}>
+    <article
+      className={
+        route === "/results"
+          ? "information information-results"
+          : route === "/controllers"
+            ? "information information-controllers"
+            : "information"
+      }
+    >
       <h1 id="information-heading" tabIndex={-1}>
         {titles[route]}
       </h1>

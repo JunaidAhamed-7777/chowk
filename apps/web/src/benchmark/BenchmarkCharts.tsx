@@ -67,6 +67,8 @@ function GroupedIntervals({
   extent,
   symmetric = false,
   format,
+  xLabel,
+  yLabel,
 }: {
   points: readonly GroupedInterval[];
   caption: string;
@@ -74,6 +76,8 @@ function GroupedIntervals({
   extent: number;
   symmetric?: boolean;
   format: (value: number) => string;
+  xLabel: string;
+  yLabel: string;
 }) {
   const titleId = useId();
   const controllers = [...new Set(points.map(({ controller }) => controller))].sort(
@@ -84,7 +88,8 @@ function GroupedIntervals({
   const start = symmetric ? -extent : 0;
   const plot = (value: number) => 166 + (632 * (value - start)) / (extent - start);
   const groupHeight = controllers.length * 15 + 21;
-  const height = groups.length * groupHeight + 24;
+  const top = 22;
+  const height = top + groups.length * groupHeight + 46;
   return (
     <figure className="results-chart">
       <figcaption>{caption}</figcaption>
@@ -109,10 +114,10 @@ function GroupedIntervals({
                   className={symmetric && value === 0 ? "chart-axis" : "chart-grid"}
                   x1={plot(value)}
                   x2={plot(value)}
-                  y1="2"
-                  y2={height - 23}
+                  y1={top - 2}
+                  y2={height - 45}
                 />
-                <text x={plot(value)} y={height - 5} textAnchor="middle">
+                <text x={plot(value)} y={height - 27} textAnchor="middle">
                   {format(value)}
                 </text>
               </g>
@@ -120,7 +125,7 @@ function GroupedIntervals({
           })}
           {groups.map((group, row) => (
             <g key={group}>
-              <text className="chart-scenario" x="4" y={row * groupHeight + 19}>
+              <text className="chart-scenario" x="4" y={top + row * groupHeight + 19}>
                 {group}
               </text>
               {controllers.map((controller, index) => {
@@ -134,7 +139,7 @@ function GroupedIntervals({
                     x={plot(point.mean)}
                     low={plot(point.ciLow)}
                     high={plot(point.ciHigh)}
-                    y={row * groupHeight + 11 + index * 15}
+                    y={top + row * groupHeight + 11 + index * 15}
                     colour={colours[controller] ?? "#bac5d9"}
                     label={`${group}, ${controllerLabel(controller)}: ${format(point.mean)} (${format(point.ciLow)} to ${format(point.ciHigh)})`}
                   />
@@ -142,6 +147,17 @@ function GroupedIntervals({
               })}
             </g>
           ))}
+          <text className="chart-axis-title" x="4" y="12">
+            {yLabel}
+          </text>
+          <text
+            className="chart-axis-title"
+            x={plot((start + extent) / 2)}
+            y={height - 6}
+            textAnchor="middle"
+          >
+            {xLabel}
+          </text>
         </svg>
       </div>
     </figure>
@@ -152,10 +168,12 @@ export function DelayChart({
   rows,
   caption = "Delay per person by scenario",
   groupBy = (row) => scenarioLabel(row.scenario),
+  yLabel = "Scenario",
 }: {
   rows: readonly SummaryCell[];
   caption?: string;
   groupBy?: (row: SummaryCell) => string;
+  yLabel?: string;
 }) {
   const points = rows
     .filter(({ metric }) => metric === primaryMetric)
@@ -168,6 +186,8 @@ export function DelayChart({
       description={`${caption}. Dots show simulated means.`}
       extent={Math.ceil(high / 10) * 10}
       format={(value) => `${formatMetric(primaryMetric, value)} s`}
+      xLabel="Mean delay per person (seconds), with 95% interval"
+      yLabel={yLabel}
     />
   );
 }
@@ -176,10 +196,14 @@ function RelativeIntervals({
   points,
   caption,
   description,
+  xLabel,
+  yLabel,
 }: {
   points: readonly GroupedInterval[];
   caption: string;
   description: string;
+  xLabel: string;
+  yLabel: string;
 }) {
   const high = Math.max(
     0.01,
@@ -193,6 +217,8 @@ function RelativeIntervals({
       extent={Math.ceil(high * 100) / 100}
       format={signedPercent}
       symmetric
+      xLabel={xLabel}
+      yLabel={yLabel}
     />
   );
 }
@@ -211,6 +237,8 @@ export function AblationChart({ benchmark }: { benchmark: BenchmarkFile }) {
       points={points}
       caption="CHOWK’s delay compared with each variant"
       description="Relative difference in simulated delay per person across policy variants. Negative values favour CHOWK."
+      xLabel="Difference in delay per person, CHOWK vs variant (%; below 0 favours CHOWK)"
+      yLabel="Scenario"
     />
   );
 }
@@ -235,6 +263,8 @@ export function SensorNoiseChart({ benchmark }: { benchmark: BenchmarkFile }) {
       points={points}
       caption="Change in delay per person under sensor noise"
       description="Relative change in simulated delay per person against the same controller on clean sensors. Positive values indicate more delay."
+      xLabel="Change in delay per person vs clean sensors (%; above 0 means more delay)"
+      yLabel="Sensor noise"
     />
   );
 }
@@ -272,7 +302,8 @@ export function LaneChart({ benchmark }: { benchmark: BenchmarkFile }) {
     ),
   );
   const plot = (value: number) => 568 + (220 * value) / range;
-  const height = rows.length * 45 + 30;
+  const top = 22;
+  const height = top + rows.length * 45 + 52;
   return (
     <figure className="results-chart">
       <figcaption>How lane discipline changes the gap</figcaption>
@@ -296,15 +327,21 @@ export function LaneChart({ benchmark }: { benchmark: BenchmarkFile }) {
             Paired relative delay differences and 95% intervals for mixed traffic and
             lane-disciplined cars
           </title>
-          <line className="chart-axis" x1={plot(0)} x2={plot(0)} y1="5" y2={height - 26} />
+          <line className="chart-axis" x1={plot(0)} x2={plot(0)} y1={top} y2={height - 48} />
           {[-range, 0, range].map((value) => (
-            <text key={value} x={plot(value)} y={height - 6} textAnchor="middle">
-              {signedPercent(value)}
+            <text key={value} x={plot(value)} y={height - 28} textAnchor="middle">
+              {value === 0 ? "0%" : signedPercent(value)}
             </text>
           ))}
+          <text className="chart-axis-title" x="4" y="12">
+            Comparison (first vs second controller)
+          </text>
+          <text className="chart-axis-title" x={plot(0)} y={height - 6} textAnchor="middle">
+            Difference in delay per person (%; below 0 favours the first)
+          </text>
           {rows.map(({ a, b, data }, rowIndex) => (
             <g key={`${a}-${b}`}>
-              <text className="chart-scenario" x="4" y={rowIndex * 45 + 24}>
+              <text className="chart-scenario" x="4" y={top + rowIndex * 45 + 24}>
                 {controllerLabel(a)} vs {controllerLabel(b)}
               </text>
               {data.map(
@@ -315,7 +352,7 @@ export function LaneChart({ benchmark }: { benchmark: BenchmarkFile }) {
                       x={plot(point.relDiff)}
                       low={plot(point.ciLow)}
                       high={plot(point.ciHigh)}
-                      y={rowIndex * 45 + 15 + seriesIndex * 15}
+                      y={top + rowIndex * 45 + 15 + seriesIndex * 15}
                       colour={seriesIndex === 0 ? "#3df2b4" : "#ffc27a"}
                       label={`${scenarioLabel(point.scenario)}: ${signedPercent(point.relDiff)} (${signedPercent(point.ciLow)} to ${signedPercent(point.ciHigh)})`}
                     />
@@ -345,7 +382,7 @@ export function LoadSweepChart({ rows }: { rows: readonly SummaryCell[] }) {
   );
   const xMinimum = loads[0];
   const xMaximum = loads[loads.length - 1];
-  const x = (load: number) => 56 + (739 * (load - xMinimum)) / (xMaximum - xMinimum || 1);
+  const x = (load: number) => 80 + (715 * (load - xMinimum)) / (xMaximum - xMinimum || 1);
   const y = (delay: number) => 222 - (205 * delay) / yMaximum;
   return (
     <figure className="results-chart">
@@ -359,7 +396,7 @@ export function LoadSweepChart({ rows }: { rows: readonly SummaryCell[] }) {
         ))}
       </ul>
       <div className="results-chart-scroll">
-        <svg viewBox="0 0 830 258" role="img" aria-labelledby={titleId}>
+        <svg viewBox="0 0 830 280" role="img" aria-labelledby={titleId}>
           <title id={titleId}>
             Mean simulated delay per person over calibrated demand loads. Vertical bars show 95%
             intervals.
@@ -368,21 +405,31 @@ export function LoadSweepChart({ rows }: { rows: readonly SummaryCell[] }) {
             <g key={step}>
               <line
                 className="chart-grid"
-                x1="56"
+                x1="80"
                 x2="795"
                 y1={y(step * yMaximum)}
                 y2={y(step * yMaximum)}
               />
-              <text x="49" y={y(step * yMaximum) + 4} textAnchor="end">
+              <text x="72" y={y(step * yMaximum) + 4} textAnchor="end">
                 {(step * yMaximum).toFixed(0)} s
               </text>
             </g>
           ))}
           {loads.map((load) => (
             <text key={load} x={x(load)} y="246" textAnchor="middle">
-              {load.toFixed(1)}×
+              {load.toFixed(1)}
             </text>
           ))}
+          <text
+            className="chart-axis-title"
+            transform={`translate(14 ${y(yMaximum / 2)}) rotate(-90)`}
+            textAnchor="middle"
+          >
+            Delay per person (s)
+          </text>
+          <text className="chart-axis-title" x={(80 + 795) / 2} y="274" textAnchor="middle">
+            Demand load (1.0 = junction capacity)
+          </text>
           {controllers.map((controller) => {
             const series = points
               .filter((point) => point.controller === controller)

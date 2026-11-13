@@ -95,16 +95,8 @@ export function SimulationTraffic({
         visible={singleView || wipe < 100}
         clip={clips[1]}
       />
-      <AmbulanceCorridor
-        host={left}
-        visible={!singleView && wipe > 0}
-        clip={clips[0]}
-      />
-      <AmbulanceCorridor
-        host={right}
-        visible={singleView || wipe < 100}
-        clip={clips[1]}
-      />
+      <AmbulanceCorridor host={left} visible={!singleView && wipe > 0} clip={clips[0]} />
+      <AmbulanceCorridor host={right} visible={singleView || wipe < 100} clip={clips[1]} />
       <MotionTrails
         host={left}
         capacity={capacity}

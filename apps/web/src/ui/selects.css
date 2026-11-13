@@ -13,6 +13,13 @@ select option:checked {
   background: #16382f;
   color: #c8f9e8;
 }
+/* A group label splits a list in two (for example the live-only stories). */
+select optgroup {
+  background: #0d1420;
+  color: var(--accent);
+  font-style: normal;
+  font-weight: 700;
+}
 
 @supports (appearance: base-select) {
   select,
@@ -98,6 +105,28 @@ select option:checked {
   }
   select option:checked:is(:hover, :focus-visible) {
     background: #3df2b42e;
+  }
+  /* The group label is drawn from the optgroup's own font, so options reset theirs below. */
+  select optgroup {
+    display: block;
+    margin: 6px -6px 6px;
+    padding: 12px 6px 6px;
+    border-block: 1px solid #ffffff2e;
+    background: #3df2b40a;
+    color: var(--accent);
+    font:
+      700 10.5px / 1.2 var(--mono),
+      monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-indent: 12px;
+  }
+  select optgroup option {
+    margin-top: 6px;
+    text-indent: 0;
+  }
+  select optgroup option + option {
+    margin-top: 0;
   }
   /* Tick on the right, so option labels stay aligned on the left. */
   select option::checkmark {

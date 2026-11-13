@@ -118,7 +118,7 @@ function FundamentalDiagram() {
   const { points } = validation.fundamentalDiagram;
   const maxDensity = Math.max(...points.map(({ density }) => density));
   const maxFlow = Math.ceil(Math.max(...points.map(({ flow }) => flow)) / 500) * 500;
-  const x = (density: number) => 69 + (628 * density) / maxDensity;
+  const x = (density: number) => 84 + (613 * density) / maxDensity;
   const y = (flow: number) => 197 - (178 * flow) / maxFlow;
   return (
     <figure className="results-chart">
@@ -136,12 +136,12 @@ function FundamentalDiagram() {
             <g key={step}>
               <line
                 className="chart-grid"
-                x1="69"
+                x1="84"
                 x2="697"
                 y1={y(step * maxFlow)}
                 y2={y(step * maxFlow)}
               />
-              <text x="62" y={y(step * maxFlow) + 4} textAnchor="end">
+              <text x="77" y={y(step * maxFlow) + 4} textAnchor="end">
                 {(step * maxFlow).toFixed(0)}
               </text>
               <text x={x(step * maxDensity)} y="218" textAnchor="middle">
@@ -149,11 +149,15 @@ function FundamentalDiagram() {
               </text>
             </g>
           ))}
-          <text x="3" y="12">
-            veh/h
+          <text
+            className="chart-axis-title"
+            transform={`translate(14 ${y(maxFlow / 2)}) rotate(-90)`}
+            textAnchor="middle"
+          >
+            Flow (vehicles/h)
           </text>
-          <text x="730" y="233" textAnchor="end">
-            vehicles/km
+          <text className="chart-axis-title" x={(84 + 697) / 2} y="233" textAnchor="middle">
+            Density (vehicles/km)
           </text>
           <polyline
             points={points.map(({ density, flow }) => `${x(density)},${y(flow)}`).join(" ")}

@@ -120,13 +120,31 @@ export function SkepticExplorer({ benchmark }: { benchmark: BenchmarkFile }) {
     return { mean, low, high, better };
   }, [pairs, activeMetric]);
 
-  const extent = Math.max(
-    0.01,
+  const raw = Math.max(
+    0.005,
     ...pairs.map(({ relative }) => Math.abs(relative)),
     Math.abs(summary?.low ?? 0),
     Math.abs(summary?.high ?? 0),
   );
-  const x = (value: number) => 50 + (value / extent) * 45;
+  const step =
+    [0.005, 0.01, 0.02, 0.025, 0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 5].find(
+      (candidate) => raw / candidate <= 3,
+    ) ?? Math.ceil(raw / 3);
+  const extent = Math.ceil(raw / step - 1e-9) * step;
+  const ticks = Array.from(
+    { length: Math.round((2 * extent) / step) + 1 },
+    (_, index) => -extent + index * step,
+  );
+  const plotLeft = 150;
+  const plotRight = 806;
+  const rowHeight = 15;
+  const plotTop = 34;
+  const plotBottom = plotTop + pairs.length * rowHeight + 6;
+  const chartHeight = plotBottom + 50;
+  const x = (value: number) =>
+    plotLeft + ((value + extent) / (2 * extent)) * (plotRight - plotLeft);
+  const lowerIsBetter = !higherIsBetter.has(activeMetric);
+  const aBetter = (relative: number) => (lowerIsBetter ? relative < 0 : relative > 0);
 
   const [replay, setReplay] = useState<{ seed: number; status: string }>();
   const worker = useRef<Worker | null>(null);
@@ -244,53 +262,151 @@ export function SkepticExplorer({ benchmark }: { benchmark: BenchmarkFile }) {
             was better on {summary.better} of {pairs.length} held-out seeds.
             {summary.low <= 0 && summary.high >= 0 && " The interval includes zero."}
           </p>
-          <svg
-            className="skeptic-plot"
-            viewBox={`0 0 100 ${pairs.length * 4 + 8}`}
-            preserveAspectRatio="none"
-            role="img"
-            aria-labelledby={`${id}-plot`}
-          >
-            <title id={`${id}-plot`}>
-              Paired difference per seed for {label}, {controllerLabel(left)} relative to{" "}
-              {controllerLabel(right)}
-            </title>
-            <rect
-              x={x(summary.low)}
-              y={0}
-              width={Math.max(0.3, x(summary.high) - x(summary.low))}
-              height={pairs.length * 4 + 8}
-              className="skeptic-ci"
-            />
-            <line x1={50} x2={50} y1={0} y2={pairs.length * 4 + 8} className="skeptic-zero" />
-            <line
-              x1={x(summary.mean)}
-              x2={x(summary.mean)}
-              y1={0}
-              y2={pairs.length * 4 + 8}
-              className="skeptic-mean"
-            />
-            {pairs.map((pair, index) => (
-              <circle
-                key={pair.seed}
-                cx={x(pair.relative)}
-                cy={index * 4 + 6}
-                r={1.2}
-                className="skeptic-dot"
-              >
-                <title>
-                  Seed {pair.seed}: {formatMetric(activeMetric, pair.a.metrics[activeMetric])} vs{" "}
-                  {formatMetric(activeMetric, pair.b.metrics[activeMetric])} (
-                  {signedPercent(pair.relative)})
+          <figure className="results-chart skeptic-chart">
+            <figcaption>
+              {label}: {controllerLabel(left)} relative to {controllerLabel(right)}, seed by seed
+            </figcaption>
+            <p>
+              Each dot is one held-out seed: the same traffic run under both controllers. Left of
+              zero, {controllerLabel(left)} had a lower {label.toLowerCase()} than{" "}
+              {controllerLabel(right)} on that seed, which is {lowerIsBetter ? "better" : "worse"}.
+            </p>
+            <ul className="chart-legend">
+              <li>
+                <span className="skeptic-key-better" />
+                {controllerLabel(left)} better
+              </li>
+              <li>
+                <span className="skeptic-key-worse" />
+                {controllerLabel(left)} worse
+              </li>
+              <li>
+                <span className="skeptic-key-mean" />
+                Mean difference
+              </li>
+              <li>
+                <span className="skeptic-key-ci" />
+                95% bootstrap interval of the mean
+              </li>
+            </ul>
+            <div className="results-chart-scroll">
+              <svg viewBox={`0 0 830 ${chartHeight}`} role="img" aria-labelledby={`${id}-plot`}>
+                <title id={`${id}-plot`}>
+                  Paired difference per seed for {label}, {controllerLabel(left)} relative to{" "}
+                  {controllerLabel(right)}
                 </title>
-              </circle>
-            ))}
-          </svg>
-          <p className="skeptic-axis">
-            <span>{signedPercent(-extent)}</span>
-            <span>0</span>
-            <span>{signedPercent(extent)}</span>
-          </p>
+                <rect
+                  x={x(summary.low)}
+                  y={plotTop}
+                  width={Math.max(1.5, x(summary.high) - x(summary.low))}
+                  height={plotBottom - plotTop}
+                  className="skeptic-ci"
+                />
+                {pairs.map((pair, index) => (
+                  <line
+                    key={`row-${pair.seed}`}
+                    className="skeptic-row"
+                    x1={plotLeft}
+                    x2={plotRight}
+                    y1={plotTop + index * rowHeight + rowHeight / 2 + 3}
+                    y2={plotTop + index * rowHeight + rowHeight / 2 + 3}
+                  />
+                ))}
+                {ticks.map((tick) => (
+                  <g key={tick}>
+                    <line
+                      className={Math.abs(tick) < 1e-9 ? "chart-axis skeptic-zero" : "chart-grid"}
+                      x1={x(tick)}
+                      x2={x(tick)}
+                      y1={plotTop}
+                      y2={plotBottom}
+                    />
+                    <text x={x(tick)} y={plotBottom + 16} textAnchor="middle">
+                      {Math.abs(tick) < 1e-9 ? "0%" : signedPercent(tick)}
+                    </text>
+                  </g>
+                ))}
+                <line
+                  className="skeptic-mean"
+                  x1={x(summary.mean)}
+                  x2={x(summary.mean)}
+                  y1={plotTop - 4}
+                  y2={plotBottom}
+                />
+                <text
+                  className="skeptic-mean-label"
+                  x={x(summary.mean)}
+                  y={plotTop - 8}
+                  textAnchor={
+                    x(summary.mean) > plotRight - 60
+                      ? "end"
+                      : x(summary.mean) < plotLeft + 60
+                        ? "start"
+                        : "middle"
+                  }
+                >
+                  mean {signedPercent(summary.mean)}
+                </text>
+                <text className="skeptic-direction" x={plotLeft} y="12">
+                  ←{" "}
+                  {lowerIsBetter
+                    ? `${controllerLabel(left)} lower (better)`
+                    : `${controllerLabel(left)} lower (worse)`}
+                </text>
+                <text className="skeptic-direction" x={plotRight} y="12" textAnchor="end">
+                  {lowerIsBetter
+                    ? `${controllerLabel(left)} higher (worse)`
+                    : `${controllerLabel(left)} higher (better)`}{" "}
+                  →
+                </text>
+                {pairs.map((pair, index) => {
+                  const y = plotTop + index * rowHeight + rowHeight / 2 + 3;
+                  return (
+                    <g key={pair.seed}>
+                      <text x={plotLeft - 10} y={y + 4} textAnchor="end">
+                        {pair.seed}
+                      </text>
+                      <circle
+                        cx={x(pair.relative)}
+                        cy={y}
+                        r={4.2}
+                        className={
+                          pair.relative === 0
+                            ? "skeptic-dot"
+                            : aBetter(pair.relative)
+                              ? "skeptic-dot skeptic-dot-better"
+                              : "skeptic-dot skeptic-dot-worse"
+                        }
+                      >
+                        <title>
+                          Seed {pair.seed}:{" "}
+                          {formatMetric(activeMetric, pair.a.metrics[activeMetric])} vs{" "}
+                          {formatMetric(activeMetric, pair.b.metrics[activeMetric])} (
+                          {signedPercent(pair.relative)})
+                        </title>
+                      </circle>
+                    </g>
+                  );
+                })}
+                <text
+                  className="chart-axis-title"
+                  transform={`translate(16 ${(plotTop + plotBottom) / 2}) rotate(-90)`}
+                  textAnchor="middle"
+                >
+                  Held-out seed
+                </text>
+                <text
+                  className="chart-axis-title"
+                  x={(plotLeft + plotRight) / 2}
+                  y={chartHeight - 6}
+                  textAnchor="middle"
+                >
+                  Difference in {label.toLowerCase()}, {controllerLabel(left)} vs{" "}
+                  {controllerLabel(right)} (%)
+                </text>
+              </svg>
+            </div>
+          </figure>
           <details className="skeptic-seeds">
             <summary>Every seed</summary>
             <table>
