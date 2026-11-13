@@ -4,7 +4,7 @@ On 20 held-out seeds in simulated Indian mixed traffic, CHOWK reduced delay per 
 
 Values are simulation results, shown as mean [95% bootstrap confidence interval].
 
-## B1 · cars-only
+## B1 · cars-only · Main comparison
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -14,7 +14,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 110.8 [101.5, 120.7] | 2.74 [2.61, 2.88] | 2595 [2562, 2631] | 282.6 [275.0, 289.8] |
 | Fixed-time (Webster) | 228.0 [211.1, 244.8] | 3.35 [3.26, 3.43] | 2377 [2346, 2410] | 313.5 [305.4, 321.3] |
 
-## B1 · evening-peak
+## B1 · evening-peak · Main comparison
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -24,7 +24,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 144.9 [136.7, 153.5] | 3.30 [3.20, 3.40] | 6799 [6518, 7100] | 294.3 [285.7, 303.0] |
 | Fixed-time (Webster) | 210.4 [198.6, 222.5] | 3.51 [3.40, 3.63] | 6294 [6056, 6537] | 305.2 [295.8, 314.3] |
 
-## B1 · festival
+## B1 · festival · Main comparison
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -34,7 +34,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 191.5 [175.4, 207.4] | 3.46 [3.33, 3.58] | 10790 [10432, 11145] | 370.4 [356.1, 384.8] |
 | Fixed-time (Webster) | 258.7 [238.9, 278.1] | 3.60 [3.43, 3.76] | 10337 [9986, 10682] | 391.9 [376.4, 407.3] |
 
-## B1 · monsoon
+## B1 · monsoon · Main comparison
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -44,7 +44,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 159.1 [144.8, 173.8] | 2.98 [2.89, 3.06] | 5728 [5505, 5946] | 254.9 [246.1, 263.5] |
 | Fixed-time (Webster) | 264.7 [246.9, 281.9] | 3.29 [3.18, 3.39] | 5141 [4935, 5340] | 273.0 [263.5, 282.4] |
 
-## B1 · morning-peak
+## B1 · morning-peak · Main comparison
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -54,7 +54,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 125.1 [113.4, 137.4] | 2.94 [2.82, 3.04] | 6092 [5850, 6316] | 250.0 [241.3, 258.3] |
 | Fixed-time (Webster) | 209.7 [192.7, 226.1] | 3.21 [3.10, 3.31] | 5571 [5336, 5787] | 264.1 [254.5, 273.2] |
 
-## B1 · off-peak
+## B1 · off-peak · Main comparison
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -64,7 +64,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 64.2 [62.1, 66.3] | 2.08 [2.04, 2.13] | 4987 [4714, 5277] | 177.6 [172.3, 182.7] |
 | Fixed-time (Webster) | 176.1 [160.8, 191.3] | 2.97 [2.86, 3.09] | 4542 [4320, 4774] | 197.4 [190.7, 203.7] |
 
-## B1 · oversaturated
+## B1 · oversaturated · Main comparison
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -74,7 +74,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 274.5 [255.9, 293.1] · median 279.4 | 3.93 [3.83, 4.04] · median 3.92 | 7639 [7436, 7863] · median 7484 | 401.8 [390.7, 412.7] · median 404.9 |
 | Fixed-time (Webster) | 386.1 [365.8, 406.7] · median 389.6 | 3.51 [3.39, 3.63] · median 3.50 | 6994 [6817, 7172] · median 6943 | 419.4 [409.6, 428.9] · median 416.9 |
 
-## B2 · cars-only
+## B2 · cars-only · Lane-free effect
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -84,7 +84,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 110.8 [101.5, 120.7] | 2.74 [2.61, 2.88] | 2595 [2562, 2631] | 282.6 [275.0, 289.8] |
 | Fixed-time (Webster) | 228.0 [211.1, 244.8] | 3.35 [3.26, 3.43] | 2377 [2346, 2410] | 313.5 [305.4, 321.3] |
 
-## B2 · morning-peak
+## B2 · morning-peak · Lane-free effect
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -94,7 +94,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 125.1 [113.4, 137.4] | 2.94 [2.82, 3.04] | 6092 [5850, 6316] | 250.0 [241.3, 258.3] |
 | Fixed-time (Webster) | 209.7 [192.7, 226.1] | 3.21 [3.10, 3.31] | 5571 [5336, 5787] | 264.1 [254.5, 273.2] |
 
-## B3 · festival
+## B3 · festival · Policy ablations
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Bus-passenger delay (person·s) | Car-passenger delay (person·s) |
 |---|---:|---:|---:|---:|---:|---:|
@@ -104,7 +104,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | CHOWK · pure policy | 408.1 [388.7, 427.4] | 4.31 [4.19, 4.43] | 9009 [8685, 9338] | 438.8 [423.1, 454.6] | 1781067 [1627419, 1941324] | 138989 [130463, 146520] |
 | CHOWK · isolated junction | 175.3 [157.4, 193.4] | 3.31 [3.16, 3.46] | 10598 [10261, 10940] | 364.1 [348.8, 379.5] | 742225 [630790, 857988] | 67626 [60821, 74406] |
 
-## B3 · morning-peak
+## B3 · morning-peak · Policy ablations
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Bus-passenger delay (person·s) | Car-passenger delay (person·s) |
 |---|---:|---:|---:|---:|---:|---:|
@@ -114,7 +114,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | CHOWK · pure policy | 367.7 [349.5, 386.2] | 3.74 [3.63, 3.85] | 4944 [4753, 5118] | 306.3 [296.0, 316.3] | 745010 [662670, 830756] | 159810 [149983, 169512] |
 | CHOWK · isolated junction | 84.6 [75.3, 94.6] | 2.40 [2.29, 2.50] | 6298 [6045, 6528] | 241.7 [233.4, 249.8] | 146945 [119642, 176061] | 44599 [39912, 49543] |
 
-## B4 · morning-peak · buses-15
+## B4 · morning-peak · buses-15 · Generalisation
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -124,7 +124,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 176.8 [158.6, 194.7] | 3.22 [3.08, 3.37] | 11960 [11587, 12316] | 359.1 [346.2, 371.5] |
 | Fixed-time (Webster) | 297.5 [275.7, 318.4] | 3.88 [3.72, 4.04] | 10688 [10309, 11048] | 388.3 [374.6, 401.1] |
 
-## B4 · morning-peak · load-0.5
+## B4 · morning-peak · load-0.5 · Generalisation
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -134,7 +134,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 44.2 [42.0, 46.2] | 1.61 [1.56, 1.65] | 3333 [3128, 3546] | 117.4 [113.4, 121.3] |
 | Fixed-time (Webster) | 151.4 [135.5, 169.2] | 2.68 [2.57, 2.80] | 3093 [2926, 3264] | 133.3 [128.1, 138.2] |
 
-## B4 · morning-peak · load-0.6
+## B4 · morning-peak · load-0.6 · Generalisation
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -144,7 +144,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 55.0 [51.8, 58.5] | 1.87 [1.82, 1.92] | 4048 [3905, 4198] | 145.9 [141.8, 149.8] |
 | Fixed-time (Webster) | 166.6 [150.9, 183.3] | 2.86 [2.76, 2.95] | 3754 [3617, 3891] | 164.9 [159.4, 170.1] |
 
-## B4 · morning-peak · load-0.7
+## B4 · morning-peak · load-0.7 · Generalisation
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -154,7 +154,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 66.8 [63.2, 70.9] | 2.11 [2.07, 2.15] | 4846 [4582, 5133] | 174.7 [168.3, 181.1] |
 | Fixed-time (Webster) | 185.4 [171.4, 199.0] | 3.09 [2.96, 3.22] | 4412 [4202, 4651] | 195.8 [188.5, 202.9] |
 
-## B4 · morning-peak · load-0.8
+## B4 · morning-peak · load-0.8 · Generalisation
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -164,7 +164,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 85.5 [79.2, 92.4] | 2.45 [2.35, 2.54] | 5379 [5132, 5639] | 204.1 [196.8, 211.6] |
 | Fixed-time (Webster) | 191.3 [176.1, 206.3] | 3.27 [3.13, 3.42] | 4957 [4745, 5179] | 225.3 [216.8, 233.7] |
 
-## B4 · morning-peak · load-0.9
+## B4 · morning-peak · load-0.9 · Generalisation
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -174,7 +174,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 111.1 [101.1, 121.5] | 2.78 [2.67, 2.90] | 5924 [5682, 6182] | 235.5 [227.4, 243.4] |
 | Fixed-time (Webster) | 206.1 [188.9, 222.3] | 3.35 [3.23, 3.45] | 5427 [5254, 5612] | 255.3 [246.0, 264.2] |
 
-## B4 · morning-peak · load-1
+## B4 · morning-peak · load-1 · Generalisation
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -184,7 +184,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 142.2 [129.2, 156.2] | 3.08 [2.97, 3.18] | 6366 [6126, 6609] | 268.9 [259.7, 278.0] |
 | Fixed-time (Webster) | 224.2 [206.8, 241.8] | 3.14 [3.03, 3.25] | 5901 [5678, 6130] | 278.7 [268.7, 288.9] |
 
-## B4 · morning-peak · load-1.1
+## B4 · morning-peak · load-1.1 · Generalisation
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -194,7 +194,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 181.8 [166.6, 197.5] | 3.33 [3.22, 3.45] | 6697 [6465, 6955] | 301.6 [292.5, 310.3] |
 | Fixed-time (Webster) | 298.6 [279.0, 318.5] | 3.26 [3.21, 3.32] | 5978 [5762, 6233] | 319.4 [311.1, 327.6] |
 
-## B4 · morning-peak · load-1.2
+## B4 · morning-peak · load-1.2 · Generalisation
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -204,7 +204,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 216.2 [202.3, 230.2] | 3.55 [3.44, 3.65] | 7030 [6786, 7282] | 339.6 [330.3, 348.3] |
 | Fixed-time (Webster) | 327.3 [306.8, 347.8] | 3.33 [3.24, 3.42] | 6327 [6085, 6602] | 358.0 [348.1, 367.8] |
 
-## B4 · morning-peak · two-wheelers-70
+## B4 · morning-peak · two-wheelers-70 · Generalisation
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -214,7 +214,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 135.6 [127.1, 144.7] | 3.08 [2.99, 3.17] | 5431 [5211, 5644] | 240.7 [233.3, 247.7] |
 | Fixed-time (Webster) | 203.3 [188.9, 218.8] | 3.11 [3.01, 3.21] | 5094 [4910, 5271] | 249.5 [241.7, 256.9] |
 
-## B4 · morning-peak · held-out-grid
+## B4 · morning-peak · held-out-grid · Generalisation
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -224,7 +224,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 108.4 [101.6, 115.9] | 2.17 [2.12, 2.22] | 6345 [6168, 6527] | 197.7 [193.9, 201.7] |
 | Fixed-time (Webster) | 174.0 [168.0, 180.5] | 2.40 [2.34, 2.46] | 6140 [5954, 6323] | 215.1 [212.0, 218.2] |
 
-## B5 · morning-peak · block
+## B5 · morning-peak · block · Robustness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -234,7 +234,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 174.0 [156.7, 191.6] | 3.15 [3.03, 3.26] | 5945 [5714, 6152] | 264.5 [254.6, 274.1] |
 | Fixed-time (Webster) | 226.3 [208.2, 244.5] | 3.29 [3.19, 3.40] | 5502 [5293, 5688] | 268.3 [258.4, 278.0] |
 
-## B5 · morning-peak · clean
+## B5 · morning-peak · clean · Robustness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -244,7 +244,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 125.1 [113.4, 137.4] | 2.94 [2.82, 3.04] | 6092 [5850, 6316] | 250.0 [241.3, 258.3] |
 | Fixed-time (Webster) | 209.7 [192.7, 226.1] | 3.21 [3.10, 3.31] | 5571 [5336, 5787] | 264.1 [254.5, 273.2] |
 
-## B5 · morning-peak · noise-10
+## B5 · morning-peak · noise-10 · Robustness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -254,7 +254,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 125.4 [114.1, 136.7] | 2.90 [2.78, 3.01] | 6049 [5813, 6276] | 249.6 [241.1, 257.5] |
 | Fixed-time (Webster) | 209.7 [192.7, 226.1] | 3.21 [3.10, 3.31] | 5571 [5336, 5787] | 264.1 [254.5, 273.2] |
 
-## B5 · morning-peak · noise-20
+## B5 · morning-peak · noise-20 · Robustness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -264,7 +264,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 127.5 [116.3, 138.9] | 2.94 [2.82, 3.05] | 6062 [5814, 6293] | 249.9 [241.3, 258.0] |
 | Fixed-time (Webster) | 209.7 [192.7, 226.1] | 3.21 [3.10, 3.31] | 5571 [5336, 5787] | 264.1 [254.5, 273.2] |
 
-## B5 · morning-peak · noise-30
+## B5 · morning-peak · noise-30 · Robustness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -274,7 +274,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 131.0 [119.4, 142.7] | 2.95 [2.84, 3.06] | 6047 [5793, 6289] | 250.4 [241.7, 258.6] |
 | Fixed-time (Webster) | 209.7 [192.7, 226.1] | 3.21 [3.10, 3.31] | 5571 [5336, 5787] | 264.1 [254.5, 273.2] |
 
-## B5 · morning-peak · sensor-freeze
+## B5 · morning-peak · sensor-freeze · Robustness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -284,7 +284,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 129.4 [118.1, 141.0] | 2.93 [2.83, 3.03] | 6066 [5827, 6293] | 251.0 [242.4, 259.3] |
 | Fixed-time (Webster) | 209.7 [192.7, 226.1] | 3.21 [3.10, 3.31] | 5571 [5336, 5787] | 264.1 [254.5, 273.2] |
 
-## B5 · morning-peak · surge
+## B5 · morning-peak · surge · Robustness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) |
 |---|---:|---:|---:|---:|
@@ -294,7 +294,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 122.2 [111.5, 133.8] | 2.87 [2.76, 2.97] | 6092 [5863, 6312] | 249.0 [240.3, 257.2] |
 | Fixed-time (Webster) | 210.1 [192.7, 226.5] | 3.20 [3.09, 3.30] | 5553 [5336, 5753] | 263.9 [254.4, 272.8] |
 
-## B6 · morning-peak
+## B6 · morning-peak · Emergency response
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Ambulance travel time (s) | Ambulances completed |
 |---|---:|---:|---:|---:|---:|---:|
@@ -304,7 +304,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Area max-pressure with pre-emption | 91.0 [82.1, 100.5] | 2.44 [2.33, 2.56] | 6251 [6007, 6481] | 248.5 [240.2, 256.6] | 239.5 [228.9, 252.6] | 5.6 [5.4, 5.8] |
 | CHOWK with pre-emption | 86.1 [77.8, 94.7] | 2.38 [2.28, 2.48] | 6261 [6016, 6484] | 247.1 [238.7, 255.0] | 235.6 [223.3, 250.6] | 5.7 [5.5, 5.9] |
 
-## B7 · cars-only
+## B7 · cars-only · Fairness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -314,7 +314,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 110.8 [101.5, 120.7] | 2.74 [2.61, 2.88] | 2595 [2562, 2631] | 282.6 [275.0, 289.8] | 159.7 [150.1, 170.8] | 64.4 [61.2, 67.6] | 5.3 [3.6, 7.3] |
 | Fixed-time (Webster) | 228.0 [211.1, 244.8] | 3.35 [3.26, 3.43] | 2377 [2346, 2410] | 313.5 [305.4, 321.3] | 354.8 [308.8, 406.6] | 92.7 [90.6, 94.7] | 40.8 [36.1, 45.3] |
 
-## B7 · evening-peak
+## B7 · evening-peak · Fairness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -324,7 +324,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 144.9 [136.7, 153.5] | 3.30 [3.20, 3.40] | 6799 [6518, 7100] | 294.3 [285.7, 303.0] | 224.8 [200.0, 251.8] | 83.7 [79.6, 87.8] | 20.6 [15.9, 25.7] |
 | Fixed-time (Webster) | 210.4 [198.6, 222.5] | 3.51 [3.40, 3.63] | 6294 [6056, 6537] | 305.2 [295.8, 314.3] | 328.6 [282.0, 383.7] | 100.9 [96.3, 106.1] | 42.0 [36.6, 47.0] |
 
-## B7 · festival
+## B7 · festival · Fairness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -334,7 +334,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 191.5 [175.4, 207.4] | 3.46 [3.33, 3.58] | 10790 [10432, 11145] | 370.4 [356.1, 384.8] | 252.0 [226.5, 279.4] | 119.4 [112.8, 126.2] | 55.6 [48.3, 62.5] |
 | Fixed-time (Webster) | 258.7 [238.9, 278.1] | 3.60 [3.43, 3.76] | 10337 [9986, 10682] | 391.9 [376.4, 407.3] | 458.6 [390.2, 532.4] | 140.6 [129.6, 151.6] | 67.2 [58.9, 74.9] |
 
-## B7 · monsoon
+## B7 · monsoon · Fairness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -344,7 +344,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 159.1 [144.8, 173.8] | 2.98 [2.89, 3.06] | 5728 [5505, 5946] | 254.9 [246.1, 263.5] | 283.9 [254.2, 312.9] | 94.4 [89.4, 99.1] | 34.4 [28.7, 39.6] |
 | Fixed-time (Webster) | 264.7 [246.9, 281.9] | 3.29 [3.18, 3.39] | 5141 [4935, 5340] | 273.0 [263.5, 282.4] | 515.1 [438.4, 619.4] | 120.7 [114.2, 127.8] | 62.6 [58.2, 66.8] |
 
-## B7 · morning-peak
+## B7 · morning-peak · Fairness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -354,7 +354,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 125.1 [113.4, 137.4] | 2.94 [2.82, 3.04] | 6092 [5850, 6316] | 250.0 [241.3, 258.3] | 203.9 [183.8, 225.8] | 74.7 [70.5, 79.1] | 16.7 [12.1, 21.6] |
 | Fixed-time (Webster) | 209.7 [192.7, 226.1] | 3.21 [3.10, 3.31] | 5571 [5336, 5787] | 264.1 [254.5, 273.2] | 350.4 [298.7, 419.9] | 93.8 [89.4, 98.1] | 42.5 [36.2, 48.5] |
 
-## B7 · off-peak
+## B7 · off-peak · Fairness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -364,7 +364,7 @@ Values are simulation results, shown as mean [95% bootstrap confidence interval]
 | Actuated | 64.2 [62.1, 66.3] | 2.08 [2.04, 2.13] | 4987 [4714, 5277] | 177.6 [172.3, 182.7] | 128.2 [119.7, 137.2] | 41.4 [40.1, 42.9] | 1.1 [0.4, 1.8] |
 | Fixed-time (Webster) | 176.1 [160.8, 191.3] | 2.97 [2.86, 3.09] | 4542 [4320, 4774] | 197.4 [190.7, 203.7] | 277.7 [230.1, 335.5] | 80.0 [72.4, 87.9] | 29.6 [22.1, 37.5] |
 
-## B7 · oversaturated
+## B7 · oversaturated · Fairness
 
 | Controller | Delay per person (s) | Stops per vehicle | Throughput (people/h) | Estimated CO₂ (kg) | Maximum approach wait (s) | 95th-percentile approach wait (s) | Time with an approach over 120 s (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|

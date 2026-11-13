@@ -4,10 +4,66 @@ import { rendererName } from "./engineering";
 import { primaryMetric, primaryScenario, signedPercent } from "./headline";
 import { controllerLabel, formatMetric, mainMetricKeys, metricLabels } from "./metrics";
 import { compareControllers } from "./statistics";
-import type { BenchmarkFile, EngineeringReport, SummaryCell } from "./types";
+import { equivalentIdentity, scenarioLabel, scenarioLabels } from "./suites";
+import type {
+  BenchmarkFile,
+  BenchmarkRun,
+  EngineeringReport,
+  PairedComparison,
+  SummaryCell,
+} from "./types";
 
 const startMarker = "<!-- results:start -->";
 const endMarker = "<!-- results:end -->";
+
+const suiteNames: Record<string, { title: string; tests: string }> = {
+  B1: { title: "Main comparison", tests: "Seven traffic scenarios, five controllers" },
+  B2: { title: "Lane-free effect", tests: "Mixed traffic against lane-disciplined cars" },
+  B3: { title: "Policy ablations", tests: "CHOWK against variants with one design choice removed" },
+  B4: {
+    title: "Generalisation",
+    tests: "Demand from 50% to 120%, unseen vehicle mixes, a held-out grid",
+  },
+  B5: {
+    title: "Robustness",
+    tests: "Sensor noise, frozen sensors, a blocked lane, a demand surge",
+  },
+  B6: { title: "Emergency response", tests: "Ambulances, with and without signal pre-emption" },
+  B7: { title: "Fairness", tests: "Longest and 95th-percentile waits, starved approaches" },
+};
+const baselines = ["mp-area", "mp-count", "actuated", "webster"] as const;
+const higherIsBetter = new Set([
+  "throughputPeoplePerHour",
+  "completionRate",
+  "ambulanceCompleted",
+  "completed",
+]);
+const scoreboardMetrics = [
+  "delayPerPerson",
+  "busPassengerDelay",
+  "stopsPerVehicle",
+  "throughputPeoplePerHour",
+  "co2Kg",
+  "meanTravelTime",
+  "completionRate",
+  "maximumApproachWait",
+  "p95ApproachWait",
+  "starvationShare",
+];
+const variantLabels: Record<string, string> = {
+  clean: "Clean sensors",
+  "noise-10": "10% sensor noise",
+  "noise-20": "20% sensor noise",
+  "noise-30": "30% sensor noise",
+  "sensor-freeze": "Frozen sensors",
+  block: "Blocked lane",
+  surge: "Demand surge",
+  "two-wheelers-70": "70% two-wheelers",
+  "buses-15": "15% buses",
+  "held-out-grid": "Held-out grid (never trained on)",
+};
+// International digit grouping: the README is read well beyond India, and by parsers.
+const count = new Intl.NumberFormat("en-GB");
 
 function metricCell(row: SummaryCell | undefined): string {
   if (!row) return "—";
@@ -174,6 +230,400 @@ function laneChart(benchmark: BenchmarkFile): string | undefined {
 </g></svg>\n`;
 }
 
+/** Conditions in the order the suites define them: the demand sweep rising, then the rest. */
+function variantOrder(variants: Iterable<string>): string[] {
+  const named = Object.keys(variantLabels);
+  const rank = (variant: string) => {
+    const load = /^load-([\d.]+)$/.exec(variant);
+    if (load) return Number(load[1]);
+    const index = named.indexOf(variant);
+    return 100 + (index < 0 ? named.length : index);
+  };
+  return [...new Set(variants)].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
+}
+
+function variantLabel(variant: string): string {
+  const load = /^load-([\d.]+)$/.exec(variant);
+  if (load) return `Demand at ${Math.round(Number(load[1]) * 100)}%`;
+  return variantLabels[variant] ?? variant.replaceAll("-", " ");
+}
+
+type Outcome = "better" | "even" | "worse";
+const marks: Record<Outcome, string> = { better: "✅", even: "➖", worse: "❌" };
+
+function outcome(row: PairedComparison): Outcome {
+  if (!row.clear) return "even";
+  return higherIsBetter.has(row.metric) === row.relDiff > 0 ? "better" : "worse";
+}
+
+function comparisonCell(row: PairedComparison | undefined): string {
+  if (!row) return "—";
+  return `${signedPercent(row.relDiff)} [${signedPercent(row.ciLow)}, ${signedPercent(row.ciHigh)}] ${marks[outcome(row)]}`;
+}
+
+function tally(rows: readonly PairedComparison[]): string {
+  if (rows.length === 0) return "—";
+  const totals: Record<Outcome, number> = { better: 0, even: 0, worse: 0 };
+  for (const row of rows) totals[outcome(row)]++;
+  return `✅ ${totals.better} · ➖ ${totals.even} · ❌ ${totals.worse}`;
+}
+
+/**
+ * A traffic condition is a distinct demand, event plan and network. Suites that reuse B1's runs
+ * (B2, B7 and the clean B5 case) add no new conditions, so nothing is counted twice.
+ */
+function conditionKey(row: {
+  suite: string;
+  scenario: string;
+  variant?: string;
+  network: string;
+}): string {
+  const events = row.suite === "B6" ? "ambulances" : "";
+  return [
+    row.scenario,
+    row.variant === "clean" ? "" : (row.variant ?? ""),
+    row.network,
+    events,
+  ].join("|");
+}
+
+function distinctComparisons(rows: readonly PairedComparison[]): PairedComparison[] {
+  const seen = new Map<string, PairedComparison>();
+  for (const row of rows) {
+    const key = `${conditionKey(row)}|${row.a}|${row.b}|${row.metric}`;
+    if (!seen.has(key)) seen.set(key, row);
+  }
+  return [...seen.values()];
+}
+
+/** Runs that the CLI shares between suites were simulated once; count them once. */
+function distinctEpisodes(runs: readonly BenchmarkRun[]): BenchmarkRun[] {
+  const seen = new Map<string, BenchmarkRun>();
+  for (const run of runs) {
+    const { suite, scenario, network, controller, seed, variant } = equivalentIdentity(run);
+    const key = [suite, scenario, network, controller, seed, variant ?? ""].join("|");
+    if (!seen.has(key)) seen.set(key, run);
+  }
+  return [...seen.values()];
+}
+
+function glance(benchmark: BenchmarkFile): string | undefined {
+  const { runs, comparisons, meta } = benchmark;
+  if (runs.length === 0) return undefined;
+  const episodes = distinctEpisodes(runs);
+  const vehicles = episodes.reduce((sum, run) => sum + (run.metrics.generated ?? 0), 0);
+  const people = episodes.reduce((sum, run) => sum + (run.metrics.generatedPeople ?? 0), 0);
+  const suites = [...new Set(runs.map(({ suite }) => suite))].sort();
+  const seeds = [...new Set(runs.map(({ seed }) => seed))].sort((a, b) => a - b);
+  const rows: [string, string][] = [
+    ["Simulated episodes", count.format(episodes.length)],
+    ["Simulated traffic", `${count.format(Math.round(meta.simulatedSeconds / 3_600))} hours`],
+  ];
+  if (vehicles > 0) rows.push(["Vehicles entering the measured windows", count.format(vehicles)]);
+  if (people > 0) rows.push(["People in those vehicles", count.format(Math.round(people))]);
+  rows.push(
+    ["Benchmark suites", `${suites.length} (${suites.join(", ")})`],
+    ["Distinct traffic conditions", count.format(new Set(runs.map(conditionKey)).size)],
+    ["Controllers compared", count.format(new Set(runs.map(({ controller }) => controller)).size)],
+    [
+      "Held-out test seeds per condition",
+      `${seeds.length} (${count.format(seeds[0])}–${count.format(seeds[seeds.length - 1])}, never used in training or checkpoint choice)`,
+    ],
+    [
+      "Paired comparisons, each with a 95% bootstrap interval",
+      count.format(distinctComparisons(comparisons).length),
+    ],
+  );
+  const engines = Object.entries(benchmark.engineering?.determinism ?? {});
+  if (engines.length > 1 && new Set(engines.map(([, hash]) => hash)).size === 1)
+    rows.push([
+      "Engines reaching the identical simulation state",
+      `${engines.length} (${engines.map(([engine]) => engine).join(", ")})`,
+    ]);
+  return [
+    "| Benchmark scale | |",
+    "|---|---:|",
+    ...rows.map(([label, value]) => `| ${label} | ${value} |`),
+  ].join("\n");
+}
+
+function versusTable(
+  rows: readonly PairedComparison[],
+  keys: readonly string[],
+  label: (key: string) => string,
+  pick: (row: PairedComparison) => string,
+  opponents: readonly string[],
+  heading: string,
+): string {
+  return [
+    `| ${heading} | ${opponents.map((id) => `vs ${controllerLabel(id)}`).join(" | ")} |`,
+    `|---|${opponents.map(() => "---:").join("|")}|`,
+    ...keys.map(
+      (key) =>
+        `| ${label(key)} | ${opponents
+          .map((id) => comparisonCell(rows.find((row) => pick(row) === key && row.b === id)))
+          .join(" | ")} |`,
+    ),
+  ].join("\n");
+}
+
+const scenarioRank = Object.keys(scenarioLabels);
+
+/** Scenarios in the order the app lists them, morning peak first; unknown ones last. */
+function scenarioOrder(scenarios: Iterable<string>): string[] {
+  const rank = (id: string) => {
+    const index = scenarioRank.indexOf(id);
+    return index < 0 ? scenarioRank.length : index;
+  };
+  return [...new Set(scenarios)].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
+}
+
+function scenarioMatrix(benchmark: BenchmarkFile): string | undefined {
+  const rows = benchmark.comparisons.filter(
+    ({ suite, a, metric, variant }) =>
+      suite === "B1" && a === "chowk" && metric === primaryMetric && !variant,
+  );
+  if (rows.length === 0) return undefined;
+  return versusTable(
+    rows,
+    scenarioOrder(rows.map(({ scenario }) => scenario)),
+    scenarioLabel,
+    (row) => row.scenario,
+    baselines,
+    "Scenario",
+  );
+}
+
+function scoreboard(benchmark: BenchmarkFile): string | undefined {
+  const rows = distinctComparisons(
+    benchmark.comparisons.filter(
+      ({ a, b }) => a === "chowk" && (baselines as readonly string[]).includes(b),
+    ),
+  );
+  const metrics = scoreboardMetrics.filter((metric) => rows.some((row) => row.metric === metric));
+  if (metrics.length === 0) return undefined;
+  return [
+    `| Metric | ${baselines.map((id) => `vs ${controllerLabel(id)}`).join(" | ")} |`,
+    `|---|${baselines.map(() => ":---:").join("|")}|`,
+    ...metrics.map((metric) => {
+      const name = metricLabels[metric]?.label ?? metric;
+      const direction = higherIsBetter.has(metric) ? "higher is better" : "lower is better";
+      return `| ${name} (${direction}) | ${baselines
+        .map((id) => tally(rows.filter((row) => row.metric === metric && row.b === id)))
+        .join(" | ")} |`;
+    }),
+  ].join("\n");
+}
+
+function suiteIndex(benchmark: BenchmarkFile): string | undefined {
+  const suites = [...new Set(benchmark.runs.map(({ suite }) => suite))].sort();
+  if (suites.length === 0) return undefined;
+  return [
+    "| Suite | Name | What it tests | Conditions | Controllers | Episodes | CHOWK vs area max-pressure, delay per person |",
+    "|---|---|---|---:|---:|---:|:---:|",
+    ...suites.map((suite) => {
+      const runs = benchmark.runs.filter((run) => run.suite === suite);
+      const versusArea = benchmark.comparisons.filter(
+        (row) =>
+          row.suite === suite &&
+          row.a === "chowk" &&
+          row.b === "mp-area" &&
+          row.metric === primaryMetric,
+      );
+      const name = suiteNames[suite];
+      return `| ${suite} | ${name?.title ?? suite} | ${name?.tests ?? ""} | ${new Set(runs.map((run) => `${run.scenario}|${run.variant ?? ""}|${run.network}`)).size} | ${new Set(runs.map(({ controller }) => controller)).size} | ${count.format(runs.length)} | ${tally(versusArea)} |`;
+    }),
+  ].join("\n");
+}
+
+function suiteDetails(benchmark: BenchmarkFile): string[] {
+  const { comparisons, summary } = benchmark;
+  const sections: string[] = [];
+  const details = (suite: string, body: string[]) => {
+    const name = suiteNames[suite];
+    sections.push(
+      `<details>\n<summary><strong>${suite} · ${name?.title ?? suite}</strong>: ${name?.tests ?? ""}</summary>\n\n${body.join("\n\n")}\n\n</details>`,
+    );
+  };
+  const chowk = (suite: string, metric: string = primaryMetric) =>
+    comparisons.filter((row) => row.suite === suite && row.a === "chowk" && row.metric === metric);
+
+  const lane = chowk("B2");
+  if (lane.length > 0)
+    details("B2", [
+      "Delay per person, CHOWK against each baseline. The same demand runs once as Indian mixed traffic and once as lane-disciplined cars.",
+      versusTable(
+        lane,
+        scenarioOrder(lane.map(({ scenario }) => scenario)),
+        scenarioLabel,
+        (row) => row.scenario,
+        baselines,
+        "Traffic",
+      ),
+    ]);
+
+  const ablations = chowk("B3");
+  if (ablations.length > 0)
+    details("B3", [
+      "Delay per person, CHOWK against variants that each remove one design choice. The variants come from separate, shorter training runs; every policy sees the same held-out demand and seeds.",
+      versusTable(
+        ablations,
+        scenarioOrder(ablations.map(({ scenario }) => scenario)),
+        scenarioLabel,
+        (row) => row.scenario,
+        [...new Set(ablations.map(({ b }) => b))],
+        "Scenario",
+      ),
+    ]);
+
+  for (const suite of ["B4", "B5"]) {
+    const rows = chowk(suite).filter(({ b }) => (baselines as readonly string[]).includes(b));
+    if (rows.length === 0) continue;
+    details(suite, [
+      "Delay per person, CHOWK against each baseline under each condition.",
+      versusTable(
+        rows,
+        variantOrder(rows.map(({ variant }) => variant ?? "")),
+        variantLabel,
+        (row) => row.variant ?? "",
+        baselines,
+        "Condition",
+      ),
+    ]);
+  }
+
+  const emergency = summary.filter(({ suite }) => suite === "B6");
+  if (emergency.length > 0) {
+    const pairs = chowk("B6", "ambulanceTravelTime");
+    details("B6", [
+      "Ambulance travel time is measured on completed trips; the completion count and everyone else's delay show the trade-off.",
+      measurementTable(emergency, ["ambulanceTravelTime", "ambulanceCompleted", "delayPerPerson"]),
+      ...(pairs.length > 0
+        ? [
+            "Ambulance travel time, CHOWK (without pre-emption) against each alternative:",
+            versusTable(
+              pairs,
+              scenarioOrder(pairs.map(({ scenario }) => scenario)),
+              scenarioLabel,
+              (row) => row.scenario,
+              [...new Set(pairs.map(({ b }) => b))],
+              "Scenario",
+            ),
+          ]
+        : []),
+    ]);
+  }
+
+  const fairness = chowk("B7", "p95ApproachWait");
+  if (fairness.length > 0)
+    details("B7", [
+      "95th-percentile wait on an approach, CHOWK against each baseline. The scoreboard also counts the longest wait and the share of time with an approach waiting over 120 s.",
+      versusTable(
+        fairness,
+        scenarioOrder(fairness.map(({ scenario }) => scenario)),
+        scenarioLabel,
+        (row) => row.scenario,
+        baselines,
+        "Scenario",
+      ),
+    ]);
+  return sections;
+}
+
+function engineeringTable(report?: EngineeringReport): string | undefined {
+  if (!report) return undefined;
+  const rows: [string, string][] = [];
+  const kib = (bytes: number) => `${(bytes / 1_024).toFixed(1)} KiB`;
+  if (report.simulator?.length)
+    rows.push([
+      "Simulator speed",
+      report.simulator
+        .map(
+          ({ vehicles, realtime, meanActive }) =>
+            `${realtime.toFixed(1)}× real time with ~${count.format(Math.round(meanActive ?? vehicles))} vehicles`,
+        )
+        .join("<br>"),
+    ]);
+  if (typeof report.policyMicroseconds === "number")
+    rows.push(["Policy inference", `${report.policyMicroseconds.toFixed(2)} µs per decision`]);
+  const engines = Object.entries(report.determinism ?? {});
+  if (engines.length > 0) {
+    const format = (hash: number) => hash.toString(16).padStart(8, "0");
+    rows.push([
+      "Cross-engine determinism",
+      new Set(engines.map(([, hash]) => hash)).size === 1
+        ? `${engines.map(([engine]) => engine).join(", ")}: identical state hash \`${format(engines[0][1])}\` after 10,000 ticks`
+        : engines.map(([engine, hash]) => `${engine} \`${format(hash)}\``).join(", "),
+    ]);
+  }
+  if (report.reproduction?.length)
+    rows.push([
+      "Benchmark replay in the browser",
+      report.reproduction
+        .map(
+          ({ engine, wallSeconds, episodes }) =>
+            `${engine}: ${episodes} of ${episodes} episodes exact in ${wallSeconds.toFixed(2)} s`,
+        )
+        .join("<br>"),
+    ]);
+  if (report.rendering?.length)
+    rows.push([
+      "Rendering",
+      report.rendering
+        .map(
+          ({ tier, medianFps, onePercentLowFps }) =>
+            `${tier}: ${medianFps.toFixed(1)} fps median, ${onePercentLowFps.toFixed(1)} fps 1% low`,
+        )
+        .join("<br>"),
+    ]);
+  if (report.load)
+    rows.push([
+      "Cold load on localhost",
+      `${kib(report.load.transferBytes)}, interactive in ${(report.load.interactiveMs / 1_000).toFixed(2)} s`,
+    ]);
+  if (report.load?.initialJavaScriptGzipBytes !== undefined)
+    rows.push([
+      "Initial JavaScript",
+      `${(report.load.initialJavaScriptGzipBytes / 1_000).toFixed(1)} kB compressed`,
+    ]);
+  for (const {
+    label,
+    downloadMbps,
+    latencyMs,
+    posterMs,
+    interactiveMs,
+    samples,
+  } of report.shapedLoads ?? [])
+    rows.push([
+      `${label} (${downloadMbps} Mbps, ${latencyMs} ms)`,
+      `poster in ${(posterMs / 1_000).toFixed(2)} s, interactive in ${(interactiveMs / 1_000).toFixed(2)} s (median of ${samples})`,
+    ]);
+  if (report.models)
+    rows.push([
+      "3D models",
+      `${report.models.count} GLB files, ${kib(report.models.bytes)} in total`,
+    ]);
+  if (report.memory)
+    rows.push([
+      `${report.memory.minutes}-minute memory soak`,
+      `V8 heap ${(report.memory.firstBytes / 1_048_576).toFixed(2)} → ${(report.memory.lastBytes / 1_048_576).toFixed(2)} MiB, ${report.memory.workers} workers`,
+    ]);
+  if (report.tests)
+    rows.push([
+      "Tests when measured",
+      `${report.tests.passed} passed, ${report.tests.failed} failed`,
+    ]);
+  if (rows.length === 0) return undefined;
+  const { hardware } = report;
+  return [
+    "| Measurement | Result |",
+    "|---|---|",
+    ...rows.map(([label, value]) => `| ${label} | ${value} |`),
+    "",
+    `Measured on ${[hardware.cpu, hardware.gpu ? rendererName(hardware.gpu) : "", hardware.os, hardware.runtime].filter(Boolean).join(" · ")}.`,
+  ].join("\n");
+}
+
 export function writeReports(root: string, benchmark: BenchmarkFile): void {
   const reportDirectory = resolve(root, "results");
   mkdirSync(reportDirectory, { recursive: true });
@@ -197,7 +647,11 @@ export function writeReports(root: string, benchmark: BenchmarkFile): void {
         : key.startsWith("B3")
           ? ["busPassengerDelay", "carPassengerDelay"]
           : [];
-    report.push(`## ${key}`, measurementTable(rows, [...mainMetricKeys, ...extras]));
+    const title = suiteNames[rows[0].suite]?.title;
+    report.push(
+      `## ${title ? `${key} · ${title}` : key}`,
+      measurementTable(rows, [...mainMetricKeys, ...extras]),
+    );
   }
   const engineering = engineeringLines(benchmark.engineering);
   if (engineering.length > 0) report.push("## Engineering measurements", engineering.join("\n\n"));
@@ -213,18 +667,39 @@ export function writeReports(root: string, benchmark: BenchmarkFile): void {
   const mainRows = benchmark.summary.filter(
     ({ suite, scenario, variant }) => suite === "B1" && scenario === primaryScenario && !variant,
   );
-  const results = [startMarker, "## Simulation results", benchmark.headline];
-  if (mainRows.length > 0) results.push(measurementTable(mainRows, mainMetricKeys));
+  const results = [startMarker, "## Benchmark results", `> **${benchmark.headline}**`];
+  const scale = glance(benchmark);
+  if (scale) results.push(scale);
+  const matrix = scenarioMatrix(benchmark);
+  if (matrix)
+    results.push(
+      "### Delay per person: CHOWK against every baseline, in every scenario",
+      "Each cell pairs the two controllers on the same held-out seeds: the mean relative difference in delay per person and its 95% paired bootstrap interval. ✅ CHOWK clearly lower (the interval excludes zero) · ➖ no clear difference · ❌ CHOWK clearly higher.",
+      matrix,
+    );
+  const board = scoreboard(benchmark);
+  if (board)
+    results.push(
+      "### Scoreboard: every metric, every distinct traffic condition",
+      "The number of traffic conditions in which CHOWK came out clearly better, with no clear difference, or clearly worse than each baseline. Each condition counts once across suites. Intervals are per comparison and not adjusted for multiple comparisons.",
+      board,
+    );
+  if (mainRows.length > 0)
+    results.push(
+      `### ${scenarioLabel(primaryScenario)}, every controller`,
+      "Mean [95% bootstrap interval] over the held-out seeds.",
+      measurementTable(mainRows, mainMetricKeys),
+    );
   if (chart)
     results.push(
       "![Paired delay differences for mixed traffic and lane-disciplined cars](results/lane-free.svg)",
     );
-  if (engineering.length > 0)
-    results.push(
-      `<details>\n<summary><strong>Engineering measurements</strong></summary>\n\n${engineering.join("\n\n")}\n\n</details>`,
-    );
+  const index = suiteIndex(benchmark);
+  if (index) results.push("### Every suite", index, ...suiteDetails(benchmark));
+  const measured = engineeringTable(benchmark.engineering);
+  if (measured) results.push("### Engineering measurements", measured);
   results.push(
-    "[Full benchmark and provenance](results/benchmark.md) · [Raw runs](results/benchmark.json)",
+    "All values are simulation results. [Full benchmark and provenance](results/benchmark.md) · [Raw runs, summaries and comparisons as JSON](results/benchmark.json)",
     endMarker,
   );
 
