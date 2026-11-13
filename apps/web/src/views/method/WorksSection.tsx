@@ -1,7 +1,15 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { TrainingCurveChart } from "../../benchmark/TrainingCurveChart";
-import { highlights, policyInputs, policyLayers, policyParameters, whole } from "./explainerData";
-import { prefersReducedMotion, useInView } from "./motion";
+import { trainingCurve } from "../../sim/livePolicies";
+import {
+  highlights,
+  oneDecimal,
+  policyInputs,
+  policyLayers,
+  policyParameters,
+  whole,
+} from "./explainerData";
+import { prefersReducedMotion, useCountUp, useInView } from "./motion";
 
 type Arm = "north" | "east" | "south" | "west";
 const arms: readonly Arm[] = ["north", "east", "south", "west"];
@@ -524,6 +532,79 @@ function EvolutionFigure() {
   );
 }
 
+const hoursPerYear = 24 * 365;
+
+/** "almost 3 years" just under a whole number, otherwise "about 2.4 years". */
+function yearsPhrase(years: number): string {
+  const next = Math.ceil(years);
+  return next - years < 0.15 ? `almost ${next} years` : `about ${oneDecimal.format(years)} years`;
+}
+
+function ScaleNumber({
+  value,
+  run,
+  format,
+}: {
+  value: number;
+  run: boolean;
+  format: (value: number) => string;
+}) {
+  return <strong>{format(useCountUp(value, run, 1800))}</strong>;
+}
+
+/** How much simulated traffic the training run used, from the exported run totals. */
+function TrainingScale() {
+  const banner = useRef<HTMLElement>(null);
+  const run = useInView(banner);
+  const curve = trainingCurve();
+  const totals = curve?.totals;
+  if (!curve || !totals) return null;
+  const years = totals.simulatedHours / hoursPerYear;
+  const episodeMinutes = Math.round(totals.episodeSeconds / 60);
+  return (
+    <section className="training-scale" ref={banner} aria-label="How much traffic CHOWK trained on">
+      <p className="training-scale-kicker">The training run, in numbers</p>
+      <div className="training-scale-grid">
+        <div className="training-scale-lead">
+          <ScaleNumber
+            run={run}
+            value={totals.simulatedHours}
+            format={(value) => whole.format(Math.round(value))}
+          />
+          <span>hours of simulated traffic</span>
+          <em>
+            {yearsPhrase(years)} of rush-hour traffic, surges, blocked lanes, monsoons and
+            ambulances, laid end to end
+          </em>
+        </div>
+        <div>
+          <ScaleNumber
+            run={run}
+            value={totals.trainingEpisodes}
+            format={(value) => whole.format(Math.round(value))}
+          />
+          <span>training episodes</span>
+          <em>each a {episodeMinutes}-minute simulation of the corridor</em>
+        </div>
+        <div>
+          <ScaleNumber
+            run={run}
+            value={totals.wallSeconds / 60}
+            format={(value) => `${whole.format(Math.round(value))} min`}
+          />
+          <span>of computing</span>
+          <em>the simulator runs far faster than real time, with episodes in parallel</em>
+        </div>
+      </div>
+      <p className="training-scale-note">
+        Across {totals.generations} generations, plus {whole.format(totals.validationEpisodes)}{" "}
+        validation episodes. The CHOWK that ships is the checkpoint from generation{" "}
+        {curve.bestGeneration}, the one that did best on validation traffic.
+      </p>
+    </section>
+  );
+}
+
 export function LearnedSection() {
   return (
     <div className="explainer-learned">
@@ -556,6 +637,7 @@ export function LearnedSection() {
         </div>
       </div>
       <TrainingCurveChart />
+      <TrainingScale />
     </div>
   );
 }

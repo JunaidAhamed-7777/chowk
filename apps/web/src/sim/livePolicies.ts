@@ -64,6 +64,15 @@ export const defaultControllers = [
 
 export interface TrainingCurve {
   bestGeneration: number;
+  /** Written by `npm run train:export` from the run log: how much simulation training used. */
+  totals?: {
+    generations: number;
+    episodeSeconds: number;
+    trainingEpisodes: number;
+    validationEpisodes: number;
+    simulatedHours: number;
+    wallSeconds: number;
+  };
   points: { generation: number; validationFitness?: number }[];
   checkpoints: { generation: number; url: string }[];
 }

@@ -1138,3 +1138,74 @@
     transition: none !important;
   }
 }
+
+/* The scale of the training run: a banner closing How it learned. */
+.training-scale {
+  position: relative;
+  margin-top: 28px;
+  padding: 30px 32px 26px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background:
+    radial-gradient(90% 140% at 0% 0%, #15403499 0%, transparent 55%),
+    radial-gradient(70% 120% at 100% 100%, #2a1f4a99 0%, transparent 60%),
+    linear-gradient(#0a0f1a, #0a0f1a) padding-box,
+    linear-gradient(120deg, #3df2b4, #6f8cff 55%, #c4a8f5) border-box;
+  box-shadow:
+    0 0 60px #3df2b41f,
+    0 24px 60px #02040a99;
+}
+.training-scale-kicker {
+  margin: 0 0 18px;
+  color: var(--accent);
+  font: 600 12px var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.training-scale-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: end;
+}
+.training-scale-grid > div {
+  display: grid;
+  gap: 6px;
+}
+.training-scale-grid strong {
+  background: linear-gradient(120deg, #e8edf5, #9ff5d6);
+  background-clip: text;
+  color: transparent;
+  font: 700 clamp(40px, 4.4vw, 60px) / 1 var(--mono);
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+}
+.training-scale-lead strong {
+  background-image: linear-gradient(120deg, #3df2b4, #9ff5d6 60%, #c4a8f5);
+  font-size: clamp(56px, 7vw, 96px);
+}
+.training-scale-grid span {
+  color: var(--ui-text);
+  font-size: 16px;
+  font-weight: 620;
+}
+.training-scale-grid em {
+  max-width: 34ch;
+  color: #aebbcb;
+  font-size: 13.5px;
+  font-style: normal;
+  line-height: 1.5;
+}
+.training-scale-note {
+  margin: 22px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid #ffffff14;
+  color: var(--ui-dim);
+  font-size: 13px;
+}
+@media (max-width: 980px) {
+  .training-scale-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

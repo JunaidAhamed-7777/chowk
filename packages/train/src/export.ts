@@ -50,11 +50,30 @@ if (variant === "chowk") {
       validationFitness,
     }),
   );
+  // How much simulated traffic the run consumed. Each training generation evaluates every
+  // perturbed policy and the area max-pressure baseline on `episodes` sampled episodes; each
+  // validation runs the centre on every validation seed, after one baseline pass at the start.
+  const { population, episodes, validationSeeds, warmup, measured } = state.config;
+  const training = state.history.filter(({ generation }) => generation > 0).length;
+  const validations = state.history.filter(
+    ({ validationFitness }) => validationFitness !== undefined,
+  ).length;
+  const trainingEpisodes = training * (population + 1) * episodes;
+  const validationEpisodes = (validations + 1) * validationSeeds;
+  const totals = {
+    generations: state.generation,
+    episodeSeconds: warmup + measured,
+    trainingEpisodes,
+    validationEpisodes,
+    simulatedHours: ((trainingEpisodes + validationEpisodes) * (warmup + measured)) / 3_600,
+    wallSeconds: state.history.reduce((sum, { wallSeconds }) => sum + wallSeconds, 0),
+  };
   const curve = {
     version: 1,
     variant,
     bestGeneration: state.bestGeneration,
     bestValidationFitness: state.bestValidationFitness,
+    totals,
     points,
     checkpoints,
   };

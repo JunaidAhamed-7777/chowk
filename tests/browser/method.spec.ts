@@ -40,6 +40,10 @@ test("Method explains the problem with a sandbox and walks through a decision", 
   const steps = page.getByRole("tablist", { name: "One decision, step by step" });
   await steps.getByRole("tab", { name: /Switch safely/ }).click();
   await expect(page.getByText("All-red while the box clears")).toBeVisible();
+  const scale = page.getByRole("region", { name: "How much traffic CHOWK trained on" });
+  await scale.scrollIntoViewIfNeeded();
+  await expect(scale).toContainText(/hours of simulated traffic/);
+  await expect(scale).toContainText(/training episodes/);
 });
 
 test("Limits describes the model and requirements for field use", async ({ page }) => {

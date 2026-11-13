@@ -3,6 +3,14 @@
   "variant": "chowk",
   "bestGeneration": 220,
   "bestValidationFitness": 0.9385977555023572,
+  "totals": {
+    "generations": 300,
+    "episodeSeconds": 1200,
+    "trainingEpisodes": 78000,
+    "validationEpisodes": 660,
+    "simulatedHours": 26220,
+    "wallSeconds": 3024.6862126999954
+  },
   "points": [
     {
       "generation": 0,
